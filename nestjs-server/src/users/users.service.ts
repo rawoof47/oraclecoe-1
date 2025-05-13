@@ -1,4 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+  BadRequestException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -13,22 +19,33 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  // Create a new user with hashed password
+  // ✅ Create a new user with hashed password and check for existing email
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const { password_hash, ...rest } = createUserDto;
+    const { password_hash, email, ...rest } = createUserDto;
 
     if (!password_hash) {
-      throw new Error('Password is required');
+      throw new BadRequestException('Password is required');
     }
 
-    const hashedPassword = await bcrypt.hash(password_hash, 10); // changed Salt rounds = 10
+    // ✅ Check for duplicate email
+    const existingUser = await this.userRepository.findOne({ where: { email } });
+    if (existingUser) {
+      throw new ConflictException('Email already exists');
+    }
 
-    const user = this.userRepository.create({
-      ...rest,
-      password_hash: hashedPassword,
-    });
+    try {
+      const hashedPassword = await bcrypt.hash(password_hash, 10); // Salt rounds = 10
+      const user = this.userRepository.create({
+        ...rest,
+        email,
+        password_hash: hashedPassword,
+      });
 
-    return await this.userRepository.save(user);
+      return await this.userRepository.save(user);
+    } catch (error) {
+      console.error('Error creating user:', error);
+      throw new InternalServerErrorException('Failed to create user');
+    }
   }
 
   // Find all users
@@ -40,23 +57,33 @@ export class UserService {
   async findOne(id: string): Promise<User> {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
     return user;
   }
 
-  // Update an existing user
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    await this.userRepository.update(id, updateUserDto);
-    const updatedUser = await this.userRepository.findOne({ where: { id } });
-    if (!updatedUser) {
-      throw new Error('User not found');
-    }
-    return updatedUser;
+// Update an existing user
+async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+  const result = await this.userRepository.update(id, updateUserDto);
+  if (result.affected === 0) {
+    throw new NotFoundException('User not found');
   }
+
+  const updatedUser = await this.userRepository.findOne({ where: { id } });
+
+  if (!updatedUser) {
+    throw new NotFoundException('User not found after update');
+  }
+
+  return updatedUser;
+}
+
 
   // Remove a user
   async remove(id: string): Promise<void> {
-    await this.userRepository.delete(id);
+    const result = await this.userRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException('User not found');
+    }
   }
 }

@@ -1,1 +1,10 @@
 @use "../login/login.component.scss";
+::ng-deep .snack-success {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+::ng-deep .snack-error {
+  background-color: #f44336;
+  color: #fff;
+}

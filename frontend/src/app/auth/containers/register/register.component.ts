@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { AuthService } from '../../../services/auth.service';
 import { RegisterRequest } from '../../models/register-request.model';
@@ -9,26 +10,25 @@ import { RegisterRequest } from '../../models/register-request.model';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, MatSnackBarModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
   registerForm: FormGroup;
   submitted = false;
-  errorMessage: string | null = null;
 
-  // Predefined UUIDs from your roles and statuses tables added changes 
   private readonly roleMap: Record<string, string> = {
     Candidate: 'c1bb8df5-2c01-11f0-b60f-80ce6232908a',
     Recruiter: 'c1bb84ef-2c01-11f0-b60f-80ce6232908a'
   };
-  private readonly defaultStatusId = 'b2fe49c1-2aeb-4a96-b661-e685366c4917'; // Under Review
+  private readonly defaultStatusId = 'b2fe49c1-2aeb-4a96-b661-e685366c4917';
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {
     this.registerForm = this.fb.group({
       full_name: ['', [Validators.required, Validators.minLength(2)]],
@@ -43,9 +43,7 @@ export class RegisterComponent {
   passwordMatchValidator(form: FormGroup) {
     const password = form.get('password')?.value;
     const confirmPassword = form.get('confirmPassword')?.value;
-
-    const isValid = password === confirmPassword;
-    return isValid ? null : { mismatch: true };
+    return password === confirmPassword ? null : { mismatch: true };
   }
 
   get f() {
@@ -54,10 +52,12 @@ export class RegisterComponent {
 
   onSubmit(): void {
     this.submitted = true;
-    this.errorMessage = null;
 
     if (this.registerForm.invalid) {
-      console.warn('Form is invalid', this.registerForm.errors, this.registerForm.value);
+      this.snackBar.open('Please fill out all required fields correctly.', 'Close', {
+        duration: 3000,
+        panelClass: 'snack-error'
+      });
       return;
     }
 
@@ -66,20 +66,32 @@ export class RegisterComponent {
       email: this.f['email'].value,
       mobile_number: this.f['mobile_number'].value,
       role_id: this.roleMap[this.f['role'].value],
-      password_hash: this.f['password'].value, // ✅ Corrected field name
+      password_hash: this.f['password'].value,
       status_id: this.defaultStatusId
     };
 
-    console.log('Sending registration request:', request);
-
     this.authService.register(request).subscribe({
-      next: (res) => {
-        console.log('Registration successful', res);
+      next: () => {
+        this.snackBar.open('Registration successful! Please log in.', 'Close', {
+          duration: 3000,
+          panelClass: 'snack-success'
+        });
         this.router.navigate(['/login']);
       },
       error: (err) => {
-        console.error('Registration failed', err);
-        this.errorMessage = err.error?.message || 'Registration failed';
+        const msg = err?.error?.message?.toLowerCase() || '';
+
+        if (msg.includes('email') && msg.includes('exists')) {
+          this.snackBar.open('Email already exists. Please use a different one.', 'Close', {
+            duration: 3000,
+            panelClass: 'snack-error'
+          });
+        } else {
+          this.snackBar.open(err?.error?.message || 'Registration failed. Please try again.', 'Close', {
+            duration: 3000,
+            panelClass: 'snack-error'
+          });
+        }
       }
     });
   }
