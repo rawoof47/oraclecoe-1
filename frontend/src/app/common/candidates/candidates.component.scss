@@ -1,0 +1,333 @@
+.candidate-area {
+    .section-title {
+        text-align: center;
+    }
+    .candidate-browse {
+        text-align: center;
+
+        p {
+            margin-bottom: 0;
+            color: #7068a3;
+            font-size: 17px;
+
+            a {
+                display: inline-block;
+                color: var(--green-color);
+                border-bottom: 1px solid var(--green-color);
+                font-weight: 500;
+
+                &:hover {
+                    color: var(--blue-color);
+                    border-bottom: 1px solid var(--blue-color);
+                }
+            }
+        }
+    }
+}
+.candidate-item {
+    border: 2px dashed #dffedb;
+    padding: 25px 25px 25px;
+    border-radius: 5px;
+    position: relative;
+    margin-bottom: 30px;
+
+    .left {
+        max-width: 240px;
+
+        h3 {
+            font-size: 20px;
+            margin-bottom: 5px;
+    
+            a {
+                color: var(--blue-color);
+    
+                &:hover {
+                    color: var(--green-color);
+                }
+            }
+        }
+        span {
+            display: block;
+            color: #7d789b;
+            margin-bottom: 8px;
+        }
+        p {
+            margin-bottom: 25px;
+        }
+        ul {
+            margin: 0;
+            padding: 0;
+    
+            li {
+                list-style-type: none;
+                display: inline-block;
+                font-size: 12px;
+                color: #7f7f7f;
+                background-color: #ececec;
+                border-radius: 5px;
+                padding: 4px 8px;
+                margin-right: 3px;
+                margin-bottom: 6px;
+            }
+        }
+        .cmn-link {
+            text-align: start;
+            margin-left: 45px;
+            margin-top: 22px;
+    
+            a {
+                color: #7068a3;
+                font-size: 15px;
+    
+                i {
+                    color: #7068a3;
+                    top: -4px;
+                }
+                &:hover {
+                    margin-left: -45px;
+                    color: var(--green-color);
+    
+                    .one {
+                        left: -60px;
+                    }
+                    .two {
+                        color: var(--green-color);
+                    }
+                }
+            }
+        }
+    }
+    img {
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        border-radius: 5px;
+        max-width: 250px;
+    }
+}
+.candidate-item.two {
+    border: 2px dashed var(--pink-color);
+    overflow: hidden;
+
+    .left {
+        .experience {
+            margin: 0;
+            padding: 0;
+            margin-top: 14px;
+            margin-bottom: 18px;
+    
+            li {
+                list-style-type: none;
+                display: block;
+                color: #595959;
+                font-size: 14px;
+                margin-bottom: 5px;
+                background-color: transparent;
+                border-radius: 0;
+                padding: 0;
+                margin-right: 0;
+    
+                &:last-child {
+                    margin-bottom: 0;
+                }
+                span {
+                    display: inline-block;
+                    margin-bottom: 0;
+                    color: var(--pink-color);
+                }
+                i {
+                    color: var(--pink-color);
+                    display: inline-block;
+                    margin-right: 3px;
+                }
+            }
+        }
+        .cmn-link {
+            margin-top: 10px;
+
+            a {
+                &:hover {
+                    color: var(--pink-color);
+
+                    .two {
+                        color: var(--pink-color);
+                    }
+                }
+            }
+        }
+    }
+    img {
+        border-radius: 5px;
+        width: 100%;
+    }
+}
+::ng-deep {
+    .candidate-area {
+        .owl-prev {
+            position: absolute;
+            top: 38%;
+            left: -50px;
+            color: var(--blue-color) !important;
+            font-size: 35px !important;
+            z-index: 1;
+            transition: var(--transition);
+            background-color: transparent !important;
+            opacity: 0;
+    
+            &:hover {
+                color: var(--green-color) !important;
+                background-color: transparent !important;
+    
+                &:after {
+                    background-color: var(--blue-color);
+                }
+            }
+            &:after {
+                position: absolute;
+                top: 12px;
+                left: -12px;
+                content: '';
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                background-color: var(--green-color);
+                z-index: -1;
+                transition: var(--transition);
+            }
+        }
+        .owl-next {
+            position: absolute;
+            top: 38%;
+            right: -50px;
+            color: var(--blue-color) !important;
+            font-size: 35px !important;
+            z-index: 1;
+            transition: var(--transition);
+            background-color: transparent !important;
+            opacity: 0;
+    
+            &:hover {
+                color: var(--green-color) !important;
+                background-color: transparent !important;
+    
+                &:after {
+                    background-color: var(--blue-color);
+                }
+            }
+            &:after {
+                position: absolute;
+                top: 12px;
+                right: -12px;
+                content: '';
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                background-color: var(--green-color);
+                z-index: -1;
+                transition: var(--transition);
+            }
+        }
+        .candidate-slider {
+            &:hover {
+                .owl-prev {
+                    opacity: 1;
+                    left: -40px;
+                }
+                .owl-next {
+                    opacity: 1;
+                    right: -40px;
+                }
+            }
+        }
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width : 767px) {
+
+    .candidate-area {
+        .candidate-browse {
+            p {
+                margin-top: -15px;
+            }
+        }
+    }
+    .candidate-item {
+        padding: 25px 15px 25px;
+
+        img {
+            position: relative;
+            margin-top: 30px;
+            max-width: 100%;
+        }
+    }
+    ::ng-deep {
+        .candidate-area {
+            .owl-prev {
+                display: none !important;
+            }
+            .owl-next {
+                display: none !important;
+            }
+        }
+    }
+
+}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width : 768px) and (max-width : 991px) {
+
+    ::ng-deep {
+        .candidate-area {
+            .owl-prev {
+                display: none !important;
+            }
+            .owl-next {
+                display: none !important;
+            }
+        }
+    }
+    .candidate-item {
+        .left {
+            max-width: 365px;
+        }
+    }
+
+}
+
+/* Min width 576px to Max width 776px */
+@media only screen and (min-width : 576px) and (max-width : 776px) {}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width : 992px) and (max-width : 1199px) {
+
+    ::ng-deep {
+        .candidate-area {
+            .owl-prev {
+                display: none !important;
+            }
+            .owl-next {
+                display: none !important;
+            }
+        }
+    }
+    .candidate-item {
+        img {
+            max-width: 225px;
+        }
+        .left {
+            max-width: 180px;
+        }
+    }
+
+}
+
+/* Min width 1199px to Max width 1300px */
+@media only screen and (min-width : 1199px) and (max-width : 1300px) {}
+
+/* Min width 1800px */
+@media only screen and (min-width: 1800px) {}
+
+/* Max width 991px */
+@media only screen and (max-width: 991px) {}

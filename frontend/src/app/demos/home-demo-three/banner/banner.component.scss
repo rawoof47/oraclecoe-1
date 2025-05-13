@@ -1,0 +1,215 @@
+@use "../../home-demo-two/banner/banner.component.scss";
+@use "../../../common/funfacts/funfacts.component.scss";
+
+.banner-area.three {
+    background-color: #161616;
+
+    &:before {
+        display: none;
+    }
+    .banner-shape-three {
+        img {
+            position: absolute;
+            bottom: 0;
+            right: 40px;
+            max-width: 749px;
+        }
+    }
+    .banner-bottom-btn {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -30px;
+        max-width: 50px;
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+
+        &:before {
+            position: absolute;
+            content: '';
+            bottom: -30px;
+            right: 0;
+            left: -20px;
+            width: 90px;
+            border-left: 45px solid transparent;
+            border-right: 45px solid transparent;
+            border-bottom: 65px solid #161616;
+            transform: rotate(180deg);
+            z-index: -1;
+        }
+        a {
+            color: var(--white-color);
+            display: inline-block;
+            font-size: 30px;
+            position: relative;
+            top: 24px;
+            animation: banner-bottom-btn-ani 5s infinite linear;
+
+            &:hover {
+                color: var(--pink-color);
+            }
+        }
+    }
+}
+.banner-content.three {
+    height: 1075px;
+    max-width: 800px;
+    padding-top: 95px;
+
+    p {
+        color: var(--white-color);
+    }
+    h1 {
+        color: var(--white-color);
+
+        span {
+            color: var(--pink-color);
+        }
+    }
+    .banner-form-area {
+        .btn {
+            background-color: var(--pink-color);
+
+            i {
+                background-color: #c02932;
+            }
+            &:hover {
+                background-color: #c02932;
+            }
+        }
+    }
+    .banner-key {
+        ul {
+            li {
+                span {
+                    padding: 0;
+                    color: var(--white-color);
+                    background-color: transparent;
+                }
+                a {
+                    color: var(--pink-color);
+
+                    &:hover {
+                        color: var(--white-color);
+                    }
+                }
+            }
+        }
+    }
+    .register-area {
+        background-color: transparent;
+        padding-top: 0;
+        padding-bottom: 0;
+        margin-top: 140px;
+
+        .container {
+            .row {
+                padding-right: 0;
+            }
+        }
+        .register-item {
+            border-left: 1px dashed #babab9;
+
+            &:before {
+                border-bottom: 9px solid var(--pink-color);
+            }
+            h3 {
+                color: var(--white-color);
+            }
+            p {
+                color: #babab9;
+                font-size: 15px;
+            }
+        }
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width : 767px) {
+
+    .banner-area.three {
+        padding-bottom: 65px;
+
+        .banner-shape-three {
+            img {
+                position: relative;
+                bottom: 0;
+                right: 0;
+                max-width: 100%;
+                margin-bottom: 30px;
+            }
+        }
+    }
+    .banner-content.three {
+        height: 100%;
+        padding-top: 0;
+
+        .register-area {
+            margin-top: 30px;
+        }
+    }
+
+}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width : 768px) and (max-width : 991px) {
+
+    .banner-area.three {
+        padding-bottom: 65px;
+
+        .banner-shape-three {
+            img {
+                position: relative;
+                bottom: 0;
+                right: 0;
+                max-width: 100%;
+                margin-bottom: 30px;
+            }
+        }
+    }
+    .banner-content.three {
+        height: 100%;
+        padding-top: 0;
+
+        h1 {
+            margin-bottom: 25px;
+        }
+        .register-area {
+            margin-top: 30px;
+        }
+    }
+
+}
+
+/* Min width 576px to Max width 776px */
+@media only screen and (min-width : 576px) and (max-width : 776px) {}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width : 992px) and (max-width : 1199px) {
+
+    .banner-area.three {
+        .banner-shape-three img {
+            right: 10px;
+            max-width: 435px;
+        }
+    }
+
+}
+
+/* Min width 1199px to Max width 1300px */
+@media only screen and (min-width : 1199px) and (max-width : 1300px) {}
+
+/* Min width 1800px */
+@media only screen and (min-width: 1800px) {
+
+    .banner-area.three {
+        .banner-shape-three img {
+            max-width: 915px;
+        }
+    }
+
+}
+
+/* Max width 991px */
+@media only screen and (max-width: 991px) {}

@@ -1,0 +1,381 @@
+<div class="job-area two ptb-100">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-5 col-md-12">
+                <div class="section-title">
+                    <span class="sub-title">Desire Jobs</span>
+                    <h2>Job You Will Love</h2>
+                </div>
+            </div>
+            <div class="col-lg-7 col-md-12">
+                <div class="sorting-menu">
+                    <ul>
+                        <li class="filter" (click)="switchTab($event, 'tab1')" [ngClass]="{'active': currentTab === 'tab1'}">All</li>
+                        <li class="filter" (click)="switchTab($event, 'tab2')" [ngClass]="{'active': currentTab === 'tab2'}">Internship</li>
+                        <li class="filter" (click)="switchTab($event, 'tab3')" [ngClass]="{'active': currentTab === 'tab3'}">Full Time</li>
+                        <li class="filter" (click)="switchTab($event, 'tab4')" [ngClass]="{'active': currentTab === 'tab4'}">Part Time</li>
+                        <li class="filter" (click)="switchTab($event, 'tab5')" [ngClass]="{'active': currentTab === 'tab5'}">Remote</li>
+                        <li class="filter" (click)="switchTab($event, 'tab6')" [ngClass]="{'active': currentTab === 'tab6'}">Freelancer</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="tab1" *ngIf="currentTab === 'tab1'">
+            <div class="row">
+                <div class="col-sm-6 col-lg-12">
+                    <div class="job-item">
+                        <a routerLink="/job-details">
+                            <div class="feature-top-right">
+                                <span>Featured</span>
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-lg-8 col-md-12">
+                                    <div class="job-left">
+                                        <img src="img/home-one/job1.png" alt="Brand">
+                                        <h3>Product Designer</h3>
+                                        <p>Digital Radio</p>
+                                        <ul>
+                                            <li>$500 - $1,000 /</li>
+                                            <li>month /</li>
+                                            <li><i class="flaticon-appointment"></i> 8 months ago</li>
+                                            <li><i class='bx bx-location-plus'></i> Seoul, South Korea</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-12">
+                                    <div class="job-right">
+                                        <ul>
+                                            <li><i class="flaticon-customer"></i> Full Time</li>
+                                            <li><i class="flaticon-mortarboard"></i> Master</li>
+                                            <li><span>Add to bookmarks</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-12">
+                    <div class="job-item">
+                        <a routerLink="/job-details">
+                            <div class="feature-top-right">
+                                <span>Featured</span>
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-lg-8 col-md-12">
+                                    <div class="job-left">
+                                        <img src="img/home-one/job2.png" alt="Brand">
+                                        <h3>Construction Worker</h3>
+                                        <p>Digital Vine</p>
+                                        <ul>
+                                            <li>$600 - $2,000 /</li>
+                                            <li>month /</li>
+                                            <li><i class="flaticon-appointment"></i> 6 months ago</li>
+                                            <li><i class='bx bx-location-plus'></i> Kabul, Afghanistan</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-12">
+                                    <div class="job-right">
+                                        <ul>
+                                            <li><i class="flaticon-customer"></i> Part Time</li>
+                                            <li><i class="flaticon-mortarboard"></i> Master</li>
+                                            <li><span>Add to bookmarks</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-12">
+                    <div class="job-item">
+                        <a routerLink="/job-details">
+                            <div class="feature-top-right">
+                                <span>Featured</span>
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-lg-8 col-md-12">
+                                    <div class="job-left">
+                                        <img src="img/home-one/job3.png" alt="Brand">
+                                        <h3>Sr. Shopify Developer</h3>
+                                        <p>Codex Info</p>
+                                        <ul>
+                                            <li>$400 - $1,500 /</li>
+                                            <li>month /</li>
+                                            <li><i class="flaticon-appointment"></i> 1 months ago</li>
+                                            <li><i class='bx bx-location-plus'></i> Buenos Aires, Argentina</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-12">
+                                    <div class="job-right">
+                                        <ul>
+                                            <li><i class="flaticon-customer"></i> Internship</li>
+                                            <li><i class="flaticon-mortarboard"></i> Master</li>
+                                            <li><span>Add to bookmarks</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-12">
+                    <div class="job-item">
+                        <a routerLink="/job-details">
+                            <div class="feature-top-right">
+                                <span>Featured</span>
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-lg-8 col-md-12">
+                                    <div class="job-left">
+                                        <img src="img/home-one/job4.png" alt="Brand">
+                                        <h3>Tax Manager</h3>
+                                        <p>Techno Vino</p>
+                                        <ul>
+                                            <li>$450 - $1,250 /</li>
+                                            <li>month /</li>
+                                            <li><i class="flaticon-appointment"></i> 4 months ago</li>
+                                            <li><i class='bx bx-location-plus'></i>Vienna, Australia</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-12">
+                                    <div class="job-right">
+                                        <ul>
+                                            <li><i class="flaticon-customer"></i> Remote</li>
+                                            <li><i class="flaticon-mortarboard"></i> Master</li>
+                                            <li><span>Add to bookmarks</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-12">
+                    <div class="job-item">
+                        <a routerLink="/job-details">
+                            <div class="feature-top-right">
+                                <span>Featured</span>
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-lg-8 col-md-12">
+                                    <div class="job-left">
+                                        <img src="img/home-one/job5.png" alt="Brand">
+                                        <h3>Senior Data Engineer</h3>
+                                        <p>Jarmin Poin</p>
+                                        <ul>
+                                            <li>$700 - $1,500 /</li>
+                                            <li>month /</li>
+                                            <li><i class="flaticon-appointment"></i> 2 months ago</li>
+                                            <li><i class='bx bx-location-plus'></i> Tirana, Albania</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-12">
+                                    <div class="job-right">
+                                        <ul>
+                                            <li><i class="flaticon-customer"></i> Freelancer</li>
+                                            <li><i class="flaticon-mortarboard"></i> Master</li>
+                                            <li><span>Add to bookmarks</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="tab2" *ngIf="currentTab === 'tab2'">
+            <div class="row">
+                <div class="col-sm-6 col-lg-12">
+                    <div class="job-item">
+                        <a routerLink="/job-details">
+                            <div class="feature-top-right">
+                                <span>Featured</span>
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-lg-8 col-md-12">
+                                    <div class="job-left">
+                                        <img src="img/home-one/job3.png" alt="Brand">
+                                        <h3>Sr. Shopify Developer</h3>
+                                        <p>Codex Info</p>
+                                        <ul>
+                                            <li>$400 - $1,500 /</li>
+                                            <li>month /</li>
+                                            <li><i class="flaticon-appointment"></i> 1 months ago</li>
+                                            <li><i class='bx bx-location-plus'></i> Buenos Aires, Argentina</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-12">
+                                    <div class="job-right">
+                                        <ul>
+                                            <li><i class="flaticon-customer"></i> Internship</li>
+                                            <li><i class="flaticon-mortarboard"></i> Master</li>
+                                            <li><span>Add to bookmarks</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="tab3" *ngIf="currentTab === 'tab3'">
+            <div class="row">
+                <div class="col-sm-6 col-lg-12">
+                    <div class="job-item">
+                        <a routerLink="/job-details">
+                            <div class="feature-top-right">
+                                <span>Featured</span>
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-lg-8 col-md-12">
+                                    <div class="job-left">
+                                        <img src="img/home-one/job1.png" alt="Brand">
+                                        <h3>Product Designer</h3>
+                                        <p>Digital Radio</p>
+                                        <ul>
+                                            <li>$500 - $1,000 /</li>
+                                            <li>month /</li>
+                                            <li><i class="flaticon-appointment"></i> 8 months ago</li>
+                                            <li><i class='bx bx-location-plus'></i> Seoul, South Korea</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-12">
+                                    <div class="job-right">
+                                        <ul>
+                                            <li><i class="flaticon-customer"></i> Full Time</li>
+                                            <li><i class="flaticon-mortarboard"></i> Master</li>
+                                            <li><span>Add to bookmarks</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="tab4" *ngIf="currentTab === 'tab4'">
+            <div class="row">
+                <div class="col-sm-6 col-lg-12">
+                    <div class="job-item">
+                        <a routerLink="/job-details">
+                            <div class="feature-top-right">
+                                <span>Featured</span>
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-lg-8 col-md-12">
+                                    <div class="job-left">
+                                        <img src="img/home-one/job2.png" alt="Brand">
+                                        <h3>Construction Worker</h3>
+                                        <p>Digital Vine</p>
+                                        <ul>
+                                            <li>$600 - $2,000 /</li>
+                                            <li>month /</li>
+                                            <li><i class="flaticon-appointment"></i> 6 months ago</li>
+                                            <li><i class='bx bx-location-plus'></i> Kabul, Afghanistan</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-12">
+                                    <div class="job-right">
+                                        <ul>
+                                            <li><i class="flaticon-customer"></i> Part Time</li>
+                                            <li><i class="flaticon-mortarboard"></i> Master</li>
+                                            <li><span>Add to bookmarks</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="tab5" *ngIf="currentTab === 'tab5'">
+            <div class="row">
+                <div class="col-sm-6 col-lg-12">
+                    <div class="job-item">
+                        <a routerLink="/job-details">
+                            <div class="feature-top-right">
+                                <span>Featured</span>
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-lg-8 col-md-12">
+                                    <div class="job-left">
+                                        <img src="img/home-one/job4.png" alt="Brand">
+                                        <h3>Tax Manager</h3>
+                                        <p>Techno Vino</p>
+                                        <ul>
+                                            <li>$450 - $1,250 /</li>
+                                            <li>month /</li>
+                                            <li><i class="flaticon-appointment"></i> 4 months ago</li>
+                                            <li><i class='bx bx-location-plus'></i>Vienna, Australia</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-12">
+                                    <div class="job-right">
+                                        <ul>
+                                            <li><i class="flaticon-customer"></i> Remote</li>
+                                            <li><i class="flaticon-mortarboard"></i> Master</li>
+                                            <li><span>Add to bookmarks</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="tab6" *ngIf="currentTab === 'tab6'">
+            <div class="row">
+                <div class="col-sm-6 col-lg-12">
+                    <div class="job-item">
+                        <a routerLink="/job-details">
+                            <div class="feature-top-right">
+                                <span>Featured</span>
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-lg-8 col-md-12">
+                                    <div class="job-left">
+                                        <img src="img/home-one/job5.png" alt="Brand">
+                                        <h3>Senior Data Engineer</h3>
+                                        <p>Jarmin Poin</p>
+                                        <ul>
+                                            <li>$700 - $1,500 /</li>
+                                            <li>month /</li>
+                                            <li><i class="flaticon-appointment"></i> 2 months ago</li>
+                                            <li><i class='bx bx-location-plus'></i> Tirana, Albania</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-12">
+                                    <div class="job-right">
+                                        <ul>
+                                            <li><i class="flaticon-customer"></i> Freelancer</li>
+                                            <li><i class="flaticon-mortarboard"></i> Master</li>
+                                            <li><span>Add to bookmarks</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="job-browse">
+            <p>A tons of top tech jobs are waiting for you. <a routerLink="/jobs">Browse all jobs</a></p>
+        </div>
+    </div>
+</div>

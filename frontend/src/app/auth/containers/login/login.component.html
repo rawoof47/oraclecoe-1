@@ -1,0 +1,174 @@
+<!-- Uniform text color and improved login form styling -->
+<style>
+  .user-form-area,
+  .user-form-area .form-control,
+  .user-form-area .form-control::placeholder,
+  .user-form-area .form-check-label,
+  .user-form-area label,
+  .user-form-area .btn,
+  .user-form-area .end ul li a {
+    color: #000 !important;
+  }
+
+  .user-form-area .form-control::placeholder {
+    opacity: 1 !important;
+  }
+
+  .user-form-area .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .user-form-area .form-control {
+    width: 100%;
+    padding: 0.875rem 1.25rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: #fff;
+  }
+
+  .user-form-area .form-control.d-flex {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1.25rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+
+  .user-form-area .form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .user-form-area .form-check-input {
+    width: 18px;
+    height: 18px;
+  }
+
+  .user-form-area .btn {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    color: #fff !important;
+  }
+
+  .user-form-area .btn:hover {
+    background-color: #0056b3;
+  }
+
+  .user-form-area .switch-link {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.95rem;
+  }
+
+  .user-form-area .switch-link a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .user-form-area .switch-link a:hover {
+    text-decoration: underline;
+  }
+
+  .user-form-area .end ul {
+    padding: 0;
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    list-style: none;
+  }
+
+  .user-form-area .end ul li a {
+    font-size: 18px;
+    transition: color 0.3s ease;
+  }
+
+  .user-form-area .end ul li a:hover {
+    color: #0056b3 !important;
+  }
+
+  .user-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+  }
+</style>
+
+<!-- Login Page HTML -->
+<div class="user-form-area">
+  <div class="d-table">
+    <div class="d-table-cell">
+      <div class="container-fluid p-0">
+        <div class="row m-0 align-items-center">
+          <div class="col-lg-6 p-0 col-md-12">
+            <div class="user-img" style="background-image: url(img/resgister-bg.jpg);">
+              <img src="img/resgister-bg.jpg" alt="User">
+            </div>
+          </div>
+          <div class="col-lg-6 p-0 col-md-12">
+            <div class="user-content p-4">
+              <div class="top">
+                <h2 class="mb-4">Login</h2>
+                <form>
+                  <div class="form-group mb-3">
+                    <input type="email" class="form-control" placeholder="Email">
+                  </div>
+                  <div class="form-group mb-3">
+                    <input type="password" class="form-control" placeholder="Password">
+                  </div>
+
+                  <!-- Role Selection -->
+                  <div class="form-group mb-4">
+                    <div class="form-control d-flex align-items-center">
+                      <label class="me-3 mb-0">Select Role:</label>
+                      <div class="form-check me-3">
+                        <input class="form-check-input" type="radio" name="role" id="candidate" value="Candidate">
+                        <label class="form-check-label" for="candidate">Candidate</label>
+                      </div>
+                      <div class="form-check me-3">
+                        <input class="form-check-input" type="radio" name="role" id="recruiter" value="Recruiter">
+                        <label class="form-check-label" for="recruiter">Recruiter</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="role" id="admin" value="Admin">
+                        <label class="form-check-label" for="admin">Admin</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary">Login Here</button>
+                </form>
+
+                <div class="switch-link">
+                  Don't have an account? <a href="/register">Sign up</a>
+                </div>
+              </div>
+
+              <div class="end mt-4">
+                <ul class="list-inline">
+                  <li class="list-inline-item"><a href="#" target="_blank"><i class='bx bxl-facebook'></i></a></li>
+                  <li class="list-inline-item"><a href="#" target="_blank"><i class='bx bxl-twitter'></i></a></li>
+                  <li class="list-inline-item"><a href="#" target="_blank"><i class='bx bxl-linkedin'></i></a></li>
+                  <li class="list-inline-item"><a href="#" target="_blank"><i class='bx bxl-pinterest-alt'></i></a></li>
+                </ul>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

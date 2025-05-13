@@ -1,0 +1,91 @@
+.new-area {
+    .new-img {
+        position: relative;
+        padding-bottom: 20px;
+        margin: {
+            right: 25px;
+            bottom: 30px;
+        };
+        img {
+            &:nth-child(1) {
+                position: relative;
+                width: 100%;
+                z-index: 1;
+            }
+            &:nth-child(2) {
+                position: absolute;
+                left: -20px;
+                bottom: 0;
+            }
+        }
+    }
+    .about-content {
+        margin-bottom: 30px;
+
+        .section-title {
+            margin-bottom: 20px;
+        }
+        p {
+            margin-bottom: 10px;
+        }
+        .cmn-btn {
+            margin-top: 25px;
+        }
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width : 767px) {
+
+    .new-area {
+        .new-img {
+            margin-right: 0;
+            padding-bottom: 0;
+
+            img {
+                &:nth-child(2) {
+                    display: none;
+                }
+            }
+        }
+        .about-content {
+            text-align: center;
+        }
+    }
+
+}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width : 768px) and (max-width : 991px) {
+
+    .new-area {
+        .new-img {
+            margin-right: 0;
+            
+            img {
+                &:nth-child(2) {
+                    display: none;
+                }
+            }
+        }
+        .about-content {
+            text-align: center;
+        }
+    }
+
+}
+
+/* Min width 576px to Max width 776px */
+@media only screen and (min-width : 576px) and (max-width : 776px) {}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width : 992px) and (max-width : 1199px) {}
+
+/* Min width 1199px to Max width 1300px */
+@media only screen and (min-width : 1199px) and (max-width : 1300px) {}
+
+/* Min width 1800px */
+@media only screen and (min-width: 1800px) {}
+
+/* Max width 991px */
+@media only screen and (max-width: 991px) {}

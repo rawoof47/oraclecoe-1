@@ -1,0 +1,67 @@
+.error-area {
+    height: 100vh;
+    text-align: center;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+
+    .error-content {
+        h1 {
+            font-size: 130px;
+            color: var(--pink-color);
+            margin-bottom: 10px;
+        }
+        h2 {
+            font-size: 25px;
+            margin-bottom: 10px;
+            color: var(--blue-color);
+        }
+        p {
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+        a {
+            display: inline-block;
+            color: var(--white-color);
+            background-color: var(--pink-color);
+            padding: 12px 35px;
+            border-radius: 5px;
+            font-weight: 500;
+
+            &:hover {
+                background-color: var(--blue-color);
+            }
+        }
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width : 767px) {
+
+    .error-area {
+        .error-content {
+            h1 {
+                font-size: 80px;
+            }
+        }
+    }
+
+}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width : 768px) and (max-width : 991px) {}
+
+/* Min width 576px to Max width 776px */
+@media only screen and (min-width : 576px) and (max-width : 776px) {}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width : 992px) and (max-width : 1199px) {}
+
+/* Min width 1199px to Max width 1300px */
+@media only screen and (min-width : 1199px) and (max-width : 1300px) {}
+
+/* Min width 1800px */
+@media only screen and (min-width: 1800px) {}
+
+/* Max width 991px */
+@media only screen and (max-width: 991px) {}

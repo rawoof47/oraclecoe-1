@@ -1,0 +1,215 @@
+.blog-item {
+    margin-bottom: 30px;
+    border: 1px dashed #c4c4c4;
+    border-radius: 5px;
+    padding: 15px 15px 25px 15px;
+    overflow: hidden;
+    transition: var(--transition);
+
+    &:hover {
+        transform: translate(0, -10px);
+        box-shadow: 0px 0px 20px 0px #dddddd24;
+        
+        .top {
+            a {
+                img {
+                    transform: scale(1.1);
+                }
+            }
+        }
+    }
+    .top {
+        overflow: hidden;
+        margin-bottom: 25px;
+        border-radius: 5px;
+
+        a {
+            display: block;
+
+            img {
+                width: 100%;
+                transition: var(--transition);
+            }
+        }
+    }
+    span {
+        display: block;
+        padding-left: 40px;
+        margin-bottom: 15px;
+        position: relative;
+
+        &:before {
+            position: absolute;
+            content: '';
+            width: 30px;
+            height: 1px;
+            left: 0;
+            top: 11px;
+            background-color: var(--gray-color);
+        }
+    }
+    h3 {
+        font-size: 20px;
+        margin-bottom: 20px;
+
+        a {
+            color: var(--blue-color);
+
+            &:hover {
+                color: var(--pink-color);
+            }
+        }
+    }
+    .cmn-link {
+        text-align: start;
+        margin-left: 45px;
+
+        a {
+            color: var(--gray-color);
+
+            i {
+                color: var(--gray-color);
+            }
+            &:hover {
+                margin-left: -45px;
+                color: var(--pink-color);
+
+                .one {
+                    left: -60px;
+                }
+                .two {
+                    color: var(--pink-color);
+                }
+            }
+        }
+    }
+}
+.blog-area.two {
+    .cmn-link {
+        a {
+            color: var(--green-color);
+    
+            i {
+                color: var(--green-color) !important;
+            }
+        }
+    }
+    .blog-item {
+        padding: 0;
+        border-width: 0;
+    }
+}
+.blog-area.three {
+    background-color: #fafafa;
+
+    .section-title {
+        text-align: center;
+    }
+    .blog-item {
+        border-width: 0;
+        background-color: var(--white-color);
+        box-shadow: rgba(0, 0, 0, 0.02) 0px 6px 24px 0px, rgba(0, 0, 0, 0.04) 0px 0px 0px 1px;
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width : 767px) {
+
+    .blog-area {
+        .section-title {
+            margin-bottom: 10px;
+        }
+        .cmn-link {
+            margin-bottom: 30px;
+        }
+    }
+    .blog-item {
+        .cmn-link {
+            margin-bottom: 0;
+
+            a {
+                font-size: 15px;
+
+                i {
+                    &.one {
+                        top: -4px;
+                    }
+                    &.two {
+                        top: -4px;
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width : 768px) and (max-width : 991px) {
+
+    .blog-area {
+        .section-title {
+            margin-bottom: 10px;
+        }
+        .cmn-link {
+            margin-bottom: 30px;
+        }
+    }
+    .blog-item {
+        .cmn-link {
+            margin-bottom: 0;
+
+            a {
+                font-size: 15px;
+
+                i {
+                    &.one {
+                        top: -4px;
+                    }
+                    &.two {
+                        top: -4px;
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+/* Min width 576px to Max width 776px */
+@media only screen and (min-width : 576px) and (max-width : 776px) {
+
+    .blog-item {
+        padding: 15px 10px 25px 10px;
+
+        span {
+            padding-left: 25px;
+
+            &::before {
+                width: 18px;
+            }
+        }
+    }
+
+}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width : 992px) and (max-width : 1199px) {
+
+    .blog-item {
+        h3 {
+            font-size: 18px;
+            margin-bottom: 18px;
+        }
+    }
+
+}
+
+/* Min width 1199px to Max width 1300px */
+@media only screen and (min-width : 1199px) and (max-width : 1300px) {}
+
+/* Min width 1800px */
+@media only screen and (min-width: 1800px) {}
+
+/* Max width 991px */
+@media only screen and (max-width: 991px) {}

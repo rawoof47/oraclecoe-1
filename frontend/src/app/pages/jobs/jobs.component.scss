@@ -1,0 +1,413 @@
+@use "../../common/jobs/jobs.component.scss";
+
+.job-area-list {
+    .job-list-item {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+
+        li {
+            list-style-type: none;
+            display: inline-block;
+            flex: 0 0 60%;
+            max-width: 60%;
+
+            &:last-child {
+                flex: 0 0 40%;
+                max-width: 40%;
+                text-align: end;
+
+                .sort {
+                    display: inline-block;
+                    margin-right: 8px;
+                }
+                form {
+                    display: inline-block;
+                }
+                .form-group {
+                    margin-bottom: 0;
+                    display: inline-block;
+
+                    select {
+                        height: 45px;
+                        border-radius: 5px;
+                        border: 1px dashed var(--pink-color);
+                        padding-left: 15px;
+                        font-size: 14px;
+                        line-height: 45px;
+                        display: block;
+                        width: 100%;
+                    }
+                }
+            }
+            a {
+                display: inline-block;
+                font-weight: 500;
+                font-size: 16px;
+                color: var(--blue-color);
+                margin-right: 25px;
+
+                span {
+                    color: var(--pink-color);
+                }
+                &:hover {
+                    color: var(--pink-color);
+                }
+                &.rss {
+                    color: var(--pink-color);
+                    margin-right: 0;
+
+                    i {
+                        display: inline-block;
+                        font-size: 20px;
+                        position: relative;
+                        top: 2px;
+                        margin-right: 5px;
+                    }
+                    &:hover {
+                        color: var(--blue-color);
+                    }
+                }
+            }
+        }
+    }
+    .job-list-right {
+        h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: var(--blue-color);
+        }
+        .job {
+            padding: 22px 25px 25px;
+            border-radius: 5px;
+            border: 1px dashed var(--pink-color);
+            margin-bottom: 30px;
+
+            form {
+                position: relative;
+
+                label {
+                    position: absolute;
+                    margin-bottom: 0;
+                    font-size: 17px;
+                    top: 10px;
+                    left: 15px;
+                }
+                .form-control {
+                    height: 45px;
+                    border-radius: 5px;
+                    border: 1px solid #e1e1e1;
+                    font-size: 14px;
+                    padding-left: 40px;
+    
+                    &:focus {
+                        box-shadow: none;
+                        border: 1px solid var(--pink-color);
+                    }
+                }
+                .btn {
+                    text-align: center;
+                    width: 100%;
+                    display: block;
+                    color: var(--white-color);
+                    background-color: var(--pink-color);
+                    transition: var(--transition);
+                    padding: 10px;
+                    height: 45px;
+                    font-weight: 500;
+                    margin-top: 10px;
+
+                    &:hover {
+                        background-color: var(--blue-color);
+                    }
+                }
+            }
+        }
+        .job-list-all {
+            padding: 22px 25px 25px;
+            border-radius: 5px;
+            border: 1px dashed var(--pink-color);
+
+            .search {
+                border-bottom: 1px solid #e9e9e9;
+
+                form {
+                    position: relative;
+                    margin-bottom: 30px;
+
+                    .form-control {
+                        height: 45px;
+                        border-radius: 5px;
+                        border: 1px solid #e1e1e1;
+                        font-size: 14px;
+                        padding-left: 15px;
+        
+                        &:focus {
+                            box-shadow: none;
+                            border: 1px solid var(--pink-color);
+                        }
+                    }
+                    .btn {
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        transition: var(--transition);
+                        color: var(--white-color);
+                        background-color: var(--pink-color);
+                        padding: 0;
+                        height: 45px;
+                        padding-left: 12px;
+                        padding-right: 12px;
+                        font-size: 20px;
+
+                        &:hover {
+                            background-color: var(--blue-color);
+                        }
+                    }
+                }
+                .job-cmn-cat {
+                    overflow-y: scroll;
+                    height: 220px;
+                }
+                ::-webkit-scrollbar {
+                    width: 10px;
+                }
+                ::-webkit-scrollbar-track {
+                    background: #e1e1e1; 
+                    border-radius: 30px;
+                }
+                ::-webkit-scrollbar-thumb {
+                    background: #acacac; 
+                    border-radius: 30px;
+                }
+                ::-webkit-scrollbar-thumb:hover {
+                    background: var(--pink-color); 
+                }
+            }
+            .cmn-padding {
+                padding-top: 22px;
+                padding-bottom: 25px;
+                border-top: 1px solid #e9e9e9;
+            }
+            .location {
+                form {
+                    position: relative;
+
+                    .form-group {
+                        margin-bottom: 15px;
+
+                        &:last-child {
+                            margin-bottom: 0;
+                        }
+                        .icon {
+                            position: absolute;
+                            margin-bottom: 0;
+                            font-size: 13px;
+                            top: 10px;
+                            left: 15px;
+                            border: 1px solid #e1e1e1;
+                            border-radius: 50%;
+                            width: 25px;
+                            height: 25px;
+                            line-height: 25px;
+                            text-align: center;
+                        }
+                        .form-control {
+                            height: 45px;
+                            border-radius: 5px;
+                            border: 1px solid #e1e1e1;
+                            font-size: 14px;
+                            padding-left: 45px;
+            
+                            &:focus {
+                                box-shadow: none;
+                                border: 1px solid var(--pink-color);
+                            }
+                        }
+                        .range {
+                            margin-bottom: 5px;
+                            color: var(--pink-color);
+                            font-weight: 500;
+                        }
+                    }
+                }
+            }
+            .salary {
+                .form-group {
+                    margin-bottom: 0;
+
+                    .range {
+                        color: var(--pink-color);
+                        font-weight: 500;
+                        margin-top: 15px;
+                    }
+                }
+            }
+            .level {
+                padding-top: 22px;
+                border-top: 1px solid #e9e9e9;
+
+                .btn {
+                    margin-top: 20px;
+                    padding-top: 12px;
+                    padding-bottom: 12px;
+                    display: block;
+                    width: 100%;
+                    color: var(--white-color);
+                    background-color: var(--pink-color);
+                    border-radius: 5px;
+                    transition: var(--transition);
+
+                    &:hover {
+                        background-color: var(--blue-color);
+                    }
+                }
+            }
+        }
+        .alzo-contact {
+            background-color: #c02932;
+            padding-top: 25px;
+            text-align: center;
+            border-radius: 5px;
+            margin-top: 30px;
+
+            img {
+                padding-bottom: 30px;
+            }
+            .bottom {
+                background-color: var(--pink-color);
+                padding-top: 30px;
+                padding-bottom: 25px;
+                border-radius: 0 0 5px 5px;
+
+                span {
+                    display: block;
+                    color: var(--white-color);
+                    margin-bottom: 5px;
+                }
+                h3 {
+                    font-size: 40px;
+                    margin-bottom: 0;
+
+                    a {
+                        color: var(--white-color);
+
+                        &:hover {
+                            color: var(--blue-color);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .flex-divide {
+        display: flex;
+        flex-wrap: wrap;
+
+        .left {
+            flex: 0 0 50%;
+            max-width: 50%;
+            margin: 0;
+            padding: 0;
+        }
+        .right {
+            flex: 0 0 50%;
+            max-width: 50%;
+            margin: 0;
+            padding: 0;
+        }
+    }
+    .job-cmn-cat {
+        margin: 0;
+        padding: 0;
+    
+        li {
+            list-style-type: none;
+            display: block;
+            color: #7d789b;
+            margin-bottom: 15px;
+    
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width : 767px) {
+
+    .job-area-list {
+        .pagination-area {
+            margin-bottom: 30px;
+        }
+        .job-list-item {
+            li {
+                flex: 0 0 100%;
+                max-width: 100%;
+
+                &:last-child {
+                    flex: 0 0 100%;
+                    max-width: 100%;
+                    text-align: start;
+                    margin-top: 15px;
+                }
+            }
+        }
+        .job-list-right {
+            .job {
+                padding: 22px 10px 25px;
+
+            }
+            .job-list-all {
+                padding: 22px 10px 25px;
+            }
+            .alzo-contact {
+                img {
+                    max-width: 190px;
+                }
+                .bottom {
+                    h3 {
+                        font-size: 30px;
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width : 768px) and (max-width : 991px) {}
+
+/* Min width 576px to Max width 776px */
+@media only screen and (min-width : 576px) and (max-width : 776px) {
+
+    .job-area-list {
+        .job-list-item li {
+            flex: 0 0 60%;
+            max-width: 60%;
+        }
+        .job-list-item li:last-child {
+            flex: 0 0 40%;
+            max-width: 40%;
+            text-align: end;
+            margin-top: 0;
+        }
+    }
+
+}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width : 992px) and (max-width : 1199px) {}
+
+/* Min width 1199px to Max width 1300px */
+@media only screen and (min-width : 1199px) and (max-width : 1300px) {}
+
+/* Min width 1800px */
+@media only screen and (min-width: 1800px) {}
+
+/* Max width 991px */
+@media only screen and (max-width: 991px) {}

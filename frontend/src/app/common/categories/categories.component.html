@@ -1,0 +1,251 @@
+<div class="categories-area pt-100 pb-70">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-12">
+                <div class="nav flex-column nav-pills">
+                    <button type="button" class="nav-link" (click)="switchTab($event, 'tab1')" [ngClass]="{'active': currentTab === 'tab1'}">
+                        <i class="flaticon-placeholder"></i> Job By Location <i class="flaticon-right-arrow two"></i>
+                    </button>
+                    <button type="button" class="nav-link" (click)="switchTab($event, 'tab2')" [ngClass]="{'active': currentTab === 'tab2'}">
+                        <i class="flaticon-resume"></i> Jobs By Roles <i class="flaticon-right-arrow two"></i>
+                    </button>
+                    <button type="button" class="nav-link" (click)="switchTab($event, 'tab3')" [ngClass]="{'active': currentTab === 'tab3'}">
+                        <i class="flaticon-pencil"></i> Jobs By Skills <i class="flaticon-right-arrow two"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-9 col-md-12">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="tab1" *ngIf="currentTab === 'tab1'">
+                        <div class="row">
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat1.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Sr. Shopify Developer</a></h3>
+                                    <span>2 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat2.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Senior Data Engineer</a></h3>
+                                    <span>1 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat3.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Construction Worker</a></h3>
+                                    <span>5 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat4.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Product Designer</a></h3>
+                                    <span>3 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat5.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Max manager</a></h3>
+                                    <span>4 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat6.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Web Designer</a></h3>
+                                    <span>4 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat7.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">UX/UI Designer</a></h3>
+                                    <span>2 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat8.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Area Manager</a></h3>
+                                    <span>1 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat9.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Sales Man</a></h3>
+                                    <span>10 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat10.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Shop Caretaker</a></h3>
+                                    <span>4 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat11.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Management Support</a></h3>
+                                    <span>15 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat12.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Electric Technician</a></h3>
+                                    <span>4 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade show active" id="tab2" *ngIf="currentTab === 'tab2'">
+                        <div class="row">
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat1.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Sr. Shopify Developer</a></h3>
+                                    <span>2 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat2.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Senior Data Engineer</a></h3>
+                                    <span>1 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat3.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Construction Worker</a></h3>
+                                    <span>5 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat4.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Product Designer</a></h3>
+                                    <span>3 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat5.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Max manager</a></h3>
+                                    <span>4 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat6.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Web Designer</a></h3>
+                                    <span>4 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat7.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">UX/UI Designer</a></h3>
+                                    <span>2 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat8.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Area Manager</a></h3>
+                                    <span>1 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat9.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Sales Man</a></h3>
+                                    <span>10 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade show active" id="tab3" *ngIf="currentTab === 'tab3'">
+                        <div class="row">
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat1.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Sr. Shopify Developer</a></h3>
+                                    <span>2 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat2.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Senior Data Engineer</a></h3>
+                                    <span>1 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat3.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Construction Worker</a></h3>
+                                    <span>5 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat4.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Product Designer</a></h3>
+                                    <span>3 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat5.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Max manager</a></h3>
+                                    <span>4 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-lg-4">
+                                <div class="cat-item">
+                                    <img src="img/home-two/cat6.png" alt="Cat">
+                                    <h3><a routerLink="/job-details">Web Designer</a></h3>
+                                    <span>4 Job</span>
+                                    <a class="link" routerLink="/job-details"><i class="flaticon-right-arrow"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

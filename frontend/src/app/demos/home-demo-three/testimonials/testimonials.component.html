@@ -1,0 +1,40 @@
+<div
+    class="client-area ptb-100"
+    style="background-image: url(img/home-two/testimonial-bg.png);"
+>
+    <div class="client-img">
+        <img src="img/home-three/client1.jpg" alt="Client">
+        <img src="img/home-three/client2.jpg" alt="Client">
+        <img src="img/home-three/client3.jpg" alt="Client">
+        <img src="img/home-three/client4.jpg" alt="Client">
+        <img src="img/home-three/client5.jpg" alt="Client">
+        <img src="img/home-three/client6.jpg" alt="Client">
+    </div>
+    <div class="container">
+        <div class="section-title three">
+            <div class="sub-title-wrap">
+                <img src="img/home-three/title-img.png" alt="Icon">
+                <span class="sub-title">Testimonials</span>
+            </div>
+            <h2>Our Trusted Clients</h2>
+        </div>
+        <div class="client-slider">
+            <owl-carousel-o [options]="testimonialsSlides">
+                <ng-template carouselSlide>
+                    <div class="client-item">
+                        <p>Awesome dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliquaenimminim veniam quis nostrud  dolore magn</p>
+                        <h3>Devit M. Kolin</h3>
+                        <span>CEO & Founder</span>
+                    </div>
+                    </ng-template>
+                    <ng-template carouselSlide>
+                    <div class="client-item">
+                        <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that </p>
+                        <h3>Tom Henry</h3>
+                        <span>Director</span>
+                    </div>
+                </ng-template>
+            </owl-carousel-o>
+        </div>
+    </div>
+</div>

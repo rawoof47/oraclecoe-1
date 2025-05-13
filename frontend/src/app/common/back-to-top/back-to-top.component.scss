@@ -1,0 +1,62 @@
+#toTop {
+	position: fixed;
+	bottom: 30px;
+    right: 30px;
+	cursor: pointer;
+    z-index: 10;
+}
+.back-to-top-btn {
+    i {
+        background: var(--pink-color);
+        color: var(--white-color);
+        height: 50px;
+        width: 50px;
+        line-height: 50px;
+        display: inline-block;
+        text-align: center;
+        font-size: 25px;
+        border-radius: 50% 50% 0 0;
+        transition: var(--transition);
+        animation: back-to-top-ani 2s infinite linear;
+
+        &:hover {
+            background-color: var(--blue-color);
+        }
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width : 767px) {
+
+    #toTop {
+        bottom: 70px;
+        right: 10px;
+    }
+    .back-to-top-btn {
+        i {
+            height: 45px;
+            width: 40px;
+            line-height: 45px;
+            font-size: 20px;
+        }
+    }
+
+}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width : 768px) and (max-width : 991px) {}
+
+/* Min width 576px to Max width 776px */
+@media only screen and (min-width : 576px) and (max-width : 776px) {}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width : 992px) and (max-width : 1199px) {}
+
+/* Min width 1199px to Max width 1300px */
+@media only screen and (min-width : 1199px) and (max-width : 1300px) {}
+
+/* Min width 1800px */
+@media only screen and (min-width: 1800px) {}
+
+/* Max width 991px */
+@media only screen and (max-width: 991px) {}

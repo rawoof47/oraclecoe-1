@@ -1,0 +1,43 @@
+<app-navbar />
+
+<app-page-banner
+    [pageTitle]="'FAQ'"
+    [backgroundImage]="'img/page-title-bg.jpg'"
+/>
+
+<!-- FAQ -->
+<div class="faq-area ptb-100">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-12">
+                <div class="faq-content">
+                    <ul class="accordion">
+                        <li *ngFor="let item of accordionItems; let i = index;">
+                            <a (click)="toggleAccordionItem(item)" [ngClass]="{'no-active': !item.open, 'active': item.open}">
+                                {{item.title}}
+                            </a>
+                            <p [hidden]="!item.open">
+                                {{item.content}}
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12">
+                <div class="faq-img" style="background-image: url(img/faq-main.jpg);">
+                    <img src="img/faq-main.jpg" alt="FAQ">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="faq-bottom pb-100">
+    <div class="container">
+        <h3>If you don't find your questions or need help</h3>
+        <a routerLink="/contact">Contact Us</a>
+    </div>
+</div>
+
+<app-footer />
+
+<app-back-to-top />

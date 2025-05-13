@@ -1,0 +1,165 @@
+.app-area {
+    position: relative;
+    background: {
+        position: center center;
+        repeat: no-repeat;
+        size: cover;
+    };
+    &:before {
+        top: 0;
+        left: 0;
+        content: '';
+        width: 100%;
+        opacity: .70;
+        height: 100%;
+        position: absolute;
+        background-color: #000000;
+    }
+    .app-content {
+        .section-title {
+            margin-bottom: 25px;
+    
+            .sub-title {
+                color: var(--white-color);
+            }
+            h2 {
+                color: var(--white-color);
+            }
+        }
+        ul {
+            margin: 0;
+            padding: 0;
+            position: relative;
+    
+            li {
+                list-style-type: none;
+                display: inline-block;
+                margin-right: 10px;
+    
+                &:last-child {
+                    margin-right: 0;
+                }
+                a {
+                    display: block;
+                    border-radius: 10px;
+                    border: 1px solid transparent;
+                    border: 1px solid var(--white-color);
+    
+                    &:hover {
+                        transform: translate(5px, 0);
+                    }
+                }
+            }
+        }
+    }
+    .app-img {
+        text-align: center;
+        position: relative;
+
+        img {
+            &:nth-child(1) {
+                z-index: 1;
+                position: relative;
+                animation: app-ani 6s infinite linear;
+            }
+            &:nth-child(2) {
+                position: absolute;
+                max-width: 380px;
+                left: 65px;
+                top: 70px;
+                right: 0;
+            }
+        }
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width : 767px) {
+
+    .app-area {
+        text-align: center;
+
+        .app-content {
+            .section-title {
+                margin-bottom: 30px;
+            }
+            ul {
+                li {
+                    margin-right: 5px;
+                    margin-left: 5px;
+        
+                    &:last-child {
+                        margin-right: 5px;
+                    }
+                    a {
+                        max-width: 120px;
+                    }
+                }
+            }
+        }
+        .app-img {
+            img {
+                &:nth-child(1) {
+                    margin-top: 30px;
+                    max-width: 240px;
+                    margin-left: auto;
+                    margin-right: auto;
+                }
+                &:nth-child(2) {
+                    display: none;
+                }
+            }
+        }
+    }
+
+}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width : 768px) and (max-width : 991px) {
+
+    .app-area {
+        text-align: center;
+
+        .app-content {
+            .section-title {
+                margin-bottom: 30px;
+            }
+            ul {
+                li {
+                    margin-right: 5px;
+                    margin-left: 5px;
+        
+                    &:last-child {
+                        margin-right: 5px;
+                    }
+                }
+            }
+        }
+        .app-img {
+            img {
+                &:nth-child(1) {
+                    margin-top: 30px;
+                }
+                &:nth-child(2) {
+                    display: none;
+                }
+            }
+        }
+    }
+
+}
+
+/* Min width 576px to Max width 776px */
+@media only screen and (min-width : 576px) and (max-width : 776px) {}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width : 992px) and (max-width : 1199px) {}
+
+/* Min width 1199px to Max width 1300px */
+@media only screen and (min-width : 1199px) and (max-width : 1300px) {}
+
+/* Min width 1800px */
+@media only screen and (min-width: 1800px) {}
+
+/* Max width 991px */
+@media only screen and (max-width: 991px) {}

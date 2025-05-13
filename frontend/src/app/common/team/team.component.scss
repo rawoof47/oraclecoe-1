@@ -1,0 +1,63 @@
+@use "../candidates/candidates.component.scss";
+
+.candidate-area.two {
+    .candidate-item {
+        border: 2px dashed var(--pink-color);
+        margin-bottom: 0;
+
+        .left {
+            .cmn-link {
+                a {
+                    &:hover {
+                        color: var(--pink-color);
+
+                        .two {
+                            color: var(--pink-color);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+::ng-deep {
+    .candidate-area.two {
+        .owl-prev {
+            &:after {
+                background-color: var(--pink-color);
+            }
+            &:hover {
+                color: var(--white-color) !important;
+            }
+        }
+        .owl-next {
+            &:after {
+                background-color: var(--pink-color);
+            }
+            &:hover {
+                color: var(--white-color) !important;
+            }
+        }
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width : 767px) {}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width : 768px) and (max-width : 991px) {}
+
+/* Min width 576px to Max width 776px */
+@media only screen and (min-width : 576px) and (max-width : 776px) {}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width : 992px) and (max-width : 1199px) {}
+
+/* Min width 1199px to Max width 1300px */
+@media only screen and (min-width : 1199px) and (max-width : 1300px) {}
+
+/* Min width 1800px */
+@media only screen and (min-width: 1800px) {}
+
+/* Max width 991px */
+@media only screen and (max-width: 991px) {}

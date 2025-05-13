@@ -1,0 +1,68 @@
+<div
+    class="system-area ptb-100"
+    style="background-image: url(img/home-three/system-bg.jpg);"
+>
+    <div class="system-shape">
+        <img src="img/home-three/system1.png" alt="Shape">
+        <img src="img/home-three/system2.png" alt="Shape">
+    </div>
+    <div class="container">
+        <div class="system-item">
+            <div class="section-title three">
+                <div class="sub-title-wrap">
+                    <img src="img/home-three/title-img-two.png" alt="Icon">
+                    <span class="sub-title">Recruitment System</span>
+                </div>
+                <h2>You’ll Be Able To Recruit Qualified Candidate With Alzo</h2>
+            </div>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut tur incidunt laborequaerat voluptatem.</p>
+            <ul class="system-list">
+                <li>
+                    <span></span>
+                    Access to the very best professionals
+                </li>
+                <li>
+                    <span></span>
+                    Look at on your own core business
+                </li>
+                <li>
+                    <span></span>
+                    Develop effi­­ci­­en­ci­­es by HR management
+                </li>
+            </ul>
+            <ul class="system-video">
+                <li><a class="left-btn" routerLink="/">Recruit Now <i class='bx bx-plus'></i></a></li>
+                <li>
+                    <span>Watch Message</span>
+                    <button class="right-btn popup-youtube" (click)="openPopup()">
+                        <i class='bx bx-play'></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Video Popup -->
+<div
+    class="mfp-wrap mfp-close-btn-in mfp-auto-cursor mfp-fade mfp-ready"
+    *ngIf="isOpen"
+    tabindex="-1"
+>
+    <div class="mfp-container mfp-iframe-holder">
+        <div class="mfp-content">
+            <div class="mfp-iframe-scaler">
+                <button
+                    (click)="closePopup()"
+                    title="Close (Esc)"
+                    type="button"
+                    class="mfp-close"
+                >
+                    ×
+                </button>
+                <iframe src="https://www.youtube.com/embed/u31qwQUeGuM" title="Placeholder video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="mfp-bg mfp-fade mfp-ready" *ngIf="isOpen"></div>

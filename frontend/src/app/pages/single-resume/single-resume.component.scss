@@ -1,0 +1,475 @@
+@use "../../common/sidebar-widget/sidebar-widget.component.scss";
+
+.person-details-area {
+    .details-item {
+        h3 {
+            color: var(--blue-color);
+            font-size: 25px;
+            margin-bottom: 20px;
+        }
+        .profile {
+            margin-bottom: 50px;
+
+            p {
+                margin-bottom: 10px;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+        }
+        .bottom-item {
+            padding-bottom: 30px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .work {
+            ul {
+                margin: 0;
+                padding: 0;
+                padding-top: 5px;
+                margin-bottom: 10px;
+
+                li {
+                    list-style-type: none;
+                    display: inline-block;
+                    color: var(--pink-color);
+                    font-weight: 500;
+
+                    img {
+                        display: inline-block;
+                        margin-right: 5px;
+                        position: relative;
+                        top: -2px;
+                    }
+                    span {
+                        color: var(--gray-color);
+                        font-weight: 400;
+                        margin-left: 15px;
+                    }
+                }
+            }
+            h4 {
+                color: var(--blue-color);
+                font-size: 18px;
+                margin-bottom: 5px;
+            }
+            p {
+                margin-bottom: 0;
+            }
+        }
+        .bottom-item-last {
+            margin-bottom: 50px;
+        }
+        .skills {
+            margin-bottom: 50px;
+
+            .skill-wrap {
+                overflow: hidden;
+                padding-right: 15px;
+
+                .skill {
+                    margin-bottom: 35px;
+                    position: relative;
+                        
+                    &:before{
+                        width: 100%;
+                        height: 3px;
+                        content: "";
+                        display: block;
+                        position: absolute;
+                        background: #eaeaea;
+                        bottom: 0;
+                    }
+                    h3 {
+                        font-size: 16px;
+                        font-weight: 600;
+                        color: #0d1820;
+                        margin-bottom: 15px;
+                    }
+                    &:last-child {
+                        margin-bottom: 5px;
+                    }
+                }
+            }
+        }
+        .skill-bar {
+            width: 100%;
+            height: 3px;
+            background: var(--pink-color);
+            display: block;
+            position: relative;
+    
+            &:before {
+                position: absolute;
+                content: '';
+                top: -4px;
+                right: -2px;
+                width: 10px;
+                height: 10px;
+                border-radius: 12px;
+                background-color: var(--pink-color);
+            }
+            span{
+                position: absolute;
+                top: -35px;
+                padding: 0;
+                font-size: 16px;
+                font-weight: 500;
+                color: #0d1820;
+                margin-bottom: 0;
+                display: inline-block;
+            }
+        }
+        .skill1 {
+            width: 56%;  
+    
+            .skill-count1 {
+                right: 7px;
+            }
+        }
+        .skill2 {
+            width: 80%;
+    
+            .skill-count2 {
+                right: 7px;
+            }
+        }
+        .skill3 {
+            width: 90%;
+    
+            .skill-count3 {
+                right: 7px;
+            }
+        }
+        .skill4 {
+            width: 70%;
+    
+            .skill-count4 {
+                right: 7px;
+            }
+        }
+        .skill5 {
+            width: 80%;
+    
+            .skill-count5 {
+                right: 7px;
+            }
+        }
+        .skill6 {
+            width: 90%;
+    
+            .skill-count6 {
+                right: 7px;
+            }
+        }
+        .portfolio {
+            .img {
+                margin-bottom: 30px;
+
+                img {
+                    border-radius: 5px;
+                }
+            }
+        }
+        .client {
+            border: 1px dashed var(--pink-color);
+            border-radius: 5px;
+            background-color: #f8e8e9;
+            padding: 20px 20px 20px 155px;
+            position: relative;
+            margin-bottom: 30px;
+
+            img {
+                position: absolute;
+                top: 20px;
+                left: 20px;
+                border-radius: 50%;
+            }
+            h3 {
+                color: #1b2b37;
+                font-size: 20px;
+                margin-bottom: 5px;
+            }
+            span {
+                display: block;
+                font-size: 14px;
+                margin-bottom: 15px;
+            }
+            p {
+                margin-bottom: 0;
+            }
+            ul {
+                margin: 0;
+                padding: 0;
+                position: absolute;
+                top: 20px;
+                right: 20px;
+
+                li {
+                    list-style-type: none;
+                    display: inline-block;
+
+                    span {
+                        color: var(--white-color);
+                        background-color: var(--pink-color);
+                        width: 30px;
+                        height: 30px;
+                        line-height: 30px;
+                        text-align: center;
+                        border-radius: 50%;
+                        margin-bottom: 0;
+                        margin-right: 5px;
+                    }
+                    i {
+                        display: inline-block;
+                        color: #ddd;
+                    }
+                    .checked {
+                        color: #ed4800;
+                    }
+                }
+            }
+        }
+        .review {
+            background-color: #f4f4f4;
+            border-radius: 5px;
+            padding: 28px 25px 35px;
+
+            h3 {
+                color: #1c2522;
+                margin-bottom: 5px;
+                font-size: 20px;
+            }
+            span {
+                display: block;
+                margin-bottom: 8px;
+            }
+            ul {
+                margin: 0;
+                padding: 0;
+                margin-bottom: 20px;
+
+                li {
+                    list-style-type: none;
+                    display: inline-block;
+
+                    span {
+                        color: var(--white-color);
+                        background-color: var(--pink-color);
+                        width: 30px;
+                        height: 30px;
+                        line-height: 30px;
+                        text-align: center;
+                        border-radius: 50%;
+                        margin-bottom: 0;
+                        margin-right: 5px;
+                    }
+                    i {
+                        display: inline-block;
+                        color: #ddd;
+                    }
+                    .checked {
+                        color: #ed4800;
+                    }
+                }
+            }
+            .form-group {
+                margin-bottom: 30px;
+                position: relative;
+
+                i {
+                    position: absolute;
+                    left: 15px;
+                    top: 15px;
+                    font-size: 21px;
+                }
+                .form-control {
+                    height: 50px;
+                    border-radius: 5px;
+                    padding-left: 40px;
+                    border: 1px solid #e0e0e0;
+                    font-size: 14px;
+                    transition: var(--transition);
+
+                    &:focus {
+                        border: 1px solid var(--pink-color);
+                        box-shadow: none;
+                    }
+                }
+                textarea {
+                    height: auto !important;
+                    padding-top: 13px;
+                }
+            }
+            .btn {
+                color: var(--white-color);
+                background-color: var(--pink-color);
+                transition: var(--transition);
+                padding: 12px 40px;
+                border-radius: 5px;
+                font-weight: 500;
+
+                &:hover {
+                    background-color: var(--blue-color);
+                }
+            }
+        }
+    }
+    .owner {
+        margin-bottom: 30px;
+    }
+    .similar-candidates {
+        h4 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: var(--blue-color);
+        }
+    }
+    .candidate-item {
+        overflow: hidden;
+        border: 1px dashed var(--pink-color);
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+        .cmn-link {
+            a {
+                &:hover {
+                    color: var(--pink-color);
+
+                    .two {
+                        color: var(--pink-color);
+                    }
+                }
+            }
+        }
+    }
+}
+.resume-area {
+    .details-item {
+        .skills {
+            margin-bottom: 0;
+        }
+    }
+    .resume-profile {
+        text-align: center;
+        margin-bottom: 30px;
+
+        img {
+            display: block;
+            border-radius: 50%;
+            border: 5px solid var(--white-color);
+            box-shadow: 0px 0px 20px 0px #dddddd24;
+            margin-bottom: 15px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        h2 {
+            font-size: 25px;
+            color: var(--blue-color);
+            margin-bottom: 5px;
+        }
+        span {
+            display: block;
+            margin-bottom: 30px;
+        }
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width : 767px) {
+
+    .person-details-area {
+        .details-item {
+            text-align: center;
+
+            .skills {
+                text-align: start;
+            }
+            .client {
+                padding: 20px 15px 20px 15px;
+
+                img {
+                    position: relative;
+                    top: 0;
+                    left: 0;
+                }
+                ul {
+                    position: relative;
+                    top: 0;
+                    right: 0;
+                    margin-top: 15px;                
+                }
+            }
+            .review {
+                padding: 28px 15px 35px;
+                text-align: start;
+                margin-bottom: 30px;
+            }
+        }
+    }
+    .resume-area {
+        .resume-profile {
+            img {
+                max-width: 200px;
+            }
+        }
+        .widget-area {
+            .widget-item {
+                margin-bottom: 30px;
+            }
+        }
+    }
+
+}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width : 768px) and (max-width : 991px) {
+
+    .person-details-area {
+        .details-item {
+            text-align: center;
+
+            .skills {
+                text-align: start;
+            }
+            .client {
+                text-align: start;
+            }
+            .review {
+                padding: 28px 15px 35px;
+                text-align: start;
+                margin-bottom: 30px;
+            }
+        }
+        .candidate-item {
+            .left {
+                max-width: 100%;
+            }
+        }
+    }
+    .resume-area {
+        .widget-area {
+            .widget-item {
+                margin-bottom: 30px;
+            }
+        }
+    }
+
+}
+
+/* Min width 576px to Max width 776px */
+@media only screen and (min-width : 576px) and (max-width : 776px) {}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width : 992px) and (max-width : 1199px) {}
+
+/* Min width 1199px to Max width 1300px */
+@media only screen and (min-width : 1199px) and (max-width : 1300px) {}
+
+/* Min width 1800px */
+@media only screen and (min-width: 1800px) {}
+
+/* Max width 991px */
+@media only screen and (max-width: 991px) {}

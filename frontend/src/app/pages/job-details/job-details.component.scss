@@ -1,0 +1,326 @@
+@use "../../common/page-banner/page-banner.component.scss";
+@use "../../common/sidebar-widget/sidebar-widget.component.scss";
+
+.job-details-area {
+    .details-item {
+        .details-inner {
+            margin-bottom: 30px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+            h3 {
+                font-size: 22px;
+                color: var(--blue-color);
+                margin-bottom: 10px;
+            }
+            p {
+                margin-bottom: 0;
+            }
+            .job-details-slider {
+                margin-top: 20px;
+
+                .slider-item {
+                    position: relative;
+
+                    &:before {
+                        position: absolute;
+                        content: '';
+                        width: 100%;
+                        height: 100%;
+                        top: 0;
+                        left: 0;
+                        background-color: #000;
+                        opacity: .40;
+                    }
+                    img {
+                        border-radius: 5px;
+                    }
+                }
+            }
+            .job-details-slider {
+                &:hover {
+                    .owl-prev {
+                        opacity: 1;
+                        left: 45px;
+                    }
+                    .owl-next {
+                        opacity: 1;
+                        right: 45px;
+                    }
+                }
+            }
+            ul {
+                margin: 0;
+                padding: 0;
+                margin-top: 20px;
+
+                li {
+                    list-style-type: none;
+                    display: block;
+                    margin-bottom: 10px;
+
+                    &:last-child {
+                        margin-bottom: 0;
+                    }
+                    i {
+                        display: inline-block;
+                        color: var(--pink-color);
+                        font-size: 18px;
+                        position: relative;
+                        top: 2px;
+                        margin-right: 3px;
+                    }
+                }
+            }
+        }
+    }
+}
+.video-wrap {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+
+    button {
+        z-index: 10;
+        display: block;
+        width: 100px;
+        border-width: 0;
+        height: 100px;
+        line-height: 110px;
+        border-radius: 50%;
+        position: relative;
+        font-size: 60px;
+        text-align: center;
+        color: var(--white-color);
+
+        &:before {
+            content: "";
+            position: absolute;
+            z-index: 0;
+            left: 50%;
+            top: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            display: block;
+            width: 100px;
+            height: 100px;
+            background-color: var(--pink-color);
+            border-radius: 50%;
+            z-index: -1;
+            animation: pulse-border 1500ms ease-out infinite;
+        }
+        &:after {
+            content: "";
+            position: absolute;
+            z-index: 1;
+            left: 50%;
+            top: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            display: block;
+            width: 100px;
+            height: 100px;
+            background-color: var(--pink-color);
+            border-radius: 50%;
+            z-index: -1;
+            transition: var(--transition);
+        }
+        &:hover {
+            color: var(--white-color);
+
+            &:before {
+                background-color: var(--blue-color);
+            }
+            &:after {
+                background-color: var(--blue-color);
+            }
+        }
+    }
+}
+::ng-deep {
+    .job-details-area {
+        .details-item {
+            .details-inner {
+                .owl-prev {
+                    position: absolute;
+                    top: 40%;
+                    left: 35px;
+                    color: var(--white-color) !important;
+                    font-size: 35px !important;
+                    z-index: 1;
+                    transition: var(--transition);
+                    background-color: transparent !important;
+                    opacity: 0;
+            
+                    &:hover {
+                        color: var(--pink-color) !important;
+                        background-color: transparent !important;
+            
+                        &:after {
+                            background-color: #fff;
+                        }
+                    }
+                    &:after {
+                        position: absolute;
+                        top: 12px;
+                        left: -12px;
+                        content: '';
+                        width: 30px;
+                        height: 30px;
+                        border-radius: 50%;
+                        background-color: #ef4605;
+                        z-index: -1;
+                        transition: var(--transition);
+                    }
+                }
+                .owl-next {
+                    position: absolute;
+                    top: 40%;
+                    right: 35px;
+                    color: var(--white-color) !important;
+                    font-size: 35px !important;
+                    z-index: 1;
+                    transition: var(--transition);
+                    background-color: transparent !important;
+                    opacity: 0;
+            
+                    &:hover {
+                        color: var(--pink-color) !important;
+                        background-color: transparent !important;
+            
+                        &:after {
+                            background-color: #fff;
+                        }
+                    }
+                    &:after {
+                        position: absolute;
+                        top: 12px;
+                        right: -12px;
+                        content: '';
+                        width: 30px;
+                        height: 30px;
+                        border-radius: 50%;
+                        background-color: #ef4605;
+                        z-index: -1;
+                        transition: var(--transition);
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* Max width 767px */
+@media only screen and (max-width : 767px) {
+
+    .job-details-area {
+        .details-item {
+            text-align: center;
+
+            .details-inner {
+                &:last-child {
+                    margin-bottom: 30px;
+                }
+                h3 {
+                    font-size: 20px;
+                }
+            }
+        }
+    }
+    ::ng-deep {
+        .job-details-area {
+            .details-item {
+                .details-inner {
+                    .owl-prev {
+                        display: none !important;
+                    }
+                    .owl-next {
+                        display: none !important;
+                    }
+                }
+            }
+        }
+    }
+    .video-wrap {
+        button {
+            width: 85px;
+            height: 85px;
+            line-height: 95px;
+
+            &:before {
+                width: 85px;
+                height: 85px;
+            }
+            &:after {
+                width: 85px;
+                height: 85px;
+            }
+        }
+    }
+
+}
+
+/* Min width 768px to Max width 991px */
+@media only screen and (min-width : 768px) and (max-width : 991px) {
+
+    .job-details-area {
+        .details-item {
+            text-align: center;
+
+            .details-inner {
+                &:last-child {
+                    margin-bottom: 30px;
+                }
+                h3 {
+                    font-size: 20px;
+                }
+            }
+        }
+    }
+    ::ng-deep {
+        .job-details-area {
+            .details-item {
+                .details-inner {
+                    .owl-prev {
+                        display: none !important;
+                    }
+                    .owl-next {
+                        display: none !important;
+                    }
+                }
+            }
+        }
+    }
+    .video-wrap {
+        button {
+            width: 85px;
+            height: 85px;
+            line-height: 95px;
+
+            &:before {
+                width: 85px;
+                height: 85px;
+            }
+            &:after {
+                width: 85px;
+                height: 85px;
+            }
+        }
+    }
+
+}
+
+/* Min width 576px to Max width 776px */
+@media only screen and (min-width : 576px) and (max-width : 776px) {}
+
+/* Min width 992px to Max width 1199px */
+@media only screen and (min-width : 992px) and (max-width : 1199px) {}
+
+/* Min width 1199px to Max width 1300px */
+@media only screen and (min-width : 1199px) and (max-width : 1300px) {}
+
+/* Min width 1800px */
+@media only screen and (min-width: 1800px) {}
+
+/* Max width 991px */
+@media only screen and (max-width: 991px) {}

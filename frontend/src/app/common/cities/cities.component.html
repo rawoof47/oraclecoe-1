@@ -1,0 +1,70 @@
+<div class="location-area pb-70">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 col-md-12">
+                <div class="section-title">
+                    <span class="sub-title">Wanted Location</span>
+                    <h2>The Places Near You</h2>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <div class="cmn-link">
+                    <a routerLink="/jobs">
+                        <i class="flaticon-right-arrow one"></i> Browse All Locations <i class="flaticon-right-arrow two"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="location-slider">
+            <owl-carousel-o [options]="citiesSlides">
+                <ng-template carouselSlide>
+                    <div class="location-item">
+                        <div class="top">
+                            <a routerLink="/jobs"><img src="img/home-one/location1.jpg" alt="Location"></a>
+                        </div>
+                        <span>8 Open Job</span>
+                        <h3><a routerLink="/jobs">New York</a></h3>
+                    </div>
+                </ng-template>
+                <ng-template carouselSlide>
+                    <div class="location-item">
+                        <div class="top">
+                            <a routerLink="/jobs"><img src="img/home-one/location2.jpg" alt="Location"></a>
+                        </div>
+                        <span>6 Open Job</span>
+                        <h3><a routerLink="/jobs">Austria, Vienna</a></h3>
+                    </div>
+                </ng-template>
+                    <ng-template carouselSlide>
+                    <div class="location-item">
+                        <div class="top">
+                            <a routerLink="/jobs"><img src="img/home-one/location3.jpg" alt="Location"></a>
+                        </div>
+                        <span>2 Open Job</span>
+                        <h3><a routerLink="/jobs">Tirana, Albania</a></h3>
+                    </div>
+                </ng-template>
+                    <ng-template carouselSlide>
+                    <div class="location-item">
+                        <div class="top">
+                            <a routerLink="/jobs"><img src="img/home-one/location4.jpg" alt="Location"></a>
+                        </div>
+                        <span>4 Open Job</span>
+                        <h3><a routerLink="/jobs">Kabul, Afghanistan</a></h3>
+                    </div>
+                </ng-template>
+                    <ng-template carouselSlide>
+                    <div class="location-item">
+                        <div class="top">
+                            <a routerLink="/jobs"><img src="img/home-one/location5.jpg" alt="Location"></a>
+                        </div>
+                        <span>3 Open Job</span>
+                        <h3><a routerLink="/jobs">Cardiff, UK</a></h3>
+                    </div>
+                </ng-template>
+            </owl-carousel-o>
+        </div>
+    </div>
+</div>

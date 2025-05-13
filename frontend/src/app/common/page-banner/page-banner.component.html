@@ -1,0 +1,28 @@
+<div
+    class="page-title-area"
+    [ngStyle]="{'background-image': 'url(' + backgroundImage + ')'}"
+>
+    <div class="d-table">
+        <div class="d-table-cell">
+            <div class="container">
+                <div class="title-item">
+                    <h2>
+                        {{ pageTitle }}
+                    </h2>
+                    <ul>
+                        <li>
+                            <img src="img/home-three/title-img-two.png" alt="Image">
+                            <a routerLink="/">
+                                Home
+                            </a>
+                        </li>
+                        <li><span>/</span></li>
+                        <li>
+                            {{ pageTitle }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
