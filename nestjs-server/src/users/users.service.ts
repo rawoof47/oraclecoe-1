@@ -21,7 +21,7 @@ export class UserService {
       throw new Error('Password is required');
     }
 
-    const hashedPassword = await bcrypt.hash(password_hash, 10); // Salt rounds = 10
+    const hashedPassword = await bcrypt.hash(password_hash, 10); // changed Salt rounds = 10
 
     const user = this.userRepository.create({
       ...rest,

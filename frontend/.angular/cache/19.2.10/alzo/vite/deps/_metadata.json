@@ -1,49 +1,49 @@
 {
-  "hash": "0bbb9f64",
-  "configHash": "aed76b50",
+  "hash": "22aeb0c7",
+  "configHash": "5a25ba29",
   "lockfileHash": "ccbe02ca",
-  "browserHash": "bc960552",
+  "browserHash": "bbb6eee0",
   "optimized": {
     "@angular/common": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/common.mjs",
       "file": "@angular_common.js",
-      "fileHash": "61710b10",
+      "fileHash": "d1b2da42",
       "needsInterop": false
     },
     "@angular/common/http": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/http.mjs",
       "file": "@angular_common_http.js",
-      "fileHash": "7abd9423",
+      "fileHash": "f7ce6d03",
       "needsInterop": false
     },
     "@angular/core": {
       "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
       "file": "@angular_core.js",
-      "fileHash": "3a4206cb",
+      "fileHash": "f4d54494",
       "needsInterop": false
     },
     "@angular/forms": {
       "src": "../../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
       "file": "@angular_forms.js",
-      "fileHash": "0f092214",
+      "fileHash": "5acd7231",
       "needsInterop": false
     },
     "@angular/platform-browser": {
       "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
       "file": "@angular_platform-browser.js",
-      "fileHash": "1952f1e3",
+      "fileHash": "59c135c5",
       "needsInterop": false
     },
     "@angular/router": {
       "src": "../../../../../../node_modules/@angular/router/fesm2022/router.mjs",
       "file": "@angular_router.js",
-      "fileHash": "bc6e2e24",
+      "fileHash": "9e13c966",
       "needsInterop": false
     },
     "ngx-owl-carousel-o": {
       "src": "../../../../../../node_modules/ngx-owl-carousel-o/fesm2022/ngx-owl-carousel-o.mjs",
       "file": "ngx-owl-carousel-o.js",
-      "fileHash": "cf54907c",
+      "fileHash": "76715b96",
       "needsInterop": false
     }
   },
