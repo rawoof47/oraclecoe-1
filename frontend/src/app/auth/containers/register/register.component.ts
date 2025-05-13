@@ -18,7 +18,7 @@ export class RegisterComponent {
   submitted = false;
   errorMessage: string | null = null;
 
-  // Predefined UUIDs from your roles and statuses tables
+  // Predefined UUIDs from your roles and statuses tables added changes 
   private readonly roleMap: Record<string, string> = {
     Candidate: 'c1bb8df5-2c01-11f0-b60f-80ce6232908a',
     Recruiter: 'c1bb84ef-2c01-11f0-b60f-80ce6232908a'
