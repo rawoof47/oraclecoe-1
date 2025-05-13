@@ -1,10 +1,42 @@
-@use "../login/login.component.scss";
-::ng-deep .snack-success {
-  background-color: #4caf50;
-  color: #fff;
-}
+@use '../login/login.component.scss';
+@use '@angular/material' as mat;
 
-::ng-deep .snack-error {
-  background-color: #f44336;
-  color: #fff;
+::ng-deep {
+  .snack-success, .snack-error {
+    // 1. Typography Enhancement
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    line-height: 1.5;
+
+    // 2. Sophisticated Spacing
+    padding: 1em 1.25em;
+    margin: 0.5em;
+    
+    // 3. Depth & Dimension
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+
+    // 4. Smooth Transitions
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+    // 5. Professional Color Tweaks
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  }
+
+  .snack-success {
+    // Professional Green Palette
+    background-color: #000000;
+    border: 1px solid #43A047; // Subtle border
+  }
+
+  .snack-error {
+    // Corporate Red Palette
+    background-color: #f80000;
+    border: 1px solid #ff0000; // Subtle border
+    
+    // Error-specific text contrast
+    color: #FFEBEE;
+  }
 }

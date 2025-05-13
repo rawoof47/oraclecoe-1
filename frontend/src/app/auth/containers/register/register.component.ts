@@ -56,7 +56,9 @@ export class RegisterComponent {
     if (this.registerForm.invalid) {
       this.snackBar.open('Please fill out all required fields correctly.', 'Close', {
         duration: 3000,
-        panelClass: 'snack-error'
+        panelClass: ['snack-error', 'custom-snackbar'],
+        verticalPosition: 'top',
+        horizontalPosition: 'right'
       });
       return;
     }
@@ -74,7 +76,9 @@ export class RegisterComponent {
       next: () => {
         this.snackBar.open('Registration successful! Please log in.', 'Close', {
           duration: 3000,
-          panelClass: 'snack-success'
+          panelClass: ['snack-success', 'custom-snackbar'],
+          verticalPosition: 'top',
+          horizontalPosition: 'right'
         });
         this.router.navigate(['/login']);
       },
@@ -84,12 +88,16 @@ export class RegisterComponent {
         if (msg.includes('email') && msg.includes('exists')) {
           this.snackBar.open('Email already exists. Please use a different one.', 'Close', {
             duration: 3000,
-            panelClass: 'snack-error'
+            panelClass: ['snack-error', 'custom-snackbar'],
+            verticalPosition: 'top',
+            horizontalPosition: 'right'
           });
         } else {
           this.snackBar.open(err?.error?.message || 'Registration failed. Please try again.', 'Close', {
             duration: 3000,
-            panelClass: 'snack-error'
+            panelClass: ['snack-error', 'custom-snackbar'],
+            verticalPosition: 'top',
+            horizontalPosition: 'right'
           });
         }
       }
