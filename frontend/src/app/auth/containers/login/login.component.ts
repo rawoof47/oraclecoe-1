@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
+import { AuthService } from '../../../services/auth.service';
+import { AuthStateService } from '../../../services/auth-state.service'; // 👈 Import the auth state service
 
 @Component({
   selector: 'app-login',
@@ -20,6 +22,7 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private authStateService: AuthStateService, // 👈 Inject the service
     private router: Router,
     private snackBar: MatSnackBar
   ) {
@@ -55,9 +58,10 @@ export class LoginComponent {
           return;
         }
 
-        localStorage.setItem('accessToken', token);
-        localStorage.setItem('userUUID', uuid);
-        localStorage.setItem('userRole', userRole);
+        // ✅ Use AuthStateService to save and broadcast login state
+        this.authStateService.setAuthState(token, userRole, uuid);
+
+
 
         if (userRole === role) {
           this.showSnackBar('Login successful!', 'snack-success');
