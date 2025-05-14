@@ -43,6 +43,7 @@ temp/
 .env.*.local
 frontend/.env
 Nestjs-backend/.env
+nestjs-server/.env
 
 # OS files
 .DS_Store
