@@ -46,7 +46,6 @@ export class PostAJobComponent implements OnInit {
       jobDescription: ['', Validators.required],
       noticePeriod: ['', Validators.required],
       applicationDeadline: [''],
-      statusId: ['', Validators.required],
       recruiterId: ['', Validators.required],
       createdBy: ['']
     });
@@ -68,7 +67,9 @@ export class PostAJobComponent implements OnInit {
     if (this.jobForm.invalid) {
       this.snackBar.open('Please fill in the required fields.', 'Close', {
         duration: 3000,
-        panelClass: 'snackbar-error'
+        panelClass: 'snackbar-error',
+        horizontalPosition: 'right',
+        verticalPosition: 'top'
       });
       return;
     }
@@ -91,7 +92,9 @@ export class PostAJobComponent implements OnInit {
       next: () => {
         this.snackBar.open('Job posted successfully!', 'Close', {
           duration: 3000,
-          panelClass: 'snackbar-success'
+          panelClass: 'snackbar-success',
+          horizontalPosition: 'right',
+          verticalPosition: 'top'
         });
         this.jobForm.reset();
         this.jobForm.patchValue({ recruiterId: formValues.recruiterId });
@@ -103,7 +106,9 @@ export class PostAJobComponent implements OnInit {
           'Close',
           {
             duration: 4000,
-            panelClass: 'snackbar-error'
+            panelClass: 'snackbar-error',
+            horizontalPosition: 'right',
+            verticalPosition: 'top'
           }
         );
       },

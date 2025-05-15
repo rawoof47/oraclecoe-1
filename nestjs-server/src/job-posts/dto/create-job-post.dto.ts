@@ -1,4 +1,11 @@
-import { IsString, IsUUID, IsOptional, IsNumber, IsDateString, IsNotEmpty } from 'class-validator';
+import {
+  IsString,
+  IsUUID,
+  IsOptional,
+  IsNumber,
+  IsDateString,
+  IsNotEmpty,
+} from 'class-validator';
 
 export class CreateJobPostDto {
   @IsUUID()
@@ -49,9 +56,7 @@ export class CreateJobPostDto {
   @IsNotEmpty()
   noticePeriod: string;
 
-  @IsUUID()
-  @IsNotEmpty()
-  statusId: string;
+  // ❌ Removed statusId — this will now be set in the service layer
 
   @IsDateString()
   @IsOptional()

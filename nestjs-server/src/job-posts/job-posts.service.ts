@@ -1,10 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JobPost } from './entities/job-post.entity';
 import { CreateJobPostDto } from './dto';
-import { UpdateJobPostDto } from './dto/update-job-post.dto'; // Import DTO for update
-import { BadRequestException } from '@nestjs/common';
+import { UpdateJobPostDto } from './dto/update-job-post.dto';
 
 @Injectable()
 export class JobPostsService {
@@ -17,7 +16,6 @@ export class JobPostsService {
   async create(createJobPostDto: CreateJobPostDto) {
     const jobPost = new JobPost();
 
-    // Directly assign values, checking for undefined and replacing with null if needed
     jobPost.recruiter_id = createJobPostDto.recruiterId;
     jobPost.job_title = createJobPostDto.jobTitle;
     jobPost.location = createJobPostDto.location ?? null;
@@ -30,12 +28,15 @@ export class JobPostsService {
     jobPost.compensation_range = createJobPostDto.compensationRange ?? null;
     jobPost.job_description = createJobPostDto.jobDescription ?? null;
     jobPost.notice_period = createJobPostDto.noticePeriod ?? null;
-    jobPost.status_id = createJobPostDto.statusId;
+
+    // Automatically assign the "Active" status
+    jobPost.status_id = '36f3301d-318e-11f0-aa4d-80ce6232908a'; // Active status UUID
+
     jobPost.application_deadline = createJobPostDto.applicationDeadline ?? null;
     jobPost.created_by = createJobPostDto.createdBy ?? null;
     jobPost.updated_by = createJobPostDto.updatedBy ?? null;
 
-    // Validate before saving
+    // Validate required fields
     if (!jobPost.job_title || !jobPost.skills_required || !jobPost.job_description) {
       throw new BadRequestException('Job Title, Skills Required, and Job Description are required.');
     }
@@ -61,7 +62,6 @@ export class JobPostsService {
       throw new Error('Job post not found');
     }
 
-    // Update fields based on DTO
     Object.assign(jobPost, updateJobPostDto);
 
     // Validate required fields
