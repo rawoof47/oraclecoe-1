@@ -4,7 +4,8 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app/app.routes';
 import { provideHttpClient, withInterceptors, HttpClient } from '@angular/common/http';
 import { HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideToastr } from 'ngx-toastr';
 
 // ✅ Use function-based interceptor (Angular 16+ compatible way)
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
@@ -23,8 +24,10 @@ bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
     provideHttpClient(
-      withInterceptors([jwtInterceptor]) // ✅ use the function
+      withInterceptors([jwtInterceptor])
     ),
+    provideAnimations(), // ✅ Required for Toastr animations
+    provideToastr(),     // ✅ Required to register ToastrService
     {
       provide: 'TEST_HTTP',
       useFactory: (http: HttpClient) => {

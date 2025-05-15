@@ -1,131 +1,143 @@
 <app-navbar />
 
 <app-page-banner
-    [pageTitle]="'Post A Job'"
-    [backgroundImage]="'img/page-title-bg.jpg'"
+  [pageTitle]="'Post A Job'"
+  [backgroundImage]="'img/page-title-bg.jpg'"
 />
 
 <!-- Post A Job -->
 <div class="post-job-area ptb-100">
-    <div class="container">
-        <form>
-            <div class="post-item">
-                <div class="row">
-                    <div class="col-lg-6 col-md-12">
-                        <div class="form-group">
-                            <label>First Name:</label>
-                            <input type="text" class="form-control" placeholder="Tom">
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                        <div class="form-group">
-                            <label>Last Name:</label>
-                            <input type="text" class="form-control" placeholder="Henry">
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                        <div class="form-group">
-                            <label>Email:</label>
-                            <input type="email" class="form-control" placeholder="example@gmail.com">
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                        <div class="form-group">
-                            <label>Phone:</label>
-                            <input type="text" class="form-control" placeholder="+123-456-789">
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                        <div class="form-group">
-                            <label>Name Of  Company:</label>
-                            <select>
-                                <option>Orbit Inc.</option>
-                                <option>Another option</option>
-                                <option>A option</option>
-                                <option>Potato</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                        <div class="form-group">
-                            <label>Job Title:</label>
-                            <input type="text" class="form-control" placeholder="Web Developer">
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                        <div class="form-group">
-                            <label>Job Type:</label>
-                            <select>
-                                <option>Full Time</option>
-                                <option>Part Time</option>
-                                <option>Internship</option>
-                                <option>Freelancing</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                        <div class="form-group">
-                            <label>Job Category:</label>
-                            <select>
-                                <option>Digital & Creative</option>
-                                <option>Sales & Marketing</option>
-                                <option>Marketing & PR</option>
-                                <option>IT Contractor</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                        <div class="form-group">
-                            <label>Job Salary:</label>
-                            <select>
-                                <option>500$ - 1000$</option>
-                                <option>1000$ - 1500$</option>
-                                <option>1500$ - 2000$</option>
-                                <option>2000$ - 2500$</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                        <div class="form-group">
-                            <label>Job Experience:</label>
-                            <select>
-                                <option>0 - 1</option>
-                                <option>1 - 2</option>
-                                <option>2 - 3</option>
-                                <option>3 - 4</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                        <div class="form-group">
-                            <label>Job Qualification:</label>
-                            <select>
-                                <option>Certificate</option>
-                                <option>Diploma</option>
-                                <option>Bachelor Degree</option>
-                                <option>Master Degree</option>
-                                <option>No Need</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                        <div class="form-group">
-                            <label>Job Level:</label>
-                            <select>
-                                <option>Senior</option>
-                                <option>Junior</option>
-                                <option>Manager</option>
-                                <option>Lead</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <button type="submit" class="btn">Post A Job</button>
+  <div class="container">
+    <form [formGroup]="jobForm" (ngSubmit)="onSubmit()">
+      <div class="post-item">
+        <div class="row">
+          <!-- Job Title -->
+          <div class="col-lg-6 col-md-12">
+            <div class="form-group">
+              <label>Job Title:</label>
+              <input type="text" formControlName="job_title" class="form-control" placeholder="Web Developer" />
             </div>
-        </form>
-    </div>
+          </div>
+
+          <!-- Location -->
+          <div class="col-lg-6 col-md-12">
+            <div class="form-group">
+              <label>Location:</label>
+              <input type="text" formControlName="location" class="form-control" placeholder="City, Country" />
+            </div>
+          </div>
+
+          <!-- Modules Required -->
+          <div class="col-lg-12 col-md-12">
+            <div class="form-group">
+              <label>Modules Required:</label>
+              <textarea formControlName="modules_required" class="form-control" placeholder="List module names comma-separated..."></textarea>
+            </div>
+          </div>
+
+          <!-- Skills Required -->
+          <div class="col-lg-12 col-md-12">
+            <div class="form-group">
+              <label>Skills Required:</label>
+              <textarea formControlName="skills_required" class="form-control" placeholder="JavaScript, Angular, NestJS, etc."></textarea>
+            </div>
+          </div>
+
+          <!-- Certifications Required -->
+          <div class="col-lg-12 col-md-12">
+            <div class="form-group">
+              <label>Certifications Required:</label>
+              <textarea formControlName="certifications_required" class="form-control" placeholder="AWS Certified, PMP, etc."></textarea>
+            </div>
+          </div>
+
+          <!-- Experience Min -->
+          <div class="col-lg-6 col-md-12">
+            <div class="form-group">
+              <label>Experience Min (in years):</label>
+              <input type="number" step="0.1" formControlName="experience_min" class="form-control" placeholder="e.g. 1.5" />
+            </div>
+          </div>
+
+          <!-- Experience Max -->
+          <div class="col-lg-6 col-md-12">
+            <div class="form-group">
+              <label>Experience Max (in years):</label>
+              <input type="number" step="0.1" formControlName="experience_max" class="form-control" placeholder="e.g. 4.0" />
+            </div>
+          </div>
+
+          <!-- Employment Type -->
+          <div class="col-lg-6 col-md-12">
+            <div class="form-group">
+              <label>Employment Type:</label>
+              <select formControlName="employment_type" class="form-control">
+                <option value="">Select</option>
+                <option>Full Time</option>
+                <option>Part Time</option>
+                <option>Contract</option>
+                <option>Internship</option>
+                <option>Freelance</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Compensation Range -->
+          <div class="col-lg-6 col-md-12">
+            <div class="form-group">
+              <label>Compensation Range:</label>
+              <input type="text" formControlName="compensation_range" class="form-control" placeholder="$1000 - $2000" />
+            </div>
+          </div>
+
+          <!-- Job Description -->
+          <div class="col-lg-12 col-md-12">
+            <div class="form-group">
+              <label>Job Description:</label>
+              <textarea formControlName="job_description" class="form-control" placeholder="Describe the job role, responsibilities, etc."></textarea>
+            </div>
+          </div>
+
+          <!-- Notice Period -->
+          <div class="col-lg-6 col-md-12">
+            <div class="form-group">
+              <label>Notice Period:</label>
+              <input type="text" formControlName="notice_period" class="form-control" placeholder="e.g. 15 days / 1 month" />
+            </div>
+          </div>
+
+          <!-- Application Deadline -->
+          <div class="col-lg-6 col-md-12">
+            <div class="form-group">
+              <label>Application Deadline:</label>
+              <input type="date" formControlName="application_deadline" class="form-control" />
+            </div>
+          </div>
+
+          <!-- Status ID -->
+          <div class="col-lg-6 col-md-12">
+            <div class="form-group">
+              <label>Status ID:</label>
+              <input type="text" formControlName="status_id" class="form-control" placeholder="UUID for status (active, draft, etc.)" />
+            </div>
+          </div>
+
+          <!-- Recruiter ID -->
+          <div class="col-lg-6 col-md-12">
+            <div class="form-group">
+              <label>Recruiter ID:</label>
+              <input type="text" formControlName="recruiter_id" class="form-control" placeholder="UUID of the recruiter" />
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn" [disabled]="loading">
+          {{ loading ? 'Posting...' : 'Post A Job' }}
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <app-footer />
-
 <app-back-to-top />
