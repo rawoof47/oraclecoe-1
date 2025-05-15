@@ -7,7 +7,7 @@ import { NavbarComponent } from '../../common/navbar/navbar.component';
 import { PageBannerComponent } from '../../common/page-banner/page-banner.component';
 import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
-import { ToastrService } from 'ngx-toastr';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-post-a-job',
@@ -15,6 +15,7 @@ import { ToastrService } from 'ngx-toastr';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    MatSnackBarModule,
     NavbarComponent,
     PageBannerComponent,
     FooterComponent,
@@ -30,7 +31,7 @@ export class PostAJobComponent {
   constructor(
     private fb: FormBuilder,
     private jobPostService: JobPostService,
-    private toastr: ToastrService
+    private snackBar: MatSnackBar
   ) {
     this.jobForm = this.fb.group({
       job_title: ['', Validators.required],
@@ -46,29 +47,37 @@ export class PostAJobComponent {
       notice_period: [''],
       application_deadline: [''],
       status_id: ['', Validators.required],
-      recruiter_id: ['', Validators.required], // Ideally from token
-      created_by: [''], // Fill from logged-in user if available
+      recruiter_id: ['', Validators.required], // Can be auto-filled from token
+      created_by: [''], // Can be set from user session
     });
   }
 
   onSubmit(): void {
     if (this.jobForm.invalid) {
-      this.toastr.error('Please fill in the required fields.');
+      this.snackBar.open('Please fill in the required fields.', 'Close', {
+        duration: 3000,
+        panelClass: 'snackbar-error'
+      });
       return;
     }
 
     this.loading = true;
-
     const jobData: JobPost = this.jobForm.value;
 
     this.jobPostService.create(jobData).subscribe({
       next: () => {
-        this.toastr.success('Job posted successfully!');
+        this.snackBar.open('Job posted successfully!', 'Close', {
+          duration: 3000,
+          panelClass: 'snackbar-success'
+        });
         this.jobForm.reset();
       },
       error: (err) => {
-        this.toastr.error('Failed to post job. Please try again.');
         console.error(err);
+        this.snackBar.open('Failed to post job. Please try again.', 'Close', {
+          duration: 3000,
+          panelClass: 'snackbar-error'
+        });
       },
       complete: () => {
         this.loading = false;
