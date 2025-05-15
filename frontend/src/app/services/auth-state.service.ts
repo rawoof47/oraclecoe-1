@@ -1,11 +1,17 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
+interface User {
+  id: string;
+  role: string;
+  email?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthStateService {
-  private readonly isBrowser = typeof window !== 'undefined'; // ✅ SSR check
+  private readonly isBrowser = typeof window !== 'undefined';
 
   private isLoggedInSubject = new BehaviorSubject<boolean>(false);
   isLoggedIn$ = this.isLoggedInSubject.asObservable();
@@ -26,13 +32,13 @@ export class AuthStateService {
     if (!this.isBrowser) return;
 
     const token = localStorage.getItem('access_token');
-    const role = localStorage.getItem('role');
-    const uuid = localStorage.getItem('user_id');
+    const userJson = localStorage.getItem('user');
 
-    if (token) {
+    if (token && userJson) {
+      const user: User = JSON.parse(userJson);
       this.isLoggedInSubject.next(true);
-      this.userRoleSubject.next(role);
-      this.userIdSubject.next(uuid);
+      this.userRoleSubject.next(user.role);
+      this.userIdSubject.next(user.id);
     }
   }
 
@@ -41,24 +47,22 @@ export class AuthStateService {
 
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
-    localStorage.removeItem('role');
-    localStorage.removeItem('user_id');
+    localStorage.removeItem('user');
 
     this.isLoggedInSubject.next(false);
     this.userRoleSubject.next(null);
     this.userIdSubject.next(null);
   }
 
-  setAuthState(token: string, role: string, uuid: string) {
+  setAuthState(token: string, user: User) {
     if (!this.isBrowser) return;
 
     localStorage.setItem('access_token', token);
-    localStorage.setItem('role', role);
-    localStorage.setItem('user_id', uuid);
+    localStorage.setItem('user', JSON.stringify(user));
 
     this.isLoggedInSubject.next(true);
-    this.userRoleSubject.next(role);
-    this.userIdSubject.next(uuid);
+    this.userRoleSubject.next(user.role);
+    this.userIdSubject.next(user.id);
   }
 
   hasValidToken(): boolean {

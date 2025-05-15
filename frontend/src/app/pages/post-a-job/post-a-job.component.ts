@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -24,7 +24,7 @@ import { BackToTopComponent } from '../../common/back-to-top/back-to-top.compone
   templateUrl: './post-a-job.component.html',
   styleUrl: './post-a-job.component.scss',
 })
-export class PostAJobComponent {
+export class PostAJobComponent implements OnInit {
   jobForm: FormGroup;
   loading = false;
 
@@ -50,6 +50,18 @@ export class PostAJobComponent {
       recruiterId: ['', Validators.required],
       createdBy: ['']
     });
+  }
+
+  ngOnInit(): void {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const recruiterId = user?.id;
+    const role = user?.role;
+
+    if (role === 'recruiter' && recruiterId) {
+      this.jobForm.patchValue({ recruiterId });
+    } else {
+      console.warn('⚠️ No recruiter ID found in localStorage. Ensure user is logged in.');
+    }
   }
 
   onSubmit(): void {
@@ -82,6 +94,7 @@ export class PostAJobComponent {
           panelClass: 'snackbar-success'
         });
         this.jobForm.reset();
+        this.jobForm.patchValue({ recruiterId: formValues.recruiterId });
       },
       error: (err) => {
         console.error('❌ Job post failed:', err);
