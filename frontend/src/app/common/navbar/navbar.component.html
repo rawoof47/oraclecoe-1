@@ -66,8 +66,17 @@
               <a routerLink="/contact" class="nav-link" routerLinkActive="active">Contact</a>
             </li>
 
+            <!-- 🚀 Post a Job Button: Consistent space even if not recruiter -->
+<li class="nav-item ms-lg-auto me-2">
+  <ng-container *ngIf="(userRole$ | async) === 'recruiter'">
+    <a routerLink="/post-a-job" class="nav-link post-job-btn">
+      <i class="bx bx-briefcase"></i> Post a Job
+    </a>
+  </ng-container>
+</li>
+
             <!-- 🔓 If user is NOT logged in -->
-            <li class="nav-item dropdown ms-lg-auto" *ngIf="!(isLoggedIn$ | async)">
+            <li class="nav-item dropdown" *ngIf="!(isLoggedIn$ | async)">
               <a href="javascript:void(0)" class="nav-link dropdown-toggle">
                 <i class="flaticon-enter"></i> Login/Register <i class="bx bx-chevron-down"></i>
               </a>
@@ -82,7 +91,7 @@
             </li>
 
             <!-- 🔐 If user IS logged in -->
-            <li class="nav-item ms-lg-auto" *ngIf="isLoggedIn$ | async">
+            <li class="nav-item" *ngIf="isLoggedIn$ | async">
               <a (click)="logout()" class="nav-link" style="cursor: pointer;">
                 <i class="flaticon-enter"></i> Logout
               </a>
@@ -93,79 +102,3 @@
     </div>
   </div>
 </div>
-
-
-<style>
-    .logo-lg {
-        height: 40x;
-        width: auto;
-    }
-
-    .nav-item.dropdown {
-        position: relative;
-    }
-
-    .nav-link.dropdown-toggle {
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        color: var(--blue-color) !important;
-    }
-
-    .nav-link.dropdown-toggle:hover {
-        color: var(--pink-color) !important;
-    }
-
-    .dropdown-menu {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        background: var(--blue-color);
-        padding: 10px 0;
-        transform: rotateX(-45deg);
-        transform-origin: top;
-        transition: transform 0.3s ease, opacity 0.3s ease;
-        opacity: 0;
-        visibility: hidden;
-        z-index: 999;
-        min-width: 160px;
-        border-radius: 4px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-
-    .nav-item.dropdown:hover .dropdown-menu {
-        transform: rotateX(0deg);
-        opacity: 1;
-        visibility: visible;
-    }
-
-    .dropdown-menu .nav-item a {
-        display: block;
-        padding: 8px 20px;
-        color: var(--white-color) !important;
-        text-decoration: none;
-        transition: 0.3s;
-    }
-
-    .dropdown-menu .nav-item a:hover {
-        background-color: var(--pink-color);
-        color: var(--white-color) !important;
-    }
-
-    .ms-lg-auto {
-        margin-left: auto !important;
-    }
-
-    .flaticon-enter {
-        font-size: 18px;
-        position: relative;
-        top: 1px;
-        margin-right: 5px;
-    }
-
-    .dropdown-menu .nav-item a.active {
-        background-color: var(--pink-color);
-        color: var(--white-color) !important;
-    }
-</style>
