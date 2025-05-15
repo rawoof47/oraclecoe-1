@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
 import { JobPostService } from '../../services/job-post.service';
-import { JobPost } from '../../auth/models/job-post.model';
 import { NavbarComponent } from '../../common/navbar/navbar.component';
 import { PageBannerComponent } from '../../common/page-banner/page-banner.component';
 import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-post-a-job',
@@ -22,7 +22,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     BackToTopComponent,
   ],
   templateUrl: './post-a-job.component.html',
-  styleUrl: './post-a-job.component.scss'
+  styleUrl: './post-a-job.component.scss',
 })
 export class PostAJobComponent {
   jobForm: FormGroup;
@@ -34,21 +34,21 @@ export class PostAJobComponent {
     private snackBar: MatSnackBar
   ) {
     this.jobForm = this.fb.group({
-      job_title: ['', Validators.required],
+      jobTitle: ['', Validators.required],
       location: [''],
-      modules_required: [''],
-      skills_required: [''],
-      certifications_required: [''],
-      experience_min: [null],
-      experience_max: [null],
-      employment_type: [''],
-      compensation_range: [''],
-      job_description: [''],
-      notice_period: [''],
-      application_deadline: [''],
-      status_id: ['', Validators.required],
-      recruiter_id: ['', Validators.required], // Can be auto-filled from token
-      created_by: [''], // Can be set from user session
+      modulesRequired: [''],
+      skillsRequired: ['', Validators.required],
+      certificationsRequired: [''],
+      experienceMin: [null, Validators.required],
+      experienceMax: [null, Validators.required],
+      employmentType: ['', Validators.required],
+      compensationRange: ['', Validators.required],
+      jobDescription: ['', Validators.required],
+      noticePeriod: ['', Validators.required],
+      applicationDeadline: [''],
+      statusId: ['', Validators.required],
+      recruiterId: ['', Validators.required],
+      createdBy: ['']
     });
   }
 
@@ -62,9 +62,20 @@ export class PostAJobComponent {
     }
 
     this.loading = true;
-    const jobData: JobPost = this.jobForm.value;
 
-    this.jobPostService.create(jobData).subscribe({
+    const formValues = this.jobForm.value;
+
+    const jobPostPayload = {
+      ...formValues,
+      experienceMin: Number(formValues.experienceMin),
+      experienceMax: Number(formValues.experienceMax),
+      applicationDeadline: formValues.applicationDeadline
+        ? new Date(formValues.applicationDeadline).toISOString()
+        : undefined,
+      updatedBy: undefined
+    };
+
+    this.jobPostService.create(jobPostPayload).subscribe({
       next: () => {
         this.snackBar.open('Job posted successfully!', 'Close', {
           duration: 3000,
@@ -73,11 +84,15 @@ export class PostAJobComponent {
         this.jobForm.reset();
       },
       error: (err) => {
-        console.error(err);
-        this.snackBar.open('Failed to post job. Please try again.', 'Close', {
-          duration: 3000,
-          panelClass: 'snackbar-error'
-        });
+        console.error('❌ Job post failed:', err);
+        this.snackBar.open(
+          err?.error?.message || 'Failed to post job. Please try again.',
+          'Close',
+          {
+            duration: 4000,
+            panelClass: 'snackbar-error'
+          }
+        );
       },
       complete: () => {
         this.loading = false;
