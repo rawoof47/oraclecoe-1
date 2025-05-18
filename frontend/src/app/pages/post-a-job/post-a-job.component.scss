@@ -1,190 +1,193 @@
 .post-job-area {
-  .post-item {
-    text-align: center;
-    background-color: #f5f5f5;
-    padding: 40px 50px 50px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  background-color: #f9f9f9;
+  padding-top: 100px;
+  padding-bottom: 100px;
 
-    .form-group {
+  .container {
+    max-width: 1100px;
+  }
+
+  .post-item {
+    background-color: #ffffff;
+    padding: 40px 50px 50px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+
+    .form-inline-group {
+      display: flex;
+      align-items: flex-start;
       margin-bottom: 24px;
-      text-align: start;
+      gap: 16px;
 
       label {
-        margin-bottom: 8px;
-        display: block;
+        width: 180px;
         font-weight: 600;
         font-size: 15px;
         color: #333;
+        margin-bottom: 0;
+        white-space: nowrap;
+        padding-top: 12px;
       }
 
-      .form-control,
+      input,
       select,
-      textarea {
-        width: 100%;
-        height: 48px;
-        padding: 12px 16px;
+      textarea,
+      ng-select {
+        flex: 1;
         font-size: 14px;
-        border: 1px solid #d9d9d9;
+        padding: 12px 16px;
+        border: 1px solid #ccc;
         border-radius: 4px;
         transition: border-color 0.3s, box-shadow 0.3s;
+        background-color: #fff;
 
         &:focus {
-          border-color: var(--pink-color);
-          box-shadow: 0 0 0 3px rgba(255, 0, 128, 0.1);
+          border-color: #007bff;
+          box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
           outline: none;
         }
       }
 
       textarea {
+        min-height: 100px;
         resize: vertical;
-        min-height: 120px;
       }
 
       ::placeholder {
-        color: #a3a3a3;
-        opacity: 1;
+        color: #999;
       }
     }
 
-    .btn {
-      color: var(--white-color);
-      background-color: var(--pink-color);
-      border-radius: 6px;
-      padding: 12px 100px;
-      font-weight: 600;
+    // Modules Required Dropdown Styles
+    ng-select {
+      display: flex;
+      flex: 1;
+      position: relative; // ✅ ADDED to anchor the dropdown panel correctly
+
+      ::ng-deep {
+        // Main container styling
+        .ng-select-container {
+          min-height: 48px;
+          border: 1px solid #ffffff; // Black outline added
+          border-radius: 4px;
+          padding: 6px 12px;
+          align-items: flex-start;
+          background-color: #fff !important;
+          transition: all 0.3s ease;
+
+          // Value container for tags
+          .ng-value-container {
+            align-items: flex-start !important;
+            flex-wrap: wrap !important;
+            gap: 6px !important;
+            padding-top: 4px !important;
+          }
+
+          // Placeholder text styling
+          .ng-placeholder {
+            color: #999 !important;
+            position: relative !important;
+            top: auto !important;
+            transform: none !important;
+            margin-top: 4px;
+          }
+
+          // Focus state styling
+          &.ng-select-focused {
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+          }
+        }
+
+        // Dropdown panel styling
+        .ng-dropdown-panel {
+          background: #fff !important;
+          border: 1px solid #000 !important;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+          border-radius: 4px !important;
+          margin-top: 8px !important;
+          left: 0 !important;
+          width: 100% !important;
+          z-index: 1001 !important;
+          top: 100% !important; // ✅ ENSURES DROPDOWN COMES BELOW THE FIELD
+          position: absolute !important; // ✅ ENSURES CORRECT POSITIONING
+          
+          // Dropdown options styling
+          .ng-option {
+            padding: 10px 16px !important;
+            background: #fff !important;
+            color: #333;
+
+            &.ng-option-selected {
+              background: #f8f9fa !important;
+              color: #007bff;
+            }
+
+            &.ng-option-marked {
+              background: #e6f0ff !important;
+              color: #007bff;
+            }
+          }
+        }
+
+        // Tag styling
+        .ng-value {
+          background-color: #007bff;
+          color: white;
+          border-radius: 12px;
+          padding: 4px 12px;
+          margin: 2px 4px 2px 0 !important;
+          font-size: 13px;
+          display: flex;
+          align-items: center;
+          max-width: 100%;
+          word-break: break-word;
+
+          .ng-value-icon {
+            color: white;
+            margin-right: 4px;
+            &:hover {
+              background-color: transparent;
+            }
+          }
+        }
+
+        // Clear button styling
+        .ng-clear-wrapper {
+          color: #999;
+          &:hover {
+            color: #666;
+          }
+        }
+
+        // Dropdown arrow styling
+        .ng-arrow-wrapper {
+          color: #666;
+          padding-right: 8px !important;
+        }
+      }
+    }
+
+    // Submit button styling
+    button.btn {
+      margin-top: 30px;
+      background-color: #007bff;
+      border: none;
+      padding: 12px 30px;
       font-size: 16px;
-      display: inline-block;
-      text-align: center;
-      transition: background-color 0.3s;
+      font-weight: 600;
+      color: white;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
 
       &:hover {
-        background-color: var(--blue-color);
+        background-color: #0056b3;
       }
 
       &:disabled {
-        opacity: 0.6;
+        background-color: #ccc;
         cursor: not-allowed;
       }
-    }
-  }
-
-  // 🔽 Responsive Styles
-
-  // Mobile - Max width 767px
-  @media only screen and (max-width: 767px) {
-    .post-item {
-      padding: 25px 15px 30px;
-
-      .btn {
-        padding: 12px 60px;
-        width: 100%;
-      }
-    }
-  }
-
-  // Tablet - 768px to 991px
-  @media only screen and (min-width: 768px) and (max-width: 991px) {
-    .post-item {
-      padding: 30px;
-    }
-  }
-
-  // Small desktops - 992px to 1199px
-  @media only screen and (min-width: 992px) and (max-width: 1199px) {
-    .post-item {
-      padding: 35px 40px;
-    }
-  }
-
-  // Large desktops - 1200px to 1300px
-  @media only screen and (min-width: 1200px) and (max-width: 1300px) {
-    .post-item {
-      padding: 40px 45px;
-    }
-  }
-
-  // Ultra-wide screens - min 1800px
-  @media only screen and (min-width: 1800px) {
-    .post-item {
-      max-width: 900px;
-      margin: auto;
-    }
-  }
-}
-.snackbar-success {
-  background-color: #4caf50;
-  color: #fff;
-}
-
-.snackbar-error {
-  background-color: #f44336;
-  color: #fff;
-}
-::ng-deep ng-select {
-  width: 100%;
-
-  .ng-select-container {
-    height: 48px;
-    border: 1px solid #d9d9d9;
-    border-radius: 4px;
-    padding: 0 12px;
-    font-size: 14px;
-    background-color: #fff;
-    display: flex;
-    align-items: center;
-    transition: border-color 0.3s, box-shadow 0.3s;
-    box-shadow: none;
-  }
-
-  &.ng-select-focused .ng-select-container {
-    border-color: var(--pink-color);
-    box-shadow: 0 0 0 3px rgba(255, 0, 128, 0.1);
-  }
-
-  .ng-placeholder {
-    color: #a3a3a3;
-  }
-
-  .ng-arrow-wrapper {
-    color: #999;
-  }
-
-  .ng-value {
-    background-color: #f0f0f0;
-    color: #333;
-    border-radius: 12px;
-    padding: 2px 8px;
-    margin-right: 4px;
-    font-size: 13px;
-  }
-
-  .ng-clear-wrapper {
-    margin-left: 8px;
-  }
-
-  .ng-dropdown-panel {
-    border: 1px solid #d9d9d9;
-    border-radius: 0 0 4px 4px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  }
-
-  .ng-dropdown-panel .ng-option {
-    padding: 10px 16px;
-    font-size: 14px;
-    color: #333;
-    background-color: #fff;
-
-    &.ng-option-selected {
-      background-color: #f3f3f3;
-    }
-
-    &.ng-option-marked {
-      background-color: #f7f7f7;
-    }
-
-    &:hover {
-      background-color: #f0f0f0;
     }
   }
 }
