@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { Subject } from 'rxjs';
 
 import { JobPostService } from '../../services/job-post.service';
 import { NavbarComponent } from '../../common/navbar/navbar.component';
@@ -16,6 +18,7 @@ import { BackToTopComponent } from '../../common/back-to-top/back-to-top.compone
     CommonModule,
     ReactiveFormsModule,
     MatSnackBarModule,
+    NgSelectModule,
     NavbarComponent,
     PageBannerComponent,
     FooterComponent,
@@ -27,6 +30,15 @@ import { BackToTopComponent } from '../../common/back-to-top/back-to-top.compone
 export class PostAJobComponent implements OnInit {
   jobForm: FormGroup;
   loading = false;
+  moduleTypeahead = new Subject<string>();
+
+  // Predefined module options
+  moduleOptions = [
+    { name: 'Oracle Cloud' },
+    { name: 'Financial' },
+    { name: 'Procurement' },
+    { name: 'Projects Financial Management' }
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -36,7 +48,7 @@ export class PostAJobComponent implements OnInit {
     this.jobForm = this.fb.group({
       jobTitle: ['', Validators.required],
       location: [''],
-      modulesRequired: [''],
+      modulesRequired: [[]],
       skillsRequired: ['', Validators.required],
       certificationsRequired: [''],
       experienceMin: [null, Validators.required],
@@ -80,6 +92,8 @@ export class PostAJobComponent implements OnInit {
 
     const jobPostPayload = {
       ...formValues,
+      // Convert modules to strings if using objects
+      modulesRequired: formValues.modulesRequired.map((m: any) => m.name || m),
       experienceMin: Number(formValues.experienceMin),
       experienceMax: Number(formValues.experienceMax),
       applicationDeadline: formValues.applicationDeadline

@@ -28,12 +28,21 @@
           </div>
 
           <!-- Modules Required -->
-          <div class="col-lg-12 col-md-12">
-            <div class="form-group">
-              <label>Modules Required:</label>
-              <textarea formControlName="modulesRequired" class="form-control" placeholder="List module names comma-separated..."></textarea>
-            </div>
-          </div>
+<div class="col-lg-12 col-md-12">
+  <div class="form-group">
+    <label>Modules Required:</label>
+    <ng-select
+      [items]="moduleOptions"
+      [multiple]="true"
+      bindLabel="name"
+      formControlName="modulesRequired"
+      placeholder="Select or type to add modules"
+      [addTag]="true"
+    >
+    </ng-select>
+  </div>
+</div>
+
 
           <!-- Skills Required -->
           <div class="col-lg-12 col-md-12">
