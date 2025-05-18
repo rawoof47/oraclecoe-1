@@ -19,39 +19,45 @@
           </div>
 
           <!-- Location -->
-          <div class="col-lg-6 col-md-12">
-            <div class="form-inline-group">
-              <label class="form-label">Location:</label>
-              <input type="text" formControlName="location" placeholder="City, Country" class="form-control" />
-            </div>
-          </div>
-
-         <!-- Modules Required -->
-<div class="col-lg-12 col-md-12">
-  <div class="form-inline-group">
-    <label class="form-label">Modules Required:</label>
-    <ng-select
-      [items]="moduleOptions"
-      [multiple]="true"
-      [addTag]="true"
-      bindLabel="name"
-      formControlName="modulesRequired"
-      placeholder="Select or type to add modules"
-      [class.ng-invalid]="jobForm.get('modulesRequired')?.invalid && jobForm.get('modulesRequired')?.touched"
-    >
-      <ng-template ng-option-tmp let-item="item">
-        {{ item.name }}
-      </ng-template>
-      <ng-template ng-tag-tmp let-item="item">
-        <div class="ng-tag-label">
-          {{ item.name }}
-          <div class="ng-tag-remove"></div>
-        </div>
-      </ng-template>
-      <ng-template ng-header-tmp></ng-template>
-    </ng-select>
+<div class="col-lg-6 col-md-12">
+  <div class="form-inline-group location-field">
+    <div class="location-wrapper">
+      <label class="form-label">Location:</label>
+      <input 
+        type="text" 
+        formControlName="location" 
+        placeholder="City, Country" 
+        class="form-control" 
+      />
+    </div>
   </div>
 </div>
+          <!-- Modules Required -->
+          <div class="col-lg-12 col-md-12">
+            <div class="form-inline-group">
+              <label class="form-label">Modules Required:</label>
+              <ng-select
+                [items]="moduleOptions"
+                [multiple]="true"
+                [addTag]="true"
+                bindLabel="name"
+                formControlName="modulesRequired"
+                placeholder="Select or type to add modules"
+                [class.ng-invalid]="jobForm.get('modulesRequired')?.invalid && jobForm.get('modulesRequired')?.touched"
+              >
+                <ng-template ng-option-tmp let-item="item">
+                  {{ item.name }}
+                </ng-template>
+                <ng-template ng-tag-tmp let-item="item">
+                  <div class="ng-tag-label">
+                    {{ item.name }}
+                    <div class="ng-tag-remove"></div>
+                  </div>
+                </ng-template>
+                <ng-template ng-header-tmp></ng-template>
+              </ng-select>
+            </div>
+          </div>
 
           <!-- Skills Required -->
           <div class="col-lg-12 col-md-12">
@@ -150,10 +156,12 @@
           <input type="hidden" formControlName="recruiterId" />
         </div>
 
-        <!-- Submit Button -->
-        <button type="submit" class="btn primary-btn" [disabled]="loading">
-          {{ loading ? 'Posting...' : 'Post A Job' }}
-        </button>
+        <!-- Submit Button Centered -->
+        <div style="display: flex; justify-content: center; margin-top: 30px;">
+          <button type="submit" class="btn primary-btn" [disabled]="loading">
+            {{ loading ? 'Posting...' : 'Post A Job' }}
+          </button>
+        </div>
       </div>
     </form>
   </div>

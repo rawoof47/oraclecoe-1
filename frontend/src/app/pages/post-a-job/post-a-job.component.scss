@@ -191,3 +191,23 @@
     }
   }
 }
+.location-field {
+  .location-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+
+    label {
+      width: auto !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      flex-shrink: 0;
+    }
+
+    .form-control {
+      flex: 1;
+      min-width: 0; // Fixes flexbox overflow issue
+    }
+  }
+}
