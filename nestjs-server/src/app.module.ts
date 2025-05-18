@@ -28,6 +28,7 @@ import { StatusCategoriesModule } from './status-categories/status-categories.mo
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { UserBadgesModule } from './user-badges/user-badges.module';
 import { AuthModule } from './auth/auth.module';
+import { JobsModule } from './jobs/jobs.module';
 
 @Module({
   imports: [
@@ -75,6 +76,7 @@ import { AuthModule } from './auth/auth.module';
     SubscriptionsModule,
     UserBadgesModule,
     AuthModule,
+    JobsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
