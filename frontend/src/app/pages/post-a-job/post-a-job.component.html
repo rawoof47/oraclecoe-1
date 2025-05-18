@@ -106,13 +106,20 @@
             </div>
           </div>
 
-          <!-- Notice Period -->
-          <div class="col-lg-6 col-md-12">
-            <div class="form-group">
-              <label>Notice Period:</label>
-              <input type="text" formControlName="noticePeriod" class="form-control" placeholder="e.g. 15 days / 1 month" />
-            </div>
-          </div>
+         <div class="col-lg-6 col-md-12">
+  <div class="form-group">
+    <label>Notice Period:</label>
+    <select formControlName="noticePeriod" class="form-control">
+      <option value="">Select Notice Period</option>
+      <option value="< 1 Month">&lt; 1 Month</option>
+      <option value="1 Month">1 Month</option>
+      <option value="2 Months">2 Months</option>
+      <option value="3 Months">3 Months</option>
+      <option value="Immediate">Immediate</option>
+    </select>
+  </div>
+</div>
+
 
           <!-- Application Deadline -->
           <div class="col-lg-6 col-md-12">
