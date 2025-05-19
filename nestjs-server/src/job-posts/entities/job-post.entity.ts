@@ -58,4 +58,7 @@ export class JobPost {
 
   @Column({ type: 'char', length: 36, nullable: true })
   updated_by: string | null;
+
+  @Column({ type: 'longtext', nullable: true })
+  work_mode: string | null;
 }

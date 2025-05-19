@@ -24,7 +24,7 @@ export class CreateJobPostDto {
   @IsArray()
   @IsOptional()
   @IsString({ each: true })
-  modulesRequired?: string[]; // ✅ Now accepts array input
+  modulesRequired?: string[];
 
   @IsString()
   @IsNotEmpty()
@@ -69,4 +69,9 @@ export class CreateJobPostDto {
   @IsUUID()
   @IsOptional()
   updatedBy?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  workMode?: string[];
 }

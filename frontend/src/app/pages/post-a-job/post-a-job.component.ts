@@ -32,13 +32,14 @@ export class PostAJobComponent implements OnInit {
   loading = false;
   moduleTypeahead = new Subject<string>();
 
-  // Predefined module options
   moduleOptions = [
     { name: 'Oracle Cloud' },
     { name: 'Financial' },
     { name: 'Procurement' },
     { name: 'Projects Financial Management' }
   ];
+
+  workModeOptions = ['Remote', 'On-site', 'Hybrid']; // New
 
   constructor(
     private fb: FormBuilder,
@@ -51,10 +52,11 @@ export class PostAJobComponent implements OnInit {
       modulesRequired: [[]],
       skillsRequired: ['', Validators.required],
       certificationsRequired: [''],
-      experienceMin: [null, Validators.required],
-      experienceMax: [null, Validators.required],
+      experienceMin: [null, [Validators.required, Validators.min(0)]],
+      experienceMax: [null, [Validators.required, Validators.min(0)]],
       employmentType: ['', Validators.required],
       compensationRange: ['', Validators.required],
+      workMode: ['', Validators.required], // ✅ Added workMode
       jobDescription: ['', Validators.required],
       noticePeriod: ['', Validators.required],
       applicationDeadline: [''],
@@ -71,7 +73,7 @@ export class PostAJobComponent implements OnInit {
     if (role === 'recruiter' && recruiterId) {
       this.jobForm.patchValue({ recruiterId });
     } else {
-      console.warn('⚠️ No recruiter ID found in localStorage. Ensure user is logged in.');
+      console.warn('⚠️ No recruiter ID found. Ensure recruiter is logged in.');
     }
   }
 
@@ -81,7 +83,7 @@ export class PostAJobComponent implements OnInit {
         duration: 3000,
         panelClass: 'snackbar-error',
         horizontalPosition: 'right',
-        verticalPosition: 'top'
+        verticalPosition: 'top',
       });
       return;
     }
@@ -92,23 +94,22 @@ export class PostAJobComponent implements OnInit {
 
     const jobPostPayload = {
       ...formValues,
-      // Convert modules to strings if using objects
       modulesRequired: formValues.modulesRequired.map((m: any) => m.name || m),
       experienceMin: Number(formValues.experienceMin),
       experienceMax: Number(formValues.experienceMax),
       applicationDeadline: formValues.applicationDeadline
         ? new Date(formValues.applicationDeadline).toISOString()
         : undefined,
-      updatedBy: undefined
+      updatedBy: undefined,
     };
 
     this.jobPostService.create(jobPostPayload).subscribe({
       next: () => {
-        this.snackBar.open('Job posted successfully!', 'Close', {
+        this.snackBar.open('✅ Job posted successfully!', 'Close', {
           duration: 3000,
           panelClass: 'snackbar-success',
           horizontalPosition: 'right',
-          verticalPosition: 'top'
+          verticalPosition: 'top',
         });
         this.jobForm.reset();
         this.jobForm.patchValue({ recruiterId: formValues.recruiterId });
@@ -122,7 +123,7 @@ export class PostAJobComponent implements OnInit {
             duration: 4000,
             panelClass: 'snackbar-error',
             horizontalPosition: 'right',
-            verticalPosition: 'top'
+            verticalPosition: 'top',
           }
         );
       },

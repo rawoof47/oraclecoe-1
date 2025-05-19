@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JobPost } from './entities/job-post.entity';
@@ -20,7 +20,6 @@ export class JobPostsService {
     jobPost.job_title = createJobPostDto.jobTitle;
     jobPost.location = createJobPostDto.location ?? null;
 
-    // ✅ Convert array to comma-separated string
     jobPost.modules_required = Array.isArray(createJobPostDto.modulesRequired)
       ? createJobPostDto.modulesRequired.join(',')
       : null;
@@ -34,8 +33,12 @@ export class JobPostsService {
     jobPost.job_description = createJobPostDto.jobDescription ?? null;
     jobPost.notice_period = createJobPostDto.noticePeriod ?? null;
 
-    // Automatically assign the "Active" status
-    jobPost.status_id = '36f3301d-318e-11f0-aa4d-80ce6232908a'; // Active status UUID
+    jobPost.work_mode = Array.isArray(createJobPostDto.workMode)
+      ? createJobPostDto.workMode.join(',')
+      : null;
+
+    // Default status set to "Active"
+    jobPost.status_id = '36f3301d-318e-11f0-aa4d-80ce6232908a'; // example UUID
 
     jobPost.application_deadline = createJobPostDto.applicationDeadline ?? null;
     jobPost.created_by = createJobPostDto.createdBy ?? null;
@@ -64,12 +67,22 @@ export class JobPostsService {
     const jobPost = await this.jobPostRepository.findOne({ where: { id } });
 
     if (!jobPost) {
-      throw new Error('Job post not found');
+      throw new NotFoundException('Job post not found');
     }
 
     Object.assign(jobPost, updateJobPostDto);
 
-    // Validate required fields
+    // Handle modules_required as comma-separated string
+    if (Array.isArray(updateJobPostDto.modulesRequired)) {
+      jobPost.modules_required = updateJobPostDto.modulesRequired.join(',');
+    }
+
+    // Handle work_mode as comma-separated string
+    if (Array.isArray(updateJobPostDto.workMode)) {
+      jobPost.work_mode = updateJobPostDto.workMode.join(',');
+    }
+
+    // Validate required fields after update
     if (!jobPost.job_title || !jobPost.skills_required || !jobPost.job_description) {
       throw new BadRequestException('Job Title, Skills Required, and Job Description are required.');
     }
@@ -82,7 +95,7 @@ export class JobPostsService {
     const jobPost = await this.jobPostRepository.findOne({ where: { id } });
 
     if (!jobPost) {
-      throw new Error('Job post not found');
+      throw new NotFoundException('Job post not found');
     }
 
     return this.jobPostRepository.remove(jobPost);

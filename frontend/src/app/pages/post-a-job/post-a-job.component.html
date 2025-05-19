@@ -14,24 +14,45 @@
           <div class="col-lg-6 col-md-12">
             <div class="form-inline-group">
               <label class="form-label">Job Title:</label>
-              <input type="text" formControlName="jobTitle" placeholder="Web Developer" class="form-control" />
+              <input
+                type="text"
+                formControlName="jobTitle"
+                placeholder="Web Developer"
+                class="form-control"
+              />
             </div>
           </div>
 
           <!-- Location -->
+          <div class="col-lg-6 col-md-12">
+            <div class="form-inline-group location-field">
+              <label class="form-label">Location:</label>
+              <input
+                type="text"
+                formControlName="location"
+                placeholder="City, Country"
+                class="form-control"
+              />
+            </div>
+          </div>
+
+          <!-- Work Mode -->
 <div class="col-lg-6 col-md-12">
-  <div class="form-inline-group location-field">
-    <div class="location-wrapper">
-      <label class="form-label">Location:</label>
-      <input 
-        type="text" 
-        formControlName="location" 
-        placeholder="City, Country" 
-        class="form-control" 
-      />
-    </div>
+  <div class="form-inline-group">
+    <label class="form-label">Work Mode <span class="text-danger"></span></label>
+    <ng-select
+      [items]="workModeOptions"
+      formControlName="workMode"
+      placeholder="Select work mode"
+      [searchable]="false"
+    >
+    </ng-select>
   </div>
 </div>
+
+
+          
+
           <!-- Modules Required -->
           <div class="col-lg-12 col-md-12">
             <div class="form-inline-group">
@@ -43,7 +64,6 @@
                 bindLabel="name"
                 formControlName="modulesRequired"
                 placeholder="Select or type to add modules"
-                [class.ng-invalid]="jobForm.get('modulesRequired')?.invalid && jobForm.get('modulesRequired')?.touched"
               >
                 <ng-template ng-option-tmp let-item="item">
                   {{ item.name }}
@@ -54,7 +74,6 @@
                     <div class="ng-tag-remove"></div>
                   </div>
                 </ng-template>
-                <ng-template ng-header-tmp></ng-template>
               </ng-select>
             </div>
           </div>
@@ -63,15 +82,25 @@
           <div class="col-lg-12 col-md-12">
             <div class="form-inline-group">
               <label class="form-label">Skills Required:</label>
-              <textarea formControlName="skillsRequired" placeholder="JavaScript, Angular, NestJS, etc." class="form-control"></textarea>
+              <textarea
+                formControlName="skillsRequired"
+                placeholder="JavaScript, Angular, NestJS, etc."
+                class="form-control"
+              ></textarea>
             </div>
           </div>
+          
+
 
           <!-- Certifications Required -->
           <div class="col-lg-12 col-md-12">
             <div class="form-inline-group">
               <label class="form-label">Certifications Required:</label>
-              <textarea formControlName="certificationsRequired" placeholder="AWS Certified, PMP, etc." class="form-control"></textarea>
+              <textarea
+                formControlName="certificationsRequired"
+                placeholder="AWS Certified, PMP, etc."
+                class="form-control"
+              ></textarea>
             </div>
           </div>
 
@@ -79,7 +108,13 @@
           <div class="col-lg-6 col-md-12">
             <div class="form-inline-group">
               <label class="form-label">Experience Min (years):</label>
-              <input type="number" step="0.1" formControlName="experienceMin" placeholder="e.g. 1.5" class="form-control" />
+              <input
+                type="number"
+                step="0.1"
+                formControlName="experienceMin"
+                placeholder="e.g. 1.5"
+                class="form-control"
+              />
             </div>
           </div>
 
@@ -87,7 +122,13 @@
           <div class="col-lg-6 col-md-12">
             <div class="form-inline-group">
               <label class="form-label">Experience Max (years):</label>
-              <input type="number" step="0.1" formControlName="experienceMax" placeholder="e.g. 4.0" class="form-control" />
+              <input
+                type="number"
+                step="0.1"
+                formControlName="experienceMax"
+                placeholder="e.g. 4.0"
+                class="form-control"
+              />
             </div>
           </div>
 
@@ -107,25 +148,29 @@
           </div>
 
           <!-- Compensation Range -->
-<div class="col-lg-6 col-md-12">
-  <div class="form-inline-group">
-    <label class="form-label">Compensation Range:</label>
-    <select formControlName="compensationRange" class="form-control">
-      <option value="">Select Compensation Range</option>
-      <option value="<500000">&lt; ₹500,000</option>
-      <option value="500000-1000000">₹500,000 - ₹1,000,000</option>
-      <option value="1000000-1500000">₹1,000,000 - ₹1,500,000</option>
-      <option value="1500000-2000000">₹1,500,000 - ₹2,000,000</option>
-      <option value=">2000000">&gt; ₹2,000,000</option>
-    </select>
-  </div>
-</div>
+          <div class="col-lg-6 col-md-12">
+            <div class="form-inline-group">
+              <label class="form-label">Compensation Range:</label>
+              <select formControlName="compensationRange" class="form-control">
+                <option value="">Select Compensation Range</option>
+                <option value="<500000">&lt; ₹500,000</option>
+                <option value="500000-1000000">₹500,000 - ₹1,000,000</option>
+                <option value="1000000-1500000">₹1,000,000 - ₹1,500,000</option>
+                <option value="1500000-2000000">₹1,500,000 - ₹2,000,000</option>
+                <option value=">2000000">&gt; ₹2,000,000</option>
+              </select>
+            </div>
+          </div>
 
           <!-- Job Description -->
           <div class="col-lg-12 col-md-12">
             <div class="form-inline-group">
               <label class="form-label">Job Description:</label>
-              <textarea formControlName="jobDescription" placeholder="Describe the job role, responsibilities, etc." class="form-control"></textarea>
+              <textarea
+                formControlName="jobDescription"
+                placeholder="Describe the job role, responsibilities, etc."
+                class="form-control"
+              ></textarea>
             </div>
           </div>
 
@@ -140,7 +185,6 @@
                 <option value="1 Month">1 Month</option>
                 <option value="2 Months">2 Months</option>
                 <option value="3 Months">3 Months</option>
-                
               </select>
             </div>
           </div>
@@ -149,7 +193,11 @@
           <div class="col-lg-6 col-md-12">
             <div class="form-inline-group">
               <label class="form-label">Application Deadline:</label>
-              <input type="date" formControlName="applicationDeadline" class="form-control" />
+              <input
+                type="date"
+                formControlName="applicationDeadline"
+                class="form-control"
+              />
             </div>
           </div>
 
@@ -158,8 +206,12 @@
         </div>
 
         <!-- Submit Button Centered -->
-        <div style="display: flex; justify-content: center; margin-top: 30px;">
-          <button type="submit" class="btn primary-btn" [disabled]="loading">
+        <div class="text-center mt-4">
+          <button
+            type="submit"
+            class="btn primary-btn"
+            [disabled]="loading"
+          >
             {{ loading ? 'Posting...' : 'Post A Job' }}
           </button>
         </div>

@@ -1,4 +1,11 @@
-import { IsString, IsUUID, IsOptional, IsNumber, IsDateString } from 'class-validator';
+import {
+  IsString,
+  IsUUID,
+  IsOptional,
+  IsNumber,
+  IsDateString,
+  IsArray,
+} from 'class-validator';
 
 export class UpdateJobPostDto {
   @IsUUID()
@@ -64,4 +71,9 @@ export class UpdateJobPostDto {
   @IsUUID()
   @IsOptional()
   updatedBy?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  workMode?: string[];
 }
