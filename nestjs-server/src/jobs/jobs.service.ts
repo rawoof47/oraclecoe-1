@@ -1,5 +1,5 @@
 // src/jobs/jobs.service.ts
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JobPost } from '../job-posts/entities/job-post.entity';
 import { Repository } from 'typeorm';
@@ -12,12 +12,16 @@ export class JobsService {
   ) {}
 
   async findAll(): Promise<JobPost[]> {
-    return await this.jobPostRepository.find({
+    return this.jobPostRepository.find({
       order: { created_at: 'DESC' },
     });
   }
 
-  async findOne(id: string): Promise<JobPost | null> {
-    return await this.jobPostRepository.findOneBy({ id });
+  async findOne(id: string): Promise<JobPost> {
+    const job = await this.jobPostRepository.findOneBy({ id });
+    if (!job) {
+      throw new NotFoundException(`Job post with ID ${id} not found`);
+    }
+    return job;
   }
 }
