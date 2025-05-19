@@ -153,10 +153,10 @@
   optionalDependencies:
     lmdb "3.2.6"
 
-"@angular/cdk@^19.2.15", "@angular/cdk@19.2.15":
-  version "19.2.15"
-  resolved "https://registry.npmjs.org/@angular/cdk/-/cdk-19.2.15.tgz"
-  integrity sha512-srM0O4oVPvMIbv1m+fU3D0X2ZK0Q7raggCD7jcb+d+pXoPESqI91Hn8FIhA2OCbw0vJWJ/Mly8lskmIb8RNLcQ==
+"@angular/cdk@^19.2.16", "@angular/cdk@19.2.16":
+  version "19.2.16"
+  resolved "https://registry.npmjs.org/@angular/cdk/-/cdk-19.2.16.tgz"
+  integrity sha512-67nbWqoiZIBc8nEaCn7GHd02bM5T9qAbJ5w+Zq4V19CL3oCtrCrS4CV3Lsoi5HETSmn4iZcYS/Dph8omCvNkew==
   dependencies:
     parse5 "^7.1.2"
     tslib "^2.3.0"
@@ -226,10 +226,10 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/material@^19.2.15":
-  version "19.2.15"
-  resolved "https://registry.npmjs.org/@angular/material/-/material-19.2.15.tgz"
-  integrity sha512-5IRzspYwzG58nz9/uJwGpaeFymaVveylIg8A+7SyYjAASFkdDUdI2hQn8TPRiP3AhGRSSx80BShYrcYwTZseYA==
+"@angular/material@^19.2.16":
+  version "19.2.16"
+  resolved "https://registry.npmjs.org/@angular/material/-/material-19.2.16.tgz"
+  integrity sha512-SSky/3MBOTdCBWOEffmVdnnKaCX6T4r3CqK2TJCLqWsHarPz5jovYIacfOe1RJzXijmDxXK5+VYhS64PNJaa6g==
   dependencies:
     tslib "^2.3.0"
 
@@ -1113,6 +1113,38 @@
   version "0.25.1"
   resolved "https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.25.1.tgz"
   integrity sha512-Y1EQdcfwMSeQN/ujR5VayLOJ1BHaK+ssyk0AEzPjC+t1lITgsnccPqFjb6V+LsTp/9Iov4ysfjxLaGJ9RPtkVg==
+
+"@fortawesome/angular-fontawesome@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/@fortawesome/angular-fontawesome/-/angular-fontawesome-1.0.0.tgz"
+  integrity sha512-EC2fYuXIuw2ld1kzJi+zysWus6OeGGfLQtbh0hW9zyyq5aBo8ZJkcJKBsVQ8E6Mg7nHyTWaXn+sdcXTPDWz+UQ==
+  dependencies:
+    "@fortawesome/fontawesome-svg-core" "^6.7.1"
+    tslib "^2.8.1"
+
+"@fortawesome/fontawesome-common-types@6.7.2":
+  version "6.7.2"
+  resolved "https://registry.npmjs.org/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-6.7.2.tgz"
+  integrity sha512-Zs+YeHUC5fkt7Mg1l6XTniei3k4bwG/yo3iFUtZWd/pMx9g3fdvkSK9E0FOC+++phXOka78uJcYb8JaFkW52Xg==
+
+"@fortawesome/fontawesome-free@^6.7.2":
+  version "6.7.2"
+  resolved "https://registry.npmjs.org/@fortawesome/fontawesome-free/-/fontawesome-free-6.7.2.tgz"
+  integrity sha512-JUOtgFW6k9u4Y+xeIaEiLr3+cjoUPiAuLXoyKOJSia6Duzb7pq+A76P9ZdPDoAoxHdHzq6gE9/jKBGXlZT8FbA==
+
+"@fortawesome/fontawesome-svg-core@^6.7.1", "@fortawesome/fontawesome-svg-core@^6.7.2":
+  version "6.7.2"
+  resolved "https://registry.npmjs.org/@fortawesome/fontawesome-svg-core/-/fontawesome-svg-core-6.7.2.tgz"
+  integrity sha512-yxtOBWDrdi5DD5o1pmVdq3WMCvnobT0LU6R8RyyVXPvFRd2o79/0NCuQoCjNTeZz9EzA9xS3JxNWfv54RIHFEA==
+  dependencies:
+    "@fortawesome/fontawesome-common-types" "6.7.2"
+
+"@fortawesome/free-solid-svg-icons@^6.7.2":
+  version "6.7.2"
+  resolved "https://registry.npmjs.org/@fortawesome/free-solid-svg-icons/-/free-solid-svg-icons-6.7.2.tgz"
+  integrity sha512-GsBrnOzU8uj0LECDfD5zomZJIjrPhIlWU82AHwa2s40FKH+kcxQaBvBo3Z4TxyZHIyX8XTDxsyA33/Vx9eFuQA==
+  dependencies:
+    "@fortawesome/fontawesome-common-types" "6.7.2"
 
 "@inquirer/checkbox@^4.1.2":
   version "4.1.5"
@@ -6171,7 +6203,7 @@ tree-kill@1.2.2:
   resolved "https://registry.npmjs.org/tree-kill/-/tree-kill-1.2.2.tgz"
   integrity sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==
 
-tslib@^2, tslib@^2.0.0, tslib@^2.1.0, tslib@^2.3.0, tslib@^2.3.1, tslib@2, tslib@2.8.1:
+tslib@^2, tslib@^2.0.0, tslib@^2.1.0, tslib@^2.3.0, tslib@^2.3.1, tslib@^2.8.1, tslib@2, tslib@2.8.1:
   version "2.8.1"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.8.1.tgz"
   integrity sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==

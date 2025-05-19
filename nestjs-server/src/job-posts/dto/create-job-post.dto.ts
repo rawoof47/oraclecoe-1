@@ -5,6 +5,7 @@ import {
   IsNumber,
   IsDateString,
   IsNotEmpty,
+  IsArray,
 } from 'class-validator';
 
 export class CreateJobPostDto {
@@ -20,9 +21,10 @@ export class CreateJobPostDto {
   @IsOptional()
   location?: string;
 
-  @IsString()
+  @IsArray()
   @IsOptional()
-  modulesRequired?: string;
+  @IsString({ each: true })
+  modulesRequired?: string[]; // ✅ Now accepts array input
 
   @IsString()
   @IsNotEmpty()
@@ -55,8 +57,6 @@ export class CreateJobPostDto {
   @IsString()
   @IsNotEmpty()
   noticePeriod: string;
-
-  // ❌ Removed statusId — this will now be set in the service layer
 
   @IsDateString()
   @IsOptional()

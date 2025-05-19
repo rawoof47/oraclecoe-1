@@ -19,7 +19,12 @@ export class JobPostsService {
     jobPost.recruiter_id = createJobPostDto.recruiterId;
     jobPost.job_title = createJobPostDto.jobTitle;
     jobPost.location = createJobPostDto.location ?? null;
-    jobPost.modules_required = createJobPostDto.modulesRequired ?? null;
+
+    // ✅ Convert array to comma-separated string
+    jobPost.modules_required = Array.isArray(createJobPostDto.modulesRequired)
+      ? createJobPostDto.modulesRequired.join(',')
+      : null;
+
     jobPost.skills_required = createJobPostDto.skillsRequired ?? null;
     jobPost.certifications_required = createJobPostDto.certificationsRequired ?? null;
     jobPost.experience_min = createJobPostDto.experienceMin ?? null;

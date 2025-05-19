@@ -5,8 +5,11 @@ import { routes } from './app/app.routes';
 import { provideHttpClient, withInterceptors, HttpClient } from '@angular/common/http';
 import { HttpInterceptorFn } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { importProvidersFrom } from '@angular/core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
 
-// ✅ Use function-based interceptor (Angular 16+ compatible way)
+// ✅ JWT Interceptor
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem('accessToken');
   if (token) {
@@ -22,10 +25,9 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
-    provideHttpClient(
-      withInterceptors([jwtInterceptor])
-    ),
-    provideAnimations(), // ✅ Required for Angular Material animations
+    provideHttpClient(withInterceptors([jwtInterceptor])),
+    provideAnimations(),
+    importProvidersFrom(FontAwesomeModule),
     {
       provide: 'TEST_HTTP',
       useFactory: (http: HttpClient) => {
@@ -34,5 +36,14 @@ bootstrapApplication(AppComponent, {
       },
       deps: [HttpClient],
     },
-  ],
+    // Initialize Font Awesome icons
+    {
+      provide: FaIconLibrary,
+      useFactory: () => {
+        const library = new FaIconLibrary();
+        library.addIconPacks(fas);
+        return library;
+      }
+    }
+  ]
 }).catch(err => console.error('❌ BOOTSTRAP FAILED:', err));

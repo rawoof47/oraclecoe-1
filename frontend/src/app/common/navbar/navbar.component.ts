@@ -3,7 +3,15 @@ import { Component, HostListener } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthStateService } from '../../services/auth-state.service';
 import { Observable } from 'rxjs';
-
+import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { 
+  faUserCircle, 
+  faSignOutAlt, 
+  faUser, 
+  faCog, 
+  faBell 
+} from '@fortawesome/free-solid-svg-icons';
+import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-navbar',
   standalone: true,
@@ -11,8 +19,10 @@ import { Observable } from 'rxjs';
     RouterLink,
     RouterLinkActive,
     NgClass,
+    MatIconModule ,
     NgIf,
-    AsyncPipe // ✅ Required for using | async in template
+    AsyncPipe,
+    FontAwesomeModule // ✅ Added Font Awesome module
   ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
@@ -26,13 +36,15 @@ export class NavbarComponent {
 
   constructor(
     public router: Router,
-    private authStateService: AuthStateService
+    private authStateService: AuthStateService,
+    private library: FaIconLibrary // ✅ Injected FaIconLibrary
   ) {
-    // Subscribe to authentication state
+    // Add icons to library
+    library.addIcons(faUserCircle, faSignOutAlt, faUser, faCog, faBell);
+
+    // Auth state initialization
     this.isLoggedIn$ = this.authStateService.isLoggedIn$;
     this.userRole$ = this.authStateService.userRole$;
-
-    // Restore auth state on component load
     this.authStateService.restoreStateFromLocalStorage();
   }
 
