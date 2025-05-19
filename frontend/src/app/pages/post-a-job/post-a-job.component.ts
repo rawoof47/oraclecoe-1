@@ -33,10 +33,9 @@ export class PostAJobComponent implements OnInit {
   moduleTypeahead = new Subject<string>();
 
   moduleOptions = [
-    { name: 'Oracle Cloud' },
-    { name: 'Financial' },
-    { name: 'Procurement' },
-    { name: 'Projects Financial Management' }
+    { name: 'Oracle Cloud Financial' },
+    { name: 'Oracle Cloud Procurement' },
+    { name: 'Oracle Cloud Projects Financial Management' }
   ];
 
   workModeOptions = ['Remote', 'On-site', 'Hybrid']; // New
