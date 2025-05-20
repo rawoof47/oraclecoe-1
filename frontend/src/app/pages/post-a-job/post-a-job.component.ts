@@ -38,7 +38,34 @@ export class PostAJobComponent implements OnInit {
     { name: 'Oracle Cloud Projects Financial Management' }
   ];
 
-  workModeOptions = ['Remote', 'On-site', 'Hybrid']; // New
+  oracleExpertiseOptions = [
+    { name: 'Oracle EBS' },
+    { name: 'Oracle Cloud Infrastructure' },
+    { name: 'Oracle Apex' },
+    { name: 'Oracle HCM' }
+  ];
+
+  // ✅ New Oracle Domain Expertise (Functional & EPM Cloud) options
+  oracleDomainExpertiseOptions = [
+    { name: 'Oracle Financials (GL, AP, AR, FA)' },
+    { name: 'Oracle Procurement' },
+    { name: 'Oracle SCM (OM, INV, MFG)' },
+    { name: 'Oracle HCM' },
+    { name: 'Oracle PPM' },
+    { name: 'Oracle Projects (PA)' },
+    { name: 'Oracle Grants' },
+    { name: 'Oracle Subscription Management' },
+    { name: 'Oracle EBS R12 (Functional)' },
+    { name: 'Oracle Self-Service Procurement' },
+    { name: 'Oracle Sourcing / Contracts' },
+    { name: 'FCCS (Financial Consolidation)' },
+    { name: 'PBCS / EPBCS (Planning & Budgeting)' },
+    { name: 'ARCS (Reconciliation)' },
+    { name: 'TRCS (Tax Reporting)' },
+    { name: 'EDMCS (Master Data Mgmt)' },
+  ];
+
+  workModeOptions = ['Remote', 'On-site', 'Hybrid'];
 
   constructor(
     private fb: FormBuilder,
@@ -49,13 +76,14 @@ export class PostAJobComponent implements OnInit {
       jobTitle: ['', Validators.required],
       location: [''],
       modulesRequired: [[]],
+      oracleDomainExpertise: [[]], // ✅ Added new form field
       skillsRequired: ['', Validators.required],
       certificationsRequired: [''],
       experienceMin: [null, [Validators.required, Validators.min(0)]],
       experienceMax: [null, [Validators.required, Validators.min(0)]],
       employmentType: ['', Validators.required],
       compensationRange: ['', Validators.required],
-      workMode: ['', Validators.required], // ✅ Added workMode
+      workMode: ['', Validators.required],
       jobDescription: ['', Validators.required],
       noticePeriod: ['', Validators.required],
       applicationDeadline: [''],
@@ -94,6 +122,7 @@ export class PostAJobComponent implements OnInit {
     const jobPostPayload = {
       ...formValues,
       modulesRequired: formValues.modulesRequired.map((m: any) => m.name || m),
+      oracleDomainExpertise: formValues.oracleDomainExpertise.map((e: any) => e.name || e), // ✅ Process oracle expertise
       experienceMin: Number(formValues.experienceMin),
       experienceMax: Number(formValues.experienceMax),
       applicationDeadline: formValues.applicationDeadline

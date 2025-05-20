@@ -37,14 +37,17 @@ export class JobPostsService {
       ? createJobPostDto.workMode.join(',')
       : null;
 
-    // Default status set to "Active"
+    // ✅ NEW FIELD: oracle_domain_expertise
+    jobPost.oracle_domain_expertise = Array.isArray(createJobPostDto.oracleDomainExpertise)
+      ? createJobPostDto.oracleDomainExpertise.join(',')
+      : null;
+
     jobPost.status_id = '36f3301d-318e-11f0-aa4d-80ce6232908a'; // example UUID
 
     jobPost.application_deadline = createJobPostDto.applicationDeadline ?? null;
     jobPost.created_by = createJobPostDto.createdBy ?? null;
     jobPost.updated_by = createJobPostDto.updatedBy ?? null;
 
-    // Validate required fields
     if (!jobPost.job_title || !jobPost.skills_required || !jobPost.job_description) {
       throw new BadRequestException('Job Title, Skills Required, and Job Description are required.');
     }
@@ -72,17 +75,19 @@ export class JobPostsService {
 
     Object.assign(jobPost, updateJobPostDto);
 
-    // Handle modules_required as comma-separated string
     if (Array.isArray(updateJobPostDto.modulesRequired)) {
       jobPost.modules_required = updateJobPostDto.modulesRequired.join(',');
     }
 
-    // Handle work_mode as comma-separated string
     if (Array.isArray(updateJobPostDto.workMode)) {
       jobPost.work_mode = updateJobPostDto.workMode.join(',');
     }
 
-    // Validate required fields after update
+    // ✅ NEW FIELD: oracle_domain_expertise
+    if (Array.isArray(updateJobPostDto.oracleDomainExpertise)) {
+      jobPost.oracle_domain_expertise = updateJobPostDto.oracleDomainExpertise.join(',');
+    }
+
     if (!jobPost.job_title || !jobPost.skills_required || !jobPost.job_description) {
       throw new BadRequestException('Job Title, Skills Required, and Job Description are required.');
     }

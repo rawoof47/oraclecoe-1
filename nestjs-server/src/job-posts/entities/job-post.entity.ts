@@ -61,4 +61,8 @@ export class JobPost {
 
   @Column({ type: 'longtext', nullable: true })
   work_mode: string | null;
+
+  // ✅ NEW COLUMN ADDED
+  @Column({ type: 'longtext', nullable: true })
+  oracle_domain_expertise: string | null;
 }

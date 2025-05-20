@@ -78,6 +78,34 @@
             </div>
           </div>
 
+          <!-- ✅ Oracle Domain Expertise (Functional & EPM Cloud) -->
+<div class="col-lg-12 col-md-12">
+  <div class="form-inline-group">
+    <label class="form-label">
+  Oracle Domain Expertise<br />
+  <span style="font-size: 90%; font-weight: normal;">(Functional & EPM Cloud):</span>
+</label>
+
+    <ng-select
+      [items]="oracleDomainExpertiseOptions"
+      [multiple]="true"
+      bindLabel="name"
+      formControlName="oracleDomainExpertise"
+      placeholder="Select Oracle domain expertise"
+    >
+      <ng-template ng-option-tmp let-item="item">
+        {{ item.name }}
+      </ng-template>
+      <ng-template ng-tag-tmp let-item="item">
+        <div class="ng-tag-label">
+          {{ item.name }}
+          <div class="ng-tag-remove"></div>
+        </div>
+      </ng-template>
+    </ng-select>
+  </div>
+</div>
+
           <!-- Skills Required -->
           <div class="col-lg-12 col-md-12">
             <div class="form-inline-group">
