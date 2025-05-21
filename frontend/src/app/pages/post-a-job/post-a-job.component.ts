@@ -47,12 +47,6 @@ export class PostAJobComponent implements OnInit {
   loading = false;
   moduleTypeahead = new Subject<string>();
 
-  moduleOptions = [
-    { name: 'Oracle Cloud Financial' },
-    { name: 'Oracle Cloud Procurement' },
-    { name: 'Oracle Cloud Projects Financial Management' },
-  ];
-
   functionalSkills: Skill[] = [];
   technicalSkills: Skill[] = [];
   oracleMiddlewareSkills: Skill[] = [];
@@ -68,12 +62,6 @@ export class PostAJobComponent implements OnInit {
     this.jobForm = this.fb.group({
       jobTitle: ['', Validators.required],
       location: [''],
-      modulesRequired: [[]],
-      functionalSkills: [[]],
-      technicalSkills: [[]],
-      oracleMiddlewareSkills: [[]],
-      reportingSkills: [[]],
-      skillsRequired: ['', Validators.required],
       certificationsRequired: [''],
       experienceMin: [null, [Validators.required, Validators.min(0)]],
       experienceMax: [null, [Validators.required, Validators.min(0)]],
@@ -84,7 +72,19 @@ export class PostAJobComponent implements OnInit {
       noticePeriod: ['', Validators.required],
       applicationDeadline: [''],
       recruiterId: ['', Validators.required],
-      createdBy: ['']
+      createdBy: [''],
+
+      // ✅ New fields added
+      roleSummary: ['', Validators.required],
+      preferredQualifications: [''],
+      whatWeOffer: [''],
+      howToApply: [''],
+
+      // ✅ Skill selections
+      functionalSkills: [[]],
+      technicalSkills: [[]],
+      oracleMiddlewareSkills: [[]],
+      reportingSkills: [[]],
     });
   }
 
@@ -139,7 +139,6 @@ export class PostAJobComponent implements OnInit {
 
     const jobPostPayload = {
       ...formValues,
-      modulesRequired: formValues.modulesRequired.map((m: any) => m.name || m),
       functionalSkills: formValues.functionalSkills.map((s: Skill) => s.name),
       technicalSkills: formValues.technicalSkills.map((s: Skill) => s.name),
       oracleMiddlewareSkills: formValues.oracleMiddlewareSkills.map((s: Skill) => s.name),
@@ -152,7 +151,6 @@ export class PostAJobComponent implements OnInit {
       updatedBy: undefined,
     };
 
-    // ✅ FIXED: Ensure only valid skill objects are used
     const selectedSkillIds: string[] = [
       ...formValues.functionalSkills.map((s: Skill) => s?.id).filter(Boolean),
       ...formValues.technicalSkills.map((s: Skill) => s?.id).filter(Boolean),

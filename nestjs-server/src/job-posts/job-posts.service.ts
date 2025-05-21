@@ -25,12 +25,6 @@ export class JobPostsService {
     jobPost.recruiter_id = createJobPostDto.recruiterId;
     jobPost.job_title = createJobPostDto.jobTitle;
     jobPost.location = createJobPostDto.location ?? null;
-
-    jobPost.modules_required = Array.isArray(createJobPostDto.modulesRequired)
-      ? createJobPostDto.modulesRequired.join(',')
-      : null;
-
-    jobPost.skills_required = createJobPostDto.skillsRequired ?? null;
     jobPost.certifications_required = createJobPostDto.certificationsRequired ?? null;
     jobPost.experience_min = createJobPostDto.experienceMin ?? null;
     jobPost.experience_max = createJobPostDto.experienceMax ?? null;
@@ -38,19 +32,24 @@ export class JobPostsService {
     jobPost.compensation_range = createJobPostDto.compensationRange ?? null;
     jobPost.job_description = createJobPostDto.jobDescription ?? null;
     jobPost.notice_period = createJobPostDto.noticePeriod ?? null;
+    jobPost.status_id = '36f3301d-318e-11f0-aa4d-80ce6232908a'; // Default status
+    jobPost.application_deadline = createJobPostDto.applicationDeadline ?? null;
+    jobPost.created_by = createJobPostDto.createdBy ?? null;
+    jobPost.updated_by = createJobPostDto.updatedBy ?? null;
 
     jobPost.work_mode = Array.isArray(createJobPostDto.workMode)
       ? createJobPostDto.workMode.join(',')
       : null;
 
-    jobPost.status_id = '36f3301d-318e-11f0-aa4d-80ce6232908a'; // Default UUID
-    jobPost.application_deadline = createJobPostDto.applicationDeadline ?? null;
-    jobPost.created_by = createJobPostDto.createdBy ?? null;
-    jobPost.updated_by = createJobPostDto.updatedBy ?? null;
+    // ✅ New fields
+    jobPost.role_summary = createJobPostDto.roleSummary ?? null;
+    jobPost.preferred_qualifications = createJobPostDto.preferredQualifications ?? null;
+    jobPost.what_we_offer = createJobPostDto.whatWeOffer ?? null;
+    jobPost.how_to_apply = createJobPostDto.howToApply ?? null;
 
-    if (!jobPost.job_title || !jobPost.skills_required || !jobPost.job_description) {
+    if (!jobPost.job_title || !jobPost.job_description) {
       throw new BadRequestException(
-        'Job Title, Skills Required, and Job Description are required.',
+        'Job Title and Job Description are required.',
       );
     }
 
@@ -103,17 +102,14 @@ export class JobPostsService {
 
     Object.assign(jobPost, updateJobPostDto);
 
-    if (Array.isArray(updateJobPostDto.modulesRequired)) {
-      jobPost.modules_required = updateJobPostDto.modulesRequired.join(',');
-    }
-
+    // Convert arrays to comma-separated strings if provided
     if (Array.isArray(updateJobPostDto.workMode)) {
       jobPost.work_mode = updateJobPostDto.workMode.join(',');
     }
 
-    if (!jobPost.job_title || !jobPost.skills_required || !jobPost.job_description) {
+    if (!jobPost.job_title || !jobPost.job_description) {
       throw new BadRequestException(
-        'Job Title, Skills Required, and Job Description are required.',
+        'Job Title and Job Description are required.',
       );
     }
 
@@ -121,8 +117,7 @@ export class JobPostsService {
 
     if (
       updateJobPostDto.skillIds &&
-      Array.isArray(updateJobPostDto.skillIds) &&
-      updateJobPostDto.skillIds.length > 0
+      Array.isArray(updateJobPostDto.skillIds)
     ) {
       await this.jobPostSkillService.replaceSkills(updatedPost.id, updateJobPostDto.skillIds);
     }

@@ -53,30 +53,7 @@
 
           
 
-          <!-- Modules Required -->
-          <div class="col-lg-12 col-md-12">
-            <div class="form-inline-group">
-              <label class="form-label">Modules Required:</label>
-              <ng-select
-                [items]="moduleOptions"
-                [multiple]="true"
-                [addTag]="true"
-                bindLabel="name"
-                formControlName="modulesRequired"
-                placeholder="Select or type to add modules"
-              >
-                <ng-template ng-option-tmp let-item="item">
-                  {{ item.name }}
-                </ng-template>
-                <ng-template ng-tag-tmp let-item="item">
-                  <div class="ng-tag-label">
-                    {{ item.name }}
-                    <div class="ng-tag-remove"></div>
-                  </div>
-                </ng-template>
-              </ng-select>
-            </div>
-          </div>
+          
 
          <!-- Functional Skills -->
 <div class="col-lg-6 col-md-12">
@@ -157,17 +134,6 @@
 
 
 
-          <!-- Skills Required -->
-          <div class="col-lg-12 col-md-12">
-            <div class="form-inline-group">
-              <label class="form-label">Skills Required:</label>
-              <textarea
-                formControlName="skillsRequired"
-                placeholder="JavaScript, Angular, NestJS, etc."
-                class="form-control"
-              ></textarea>
-            </div>
-          </div>
           
 
 
@@ -182,6 +148,31 @@
               ></textarea>
             </div>
           </div>
+
+
+          <!-- Preferred Qualifications -->
+<div class="col-lg-12 col-md-12">
+  <div class="form-inline-group">
+    <label class="form-label">Preferred Qualifications</label>
+    <textarea
+      formControlName="preferredQualifications"
+      placeholder="Additional desirable qualifications"
+      class="form-control"
+    ></textarea>
+  </div>
+</div>
+
+<!-- What We Offer -->
+<div class="col-lg-12 col-md-12">
+  <div class="form-inline-group">
+    <label class="form-label">What We Offer</label>
+    <textarea
+      formControlName="whatWeOffer"
+      placeholder="Benefits and perks"
+      class="form-control"
+    ></textarea>
+  </div>
+</div>
 
           <!-- Experience Min -->
           <div class="col-lg-6 col-md-12">
@@ -252,6 +243,34 @@
               ></textarea>
             </div>
           </div>
+
+      
+<!-- Role Summary -->
+<div class="col-lg-12 col-md-12">
+  <div class="form-inline-group">
+    <label class="form-label">Role Summary *</label>
+    <textarea
+      formControlName="roleSummary"
+      placeholder="Key responsibilities and role overview"
+      class="form-control"
+    ></textarea>
+    <div *ngIf="jobForm.get('roleSummary')?.invalid && (jobForm.get('roleSummary')?.touched)" class="text-danger small mt-1">
+      Required field
+    </div>
+  </div>
+</div>
+
+<!-- How to Apply -->
+<div class="col-lg-12 col-md-12">
+  <div class="form-inline-group">
+    <label class="form-label">How to Apply</label>
+    <textarea
+      formControlName="howToApply"
+      placeholder="Application instructions"
+      class="form-control"
+    ></textarea>
+  </div>
+</div>
 
           <!-- Notice Period -->
           <div class="col-lg-6 col-md-12">

@@ -23,12 +23,6 @@ export class JobPost {
   location: string | null;
 
   @Column({ type: 'longtext', nullable: true })
-  modules_required: string | null;
-
-  @Column({ type: 'longtext', nullable: true })
-  skills_required: string | null;
-
-  @Column({ type: 'longtext', nullable: true })
   certifications_required: string | null;
 
   @Column({ type: 'decimal', precision: 3, scale: 1, nullable: true })
@@ -70,9 +64,21 @@ export class JobPost {
   @Column({ type: 'longtext', nullable: true })
   work_mode: string | null;
 
+  // ✅ Newly added columns
+  @Column({ type: 'text', nullable: true })
+  role_summary: string | null;
+
+  @Column({ type: 'text', nullable: true })
+  preferred_qualifications: string | null;
+
+  @Column({ type: 'text', nullable: true })
+  what_we_offer: string | null;
+
+  @Column({ type: 'text', nullable: true })
+  how_to_apply: string | null;
+
   // ✅ JobPostSkill relationship
-  @OneToMany(() => JobPostSkill, (jobPostSkill) => jobPostSkill.jobPost
-, {
+  @OneToMany(() => JobPostSkill, (jobPostSkill) => jobPostSkill.jobPost, {
     cascade: true,
   })
   jobPostSkills: JobPostSkill[];

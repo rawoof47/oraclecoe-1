@@ -20,15 +20,6 @@ export class UpdateJobPostDto {
   @IsOptional()
   location?: string;
 
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  modulesRequired?: string[];
-
-  @IsString()
-  @IsOptional()
-  skillsRequired?: string;
-
   @IsString()
   @IsOptional()
   certificationsRequired?: string;
@@ -78,12 +69,24 @@ export class UpdateJobPostDto {
   @IsString({ each: true })
   workMode?: string[];
 
+  // ✅ New fields from updated JobPost entity
+  @IsString()
   @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  oracleDomainExpertise?: string[];
+  roleSummary?: string;
 
-  // ✅ NEW FIELD FOR job_post_skills
+  @IsString()
+  @IsOptional()
+  preferredQualifications?: string;
+
+  @IsString()
+  @IsOptional()
+  whatWeOffer?: string;
+
+  @IsString()
+  @IsOptional()
+  howToApply?: string;
+
+  // ✅ Skill ID array for job_post_skills relation
   @IsOptional()
   @IsArray()
   @IsString({ each: true })

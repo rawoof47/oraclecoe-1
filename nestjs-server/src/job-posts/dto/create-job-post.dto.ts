@@ -21,15 +21,6 @@ export class CreateJobPostDto {
   @IsOptional()
   location?: string;
 
-  @IsArray()
-  @IsOptional()
-  @IsString({ each: true })
-  modulesRequired?: string[];
-
-  @IsString()
-  @IsNotEmpty()
-  skillsRequired: string;
-
   @IsString()
   @IsOptional()
   certificationsRequired?: string;
@@ -75,12 +66,24 @@ export class CreateJobPostDto {
   @IsString({ each: true })
   workMode?: string[];
 
+  // ✅ New columns
+  @IsString()
   @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  oracleDomainExpertise?: string[];
+  roleSummary?: string;
 
-  // ✅ NEW FIELD FOR job_post_skills
+  @IsString()
+  @IsOptional()
+  preferredQualifications?: string;
+
+  @IsString()
+  @IsOptional()
+  whatWeOffer?: string;
+
+  @IsString()
+  @IsOptional()
+  howToApply?: string;
+
+  // ✅ Skill ID array for job_post_skills relation
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
