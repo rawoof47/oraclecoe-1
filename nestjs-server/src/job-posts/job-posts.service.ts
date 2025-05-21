@@ -1,18 +1,24 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JobPost } from './entities/job-post.entity';
 import { CreateJobPostDto } from './dto';
 import { UpdateJobPostDto } from './dto/update-job-post.dto';
+import { JobPostSkillService } from 'src/job-post-skill/job-post-skill.service';
 
 @Injectable()
 export class JobPostsService {
   constructor(
     @InjectRepository(JobPost)
     private readonly jobPostRepository: Repository<JobPost>,
+    private readonly jobPostSkillService: JobPostSkillService,
   ) {}
 
-  // Create a new job post
+  // ✅ Create a new job post and related skills
   async create(createJobPostDto: CreateJobPostDto) {
     const jobPost = new JobPost();
 
@@ -37,35 +43,57 @@ export class JobPostsService {
       ? createJobPostDto.workMode.join(',')
       : null;
 
-    // ✅ NEW FIELD: oracle_domain_expertise
-    jobPost.oracle_domain_expertise = Array.isArray(createJobPostDto.oracleDomainExpertise)
-      ? createJobPostDto.oracleDomainExpertise.join(',')
-      : null;
-
-    jobPost.status_id = '36f3301d-318e-11f0-aa4d-80ce6232908a'; // example UUID
-
+    jobPost.status_id = '36f3301d-318e-11f0-aa4d-80ce6232908a'; // Default UUID
     jobPost.application_deadline = createJobPostDto.applicationDeadline ?? null;
     jobPost.created_by = createJobPostDto.createdBy ?? null;
     jobPost.updated_by = createJobPostDto.updatedBy ?? null;
 
     if (!jobPost.job_title || !jobPost.skills_required || !jobPost.job_description) {
-      throw new BadRequestException('Job Title, Skills Required, and Job Description are required.');
+      throw new BadRequestException(
+        'Job Title, Skills Required, and Job Description are required.',
+      );
     }
 
-    return this.jobPostRepository.save(jobPost);
+    const savedPost = await this.jobPostRepository.save(jobPost);
+
+    if (
+      createJobPostDto.skillIds &&
+      Array.isArray(createJobPostDto.skillIds) &&
+      createJobPostDto.skillIds.length > 0
+    ) {
+      await this.jobPostSkillService.saveSkills(savedPost.id, createJobPostDto.skillIds);
+    }
+
+    return {
+      message: 'Job post created successfully',
+      data: savedPost,
+    };
   }
 
-  // Get all job posts
-  findAll() {
-    return this.jobPostRepository.find();
+  // ✅ Get all job posts
+  async findAll() {
+    const jobPosts = await this.jobPostRepository.find();
+    return {
+      message: 'Job posts fetched successfully',
+      data: jobPosts,
+    };
   }
 
-  // Get a job post by ID
-  findOne(id: string) {
-    return this.jobPostRepository.findOne({ where: { id } });
+  // ✅ Get a job post by ID
+  async findOne(id: string) {
+    const jobPost = await this.jobPostRepository.findOne({ where: { id } });
+
+    if (!jobPost) {
+      throw new NotFoundException('Job post not found');
+    }
+
+    return {
+      message: 'Job post fetched successfully',
+      data: jobPost,
+    };
   }
 
-  // Update an existing job post by ID
+  // ✅ Update a job post and its skills
   async update(id: string, updateJobPostDto: UpdateJobPostDto) {
     const jobPost = await this.jobPostRepository.findOne({ where: { id } });
 
@@ -83,19 +111,29 @@ export class JobPostsService {
       jobPost.work_mode = updateJobPostDto.workMode.join(',');
     }
 
-    // ✅ NEW FIELD: oracle_domain_expertise
-    if (Array.isArray(updateJobPostDto.oracleDomainExpertise)) {
-      jobPost.oracle_domain_expertise = updateJobPostDto.oracleDomainExpertise.join(',');
-    }
-
     if (!jobPost.job_title || !jobPost.skills_required || !jobPost.job_description) {
-      throw new BadRequestException('Job Title, Skills Required, and Job Description are required.');
+      throw new BadRequestException(
+        'Job Title, Skills Required, and Job Description are required.',
+      );
     }
 
-    return this.jobPostRepository.save(jobPost);
+    const updatedPost = await this.jobPostRepository.save(jobPost);
+
+    if (
+      updateJobPostDto.skillIds &&
+      Array.isArray(updateJobPostDto.skillIds) &&
+      updateJobPostDto.skillIds.length > 0
+    ) {
+      await this.jobPostSkillService.replaceSkills(updatedPost.id, updateJobPostDto.skillIds);
+    }
+
+    return {
+      message: 'Job post updated successfully',
+      data: updatedPost,
+    };
   }
 
-  // Remove a job post by ID
+  // ✅ Remove a job post by ID
   async remove(id: string) {
     const jobPost = await this.jobPostRepository.findOne({ where: { id } });
 
@@ -103,6 +141,11 @@ export class JobPostsService {
       throw new NotFoundException('Job post not found');
     }
 
-    return this.jobPostRepository.remove(jobPost);
+    const deleted = await this.jobPostRepository.remove(jobPost);
+
+    return {
+      message: 'Job post deleted successfully',
+      data: deleted,
+    };
   }
 }

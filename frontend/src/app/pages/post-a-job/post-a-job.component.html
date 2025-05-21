@@ -78,33 +78,84 @@
             </div>
           </div>
 
-          <!-- ✅ Oracle Domain Expertise (Functional & EPM Cloud) -->
-<div class="col-lg-12 col-md-12">
+         <!-- Functional Skills -->
+<div class="col-lg-6 col-md-12">
   <div class="form-inline-group">
     <label class="form-label">
-  Oracle Domain Expertise<br />
-  <span style="font-size: 90%; font-weight: normal;">(Functional & EPM Cloud):</span>
-</label>
-
+      Functional &<br />
+      Oracle EPM Cloud Skills:
+    </label>
     <ng-select
-      [items]="oracleDomainExpertiseOptions"
-      [multiple]="true"
+      [items]="functionalSkills"
       bindLabel="name"
-      formControlName="oracleDomainExpertise"
-      placeholder="Select Oracle domain expertise"
-    >
-      <ng-template ng-option-tmp let-item="item">
-        {{ item.name }}
-      </ng-template>
-      <ng-template ng-tag-tmp let-item="item">
-        <div class="ng-tag-label">
-          {{ item.name }}
-          <div class="ng-tag-remove"></div>
-        </div>
-      </ng-template>
-    </ng-select>
+      [multiple]="true"
+      formControlName="functionalSkills"
+      placeholder="Select Functional Skills"
+      [searchable]="true"
+      [closeOnSelect]="false"
+      class="form-control ng-select-matching"
+    ></ng-select>
   </div>
 </div>
+
+<!-- Technical Skills -->
+<div class="col-lg-6 col-md-12">
+  <div class="form-inline-group">
+    <label class="form-label">Technical Skills:</label>
+    <ng-select
+      [items]="technicalSkills"
+      bindLabel="name"
+      [multiple]="true"
+      formControlName="technicalSkills"
+      placeholder="Select Technical Skills"
+      [searchable]="true"
+      [closeOnSelect]="false"
+      class="form-control ng-select-matching"
+    ></ng-select>
+  </div>
+</div>
+
+<!-- Oracle Middleware Skills -->
+<div class="col-lg-6 col-md-12">
+  <div class="form-inline-group">
+    <label class="form-label">
+      Oracle Middleware &<br />
+      Database skills:
+    </label>
+    <ng-select
+      [items]="oracleMiddlewareSkills"
+      bindLabel="name"
+      [multiple]="true"
+      formControlName="oracleMiddlewareSkills"
+      placeholder="Select Middleware Skills"
+      [searchable]="true"
+      [closeOnSelect]="false"
+      class="form-control ng-select-matching"
+    ></ng-select>
+  </div>
+</div>
+
+<!-- Analytics & Reporting -->
+<div class="col-lg-6 col-md-12">
+  <div class="form-inline-group">
+    <label class="form-label">Analytics & Reporting Skills:</label>
+    <ng-select
+      [items]="reportingSkills"
+      bindLabel="name"
+      [multiple]="true"
+      formControlName="reportingSkills"
+      placeholder="Select Reporting Skills"
+      [searchable]="true"
+      [closeOnSelect]="false"
+      class="form-control ng-select-matching"
+    ></ng-select>
+  </div>
+</div>
+
+
+
+
+
 
           <!-- Skills Required -->
           <div class="col-lg-12 col-md-12">

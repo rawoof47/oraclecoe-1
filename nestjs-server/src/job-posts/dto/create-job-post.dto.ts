@@ -75,9 +75,14 @@ export class CreateJobPostDto {
   @IsString({ each: true })
   workMode?: string[];
 
-  // ✅ NEW FIELD ADDED
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
   oracleDomainExpertise?: string[];
+
+  // ✅ NEW FIELD FOR job_post_skills
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  skillIds?: string[];
 }

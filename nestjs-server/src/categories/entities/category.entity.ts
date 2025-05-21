@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Skill } from 'src/skills/entities/skill.entity';
 
 @Entity('categories') // This ensures it's mapped to the 'categories' table
 export class Category {
@@ -10,4 +11,8 @@ export class Category {
 
   @Column({ type: 'text', nullable: true })
   description: string | null;
+
+   @OneToMany(() => Skill, (skill) => skill.category)
+
+  skills: Skill[];
 }

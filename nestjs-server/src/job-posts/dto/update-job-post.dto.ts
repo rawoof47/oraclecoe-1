@@ -20,9 +20,10 @@ export class UpdateJobPostDto {
   @IsOptional()
   location?: string;
 
-  @IsString()
   @IsOptional()
-  modulesRequired?: string;
+  @IsArray()
+  @IsString({ each: true })
+  modulesRequired?: string[];
 
   @IsString()
   @IsOptional()
@@ -77,9 +78,14 @@ export class UpdateJobPostDto {
   @IsString({ each: true })
   workMode?: string[];
 
-  // ✅ NEW FIELD ADDED
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
   oracleDomainExpertise?: string[];
+
+  // ✅ NEW FIELD FOR job_post_skills
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  skillIds?: string[];
 }

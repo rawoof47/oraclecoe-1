@@ -11,6 +11,21 @@ import { PageBannerComponent } from '../../common/page-banner/page-banner.compon
 import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
 
+interface Skill {
+  id: string;
+  name: string;
+}
+
+interface JobPost {
+  id?: string;
+  recruiter_id: string;
+}
+
+interface JobPostResponse {
+  message: string;
+  data: JobPost;
+}
+
 @Component({
   selector: 'app-post-a-job',
   standalone: true,
@@ -35,35 +50,13 @@ export class PostAJobComponent implements OnInit {
   moduleOptions = [
     { name: 'Oracle Cloud Financial' },
     { name: 'Oracle Cloud Procurement' },
-    { name: 'Oracle Cloud Projects Financial Management' }
+    { name: 'Oracle Cloud Projects Financial Management' },
   ];
 
-  oracleExpertiseOptions = [
-    { name: 'Oracle EBS' },
-    { name: 'Oracle Cloud Infrastructure' },
-    { name: 'Oracle Apex' },
-    { name: 'Oracle HCM' }
-  ];
-
-  // ✅ New Oracle Domain Expertise (Functional & EPM Cloud) options
-  oracleDomainExpertiseOptions = [
-    { name: 'Oracle Financials (GL, AP, AR, FA)' },
-    { name: 'Oracle Procurement' },
-    { name: 'Oracle SCM (OM, INV, MFG)' },
-    { name: 'Oracle HCM' },
-    { name: 'Oracle PPM' },
-    { name: 'Oracle Projects (PA)' },
-    { name: 'Oracle Grants' },
-    { name: 'Oracle Subscription Management' },
-    { name: 'Oracle EBS R12 (Functional)' },
-    { name: 'Oracle Self-Service Procurement' },
-    { name: 'Oracle Sourcing / Contracts' },
-    { name: 'FCCS (Financial Consolidation)' },
-    { name: 'PBCS / EPBCS (Planning & Budgeting)' },
-    { name: 'ARCS (Reconciliation)' },
-    { name: 'TRCS (Tax Reporting)' },
-    { name: 'EDMCS (Master Data Mgmt)' },
-  ];
+  functionalSkills: Skill[] = [];
+  technicalSkills: Skill[] = [];
+  oracleMiddlewareSkills: Skill[] = [];
+  reportingSkills: Skill[] = [];
 
   workModeOptions = ['Remote', 'On-site', 'Hybrid'];
 
@@ -76,7 +69,10 @@ export class PostAJobComponent implements OnInit {
       jobTitle: ['', Validators.required],
       location: [''],
       modulesRequired: [[]],
-      oracleDomainExpertise: [[]], // ✅ Added new form field
+      functionalSkills: [[]],
+      technicalSkills: [[]],
+      oracleMiddlewareSkills: [[]],
+      reportingSkills: [[]],
       skillsRequired: ['', Validators.required],
       certificationsRequired: [''],
       experienceMin: [null, [Validators.required, Validators.min(0)]],
@@ -102,6 +98,29 @@ export class PostAJobComponent implements OnInit {
     } else {
       console.warn('⚠️ No recruiter ID found. Ensure recruiter is logged in.');
     }
+
+    this.loadSkillsByCategory();
+  }
+
+  loadSkillsByCategory(): void {
+    this.loadSkillSet('612222a1-791a-4125-be8d-1d86808a37bf', 'functionalSkills');
+    this.loadSkillSet('b9677d69-356f-11f0-bd34-80ce6232908a', 'technicalSkills');
+    this.loadSkillSet('0ec31fb0-3591-11f0-ae4b-80ce6232908a', 'oracleMiddlewareSkills');
+    this.loadSkillSet('843a8e1d-3591-11f0-ae4b-80ce6232908a', 'reportingSkills');
+  }
+
+  loadSkillSet(
+    categoryId: string,
+    property: 'functionalSkills' | 'technicalSkills' | 'oracleMiddlewareSkills' | 'reportingSkills'
+  ): void {
+    this.jobPostService.getFunctionalSkills(categoryId).subscribe({
+      next: (data: Skill[]) => {
+        this[property] = data || [];
+      },
+      error: (err) => {
+        console.error(`❌ Failed to load skills for ${property}:`, err);
+      }
+    });
   }
 
   onSubmit(): void {
@@ -116,13 +135,15 @@ export class PostAJobComponent implements OnInit {
     }
 
     this.loading = true;
-
     const formValues = this.jobForm.value;
 
     const jobPostPayload = {
       ...formValues,
       modulesRequired: formValues.modulesRequired.map((m: any) => m.name || m),
-      oracleDomainExpertise: formValues.oracleDomainExpertise.map((e: any) => e.name || e), // ✅ Process oracle expertise
+      functionalSkills: formValues.functionalSkills.map((s: Skill) => s.name),
+      technicalSkills: formValues.technicalSkills.map((s: Skill) => s.name),
+      oracleMiddlewareSkills: formValues.oracleMiddlewareSkills.map((s: Skill) => s.name),
+      reportingSkills: formValues.reportingSkills.map((s: Skill) => s.name),
       experienceMin: Number(formValues.experienceMin),
       experienceMax: Number(formValues.experienceMax),
       applicationDeadline: formValues.applicationDeadline
@@ -131,16 +152,48 @@ export class PostAJobComponent implements OnInit {
       updatedBy: undefined,
     };
 
+    // ✅ FIXED: Ensure only valid skill objects are used
+    const selectedSkillIds: string[] = [
+      ...formValues.functionalSkills.map((s: Skill) => s?.id).filter(Boolean),
+      ...formValues.technicalSkills.map((s: Skill) => s?.id).filter(Boolean),
+      ...formValues.oracleMiddlewareSkills.map((s: Skill) => s?.id).filter(Boolean),
+      ...formValues.reportingSkills.map((s: Skill) => s?.id).filter(Boolean),
+    ];
+
     this.jobPostService.create(jobPostPayload).subscribe({
-      next: () => {
-        this.snackBar.open('✅ Job posted successfully!', 'Close', {
-          duration: 3000,
-          panelClass: 'snackbar-success',
-          horizontalPosition: 'right',
-          verticalPosition: 'top',
+      next: (response: JobPostResponse) => {
+        const jobPostId = response.data?.id;
+
+        if (!jobPostId) {
+          console.error('❌ Job post created, but no ID was returned.');
+          this.snackBar.open('Job created, but failed to save skills.', 'Close', {
+            duration: 4000,
+            panelClass: 'snackbar-error',
+            horizontalPosition: 'right',
+            verticalPosition: 'top',
+          });
+          this.loading = false;
+          return;
+        }
+
+        if (!selectedSkillIds.length) {
+          this.showSuccessMessage();
+          return;
+        }
+
+        this.jobPostService.saveSkills(jobPostId, selectedSkillIds).subscribe({
+          next: () => this.showSuccessMessage(),
+          error: (err) => {
+            console.error('❌ Skill assignment failed:', err);
+            this.snackBar.open('Job posted, but skill saving failed.', 'Close', {
+              duration: 4000,
+              panelClass: 'snackbar-error',
+              horizontalPosition: 'right',
+              verticalPosition: 'top',
+            });
+            this.loading = false;
+          },
         });
-        this.jobForm.reset();
-        this.jobForm.patchValue({ recruiterId: formValues.recruiterId });
       },
       error: (err) => {
         console.error('❌ Job post failed:', err);
@@ -154,10 +207,21 @@ export class PostAJobComponent implements OnInit {
             verticalPosition: 'top',
           }
         );
-      },
-      complete: () => {
         this.loading = false;
-      }
+      },
     });
+  }
+
+  private showSuccessMessage() {
+    this.snackBar.open('✅ Job and skills saved successfully!', 'Close', {
+      duration: 3000,
+      panelClass: 'snackbar-success',
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+    });
+    this.jobForm.reset();
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    this.jobForm.patchValue({ recruiterId: user?.id });
+    this.loading = false;
   }
 }

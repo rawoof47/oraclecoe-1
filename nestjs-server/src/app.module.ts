@@ -29,6 +29,7 @@ import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { UserBadgesModule } from './user-badges/user-badges.module';
 import { AuthModule } from './auth/auth.module';
 import { JobsModule } from './jobs/jobs.module';
+import { SkillsModule } from './skills/skills.module';
 
 @Module({
   imports: [
@@ -77,6 +78,7 @@ import { JobsModule } from './jobs/jobs.module';
     UserBadgesModule,
     AuthModule,
     JobsModule,
+    SkillsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

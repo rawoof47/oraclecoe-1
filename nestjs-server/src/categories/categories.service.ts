@@ -40,4 +40,9 @@ export class CategoriesService {
     }
     return this.categoryRepository.save(category);
   }
+
+  async remove(id: string) {
+    const skill = await this.findOne(id);
+    return this.categoryRepository.remove(skill);
+  }
 }

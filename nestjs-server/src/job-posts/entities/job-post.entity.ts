@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { JobPostSkill } from 'src/job-post-skill/entities/job-post-skill.entity';
 
 @Entity('job_posts')
 export class JobPost {
@@ -47,10 +55,10 @@ export class JobPost {
   @Column({ type: 'date', nullable: true })
   application_deadline: string | null;
 
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({ type: 'datetime' })
   created_at: Date;
 
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @UpdateDateColumn({ type: 'datetime' })
   updated_at: Date;
 
   @Column({ type: 'char', length: 36, nullable: true })
@@ -62,7 +70,10 @@ export class JobPost {
   @Column({ type: 'longtext', nullable: true })
   work_mode: string | null;
 
-  // ✅ NEW COLUMN ADDED
-  @Column({ type: 'longtext', nullable: true })
-  oracle_domain_expertise: string | null;
+  // ✅ JobPostSkill relationship
+  @OneToMany(() => JobPostSkill, (jobPostSkill) => jobPostSkill.jobPost
+, {
+    cascade: true,
+  })
+  jobPostSkills: JobPostSkill[];
 }
