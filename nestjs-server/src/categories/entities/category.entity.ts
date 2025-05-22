@@ -1,5 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Skill } from 'src/skills/entities/skill.entity';
+import { Certification } from 'src/certifications/entities/certification.entity';
+
 
 @Entity('categories') // This ensures it's mapped to the 'categories' table
 export class Category {
@@ -15,4 +17,8 @@ export class Category {
    @OneToMany(() => Skill, (skill) => skill.category)
 
   skills: Skill[];
+
+  @OneToMany(() => Certification, (certification) => certification.category)
+certifications: Certification[];
+
 }

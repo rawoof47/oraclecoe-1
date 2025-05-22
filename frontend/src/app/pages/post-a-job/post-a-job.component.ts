@@ -16,6 +16,11 @@ interface Skill {
   name: string;
 }
 
+interface Certification {
+  id: string;
+  certification_name: string;
+}
+
 interface JobPost {
   id?: string;
   recruiter_id: string;
@@ -52,6 +57,11 @@ export class PostAJobComponent implements OnInit {
   oracleMiddlewareSkills: Skill[] = [];
   reportingSkills: Skill[] = [];
 
+  financialCertifications: Certification[] = [];
+  scmCertifications: Certification[] = [];
+  hcmCertifications: Certification[] = [];
+  cxCertifications: Certification[] = [];
+
   workModeOptions = ['Remote', 'On-site', 'Hybrid'];
 
   constructor(
@@ -74,17 +84,20 @@ export class PostAJobComponent implements OnInit {
       recruiterId: ['', Validators.required],
       createdBy: [''],
 
-      // ✅ New fields added
       roleSummary: ['', Validators.required],
       preferredQualifications: [''],
       whatWeOffer: [''],
       howToApply: [''],
 
-      // ✅ Skill selections
       functionalSkills: [[]],
       technicalSkills: [[]],
       oracleMiddlewareSkills: [[]],
       reportingSkills: [[]],
+
+      financialCertifications: [[]],
+      scmCertifications: [[]],
+      hcmCertifications: [[]],
+      cxCertifications: [[]],
     });
   }
 
@@ -100,6 +113,7 @@ export class PostAJobComponent implements OnInit {
     }
 
     this.loadSkillsByCategory();
+    this.loadCertificationsByCategory();
   }
 
   loadSkillsByCategory(): void {
@@ -119,6 +133,27 @@ export class PostAJobComponent implements OnInit {
       },
       error: (err) => {
         console.error(`❌ Failed to load skills for ${property}:`, err);
+      }
+    });
+  }
+
+  loadCertificationsByCategory(): void {
+    this.loadCertificationSet('ed7c50c7-36d3-11f0-bfce-80ce6232908a', 'financialCertifications');
+    this.loadCertificationSet('ed7c5c88-36d3-11f0-bfce-80ce6232908a', 'hcmCertifications');
+    this.loadCertificationSet('ed7c5da6-36d3-11f0-bfce-80ce6232908a', 'scmCertifications');
+    this.loadCertificationSet('ed7c5e82-36d3-11f0-bfce-80ce6232908a', 'cxCertifications');
+  }
+
+  loadCertificationSet(
+    categoryId: string,
+    property: 'financialCertifications' | 'scmCertifications' | 'hcmCertifications' | 'cxCertifications'
+  ): void {
+    this.jobPostService.getCertificationsByCategory(categoryId).subscribe({
+      next: (data: Certification[]) => {
+        this[property] = data || [];
+      },
+      error: (err) => {
+        console.error(`❌ Failed to load certifications for ${property}:`, err);
       }
     });
   }
@@ -158,6 +193,13 @@ export class PostAJobComponent implements OnInit {
       ...formValues.reportingSkills.map((s: Skill) => s?.id).filter(Boolean),
     ];
 
+    const selectedCertificationIds: string[] = [
+      ...formValues.financialCertifications.map((c: Certification) => c?.id).filter(Boolean),
+      ...formValues.scmCertifications.map((c: Certification) => c?.id).filter(Boolean),
+      ...formValues.hcmCertifications.map((c: Certification) => c?.id).filter(Boolean),
+      ...formValues.cxCertifications.map((c: Certification) => c?.id).filter(Boolean),
+    ];
+
     this.jobPostService.create(jobPostPayload).subscribe({
       next: (response: JobPostResponse) => {
         const jobPostId = response.data?.id;
@@ -174,44 +216,75 @@ export class PostAJobComponent implements OnInit {
           return;
         }
 
-        if (!selectedSkillIds.length) {
-          this.showSuccessMessage();
-          return;
-        }
+        const saveSkills$ = selectedSkillIds.length
+          ? this.jobPostService.saveSkills(jobPostId, selectedSkillIds)
+          : null;
 
-        this.jobPostService.saveSkills(jobPostId, selectedSkillIds).subscribe({
-          next: () => this.showSuccessMessage(),
-          error: (err) => {
-            console.error('❌ Skill assignment failed:', err);
-            this.snackBar.open('Job posted, but skill saving failed.', 'Close', {
-              duration: 4000,
-              panelClass: 'snackbar-error',
-              horizontalPosition: 'right',
-              verticalPosition: 'top',
-            });
-            this.loading = false;
-          },
-        });
+        const saveCerts$ = selectedCertificationIds.length
+          ? this.jobPostService.saveCertifications(jobPostId, selectedCertificationIds)
+          : null;
+
+        if (saveSkills$ && saveCerts$) {
+          saveSkills$.subscribe({
+            next: () => {
+              saveCerts$.subscribe({
+                next: () => this.showSuccessMessage(),
+                error: (err) => this.handleCertError(err),
+              });
+            },
+            error: (err) => this.handleSkillError(err),
+          });
+        } else if (saveSkills$) {
+          saveSkills$.subscribe({
+            next: () => this.showSuccessMessage(),
+            error: (err) => this.handleSkillError(err),
+          });
+        } else if (saveCerts$) {
+          saveCerts$.subscribe({
+            next: () => this.showSuccessMessage(),
+            error: (err) => this.handleCertError(err),
+          });
+        } else {
+          this.showSuccessMessage();
+        }
       },
       error: (err) => {
         console.error('❌ Job post failed:', err);
-        this.snackBar.open(
-          err?.error?.message || 'Failed to post job. Please try again.',
-          'Close',
-          {
-            duration: 4000,
-            panelClass: 'snackbar-error',
-            horizontalPosition: 'right',
-            verticalPosition: 'top',
-          }
-        );
+        this.snackBar.open(err?.error?.message || 'Failed to post job. Please try again.', 'Close', {
+          duration: 4000,
+          panelClass: 'snackbar-error',
+          horizontalPosition: 'right',
+          verticalPosition: 'top',
+        });
         this.loading = false;
       },
     });
   }
 
+  private handleSkillError(err: any) {
+    console.error('❌ Skill assignment failed:', err);
+    this.snackBar.open('Job posted, but skill saving failed.', 'Close', {
+      duration: 4000,
+      panelClass: 'snackbar-error',
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+    });
+    this.loading = false;
+  }
+
+  private handleCertError(err: any) {
+    console.error('❌ Certification assignment failed:', err);
+    this.snackBar.open('Job posted, but certification saving failed.', 'Close', {
+      duration: 4000,
+      panelClass: 'snackbar-error',
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
+    });
+    this.loading = false;
+  }
+
   private showSuccessMessage() {
-    this.snackBar.open('✅ Job and skills saved successfully!', 'Close', {
+    this.snackBar.open('✅ Job, skills, and certifications saved successfully!', 'Close', {
       duration: 3000,
       panelClass: 'snackbar-success',
       horizontalPosition: 'right',

@@ -88,4 +88,10 @@ export class CreateJobPostDto {
   @IsArray()
   @IsString({ each: true })
   skillIds?: string[];
+
+  // ✅ Certification ID array for job_post_certifications relation
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  certificationIds?: string[];
 }

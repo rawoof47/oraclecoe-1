@@ -59,8 +59,7 @@
 <div class="col-lg-6 col-md-12">
   <div class="form-inline-group">
     <label class="form-label">
-      Functional &<br />
-      Oracle EPM Cloud Skills:
+      Functional Skills:
     </label>
     <ng-select
       [items]="functionalSkills"
@@ -137,17 +136,76 @@
           
 
 
-          <!-- Certifications Required -->
-          <div class="col-lg-12 col-md-12">
-            <div class="form-inline-group">
-              <label class="form-label">Certifications Required:</label>
-              <textarea
-                formControlName="certificationsRequired"
-                placeholder="AWS Certified, PMP, etc."
-                class="form-control"
-              ></textarea>
-            </div>
-          </div>
+          <!-- Financial Certifications -->
+  <div class="col-lg-6 col-md-12">
+    <div class="form-inline-group">
+      <label class="form-label">Financial Certifications</label>
+      <ng-select
+        [items]="financialCertifications"
+        bindLabel="certification_name"
+        placeholder="Select financial certifications"
+        [multiple]="true"
+        formControlName="financialCertifications"
+        [searchable]="true"
+        [closeOnSelect]="false"
+        class="form-control ng-select-matching"
+      >
+      </ng-select>
+    </div>
+  </div>
+
+  <!-- SCM Certifications -->
+  <div class="col-lg-6 col-md-12">
+    <div class="form-inline-group">
+      <label class="form-label">SCM Certifications</label>
+      <ng-select
+        [items]="scmCertifications"
+        bindLabel="certification_name"
+        placeholder="Select SCM certifications"
+        [multiple]="true"
+        formControlName="scmCertifications"
+        [searchable]="true"
+        [closeOnSelect]="false"
+        class="form-control ng-select-matching"
+      >
+      </ng-select>
+    </div>
+  </div>
+  <!-- HCM Certifications -->
+  <div class="col-lg-6 col-md-12 mt-3">
+    <div class="form-inline-group">
+      <label class="form-label">HCM Certifications</label>
+      <ng-select
+        [items]="hcmCertifications"
+        bindLabel="certification_name"
+        placeholder="Select HCM certifications"
+        [multiple]="true"
+        formControlName="hcmCertifications"
+        [searchable]="true"
+        [closeOnSelect]="false"
+        class="form-control ng-select-matching"
+      >
+      </ng-select>
+    </div>
+  </div>
+
+  <!-- CX Certifications -->
+  <div class="col-lg-6 col-md-12 mt-3">
+    <div class="form-inline-group">
+      <label class="form-label">CX Certifications</label>
+      <ng-select
+        [items]="cxCertifications"
+        bindLabel="certification_name"
+        placeholder="Select CX certifications"
+        [multiple]="true"
+        formControlName="cxCertifications"
+        [searchable]="true"
+        [closeOnSelect]="false"
+        class="form-control ng-select-matching"
+      >
+      </ng-select>
+    </div>
+  </div>
 
 
           <!-- Preferred Qualifications -->
@@ -208,11 +266,11 @@
               <label class="form-label">Employment Type:</label>
               <select formControlName="employmentType" class="form-control">
                 <option value="">Select Employment Type</option>
-                <option>Full Time</option>
-                <option>Part Time</option>
+                <option>Full Time / Regular</option>
+                <option>Part Time / Freelance</option>
                 <option>Contract</option>
                 <option>Internship</option>
-                <option>Freelance</option>
+                
               </select>
             </div>
           </div>

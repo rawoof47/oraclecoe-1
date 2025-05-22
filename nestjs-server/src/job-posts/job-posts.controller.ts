@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { JobPostsService } from './job-posts.service';
 import { JobPostSkillService } from '../job-post-skill/job-post-skill.service';
+import { JobPostCertificationsService } from '../job-post-certification/job-post-certifications.service';
 import { CreateJobPostDto } from './dto/create-job-post.dto';
 import { UpdateJobPostDto } from './dto/update-job-post.dto';
 
@@ -18,18 +19,30 @@ export class JobPostsController {
   constructor(
     private readonly jobPostsService: JobPostsService,
     private readonly jobPostSkillService: JobPostSkillService,
+    private readonly jobPostCertificationService: JobPostCertificationsService,
   ) {}
 
   @Post()
   async create(@Body() createJobPostDto: CreateJobPostDto) {
-    const { skillIds = [], ...jobPostData } = createJobPostDto;
+    const {
+      skillIds = [],
+      certificationIds = [],
+      ...jobPostData
+    } = createJobPostDto;
 
     // Create job post and wrap in message
     const jobPostResponse = await this.jobPostsService.create(jobPostData);
 
+    const jobPostId = jobPostResponse.data.id;
+
     // ✅ Save skills if provided
     if (skillIds.length > 0) {
-      await this.jobPostSkillService.saveSkills(jobPostResponse.data.id, skillIds);
+      await this.jobPostSkillService.saveSkills(jobPostId, skillIds);
+    }
+
+    // ✅ Save certifications if provided
+    if (certificationIds.length > 0) {
+      await this.jobPostCertificationService.saveCertifications(jobPostId, certificationIds);
     }
 
     return jobPostResponse;
@@ -55,13 +68,22 @@ export class JobPostsController {
     @Param('id') id: string,
     @Body() updateJobPostDto: UpdateJobPostDto,
   ) {
-    const { skillIds = null, ...updateData } = updateJobPostDto;
+    const {
+      skillIds = null,
+      certificationIds = null,
+      ...updateData
+    } = updateJobPostDto;
 
     const updatedJobPost = await this.jobPostsService.update(id, updateData);
 
     // ✅ Replace skills only if explicitly provided
     if (skillIds !== null) {
       await this.jobPostSkillService.replaceSkills(id, skillIds);
+    }
+
+    // ✅ Replace certifications only if explicitly provided
+    if (certificationIds !== null) {
+      await this.jobPostCertificationService.replaceCertifications(id, certificationIds);
     }
 
     return { message: 'Job post updated successfully', data: updatedJobPost };

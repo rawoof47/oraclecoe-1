@@ -9,6 +9,7 @@ import { JobPost } from './entities/job-post.entity';
 import { CreateJobPostDto } from './dto';
 import { UpdateJobPostDto } from './dto/update-job-post.dto';
 import { JobPostSkillService } from 'src/job-post-skill/job-post-skill.service';
+import { JobPostCertificationsService } from 'src/job-post-certification/job-post-certifications.service';
 
 @Injectable()
 export class JobPostsService {
@@ -16,9 +17,10 @@ export class JobPostsService {
     @InjectRepository(JobPost)
     private readonly jobPostRepository: Repository<JobPost>,
     private readonly jobPostSkillService: JobPostSkillService,
+    private readonly jobPostCertificationsService: JobPostCertificationsService,
   ) {}
 
-  // ✅ Create a new job post and related skills
+  // ✅ Create a new job post and related skills & certifications
   async create(createJobPostDto: CreateJobPostDto) {
     const jobPost = new JobPost();
 
@@ -63,6 +65,17 @@ export class JobPostsService {
       await this.jobPostSkillService.saveSkills(savedPost.id, createJobPostDto.skillIds);
     }
 
+    if (
+      createJobPostDto.certificationIds &&
+      Array.isArray(createJobPostDto.certificationIds) &&
+      createJobPostDto.certificationIds.length > 0
+    ) {
+      await this.jobPostCertificationsService.saveCertifications(
+        savedPost.id,
+        createJobPostDto.certificationIds,
+      );
+    }
+
     return {
       message: 'Job post created successfully',
       data: savedPost,
@@ -92,7 +105,7 @@ export class JobPostsService {
     };
   }
 
-  // ✅ Update a job post and its skills
+  // ✅ Update a job post and its skills & certifications
   async update(id: string, updateJobPostDto: UpdateJobPostDto) {
     const jobPost = await this.jobPostRepository.findOne({ where: { id } });
 
@@ -120,6 +133,16 @@ export class JobPostsService {
       Array.isArray(updateJobPostDto.skillIds)
     ) {
       await this.jobPostSkillService.replaceSkills(updatedPost.id, updateJobPostDto.skillIds);
+    }
+
+    if (
+      updateJobPostDto.certificationIds &&
+      Array.isArray(updateJobPostDto.certificationIds)
+    ) {
+      await this.jobPostCertificationsService.replaceCertifications(
+        updatedPost.id,
+        updateJobPostDto.certificationIds,
+      );
     }
 
     return {

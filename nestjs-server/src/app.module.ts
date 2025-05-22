@@ -30,6 +30,8 @@ import { UserBadgesModule } from './user-badges/user-badges.module';
 import { AuthModule } from './auth/auth.module';
 import { JobsModule } from './jobs/jobs.module';
 import { SkillsModule } from './skills/skills.module';
+import { CertificationsModule } from './certifications/certifications.module';
+import { JobPostCertificationsModule } from './job-post-certification/job-post-certifications.module';
 
 @Module({
   imports: [
@@ -79,6 +81,8 @@ import { SkillsModule } from './skills/skills.module';
     AuthModule,
     JobsModule,
     SkillsModule,
+    CertificationsModule,
+    JobPostCertificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
