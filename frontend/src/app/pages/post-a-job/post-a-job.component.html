@@ -39,16 +39,25 @@
           <!-- Work Mode -->
 <div class="col-lg-6 col-md-12">
   <div class="form-inline-group">
-    <label class="form-label">Work Mode <span class="text-danger"></span></label>
+    <label for="workMode" class="form-label">
+      Work Mode <span class="text-danger">*</span>
+    </label>
     <ng-select
       [items]="workModeOptions"
+      bindLabel=""
+      bindValue=""
       formControlName="workMode"
       placeholder="Select work mode"
       [searchable]="false"
+      [clearable]="false"
+      id="workMode"
+      [class.is-invalid]="jobForm.get('workMode')?.touched && jobForm.get('workMode')?.invalid"
     >
     </ng-select>
+  
   </div>
 </div>
+
 
 
           
@@ -260,20 +269,32 @@
             </div>
           </div>
 
-          <!-- Employment Type -->
-          <div class="col-lg-6 col-md-12">
-            <div class="form-inline-group">
-              <label class="form-label">Employment Type:</label>
-              <select formControlName="employmentType" class="form-control">
-                <option value="">Select Employment Type</option>
-                <option>Full Time / Regular</option>
-                <option>Part Time / Freelance</option>
-                <option>Contract</option>
-                <option>Internship</option>
-                
-              </select>
-            </div>
-          </div>
+          
+<!-- Employment Type -->
+<div class="col-lg-6 col-md-12 mt-3">
+  <div class="form-inline-group">
+    <label class="form-label">Employment Type</label>
+    <ng-select
+      formControlName="employmentType"
+      placeholder="Select employment types"
+      [multiple]="true"
+      [searchable]="false"
+      [closeOnSelect]="false"
+      class="form-control ng-select-matching"
+    >
+      <ng-option value="Full Time / Regular">Full Time / Regular</ng-option>
+      <ng-option value="Part Time / Freelance">Part Time / Freelance</ng-option>
+      <ng-option value="Contract">Contract</ng-option>
+      <ng-option value="Internship">Internship</ng-option>
+    </ng-select>
+    <div *ngIf="jobForm.get('employmentType')?.invalid && (jobForm.get('employmentType')?.touched)" 
+         class="text-danger small mt-1">
+      Required field
+    </div>
+  </div>
+</div>
+
+
 
           <!-- Compensation Range -->
           <div class="col-lg-6 col-md-12">

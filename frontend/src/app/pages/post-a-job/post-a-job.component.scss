@@ -232,3 +232,29 @@
   color: #6c757d;
   font-style: italic;
 }
+::ng-deep .ng-select.ng-select-multiple {
+  // Remove default blue selection
+  .ng-select-container .ng-value-container .ng-value {
+    background-color: #e9f5ff !important;  // Light blue background
+    color: #0d6efd !important;             // Blue text
+    border-radius: 12px;
+    
+    // Remove blue tint from default selection
+    &.ng-value-disabled {
+      background-color: #f8f9fa !important;
+      color: #495057 !important;
+    }
+  }
+  
+  // Clear button styling
+  .ng-clear-wrapper {
+    color: #999;
+    &:hover {
+      color: #666;
+    }
+  }
+}
+.ng-select.is-invalid .ng-select-container {
+  border: 1px solid #dc3545;
+  background-color: #fff5f5;
+}

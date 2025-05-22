@@ -75,7 +75,7 @@ export class PostAJobComponent implements OnInit {
       certificationsRequired: [''],
       experienceMin: [null, [Validators.required, Validators.min(0)]],
       experienceMax: [null, [Validators.required, Validators.min(0)]],
-      employmentType: ['', Validators.required],
+      employmentType: [[], Validators.required], // updated for multi-select
       compensationRange: ['', Validators.required],
       workMode: ['', Validators.required],
       jobDescription: ['', Validators.required],
@@ -174,6 +174,9 @@ export class PostAJobComponent implements OnInit {
 
     const jobPostPayload = {
       ...formValues,
+      employmentType: Array.isArray(formValues.employmentType)
+        ? formValues.employmentType.join(',') // convert array to comma-separated string
+        : formValues.employmentType,
       functionalSkills: formValues.functionalSkills.map((s: Skill) => s.name),
       technicalSkills: formValues.technicalSkills.map((s: Skill) => s.name),
       oracleMiddlewareSkills: formValues.oracleMiddlewareSkills.map((s: Skill) => s.name),
