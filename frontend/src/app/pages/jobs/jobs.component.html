@@ -1,24 +1,28 @@
-<app-navbar />
+<app-navbar></app-navbar>
 
 <app-page-banner
   [pageTitle]="'Jobs'"
   [backgroundImage]="'img/page-title-bg.jpg'"
-/>
+></app-page-banner>
 
-<div class="job-area-list ptb-100">
+<section class="job-area-list ptb-100">
   <div class="container">
     <div class="row">
-      <div class="col-lg-8 col-md-12">
-        <ul class="job-list-item align-items-center">
-          <li>
-            <a routerLink=".">Results Found <span>({{ jobs.length }})</span></a>
-            <a class="rss" routerLink="/"><i class='bx bx-rss'></i>RSS Feed</a>
+      <main class="col-lg-8 col-md-12">
+        <ul class="job-list-controls d-flex align-items-center justify-content-between mb-4">
+          <li class="results-found">
+            <a routerLink=".">
+              Results Found <span>({{ jobs.length }})</span>
+            </a>
+            <a class="rss" routerLink="/">
+              <i class="bx bx-rss"></i> RSS Feed
+            </a>
           </li>
-          <li>
-            <span class="sort">Sort By:</span>
+          <li class="sort-by">
+            <span>Sort By:</span>
             <form>
-              <div class="form-group">
-                <select (change)="onSortChange($event)">
+              <div class="form-group d-inline-block ml-2">
+                <select (change)="onSortChange($event)" class="form-control">
                   <option value="title">Title</option>
                   <option value="date">Date</option>
                 </select>
@@ -28,20 +32,55 @@
         </ul>
 
         <!-- Job Listings -->
-        <div *ngIf="!loading && jobs.length > 0">
-          <div *ngFor="let job of jobs" class="employer-item">
-            <a [routerLink]="['/job-details', job.id]">
-              <img [src]="job.image_url || 'img/home-one/job1.png'" alt="Employer" />
-              <h3>{{ job.job_title }}</h3>
-              <ul>
-                <li><i class="flaticon-send"></i> {{ job.location || 'Not specified' }}</li>
-                <li>{{ formatPostedDate(job.created_at) }}</li>
+        <div *ngIf="!loading && jobs.length > 0" class="job-listings">
+          <article *ngFor="let job of jobs" class="employer-item mb-5 p-4 border rounded shadow-sm">
+            <a [routerLink]="['/job-details', job.id]" class="job-link d-block text-decoration-none text-dark">
+              <div class="d-flex align-items-center mb-3">
+                <img
+                  [src]="job.image_url || 'img/home-one/job1.png'"
+                  alt="Employer"
+                  class="job-img mr-3 rounded"
+                  style="width: 80px; height: 80px; object-fit: cover;"
+                />
+                <h3 class="mb-0">{{ job.job_title }}</h3>
+              </div>
+              <ul class="job-meta list-inline mb-3 text-muted">
+                <li class="list-inline-item mr-3">
+                  <i class="flaticon-send mr-1"></i> {{ job.location || 'Not specified' }}
+                </li>
+                <li class="list-inline-item">
+                  {{ formatPostedDate(job.created_at) }}
+                </li>
               </ul>
-              <p>{{ job.job_description || 'No description provided.' }}</p>
-              <span class="span-one">{{ job.modules_required || 'General' }}</span>
-              <span class="span-two">{{ job.employment_type || 'N/A' }}</span>
+
+              <p class="job-description mb-3">
+                {{ job.job_description || 'No description provided.' }}
+              </p>
+
+              <div class="job-extra-info mb-3 d-flex flex-wrap text-secondary small">
+                <span class="mr-3">
+                  <strong>Experience:</strong> {{ job.experience_min || '0' }} - {{ job.experience_max || 'N/A' }} years
+                </span>
+                <span class="mr-3">
+                  <strong>Compensation:</strong> {{ job.compensation_range || 'Not specified' }}
+                </span>
+                <span class="mr-3">
+                  <strong>Notice Period:</strong> {{ job.notice_period || 'N/A' }}
+                </span>
+                <span class="mr-3">
+                  <strong>Deadline:</strong> {{ job.application_deadline ? (job.application_deadline | date:'mediumDate') : 'N/A' }}
+                </span>
+                <span>
+                  <strong>Work Mode:</strong> {{ job.work_mode || 'Not specified' }}
+                </span>
+              </div>
+
+              <div class="job-tags d-flex flex-wrap">
+                <span class="badge badge-primary mr-2 mb-1">{{ job.modules_required || 'General' }}</span>
+                <span class="badge badge-secondary mb-1">{{ job.employment_type || 'N/A' }}</span>
+              </div>
             </a>
-          </div>
+          </article>
         </div>
 
         <div *ngIf="loading" class="text-center mt-5">
@@ -50,11 +89,10 @@
         <div *ngIf="!loading && jobs.length === 0" class="text-center mt-5">
           <p>No job posts found.</p>
         </div>
-
-      </div>
+      </main>
     </div>
   </div>
-</div>
+</section>
 
-<app-footer />
-<app-back-to-top />
+<app-footer></app-footer>
+<app-back-to-top></app-back-to-top>

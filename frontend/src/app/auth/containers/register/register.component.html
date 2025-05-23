@@ -4,7 +4,7 @@
       <div class="container-fluid p-0">
         <div class="row m-0 align-items-center">
           <div class="col-lg-6 p-0 col-md-12">
-            <div class="user-img" style="background-image: url(img/resgister-bg.jpg);">
+            <div class="user-img" style="background-image: url('img/resgister-bg.jpg');">
               <img src="img/resgister-bg.jpg" alt="User" />
             </div>
           </div>
@@ -83,10 +83,10 @@
                   </div>
                   <button type="submit" class="btn btn-primary w-100">Register Here</button>
 
-                  <!-- Added Login Link -->
+                  <!-- Fixed Login Link -->
                   <div class="login-link mt-3 text-center">
                     Already have an account?
-                    <a routerLink="/login" class="login-redirect">Login</a>
+                    <a [routerLink]="['/login']" class="login-redirect">Login</a>
                   </div>
                 </form>
               </div>
