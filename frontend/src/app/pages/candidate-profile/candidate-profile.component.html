@@ -1,0 +1,48 @@
+<form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="profile-form">
+  <!-- About Me -->
+  <div class="form-group">
+    <label for="about_me">About Me</label>
+    <textarea id="about_me" formControlName="about_me"></textarea>
+  </div>
+
+  <!-- Professional Summary -->
+  <div class="form-group">
+    <label for="professional_summary">Professional Summary</label>
+    <textarea id="professional_summary" formControlName="professional_summary"></textarea>
+  </div>
+
+  <!-- Social Links -->
+  <div class="form-group">
+    <label for="social_links">Social Links</label>
+    <textarea id="social_links" formControlName="social_links" placeholder="Comma-separated URLs"></textarea>
+  </div>
+
+  <!-- Resume Link -->
+  <div class="form-group">
+    <label for="resume_link">Resume Link</label>
+    <input id="resume_link" type="url" formControlName="resume_link" />
+  </div>
+
+  <!-- Education -->
+  <div class="form-group">
+    <label for="education">Education</label>
+    <textarea id="education" formControlName="education"></textarea>
+  </div>
+
+  <!-- Experience Years -->
+  <div class="form-group">
+    <label for="experience_years">Experience (Years)</label>
+    <input id="experience_years" type="number" formControlName="experience_years" min="0" max="50" />
+  </div>
+
+  <!-- Notice Period -->
+  <div class="form-group">
+    <label for="notice_period">Notice Period</label>
+    <input id="notice_period" type="text" formControlName="notice_period" />
+  </div>
+
+  <!-- Submit Button -->
+  <div class="form-actions">
+    <button type="submit" [disabled]="isSubmitting">Save Profile</button>
+  </div>
+</form>

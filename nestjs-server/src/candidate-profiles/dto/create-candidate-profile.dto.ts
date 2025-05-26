@@ -1,59 +1,50 @@
-import { IsString, IsEmail, IsNotEmpty, IsOptional, IsUUID, IsInt, IsBoolean } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  IsNumber,
+  IsUrl,
+  Min,
+  Max,
+  IsUUID,
+} from 'class-validator';
 
 export class CreateCandidateProfileDto {
   @IsString()
-  @IsNotEmpty()
-  firstName: string;
+  @IsOptional()
+  about_me?: string;
 
   @IsString()
-  @IsNotEmpty()
-  lastName: string;
-
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
+  @IsOptional()
+  professional_summary?: string;
 
   @IsString()
-  @IsNotEmpty()
-  phone: string;
+  @IsOptional()
+  social_links?: string;
+
+  @IsUrl()
+  @IsOptional()
+  resume_link?: string;
+
+  @IsString()
+  @IsOptional()
+  education?: string;
+
+  @IsNumber({ maxDecimalPlaces: 1 })
+  @Min(0)
+  @Max(50)
+  @IsOptional()
+  experience_years?: number;
+
+  @IsString()
+  @IsOptional()
+  notice_period?: string;
+
+  // ✅ Optional fields, set from the backend using JWT user ID
+  @IsUUID()
+  @IsOptional()
+  created_by?: string;
 
   @IsUUID()
   @IsOptional()
-  status_id: string | null;
-
-  @IsString()
-  @IsOptional()
-  location: string | null;
-
-  @IsString()
-  @IsOptional()
-  summary: string | null;
-
-  @IsInt()
-  @IsOptional()
-  experience_years: number | null;
-
-  @IsString()
-  @IsOptional()
-  notice_period: string | null;
-
-  @IsBoolean()
-  @IsOptional()
-  remote_preference: boolean;
-
-  @IsString()
-  @IsOptional()
-  resume_url: string | null;
-
-  @IsString()
-  @IsOptional()
-  profile_photo_url: string | null;
-
-  @IsUUID()
-  @IsOptional()
-  created_by: string | null;
-
-  @IsUUID()
-  @IsOptional()
-  updated_by: string | null;
+  updated_by?: string;
 }

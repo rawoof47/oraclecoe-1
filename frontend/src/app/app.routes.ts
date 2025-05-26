@@ -25,68 +25,74 @@ import { CandidateDetailsComponent } from './pages/candidate-details/candidate-d
 import { BlogComponent } from './pages/blog/blog.component';
 import { BlogDetailsComponent } from './pages/blog-details/blog-details.component';
 import { ContactUsComponent } from './pages/contact-us/contact-us.component';
+import { CandidateProfileComponent } from './pages/candidate-profile/candidate-profile.component'; // ✅ New Import
 
 // Guards
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
-    { path: '', redirectTo: '/index-2', pathMatch: 'full' },
-    { path: 'index-1', component: HomeDemoOneComponent },
-    { path: 'index-2', component: HomeDemoTwoComponent },
-    { path: 'index-3', component: HomeDemoThreeComponent },
+  { path: '', redirectTo: '/index-2', pathMatch: 'full' },
+  { path: 'index-1', component: HomeDemoOneComponent },
+  { path: 'index-2', component: HomeDemoTwoComponent },
+  { path: 'index-3', component: HomeDemoThreeComponent },
 
-    { path: 'about', component: AboutUsComponent },
-    { path: 'pricing', component: PricingComponent },
-    { path: 'testimonials', component: TestimonialsComponent },
-    { path: 'faq', component: FaqComponent },
-    { path: 'contact', component: ContactUsComponent },
-    { path: 'login', component: LoginComponent },
-    { path: 'register', component: RegisterComponent },
+  { path: 'about', component: AboutUsComponent },
+  { path: 'pricing', component: PricingComponent },
+  { path: 'testimonials', component: TestimonialsComponent },
+  { path: 'faq', component: FaqComponent },
+  { path: 'contact', component: ContactUsComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
 
-    { path: 'employers', component: EmployersComponent },
-    { path: 'employer-details', component: EmployerDetailsComponent },
-    { path: 'candidates', component: CandidatesComponent },
-    { path: 'candidate-details', component: CandidateDetailsComponent },
-    { path: 'blog', component: BlogComponent },
-    { path: 'blog-details', component: BlogDetailsComponent },
+  { path: 'employers', component: EmployersComponent },
+  { path: 'employer-details', component: EmployerDetailsComponent },
+  { path: 'candidates', component: CandidatesComponent },
+  { path: 'candidate-details', component: CandidateDetailsComponent },
+  { path: 'blog', component: BlogComponent },
+  { path: 'blog-details', component: BlogDetailsComponent },
 
-    { path: 'coming-soon', component: ComingSoonComponent },
-    { path: 'privacy-policy', component: PrivacyPolicyComponent },
-    { path: 'terms-conditions', component: TermsConditionsComponent },
+  { path: 'coming-soon', component: ComingSoonComponent },
+  { path: 'privacy-policy', component: PrivacyPolicyComponent },
+  { path: 'terms-conditions', component: TermsConditionsComponent },
 
-    // 🔒 Protected Routes
-    {
-        path: 'dashboard',
-        component: DashboardComponent,
-        canActivate: [authGuard, roleGuard('candidate')]
-    },
-    {
-        path: 'jobs',
-        component: JobsComponent,
-        canActivate: [authGuard, roleGuard('candidate')]
-    },
-    {
-        path: 'favourite-jobs',
-        component: FavouriteJobsComponent,
-        canActivate: [authGuard, roleGuard('candidate')]
-    },
-    {
-        path: 'job-details',
-        component: JobDetailsComponent,
-        canActivate: [authGuard, roleGuard('candidate')]
-    },
-    {
-        path: 'post-a-job',
-        component: PostAJobComponent,
-        canActivate: [authGuard, roleGuard('recruiter')]
-    },
-    {
-        path: 'single-resume',
-        component: SingleResumeComponent,
-        canActivate: [authGuard, roleGuard('recruiter')]
-    },
+  // 🔒 Protected Routes
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    canActivate: [authGuard, roleGuard('candidate')]
+  },
+  {
+    path: 'jobs',
+    component: JobsComponent,
+    canActivate: [authGuard, roleGuard('candidate')]
+  },
+  {
+    path: 'favourite-jobs',
+    component: FavouriteJobsComponent,
+    canActivate: [authGuard, roleGuard('candidate')]
+  },
+  {
+    path: 'job-details',
+    component: JobDetailsComponent,
+    canActivate: [authGuard, roleGuard('candidate')]
+  },
+  {
+    path: 'candidate-profile',
+    component: CandidateProfileComponent,
+    canActivate: [authGuard, roleGuard('candidate')] // ✅ New Route
+  },
+  {
+    path: 'post-a-job',
+    component: PostAJobComponent,
+    canActivate: [authGuard, roleGuard('recruiter')]
+  },
+  {
+    path: 'single-resume',
+    component: SingleResumeComponent,
+    canActivate: [authGuard, roleGuard('recruiter')]
+  },
 
-    // Catch-all for unknown paths
-    { path: '**', component: ErrorPageComponent }
+  // Catch-all for unknown paths
+  { path: '**', component: ErrorPageComponent }
 ];
