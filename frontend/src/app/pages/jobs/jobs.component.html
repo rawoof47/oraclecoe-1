@@ -33,20 +33,27 @@
 
         <!-- Job Listings -->
         <div *ngIf="!loading && jobs.length > 0" class="job-listings">
-          <article *ngFor="let job of jobs" class="employer-item mb-5 p-4 border rounded shadow-sm">
-            <a [routerLink]="['/job-details', job.id]" class="job-link d-block text-decoration-none text-dark">
+          <article
+            *ngFor="let job of jobs"
+            class="employer-item mb-5 p-4 border rounded shadow-sm"
+          >
+            <a
+              [routerLink]="['/job-details', job.id]"
+              class="job-link d-block text-decoration-none text-dark"
+            >
               <div class="d-flex align-items-center mb-3">
                 <img
                   [src]="job.image_url || 'img/home-one/job1.png'"
                   alt="Employer"
                   class="job-img mr-3 rounded"
-                  style="width: 80px; height: 80px; object-fit: cover;"
+                  style="width: 80px; height: 80px; object-fit: cover"
                 />
                 <h3 class="mb-0">{{ job.job_title }}</h3>
               </div>
               <ul class="job-meta list-inline mb-3 text-muted">
                 <li class="list-inline-item mr-3">
-                  <i class="flaticon-send mr-1"></i> {{ job.location || 'Not specified' }}
+                  <i class="flaticon-send mr-1"></i>
+                  {{ job.location || 'Not specified' }}
                 </li>
                 <li class="list-inline-item">
                   {{ formatPostedDate(job.created_at) }}
@@ -54,32 +61,61 @@
               </ul>
 
               <p class="job-description mb-3">
-                {{ job.job_description || 'No description provided.' }}
+                {{
+                  job.job_description || 'No description provided.'
+                }}
               </p>
 
-              <div class="job-extra-info mb-3 d-flex flex-wrap text-secondary small">
+              <div
+                class="job-extra-info mb-3 d-flex flex-wrap text-secondary small"
+              >
                 <span class="mr-3">
-                  <strong>Experience:</strong> {{ job.experience_min || '0' }} - {{ job.experience_max || 'N/A' }} years
+                  <strong>Experience:</strong>
+                  {{ job.experience_min || '0' }} -
+                  {{ job.experience_max || 'N/A' }} years
                 </span>
                 <span class="mr-3">
-                  <strong>Compensation:</strong> {{ job.compensation_range || 'Not specified' }}
+                  <strong>Compensation:</strong>
+                  {{ job.compensation_range || 'Not specified' }}
                 </span>
                 <span class="mr-3">
-                  <strong>Notice Period:</strong> {{ job.notice_period || 'N/A' }}
+                  <strong>Notice Period:</strong>
+                  {{ job.notice_period || 'N/A' }}
                 </span>
                 <span class="mr-3">
-                  <strong>Deadline:</strong> {{ job.application_deadline ? (job.application_deadline | date:'mediumDate') : 'N/A' }}
+                  <strong>Deadline:</strong>
+                  {{
+                    job.application_deadline
+                      ? (job.application_deadline | date: 'mediumDate')
+                      : 'N/A'
+                  }}
                 </span>
                 <span>
-                  <strong>Work Mode:</strong> {{ job.work_mode || 'Not specified' }}
+                  <strong>Work Mode:</strong> {{
+                    job.work_mode || 'Not specified'
+                  }}
                 </span>
               </div>
 
               <div class="job-tags d-flex flex-wrap">
-                <span class="badge badge-primary mr-2 mb-1">{{ job.modules_required || 'General' }}</span>
-                <span class="badge badge-secondary mb-1">{{ job.employment_type || 'N/A' }}</span>
+                <span class="badge badge-primary mr-2 mb-1">
+                  {{ job.modules_required || 'General' }}
+                </span>
+                <span class="badge badge-secondary mb-1">
+                  {{ job.employment_type || 'N/A' }}
+                </span>
               </div>
             </a>
+
+            <!-- Apply Button -->
+            <div class="text-right mt-3">
+              <button
+                class="btn btn-success btn-sm"
+                (click)="applyToJob(job.id)"
+              >
+                Apply
+              </button>
+            </div>
           </article>
         </div>
 

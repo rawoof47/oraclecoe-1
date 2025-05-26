@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('applications')
 export class Application {
@@ -14,10 +20,19 @@ export class Application {
   @Column({ type: 'char', length: 36, nullable: true })
   application_status_id: string | null;
 
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({
+    type: 'timestamp',
+    name: 'applied_on',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   applied_on: Date;
 
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @UpdateDateColumn({
+    type: 'timestamp',
+    name: 'updated_on',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
   updated_on: Date;
 
   @Column({ type: 'tinyint', width: 1, default: () => '0' })

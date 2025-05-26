@@ -1,7 +1,6 @@
 // src/applications/dto/create-application.dto.ts
 
 import {
-  IsString,
   IsUUID,
   IsNotEmpty,
   IsOptional,
@@ -17,19 +16,19 @@ export class CreateApplicationDto {
   @IsNotEmpty()
   job_id: string;
 
-  @IsString()
+  @IsUUID()
   @IsNotEmpty()
-  status: string; // Maps to application_status_id
+  application_status_id: string;
 
   @IsOptional()
   @IsBoolean()
-  withdrawn?: boolean; // Optional boolean, defaults to false if not provided
+  withdrawn?: boolean;
 
   @IsOptional()
   @IsUUID()
-  created_by?: string; // Optional user ID
+  created_by?: string;
 
   @IsOptional()
   @IsUUID()
-  updated_by?: string; // Optional user ID
+  updated_by?: string;
 }

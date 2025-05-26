@@ -1,3 +1,5 @@
+// src/applications/dto/update-application.dto.ts
+
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateApplicationDto } from './create-application.dto';
 import { IsUUID, IsOptional, IsBoolean } from 'class-validator';
@@ -15,8 +17,8 @@ export class UpdateApplicationDto extends PartialType(CreateApplicationDto) {
   @IsOptional()
   application_status_id?: string;
 
-  @IsBoolean()
   @IsOptional()
+  @IsBoolean()
   withdrawn?: boolean;
 
   @IsUUID()

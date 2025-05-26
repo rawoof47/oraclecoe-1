@@ -1,4 +1,5 @@
 <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="profile-form">
+
   <!-- About Me -->
   <div class="form-group">
     <label for="about_me">About Me</label>
@@ -41,8 +42,73 @@
     <input id="notice_period" type="text" formControlName="notice_period" />
   </div>
 
+  <!-- Functional Skills -->
+  <div class="form-group">
+    <label class="form-label">Functional Skills:</label>
+    <ng-select
+      [items]="functionalSkills"
+      bindLabel="name"
+      bindValue="id"
+      [multiple]="true"
+      [searchable]="true"
+      [closeOnSelect]="false"
+      formControlName="functionalSkills"
+      placeholder="Select Functional Skills"
+      class="form-control ng-select-matching"
+    ></ng-select>
+  </div>
+
+  <!-- Technical Skills -->
+  <div class="form-group">
+    <label class="form-label">Technical Skills:</label>
+    <ng-select
+      [items]="technicalSkills"
+      bindLabel="name"
+      bindValue="id"
+      [multiple]="true"
+      [searchable]="true"
+      [closeOnSelect]="false"
+      formControlName="technicalSkills"
+      placeholder="Select Technical Skills"
+      class="form-control ng-select-matching"
+    ></ng-select>
+  </div>
+
+  <!-- Oracle Middleware Skills -->
+  <div class="form-group">
+    <label class="form-label">Oracle Middleware & Database Skills:</label>
+    <ng-select
+      [items]="oracleMiddlewareSkills"
+      bindLabel="name"
+      bindValue="id"
+      [multiple]="true"
+      [searchable]="true"
+      [closeOnSelect]="false"
+      formControlName="oracleMiddlewareSkills"
+      placeholder="Select Middleware Skills"
+      class="form-control ng-select-matching"
+    ></ng-select>
+  </div>
+
+  <!-- Reporting Skills -->
+  <div class="form-group">
+    <label class="form-label">Analytics & Reporting Skills:</label>
+    <ng-select
+      [items]="reportingSkills"
+      bindLabel="name"
+      bindValue="id"
+      [multiple]="true"
+      [searchable]="true"
+      [closeOnSelect]="false"
+      formControlName="reportingSkills"
+      placeholder="Select Reporting Skills"
+      class="form-control ng-select-matching"
+    ></ng-select>
+  </div>
+
   <!-- Submit Button -->
   <div class="form-actions">
     <button type="submit" [disabled]="isSubmitting">Save Profile</button>
   </div>
+
 </form>

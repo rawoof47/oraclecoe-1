@@ -19,8 +19,8 @@ export class ApplicationsService {
     const application = this.applicationRepository.create({
       candidate_id: createApplicationDto.candidate_id,
       job_id: createApplicationDto.job_id,
-      application_status_id: createApplicationDto.status, // Maps to application_status_id
-      withdrawn: createApplicationDto.withdrawn ?? false, // Defaults to false if not provided
+      application_status_id: createApplicationDto.application_status_id, // ✅ updated here
+      withdrawn: createApplicationDto.withdrawn ?? false,
       created_by: createApplicationDto.created_by ?? null,
       updated_by: createApplicationDto.updated_by ?? null,
     });
@@ -56,8 +56,8 @@ export class ApplicationsService {
       application.candidate_id = updateApplicationDto.candidate_id;
     }
 
-    if (updateApplicationDto.status) {
-      application.application_status_id = updateApplicationDto.status;
+    if (updateApplicationDto.application_status_id) {
+      application.application_status_id = updateApplicationDto.application_status_id; // ✅ also here
     }
 
     if (updateApplicationDto.withdrawn !== undefined) {

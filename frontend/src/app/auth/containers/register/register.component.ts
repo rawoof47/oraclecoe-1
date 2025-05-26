@@ -22,7 +22,8 @@ export class RegisterComponent {
     Candidate: 'c1bb8df5-2c01-11f0-b60f-80ce6232908a',
     Recruiter: 'c1bb84ef-2c01-11f0-b60f-80ce6232908a'
   };
-  private readonly defaultStatusId = 'b2fe49c1-2aeb-4a96-b661-e685366c4917';
+  private readonly defaultStatusId = '17d2f849-3a1a-11f0-8520-ac1f6bbcd360';
+
 
   constructor(
     private fb: FormBuilder,
