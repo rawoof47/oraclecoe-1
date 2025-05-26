@@ -25,7 +25,9 @@ export class JobsComponent implements OnInit {
   jobs: any[] = [];
   loading = true;
   error: string | null = null;
-  currentUserId = 1; // ✅ Replace with actual logged-in user ID
+
+  // ✅ This should be dynamically obtained from auth state
+  currentUserId = 'fba1cb74-3a09-11f0-8520-ac1f6bbcd360'; // user_id
 
   constructor(private http: HttpClient) {
     console.log('JobsComponent: constructor called');
@@ -76,23 +78,21 @@ export class JobsComponent implements OnInit {
 
   applyToJob(jobId: string): void {
     const payload = {
-      candidate_id: this.currentUserId, // ✅ Replace with actual UUID from auth
-      job_id: jobId,
-      application_status_id: null, // Or use default status ID if needed
-      withdrawn: 0,
-      created_by: this.currentUserId,
-      updated_by: this.currentUserId
+      user_id: this.currentUserId,
+      job_id: jobId
     };
 
-    this.http.post('http://localhost:3000/applications', payload).subscribe({
+    this.http.post('http://localhost:3000/applications/by-user', payload).subscribe({
       next: () => {
-        console.log('Application submitted successfully!');
+        console.log('✅ Application submitted successfully!');
       },
       error: (error) => {
         if (error.status === 409) {
-          console.warn('You have already applied for this job.');
+          console.warn('⚠️ You have already applied for this job.');
+        } else if (error.status === 404) {
+          console.error('❌ Candidate profile not found for current user.');
         } else {
-          console.error('Failed to submit application.', error);
+          console.error('❌ Failed to submit application.', error);
         }
       }
     });
