@@ -9,7 +9,7 @@ import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontaweso
 import { importProvidersFrom } from '@angular/core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { MatSnackBarModule } from '@angular/material/snack-bar'; // 👈 add this
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // ✅ JWT Interceptor
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem('accessToken');
@@ -28,7 +28,7 @@ bootstrapApplication(AppComponent, {
     provideRouter(routes),
     provideHttpClient(withInterceptors([jwtInterceptor])),
     provideAnimations(),
-    importProvidersFrom(FontAwesomeModule, MatSnackBarModule), // 👈 include snackbar here
+    importProvidersFrom(FontAwesomeModule, BrowserAnimationsModule, MatSnackBarModule), // 👈 include snackbar here
     {
       provide: 'TEST_HTTP',
       useFactory: (http: HttpClient) => {

@@ -26,6 +26,8 @@ import { BlogComponent } from './pages/blog/blog.component';
 import { BlogDetailsComponent } from './pages/blog-details/blog-details.component';
 import { ContactUsComponent } from './pages/contact-us/contact-us.component';
 import { CandidateProfileComponent } from './pages/candidate-profile/candidate-profile.component'; // ✅ New Import
+import { AdminLoginComponent } from './auth/containers/admin/admin-login/admin-login.component';
+import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
 
 // Guards
 import { authGuard } from './guards/auth.guard';
@@ -92,6 +94,10 @@ export const routes: Routes = [
     component: SingleResumeComponent,
     canActivate: [authGuard, roleGuard('recruiter')]
   },
+
+  { path: 'admin-login', component: AdminLoginComponent },
+
+  { path: 'admin-dashboard', component: AdminDashboardComponent },
 
   // Catch-all for unknown paths
   { path: '**', component: ErrorPageComponent }

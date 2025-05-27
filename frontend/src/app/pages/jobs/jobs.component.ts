@@ -26,8 +26,8 @@ export class JobsComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
-  // ✅ This should be dynamically obtained from auth state
-  currentUserId = 'fba1cb74-3a09-11f0-8520-ac1f6bbcd360'; // user_id
+  // ✅ This should ideally come from a user auth service
+  currentUserId = 'fba1cb74-3a09-11f0-8520-ac1f6bbcd360';
 
   constructor(private http: HttpClient) {
     console.log('JobsComponent: constructor called');
@@ -47,6 +47,7 @@ export class JobsComponent implements OnInit {
       error: (err) => {
         console.error('Error fetching jobs:', err);
         this.error = 'Failed to load job data.';
+        alert('❌ Error loading job listings.');
         this.loading = false;
       }
     });
@@ -84,15 +85,15 @@ export class JobsComponent implements OnInit {
 
     this.http.post('http://localhost:3000/applications/by-user', payload).subscribe({
       next: () => {
-        console.log('✅ Application submitted successfully!');
+        alert('✅ Application submitted successfully!');
       },
       error: (error) => {
         if (error.status === 409) {
-          console.warn('⚠️ You have already applied for this job.');
+          alert('⚠️ You have already applied for this job.');
         } else if (error.status === 404) {
-          console.error('❌ Candidate profile not found for current user.');
+          alert('❌ Candidate profile not found for current user.');
         } else {
-          console.error('❌ Failed to submit application.', error);
+          alert('❌ Failed to submit application.');
         }
       }
     });

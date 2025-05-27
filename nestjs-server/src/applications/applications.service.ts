@@ -43,7 +43,7 @@ export class ApplicationsService {
     const createDto: CreateApplicationDto = {
       candidate_id: candidateProfile.id,
       job_id: payload.job_id,
-      application_status_id: '12c7f28f-3a21-11f0-8520-ac1f6bbcd360', // Default status ID
+      application_status_id: '12c7f28f-3a21-11f0-8520-ac1f6bbcd360',
       withdrawn: false,
       created_by: payload.user_id,
       updated_by: payload.user_id,
@@ -82,6 +82,19 @@ export class ApplicationsService {
         job_id: jobId,
       },
     });
+  }
+
+  // ✅ Get all job_ids a candidate has applied to (excluding withdrawn)
+  async getAppliedJobIdsByCandidate(candidateId: string): Promise<string[]> {
+    const applications = await this.applicationRepository.find({
+      where: {
+        candidate_id: candidateId,
+        withdrawn: false,
+      },
+      select: ['job_id'],
+    });
+
+    return applications.map((app) => app.job_id);
   }
 
   // ✅ Update an existing application

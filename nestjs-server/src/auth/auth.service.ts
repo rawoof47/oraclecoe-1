@@ -20,17 +20,25 @@ export class AuthService {
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
 
+    console.log('📥 Incoming login:', email);
+
     const user = await this.usersRepository.findOne({
       where: { email },
       relations: [], // no direct relation, so we’ll manually fetch the role
     });
 
+    console.log('🔍 Found user:', user);
+
     if (!user) {
+      console.warn('❌ No user found with email:', email);
       throw new UnauthorizedException('Invalid credentials');
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+    console.log('🔐 Password match:', isPasswordValid);
+
     if (!isPasswordValid) {
+      console.warn('❌ Incorrect password for user:', email);
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -40,6 +48,7 @@ export class AuthService {
     });
 
     if (!role) {
+      console.warn('❌ Role not found for user:', user.id);
       throw new UnauthorizedException('User role not found');
     }
 

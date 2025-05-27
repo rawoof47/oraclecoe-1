@@ -1,0 +1,58 @@
+<!-- Admin Login Page -->
+<div class="user-form-area">
+  <div class="d-table">
+    <div class="d-table-cell">
+      <div class="container-fluid p-0">
+        <div class="row m-0 align-items-center">
+          <div class="col-lg-6 p-0 col-md-12">
+            <div class="user-img" style="background-image: url(img/resgister-bg.jpg);">
+              <img src="img/resgister-bg.jpg" alt="User">
+            </div>
+          </div>
+          <div class="col-lg-6 p-0 col-md-12">
+            <div class="user-content p-4">
+              <div class="top">
+                <h2 class="mb-4">Admin Login</h2>
+                <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                  <div class="form-group mb-3">
+                    <input type="email" class="form-control" formControlName="email" placeholder="Email" />
+                  </div>
+                  <div class="form-group mb-3">
+                    <input type="password" class="form-control" formControlName="password" placeholder="Password" />
+                  </div>
+
+                  <!-- Role: Pre-selected as Admin -->
+                  <div class="form-group mb-4">
+                    <div class="form-control d-flex align-items-center">
+                      <label class="me-3 mb-0">Role:</label>
+                      <div class="form-check me-3">
+                        <input class="form-check-input" type="radio" checked disabled />
+                        <label class="form-check-label">Admin</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary">Login as Admin</button>
+                </form>
+
+                <div class="switch-link">
+                  Not an admin? <a href="/login">Switch to User Login</a>
+                </div>
+              </div>
+
+              <div class="end mt-4">
+                <ul class="list-inline">
+                  <li class="list-inline-item"><a href="#"><i class='bx bxl-facebook'></i></a></li>
+                  <li class="list-inline-item"><a href="#"><i class='bx bxl-twitter'></i></a></li>
+                  <li class="list-inline-item"><a href="#"><i class='bx bxl-linkedin'></i></a></li>
+                  <li class="list-inline-item"><a href="#"><i class='bx bxl-pinterest-alt'></i></a></li>
+                </ul>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -27,7 +27,6 @@ export class ApplicationsController {
     private readonly candidateProfileRepository: Repository<CandidateProfile>,
   ) {}
 
-  // ✅ Standard: Create a new application using full DTO
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(
@@ -36,13 +35,11 @@ export class ApplicationsController {
     return this.applicationsService.create(createApplicationDto);
   }
 
-  // ✅ New: Create application using user_id (automatically map to candidate_id)
   @Post('by-user')
   @HttpCode(HttpStatus.CREATED)
   async createByUser(
     @Body() payload: { user_id: string; job_id: string },
   ): Promise<Application> {
-    // 🔍 Fetch candidate_id using user_id
     const candidate = await this.candidateProfileRepository.findOne({
       where: { user_id: payload.user_id },
     });
@@ -54,7 +51,7 @@ export class ApplicationsController {
     const dto: CreateApplicationDto = {
       candidate_id: candidate.id,
       job_id: payload.job_id,
-      application_status_id: '12c7f28f-3a21-11f0-8520-ac1f6bbcd360', // ✅ Default status
+      application_status_id: '12c7f28f-3a21-11f0-8520-ac1f6bbcd360',
       withdrawn: false,
       created_by: payload.user_id,
       updated_by: payload.user_id,
@@ -63,19 +60,16 @@ export class ApplicationsController {
     return this.applicationsService.create(dto);
   }
 
-  // ✅ Get all applications
   @Get()
   async findAll(): Promise<Application[]> {
     return this.applicationsService.findAll();
   }
 
-  // ✅ Get one application by ID
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Application> {
     return this.applicationsService.findOne(id);
   }
 
-  // ✅ Find application by candidate_id and job_id
   @Post('find-by-user-and-job')
   @HttpCode(HttpStatus.OK)
   async findByCandidateAndJob(
@@ -87,7 +81,15 @@ export class ApplicationsController {
     );
   }
 
-  // ✅ Update application
+  // ✅ NEW: Get all job_ids the candidate has already applied to (excluding withdrawn)
+  @Get('user/:candidateId')
+  @HttpCode(HttpStatus.OK)
+  async getAppliedJobsByCandidate(
+    @Param('candidateId') candidateId: string,
+  ): Promise<string[]> {
+    return this.applicationsService.getAppliedJobIdsByCandidate(candidateId);
+  }
+
   @Put(':id')
   async update(
     @Param('id') id: string,
@@ -96,7 +98,6 @@ export class ApplicationsController {
     return this.applicationsService.update(id, updateApplicationDto);
   }
 
-  // ✅ Delete application
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string): Promise<void> {
