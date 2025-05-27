@@ -39,9 +39,7 @@ export class JobPostsService {
     jobPost.created_by = createJobPostDto.createdBy ?? null;
     jobPost.updated_by = createJobPostDto.updatedBy ?? null;
 
-    jobPost.work_mode = Array.isArray(createJobPostDto.workMode)
-      ? createJobPostDto.workMode.join(',')
-      : null;
+    jobPost.work_mode = createJobPostDto.workMode ?? null;
 
     // ✅ New fields
     jobPost.role_summary = createJobPostDto.roleSummary ?? null;
@@ -115,9 +113,9 @@ export class JobPostsService {
 
     Object.assign(jobPost, updateJobPostDto);
 
-    // Convert arrays to comma-separated strings if provided
-    if (Array.isArray(updateJobPostDto.workMode)) {
-      jobPost.work_mode = updateJobPostDto.workMode.join(',');
+    // ✅ Updated: Assign work_mode directly as string
+    if (updateJobPostDto.workMode) {
+      jobPost.work_mode = updateJobPostDto.workMode;
     }
 
     if (!jobPost.job_title || !jobPost.job_description) {

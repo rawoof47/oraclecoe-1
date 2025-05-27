@@ -61,10 +61,13 @@ export class JobPost {
   @Column({ type: 'char', length: 36, nullable: true })
   updated_by: string | null;
 
-  @Column({ type: 'longtext', nullable: true })
-  work_mode: string | null;
+  @Column({
+    type: 'enum',
+    enum: ['Remote', 'On-site', 'Hybrid'],
+    nullable: true,
+  })
+  work_mode: 'Remote' | 'On-site' | 'Hybrid' | null;
 
-  // ✅ Newly added columns
   @Column({ type: 'text', nullable: true })
   role_summary: string | null;
 
@@ -77,7 +80,6 @@ export class JobPost {
   @Column({ type: 'text', nullable: true })
   how_to_apply: string | null;
 
-  // ✅ JobPostSkill relationship
   @OneToMany(() => JobPostSkill, (jobPostSkill) => jobPostSkill.jobPost, {
     cascade: true,
   })
