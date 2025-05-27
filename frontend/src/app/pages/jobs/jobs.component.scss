@@ -160,3 +160,117 @@ $font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-weight: 500;
   }
 }
+.enhanced-multiselect {
+  .modern-select {
+    .ng-select-container {
+      cursor: pointer;
+      
+      .ng-value-container {
+        .ng-value {
+          pointer-events: none; /* Disable direct clicking on pills */
+        }
+      }
+    }
+
+    .ng-dropdown-panel {
+      display: none !important; /* Hide default dropdown */
+    }
+
+    &.ng-select-opened {
+      .ng-select-container {
+        box-shadow: 0 0 0 3px rgba(38, 132, 255, 0.1);
+      }
+    }
+  }
+
+  /* Custom checkbox styling */
+  .checkbox-container {
+    padding: 8px 12px;
+    
+    .custom-checkbox {
+      width: 18px;
+      height: 18px;
+      margin-right: 12px;
+      accent-color: #2684ff;
+    }
+  }
+}
+//scss of employment type dropdown 
+.custom-multiselect {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+
+  .dropdown-label {
+    font-weight: 500;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 4px; // ensures spacing above the select box
+  }
+
+  .employment-type-dropdown {
+    width: 250px; // adjust width as needed
+    border-radius: 6px;
+
+    ::ng-deep .ng-select-container {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    ::ng-deep .ng-dropdown-panel {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 8px 0;
+      background-color: #fff;
+    }
+
+    ::ng-deep .select-all-option {
+      display: flex;
+      align-items: center;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-weight: 500;
+      border-bottom: 1px solid #eee;
+
+      input {
+        margin-right: 8px;
+      }
+
+      &:hover {
+        background-color: #f9f9f9;
+      }
+    }
+
+    ::ng-deep .checkbox-option {
+      display: flex;
+      align-items: center;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+
+      input {
+        margin-right: 10px;
+        cursor: pointer;
+      }
+
+      label {
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      &:hover {
+        background-color: #f0f0f0;
+      }
+    }
+
+    ::ng-deep .selected-count {
+      font-size: 13px;
+      color: #555;
+    }
+  }
+}
