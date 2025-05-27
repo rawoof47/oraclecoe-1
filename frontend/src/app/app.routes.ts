@@ -95,7 +95,7 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard('recruiter')]
   },
 
-  { path: 'admin-login', component: AdminLoginComponent },
+  { path: 'admin/login', component: AdminLoginComponent },
 
   { path: 'admin-dashboard', component: AdminDashboardComponent },
 
