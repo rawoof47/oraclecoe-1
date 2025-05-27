@@ -23,10 +23,10 @@ import { BackToTopComponent } from '../../common/back-to-top/back-to-top.compone
 })
 export class JobsComponent implements OnInit {
   jobs: any[] = [];
+  jobCount = 0;
   loading = true;
   error: string | null = null;
 
-  // ✅ This should ideally come from a user auth service
   currentUserId = 'fba1cb74-3a09-11f0-8520-ac1f6bbcd360';
 
   constructor(private http: HttpClient) {
@@ -42,6 +42,7 @@ export class JobsComponent implements OnInit {
     this.http.get<any[]>('http://localhost:3000/jobs').subscribe({
       next: (data) => {
         this.jobs = data;
+        this.jobCount = data.length;
         this.loading = false;
       },
       error: (err) => {

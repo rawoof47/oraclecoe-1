@@ -1,4 +1,4 @@
-// Variables (customize as needed)
+// Variables
 $primary-color: #007bff;
 $secondary-color: #6c757d;
 $text-color: #333;
@@ -11,8 +11,7 @@ $font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
 .job-area-list {
   background-color: #f9f9f9;
-  padding-top: 100px;
-  padding-bottom: 100px;
+  padding: 100px 0;
   font-family: $font-family;
   color: $text-color;
 
@@ -31,18 +30,13 @@ $font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       }
 
       a.job-link {
+        display: block;
         color: $text-color;
         text-decoration: none;
-        display: block;
 
         &:hover {
           color: darken($text-color, 10%);
         }
-      }
-
-      .d-flex {
-        display: flex !important;
-        align-items: center !important;
       }
 
       .job-img {
@@ -57,20 +51,21 @@ $font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       }
 
       h3 {
-        font-size: 1.5rem;
         margin: 0;
+        font-size: 1.5rem;
         font-weight: 700;
       }
 
       ul.job-meta {
+        display: flex;
+        flex-wrap: wrap;
         list-style: none;
         padding: 0;
-        margin: 10px 0 15px 0;
+        margin: 10px 0 15px;
         font-size: 0.9rem;
         color: $secondary-color;
 
         li {
-          display: inline-block;
           margin-right: 20px;
 
           i {
@@ -82,26 +77,24 @@ $font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       }
 
       p.job-description {
+        margin-bottom: 1.25rem;
         font-size: 1rem;
         line-height: 1.5;
-        margin-bottom: 1.25rem;
         color: $text-color;
         min-height: 60px;
       }
 
       .job-extra-info {
-        font-size: 0.9rem;
-        color: $secondary-color;
         display: flex;
         flex-wrap: wrap;
         gap: 15px;
         margin-bottom: 1rem;
+        font-size: 0.9rem;
+        color: $secondary-color;
 
-        span {
-          strong {
-            font-weight: 600;
-            color: $text-color;
-          }
+        strong {
+          font-weight: 600;
+          color: $text-color;
         }
       }
 
@@ -141,22 +134,29 @@ $font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
 
   .text-center {
-    text-align: center;
     margin-top: 3rem;
+    text-align: center;
     font-size: 1.1rem;
     color: $secondary-color;
   }
 }
-.search-bar-section h2 {
-  font-weight: 400;
-  font-size: 2rem;
+
+// Search bar and heading
+.search-bar-section {
+  h2 {
+    font-weight: 400;
+    font-size: 2rem;
+  }
+
+  input::placeholder {
+    font-size: 0.95rem;
+  }
 }
 
-.search-bar input::placeholder {
-  font-size: 0.95rem;
-}
-
-.job-filters a {
-  font-size: 0.9rem;
-  font-weight: 500;
+// Filter links
+.job-filters {
+  a {
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
 }
