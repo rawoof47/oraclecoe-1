@@ -5,33 +5,48 @@
   [backgroundImage]="'img/page-title-bg.jpg'"
 ></app-page-banner>
 
+<!-- Search Bar Section -->
+<section class="search-bar-section py-5 text-center">
+  <div class="container">
+    <h2 class="mb-4">
+      Create the <strong>future</strong> with us
+    </h2>
+    <div class="search-form-wrapper d-flex justify-content-center">
+      <div class="search-bar d-flex shadow rounded overflow-hidden" style="max-width: 700px; width: 100%;">
+        <div class="p-3 border-right flex-grow-1">
+          <label class="d-block text-uppercase text-muted small mb-1">Find</label>
+          <input type="text" class="form-control border-0 p-0" placeholder="Job title, skill, keyword, event" />
+        </div>
+        <div class="p-3 border-right flex-grow-1">
+          <label class="d-block text-uppercase text-muted small mb-1">Near Location</label>
+          <input type="text" class="form-control border-0 p-0" placeholder="City, state, country" />
+        </div>
+        <button class="btn btn-dark d-flex align-items-center justify-content-center px-4" style="border-radius: 0;">
+          <i class="fas fa-search text-white"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="job-filters mt-4">
+      <a href="#" class="text-primary mx-2">All Jobs <strong>(4937)</strong></a>
+      <a href="#" class="text-dark mx-2">New Jobs <strong>(2122)</strong></a>
+      <a href="#" class="text-primary mx-2">Product Development <strong>(1711)</strong></a>
+      <a href="#" class="text-primary mx-2">Consulting <strong>(910)</strong></a>
+      <a href="#" class="text-dark mx-2">Sales <strong>(873)</strong></a>
+      <a href="#" class="text-primary mx-2">Support <strong>(571)</strong></a>
+      <a href="#" class="text-primary mx-2">Pre Sales <strong>(291)</strong></a>
+      <a href="#" class="text-dark mx-2">All Events <strong>(18)</strong></a>
+    </div>
+  </div>
+</section>
+
+<!-- Job Listings -->
 <section class="job-area-list ptb-100">
   <div class="container">
     <div class="row">
       <main class="col-lg-8 col-md-12">
-        <ul class="job-list-controls d-flex align-items-center justify-content-between mb-4">
-          <li class="results-found">
-            <a routerLink=".">
-              Results Found <span>({{ jobs.length }})</span>
-            </a>
-            <a class="rss" routerLink="/">
-              <i class="bx bx-rss"></i> RSS Feed
-            </a>
-          </li>
-          <li class="sort-by">
-            <span>Sort By:</span>
-            <form>
-              <div class="form-group d-inline-block ml-2">
-                <select (change)="onSortChange($event)" class="form-control">
-                  <option value="title">Title</option>
-                  <option value="date">Date</option>
-                </select>
-              </div>
-            </form>
-          </li>
-        </ul>
 
-        <!-- Job Listings -->
         <div *ngIf="!loading && jobs.length > 0" class="job-listings">
           <article
             *ngFor="let job of jobs"
@@ -61,18 +76,13 @@
               </ul>
 
               <p class="job-description mb-3">
-                {{
-                  job.job_description || 'No description provided.'
-                }}
+                {{ job.job_description || 'No description provided.' }}
               </p>
 
-              <div
-                class="job-extra-info mb-3 d-flex flex-wrap text-secondary small"
-              >
+              <div class="job-extra-info mb-3 d-flex flex-wrap text-secondary small">
                 <span class="mr-3">
                   <strong>Experience:</strong>
-                  {{ job.experience_min || '0' }} -
-                  {{ job.experience_max || 'N/A' }} years
+                  {{ job.experience_min || '0' }} - {{ job.experience_max || 'N/A' }} years
                 </span>
                 <span class="mr-3">
                   <strong>Compensation:</strong>
@@ -91,15 +101,17 @@
                   }}
                 </span>
                 <span>
-                  <strong>Work Mode:</strong> {{
-                    job.work_mode || 'Not specified'
-                  }}
+                  <strong>Work Mode:</strong>
+                  {{ job.work_mode || 'Not specified' }}
                 </span>
               </div>
 
               <div class="job-tags d-flex flex-wrap">
-                <span class="badge badge-primary mr-2 mb-1">
-                  {{ job.modules_required || 'General' }}
+                <span
+                  class="badge badge-primary mr-2 mb-1"
+                  *ngIf="job.modules_required"
+                >
+                  {{ job.modules_required }}
                 </span>
                 <span class="badge badge-secondary mb-1">
                   {{ job.employment_type || 'N/A' }}
@@ -107,7 +119,6 @@
               </div>
             </a>
 
-            <!-- Apply Button -->
             <div class="text-right mt-3">
               <button
                 class="btn btn-success btn-sm"

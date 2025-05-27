@@ -1,4 +1,4 @@
-// Variables (customize these as needed)
+// Variables (customize as needed)
 $primary-color: #007bff;
 $secondary-color: #6c757d;
 $text-color: #333;
@@ -16,94 +16,18 @@ $font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-family: $font-family;
   color: $text-color;
 
-  .job-list-controls {
-    list-style: none;
-    padding: 0;
-    margin-bottom: 1.5rem;
-    border-bottom: 1px solid $border-color;
-    padding-bottom: 0.75rem;
-    font-size: 1rem;
-
-    li {
-      display: flex;
-      align-items: center;
-
-      &.results-found {
-        a {
-          color: $primary-color;
-          font-weight: 600;
-          margin-right: 15px;
-          text-decoration: none;
-
-          &:hover {
-            text-decoration: underline;
-          }
-
-          span {
-            font-weight: 700;
-            color: darken($primary-color, 10%);
-          }
-        }
-
-        .rss {
-          color: $secondary-color;
-          font-size: 1.1rem;
-          display: flex;
-          align-items: center;
-          margin-left: 10px;
-          text-decoration: none;
-
-          i {
-            margin-right: 5px;
-          }
-
-          &:hover {
-            color: $primary-color;
-          }
-        }
-      }
-
-      &.sort-by {
-        span {
-          font-weight: 600;
-          margin-right: 0.5rem;
-        }
-
-        .form-group {
-          margin: 0;
-
-          select.form-control {
-            border: 1px solid $border-color;
-            border-radius: 4px;
-            padding: 6px 10px;
-            font-size: 1rem;
-            background-color: $background-color;
-            cursor: pointer;
-            transition: border-color 0.3s ease;
-
-            &:focus {
-              border-color: $primary-color;
-              outline: none;
-              box-shadow: 0 0 5px rgba($primary-color, 0.5);
-            }
-          }
-        }
-      }
-    }
-  }
-
   .job-listings {
     article.employer-item {
       background-color: $background-color;
       border: 1px solid $border-color;
       border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
       padding: 20px;
       margin-bottom: 2rem;
       transition: box-shadow 0.3s ease;
 
       &:hover {
-        box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
       }
 
       a.job-link {
@@ -112,7 +36,6 @@ $font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         display: block;
 
         &:hover {
-          text-decoration: none;
           color: darken($text-color, 10%);
         }
       }
@@ -195,7 +118,6 @@ $font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
           border-radius: 20px;
           color: $badge-text-color;
           white-space: nowrap;
-          user-select: none;
 
           &.badge-primary {
             background-color: $badge-bg-primary;
@@ -204,6 +126,15 @@ $font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
           &.badge-secondary {
             background-color: $badge-bg-secondary;
           }
+        }
+      }
+
+      .text-right {
+        text-align: right;
+
+        .btn-success {
+          font-size: 0.85rem;
+          padding: 6px 12px;
         }
       }
     }
@@ -215,4 +146,17 @@ $font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 1.1rem;
     color: $secondary-color;
   }
+}
+.search-bar-section h2 {
+  font-weight: 400;
+  font-size: 2rem;
+}
+
+.search-bar input::placeholder {
+  font-size: 0.95rem;
+}
+
+.job-filters a {
+  font-size: 0.9rem;
+  font-weight: 500;
 }
