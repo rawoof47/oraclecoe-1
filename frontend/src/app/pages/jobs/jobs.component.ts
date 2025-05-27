@@ -6,6 +6,7 @@ import { NavbarComponent } from '../../common/navbar/navbar.component';
 import { PageBannerComponent } from '../../common/page-banner/page-banner.component';
 import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
+import { FormsModule } from '@angular/forms'; // ✅ Import FormsModule
 
 @Component({
   selector: 'app-jobs',
@@ -16,16 +17,21 @@ import { BackToTopComponent } from '../../common/back-to-top/back-to-top.compone
     NavbarComponent,
     PageBannerComponent,
     FooterComponent,
-    BackToTopComponent
+    BackToTopComponent,
+    FormsModule
   ],
   templateUrl: './jobs.component.html',
   styleUrls: ['./jobs.component.scss']
 })
 export class JobsComponent implements OnInit {
   jobs: any[] = [];
+  allJobs: any[] = [];
   jobCount = 0;
   loading = true;
   error: string | null = null;
+
+  workModeOptions: string[] = ['Remote', 'On-site', 'Hybrid'];
+  selectedWorkMode: string = '';
 
   currentUserId = 'fba1cb74-3a09-11f0-8520-ac1f6bbcd360';
 
@@ -41,6 +47,7 @@ export class JobsComponent implements OnInit {
   fetchJobs(): void {
     this.http.get<any[]>('http://localhost:3000/jobs').subscribe({
       next: (data) => {
+        this.allJobs = data;
         this.jobs = data;
         this.jobCount = data.length;
         this.loading = false;
@@ -75,6 +82,16 @@ export class JobsComponent implements OnInit {
       this.jobs.sort(
         (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
+    }
+  }
+
+  onWorkModeChange(): void {
+    if (this.selectedWorkMode) {
+      this.jobs = this.allJobs.filter(
+        (job) => job.work_mode?.toLowerCase() === this.selectedWorkMode.toLowerCase()
+      );
+    } else {
+      this.jobs = [...this.allJobs];
     }
   }
 

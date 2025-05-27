@@ -27,19 +27,28 @@
       </div>
     </div>
 
-    <!-- Filters Section -->
-    <div class="job-filters mt-4">
-      <a href="#" class="text-primary mx-2">All Jobs <strong>({{ jobCount }})</strong></a>
-      <a href="#" class="text-dark mx-2">New Jobs <strong>(2122)</strong></a>
-      <a href="#" class="text-primary mx-2">Product Development <strong>(1711)</strong></a>
-      <a href="#" class="text-primary mx-2">Consulting <strong>(910)</strong></a>
-      <a href="#" class="text-dark mx-2">Sales <strong>(873)</strong></a>
-      <a href="#" class="text-primary mx-2">Support <strong>(571)</strong></a>
-      <a href="#" class="text-primary mx-2">Pre Sales <strong>(291)</strong></a>
-      <a href="#" class="text-dark mx-2">All Events <strong>(18)</strong></a>
-    </div>
-  </div>
-</section>
+   <!-- Filters Section -->
+<div class="job-filters mt-4">
+  <a href="#" class="text-primary mx-2">All Jobs <strong>({{ jobCount }})</strong></a>
+  <a href="#" class="text-dark mx-2">New Jobs <strong>(2122)</strong></a>
+  <a href="#" class="text-primary mx-2">Product Development <strong>(1711)</strong></a>
+  <a href="#" class="text-primary mx-2">Consulting <strong>(910)</strong></a>
+  <a href="#" class="text-dark mx-2">Sales <strong>(873)</strong></a>
+  <a href="#" class="text-primary mx-2">Support <strong>(571)</strong></a>
+
+  <!-- ✅ Work Mode Dropdown -->
+  <select
+    [(ngModel)]="selectedWorkMode"
+    (change)="onWorkModeChange()"
+    class="form-select form-select-sm d-inline-block w-auto mx-2"
+  >
+    <option value="">All Work Modes</option>
+    <option *ngFor="let mode of workModeOptions" [value]="mode">{{ mode }}</option>
+  </select>
+
+  <a href="#" class="text-dark mx-2">All Events <strong>(18)</strong></a>
+</div>
+
 
 <!-- Job Listings -->
 <section class="job-area-list ptb-100">
