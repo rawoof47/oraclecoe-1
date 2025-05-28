@@ -1,13 +1,45 @@
-<div class="form-group custom-skills-filter">
-  <ng-select
-    [items]="skills"
-    [(ngModel)]="selectedSkills"
-    [multiple]="true"
-    [searchable]="true"
-    [clearable]="true"
-    bindLabel=""
-    placeholder="Filter by skills"
-    (change)="onSkillsChange()"
-  >
-  </ng-select>
+<div class="dropdown-container">
+  <!-- Skills Dropdown -->
+  <div class="dropdown">
+    <div class="dropdown-header" (click)="toggleSkillsDropdown()">
+      <span>Select Skills</span>
+      <span class="arrow">&#9662;</span>
+    </div>
+    <div class="dropdown-list" *ngIf="showSkillsDropdown">
+      <div *ngFor="let group of groupedSkills" class="dropdown-group">
+        <div class="group-title">{{ group.categoryName }}</div>
+        <div *ngFor="let skill of group.items" class="dropdown-item">
+          <input
+            type="checkbox"
+            [(ngModel)]="skill.selected"
+            (change)="onSkillChange(skill)"
+            id="{{ skill.id }}"
+          />
+          <label for="{{ skill.id }}">{{ skill.name }}</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Certifications Dropdown -->
+  <div class="dropdown">
+    <div class="dropdown-header" (click)="toggleCertsDropdown()">
+      <span>Select Certifications</span>
+      <span class="arrow">&#9662;</span>
+    </div>
+    <div class="dropdown-list" *ngIf="showCertsDropdown">
+      <div *ngFor="let group of groupedCertifications" class="dropdown-group">
+        <div class="group-title">{{ group.categoryName }}</div>
+        <div *ngFor="let cert of group.items" class="dropdown-item">
+          <input
+            type="checkbox"
+            [(ngModel)]="cert.selected"
+            (change)="onCertChange(cert)"
+            id="{{ cert.id }}"
+          />
+          <label for="{{ cert.id }}">{{ cert.name }}</label>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

@@ -8,7 +8,7 @@ import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { SkillsFilterComponent } from './filters/skills-filter/skills-filter.component';
+import { SkillFiltersComponent } from './filters/skills-filter/skills-filter.component';
 @Component({
   selector: 'app-jobs',
   standalone: true,
@@ -21,7 +21,7 @@ import { SkillsFilterComponent } from './filters/skills-filter/skills-filter.com
     BackToTopComponent,
     FormsModule,
     NgSelectModule,
-    SkillsFilterComponent,
+    SkillFiltersComponent,
   ],
   templateUrl: './jobs.component.html',
   styleUrls: ['./jobs.component.scss']
