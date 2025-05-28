@@ -18,7 +18,7 @@
           <input
             type="text"
             class="form-control border-0 p-0"
-            placeholder="Job title, skill, keyword, event"
+            placeholder="Job title, skill, keyword"
             [(ngModel)]="searchKeyword"
             name="searchKeyword"
           />
@@ -45,13 +45,14 @@
   </div>
 </section>
 
-
-
-
  <!-- Filters Wrapper -->
 <div class="filters-wrapper d-flex justify-content-center mt-4">
   <div class="job-filters d-flex align-items-center flex-wrap gap-2 justify-content-center">
     <a href="#" class="text-primary mx-2">All Jobs <strong>({{ jobCount }})</strong></a>
+
+
+    //skills 
+    <app-skills-filter></app-skills-filter>
 
     <!-- Employment Type Dropdown -->
     <div class="form-group custom-multiselect">

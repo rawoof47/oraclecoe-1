@@ -1,0 +1,13 @@
+<div class="form-group custom-skills-filter">
+  <ng-select
+    [items]="skills"
+    [(ngModel)]="selectedSkills"
+    [multiple]="true"
+    [searchable]="true"
+    [clearable]="true"
+    bindLabel=""
+    placeholder="Filter by skills"
+    (change)="onSkillsChange()"
+  >
+  </ng-select>
+</div>
