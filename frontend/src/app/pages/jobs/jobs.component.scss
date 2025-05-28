@@ -202,16 +202,10 @@ $font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   align-items: flex-start;
   gap: 4px;
 
-  .dropdown-label {
-    font-weight: 500;
-    font-size: 14px;
-    color: #333;
-    margin-bottom: 4px; // ensures spacing above the select box
-  }
-
   .employment-type-dropdown {
-    width: 250px; // adjust width as needed
+    width: 250px;
     border-radius: 6px;
+    position: relative;
 
     ::ng-deep .ng-select-container {
       border: 1px solid #ccc;
@@ -219,6 +213,22 @@ $font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       padding: 6px 12px;
       font-size: 14px;
       color: #333;
+      position: relative;
+
+      // Add space for arrow
+      padding-right: 32px;
+    }
+
+    // Custom dropdown arrow
+    &::after {
+      content: '˅'; // Modifier Letter Small V
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      color: #666;
+      pointer-events: none;
     }
 
     ::ng-deep .ng-dropdown-panel {
@@ -227,6 +237,8 @@ $font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       padding: 8px 0;
       background-color: #fff;
+      left: 0 !important;
+      width: 100% !important;
     }
 
     ::ng-deep .select-all-option {
