@@ -48,91 +48,82 @@
 
 
 
- <!-- Filters Section -->
-<div class="job-filters mt-4 d-flex align-items-center flex-wrap gap-2">
-  <a href="#" class="text-primary mx-2">All Jobs <strong>({{ jobCount }})</strong></a>
-  <a href="#" class="text-dark mx-2">New Jobs <strong>(2122)</strong></a>
-  <a href="#" class="text-primary mx-2">Product Development <strong>(1711)</strong></a>
-  <a href="#" class="text-primary mx-2">Consulting <strong>(910)</strong></a>
+ <!-- Filters Wrapper -->
+<div class="filters-wrapper d-flex justify-content-center mt-4">
+  <div class="job-filters d-flex align-items-center flex-wrap gap-2 justify-content-center">
+    <a href="#" class="text-primary mx-2">All Jobs <strong>({{ jobCount }})</strong></a>
 
-  <!-- Updated Employment Types Dropdown (No Heading) -->
-<div class="form-group custom-multiselect">
-  <ng-select
-    [items]="employmentTypeOptions"
-    [(ngModel)]="selectedEmploymentTypes"
-    [multiple]="true"
-    [closeOnSelect]="false"
-    [searchable]="false"
-    [clearable]="false"
-    bindLabel="."
-    placeholder="Select employment types"
-    class="employment-type-dropdown"
-    (change)="onEmploymentTypeChange()"
-  >
-    <!-- Multi Label Template -->
-    <ng-template ng-multi-label-tmp>
-      <span class="selected-count">
-        {{ selectedEmploymentTypes.length }} of {{ employmentTypeOptions.length }} selected
-      </span>
-    </ng-template>
+    <!-- Employment Type Dropdown -->
+    <div class="form-group custom-multiselect">
+      <ng-select
+        [items]="employmentTypeOptions"
+        [(ngModel)]="selectedEmploymentTypes"
+        [multiple]="true"
+        [closeOnSelect]="false"
+        [searchable]="false"
+        [clearable]="false"
+        bindLabel="."
+        placeholder="Select employment types"
+        class="employment-type-dropdown"
+        (change)="onEmploymentTypeChange()"
+      >
+        <ng-template ng-multi-label-tmp>
+          <span class="selected-count">
+            {{ selectedEmploymentTypes.length }} of {{ employmentTypeOptions.length }} selected
+          </span>
+        </ng-template>
 
-    <!-- Dropdown Header: Select All -->
-    <ng-template ng-dropdown-header-tmp>
-      <div class="select-all-option" (click)="toggleSelectAll($event)">
-        <input 
-          type="checkbox" 
-          [checked]="selectedEmploymentTypes.length === employmentTypeOptions.length"
-          class="select-all-checkbox"
-        />
-        <label>Select all</label>
-      </div>
-    </ng-template>
+        <ng-template ng-dropdown-header-tmp>
+          <div class="select-all-option" (click)="toggleSelectAll($event)">
+            <input 
+              type="checkbox" 
+              [checked]="selectedEmploymentTypes.length === employmentTypeOptions.length"
+              class="select-all-checkbox"
+            />
+            <label>Select all</label>
+          </div>
+        </ng-template>
 
-    <!-- Custom Option Template -->
-    <ng-template ng-option-tmp let-item="item">
-      <div class="checkbox-option" (click)="$event.preventDefault(); toggleSelectAll(item)">
-        <input 
-          type="checkbox"
-          [checked]="selectedEmploymentTypes.includes(item)"
-          class="custom-checkbox"
-        />
-        <label>{{ item }}</label>
-      </div>
-    </ng-template>
-  </ng-select>
+        <ng-template ng-option-tmp let-item="item">
+          <div class="checkbox-option" (click)="$event.preventDefault(); toggleSelectAll(item)">
+            <input 
+              type="checkbox"
+              [checked]="selectedEmploymentTypes.includes(item)"
+              class="custom-checkbox"
+            />
+            <label>{{ item }}</label>
+          </div>
+        </ng-template>
+      </ng-select>
+    </div>
+
+    <!-- Work Mode Dropdown -->
+    <select
+      [(ngModel)]="selectedWorkMode"
+      (change)="onWorkModeChange()"
+      class="form-select form-select-sm d-inline-block w-auto mx-2"
+    >
+      <option value="">All Work Modes</option>
+      <option *ngFor="let mode of workModeOptions" [value]="mode">{{ mode }}</option>
+    </select>
+
+    <!-- Notice Period Dropdown -->
+    <div class="form-group custom-notice-period">
+      <ng-select
+        [items]="noticePeriodOptions"
+        bindLabel=""
+        [(ngModel)]="selectedNoticePeriod"
+        [searchable]="false"
+        [clearable]="true"
+        placeholder="Notice Period"
+        class="notice-period-dropdown"
+        (change)="onNoticePeriodChange()"
+      >
+      </ng-select>
+    </div>
+  </div>
 </div>
 
-
-
-
-
-  <!-- ✅ Work Mode Dropdown -->
-  <select
-    [(ngModel)]="selectedWorkMode"
-    (change)="onWorkModeChange()"
-    class="form-select form-select-sm d-inline-block w-auto mx-2"
-  >
-    <option value="">All Work Modes</option>
-    <option *ngFor="let mode of workModeOptions" [value]="mode">{{ mode }}</option>
-  </select>
-
-  
-</div>
-
-<!-- ✅ Notice Period Filter -->
-<div class="form-group custom-notice-period">
-  <ng-select
-    [items]="noticePeriodOptions"
-    bindLabel=""
-    [(ngModel)]="selectedNoticePeriod"
-    [searchable]="false"
-    [clearable]="true"
-    placeholder="Notice Period"
-    class="notice-period-dropdown"
-    (change)="onNoticePeriodChange()"
-  >
-  </ng-select>
-</div>
 
 
 

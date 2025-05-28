@@ -330,3 +330,28 @@ $font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
   }
 }
+// filter wrapper 
+.filters-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  .job-filters {
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .custom-multiselect,
+  .custom-notice-period {
+    min-width: 220px;
+  }
+
+  ng-select {
+    width: 100%;
+  }
+
+  select.form-select {
+    min-width: 180px;
+  }
+}
