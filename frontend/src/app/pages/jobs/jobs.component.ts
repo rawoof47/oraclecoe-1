@@ -7,7 +7,7 @@ import { PageBannerComponent } from '../../common/page-banner/page-banner.compon
 import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
 import { FormsModule } from '@angular/forms';
-import { NgSelectModule } from '@ng-select/ng-select'; // ✅ NgSelectModule
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-jobs',
@@ -43,7 +43,6 @@ export class JobsComponent implements OnInit {
   ];
   selectedEmploymentTypes: string[] = [];
 
-  // ✅ Notice Period Dropdown Options
   noticePeriodOptions: string[] = [
     'Immediate',
     '< 1 Month',
@@ -52,6 +51,11 @@ export class JobsComponent implements OnInit {
     '3 Months'
   ];
   selectedNoticePeriod: string = '';
+
+  // ✅ Search input fields
+  searchTerm: string = '';
+  searchKeyword: string = '';
+  searchLocation: string = '';
 
   currentUserId = 'fba1cb74-3a09-11f0-8520-ac1f6bbcd360';
 
@@ -113,8 +117,11 @@ export class JobsComponent implements OnInit {
     this.filterJobs();
   }
 
-  // ✅ Notice Period Change Handler
   onNoticePeriodChange(): void {
+    this.filterJobs();
+  }
+
+  onSearchTermChange(): void {
     this.filterJobs();
   }
 
@@ -133,15 +140,74 @@ export class JobsComponent implements OnInit {
         ? job.notice_period === this.selectedNoticePeriod
         : true;
 
-      return matchesWorkMode && matchesEmploymentType && matchesNoticePeriod;
+      const matchesSearch = this.searchTerm
+        ? this.matchesSearchTerm(job, this.searchTerm)
+        : true;
+
+      const matchesKeyword = this.searchKeyword
+        ? job.job_title?.toLowerCase().includes(this.searchKeyword.toLowerCase())
+        : true;
+
+      const matchesLocation = this.searchLocation
+        ? job.location?.toLowerCase().includes(this.searchLocation.toLowerCase())
+        : true;
+
+      return (
+        matchesWorkMode &&
+        matchesEmploymentType &&
+        matchesNoticePeriod &&
+        matchesSearch &&
+        matchesKeyword &&
+        matchesLocation
+      );
+    });
+
+    this.jobCount = this.jobs.length;
+  }
+
+  matchesSearchTerm(job: any, search: string): boolean {
+    const lowerSearch = search.toLowerCase();
+    const fieldsToSearch = [
+      'job_title',
+      'location',
+      'employment_type',
+      'notice_period',
+      'work_mode',
+      'job_description',
+      'role_summary',
+      'preferred_qualifications',
+      'what_we_offer',
+      'how_to_apply'
+    ];
+
+    return fieldsToSearch.some(field => {
+      const value = job[field];
+      return value && value.toLowerCase().includes(lowerSearch);
     });
   }
 
+  // ✅ Called when user clicks the search button in the search bar
+  onSearch(): void {
+    this.jobs = this.allJobs.filter((job) => {
+      const keywordMatch = this.searchKeyword
+        ? this.matchesSearchTerm(job, this.searchKeyword)
+        : true;
+
+      const locationMatch = this.searchLocation
+        ? job.location?.toLowerCase().includes(this.searchLocation.toLowerCase())
+        : true;
+
+      return keywordMatch && locationMatch;
+    });
+
+    this.jobCount = this.jobs.length;
+  }
+
   toggleSelectAll(event: MouseEvent): void {
-    event.stopPropagation(); // ✅ prevent dropdown from closing
+    event.stopPropagation();
     const allSelected = this.selectedEmploymentTypes.length === this.employmentTypeOptions.length;
     this.selectedEmploymentTypes = allSelected ? [] : [...this.employmentTypeOptions];
-    this.onEmploymentTypeChange(); // ✅ Re-filter on toggle
+    this.onEmploymentTypeChange();
   }
 
   applyToJob(jobId: string): void {

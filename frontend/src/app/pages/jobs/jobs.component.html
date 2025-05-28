@@ -5,7 +5,7 @@
   [backgroundImage]="'img/page-title-bg.jpg'"
 ></app-page-banner>
 
-<!-- Search Bar Section -->
+<!-- ✅ Working Search Bar -->
 <section class="search-bar-section py-5 text-center">
   <div class="container">
     <h2 class="mb-4">
@@ -15,17 +15,38 @@
       <div class="search-bar d-flex shadow rounded overflow-hidden" style="max-width: 700px; width: 100%;">
         <div class="p-3 border-right flex-grow-1">
           <label class="d-block text-uppercase text-muted small mb-1">Find</label>
-          <input type="text" class="form-control border-0 p-0" placeholder="Job title, skill, keyword, event" />
+          <input
+            type="text"
+            class="form-control border-0 p-0"
+            placeholder="Job title, skill, keyword, event"
+            [(ngModel)]="searchKeyword"
+            name="searchKeyword"
+          />
         </div>
         <div class="p-3 border-right flex-grow-1">
           <label class="d-block text-uppercase text-muted small mb-1">Location</label>
-          <input type="text" class="form-control border-0 p-0" placeholder="City, state, country" />
+          <input
+            type="text"
+            class="form-control border-0 p-0"
+            placeholder="City, state, country"
+            [(ngModel)]="searchLocation"
+            name="searchLocation"
+          />
         </div>
-        <button class="btn btn-dark d-flex align-items-center justify-content-center px-4" style="border-radius: 0;">
+        <button
+          class="btn btn-dark d-flex align-items-center justify-content-center px-4"
+          style="border-radius: 0;"
+          (click)="onSearch()"
+        >
           <i class="fas fa-search text-white"></i>
         </button>
       </div>
     </div>
+  </div>
+</section>
+
+
+
 
  <!-- Filters Section -->
 <div class="job-filters mt-4 d-flex align-items-center flex-wrap gap-2">
