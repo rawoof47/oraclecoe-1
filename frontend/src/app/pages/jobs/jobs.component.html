@@ -33,7 +33,6 @@
   <a href="#" class="text-dark mx-2">New Jobs <strong>(2122)</strong></a>
   <a href="#" class="text-primary mx-2">Product Development <strong>(1711)</strong></a>
   <a href="#" class="text-primary mx-2">Consulting <strong>(910)</strong></a>
-  <a href="#" class="text-dark mx-2">Sales <strong>(873)</strong></a>
 
   <!-- Updated Employment Types Dropdown (No Heading) -->
 <div class="form-group custom-multiselect">
@@ -96,8 +95,25 @@
     <option *ngFor="let mode of workModeOptions" [value]="mode">{{ mode }}</option>
   </select>
 
-  <a href="#" class="text-dark mx-2">All Events <strong>(18)</strong></a>
+  
 </div>
+
+<!-- ✅ Notice Period Filter -->
+<div class="form-group custom-notice-period">
+  <ng-select
+    [items]="noticePeriodOptions"
+    bindLabel=""
+    [(ngModel)]="selectedNoticePeriod"
+    [searchable]="false"
+    [clearable]="true"
+    placeholder="Notice Period"
+    class="notice-period-dropdown"
+    (change)="onNoticePeriodChange()"
+  >
+  </ng-select>
+</div>
+
+
 
 
 <!-- Job Listings -->

@@ -7,7 +7,7 @@ import { PageBannerComponent } from '../../common/page-banner/page-banner.compon
 import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
 import { FormsModule } from '@angular/forms';
-import { NgSelectModule } from '@ng-select/ng-select'; // ✅ Import NgSelectModule
+import { NgSelectModule } from '@ng-select/ng-select'; // ✅ NgSelectModule
 
 @Component({
   selector: 'app-jobs',
@@ -20,7 +20,7 @@ import { NgSelectModule } from '@ng-select/ng-select'; // ✅ Import NgSelectMod
     FooterComponent,
     BackToTopComponent,
     FormsModule,
-    NgSelectModule // ✅ Add here
+    NgSelectModule
   ],
   templateUrl: './jobs.component.html',
   styleUrls: ['./jobs.component.scss']
@@ -42,6 +42,16 @@ export class JobsComponent implements OnInit {
     'Internship'
   ];
   selectedEmploymentTypes: string[] = [];
+
+  // ✅ Notice Period Dropdown Options
+  noticePeriodOptions: string[] = [
+    'Immediate',
+    '< 1 Month',
+    '1 Month',
+    '2 Months',
+    '3 Months'
+  ];
+  selectedNoticePeriod: string = '';
 
   currentUserId = 'fba1cb74-3a09-11f0-8520-ac1f6bbcd360';
 
@@ -103,6 +113,11 @@ export class JobsComponent implements OnInit {
     this.filterJobs();
   }
 
+  // ✅ Notice Period Change Handler
+  onNoticePeriodChange(): void {
+    this.filterJobs();
+  }
+
   filterJobs(): void {
     this.jobs = this.allJobs.filter((job) => {
       const matchesWorkMode = this.selectedWorkMode
@@ -114,7 +129,11 @@ export class JobsComponent implements OnInit {
           ? this.selectedEmploymentTypes.includes(job.employment_type)
           : true;
 
-      return matchesWorkMode && matchesEmploymentType;
+      const matchesNoticePeriod = this.selectedNoticePeriod
+        ? job.notice_period === this.selectedNoticePeriod
+        : true;
+
+      return matchesWorkMode && matchesEmploymentType && matchesNoticePeriod;
     });
   }
 
