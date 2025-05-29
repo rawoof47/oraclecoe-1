@@ -65,3 +65,14 @@
     font-size: 14px;
   }
 }
+////global reset button 
+.global-reset-container {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+  
+  button {
+    font-weight: 500;
+    padding: 8px 12px;
+  }
+}

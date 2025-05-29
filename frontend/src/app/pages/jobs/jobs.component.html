@@ -45,14 +45,12 @@
   </div>
 </section>
 
- <!-- Filters Wrapper -->
+<!-- Filters Wrapper -->
 <div class="filters-wrapper d-flex justify-content-center mt-4">
   <div class="job-filters d-flex align-items-center flex-wrap gap-2 justify-content-center">
     <a href="#" class="text-primary mx-2">All Jobs <strong>({{ jobCount }})</strong></a>
 
-
-    
-     <!-- ✅ Updated Skills Filter Component with new output binding -->
+    <!-- ✅ Updated Skills Filter Component with globalReset output -->
     <app-skills-filter
       (filtersChanged)="onFiltersChanged($event)"
       (filteredJobIds)="onFilteredJobIds($event)"
@@ -128,11 +126,11 @@
     </div>
   </div>
 </div>
-
-
-
-
-
+  <div class="reset-container text-center my-3">
+  <button class="reset-button btn btn-outline-danger" (click)="onGlobalReset()">
+    Reset All Filters
+  </button>
+</div>
 <!-- Job Listings -->
 <section class="job-area-list ptb-100">
   <div class="container">

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core'; // ⬅️ Added ViewChild
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -28,6 +28,8 @@ import { SkillFiltersComponent } from './filters/skills-filter/skills-filter.com
   styleUrls: ['./jobs.component.scss']
 })
 export class JobsComponent implements OnInit {
+  @ViewChild(SkillFiltersComponent) skillsFilter!: SkillFiltersComponent; // ⬅️ Added ViewChild reference
+
   jobs: any[] = [];
   allJobs: any[] = [];
   jobCount = 0;
@@ -63,7 +65,7 @@ export class JobsComponent implements OnInit {
   selectedSkillIds: string[] = [];
   selectedCertIds: string[] = [];
 
-  filteredJobIdsFromSkills: string[] = []; // ✅ new property
+  filteredJobIdsFromSkills: string[] = [];
 
   constructor(private http: HttpClient) {
     console.log('JobsComponent: constructor called');
@@ -138,7 +140,7 @@ export class JobsComponent implements OnInit {
   }
 
   onFilteredJobIds(filteredJobIds: string[]): void {
-    this.filteredJobIdsFromSkills = filteredJobIds; // ✅ correct assignment
+    this.filteredJobIdsFromSkills = filteredJobIds;
     this.filterJobs();
   }
 
@@ -171,7 +173,7 @@ export class JobsComponent implements OnInit {
 
       const matchesSkillFilter =
         this.filteredJobIdsFromSkills.length === 0 ||
-        this.filteredJobIdsFromSkills.includes(job.id); // ✅ updated logic
+        this.filteredJobIdsFromSkills.includes(job.id);
 
       return (
         matchesWorkMode &&
@@ -180,7 +182,7 @@ export class JobsComponent implements OnInit {
         matchesSearch &&
         matchesKeyword &&
         matchesLocation &&
-        matchesSkillFilter // ✅ use pre-filtered job IDs
+        matchesSkillFilter
       );
     });
 
@@ -251,5 +253,27 @@ export class JobsComponent implements OnInit {
         }
       }
     });
+  }
+
+  // ✅ Updated method with child reset logic
+  onGlobalReset(): void {
+    this.selectedEmploymentTypes = [];
+    this.selectedWorkMode = '';
+    this.selectedNoticePeriod = '';
+    this.searchTerm = '';
+    this.searchKeyword = '';
+    this.searchLocation = '';
+
+    // Reset skills/certs filter arrays
+    this.selectedSkillIds = [];
+    this.selectedCertIds = [];
+    this.filteredJobIdsFromSkills = [];
+
+    // Call child component reset if available
+    if (this.skillsFilter) {
+      this.skillsFilter.reset();
+    }
+
+    this.filterJobs();
   }
 }

@@ -185,4 +185,23 @@ export class SkillFiltersComponent implements OnInit {
       error: (err) => console.error('❌ Failed to load job post certifications:', err),
     });
   }
+
+  // ✅ Simplified Reset Method
+  reset(): void {
+    this.selectedSkills = [];
+    this.selectedCertifications = [];
+
+    this.groupedSkills.forEach(group =>
+      group.items.forEach(skill => (skill.selected = false))
+    );
+
+    this.groupedCertifications.forEach(group =>
+      group.items.forEach(cert => (cert.selected = false))
+    );
+
+    this.showSkillsDropdown = false;
+    this.showCertsDropdown = false;
+
+    this.emitFilters(); // Emits empty filters to parent
+  }
 }
