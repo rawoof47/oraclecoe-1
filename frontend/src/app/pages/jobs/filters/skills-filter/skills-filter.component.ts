@@ -83,25 +83,52 @@ export class SkillFiltersComponent implements OnInit {
   }
 
   private loadCertificationsByCategory(): void {
-    const certCategories = [
-      { id: 'ed7c50c7-36d3-11f0-bfce-80ce6232908a', name: 'Financial Certifications' },
-      { id: 'ed7c5c88-36d3-11f0-bfce-80ce6232908a', name: 'HCM Certifications' },
-      { id: 'ed7c5da6-36d3-11f0-bfce-80ce6232908a', name: 'SCM Certifications' },
-      { id: 'ed7c5e82-36d3-11f0-bfce-80ce6232908a', name: 'CX Certifications' }
-    ];
+  const certCategories = [
+    { id: 'ed7c50c7-36d3-11f0-bfce-80ce6232908a', name: 'Financial Certifications' },
+    { id: 'ed7c5c88-36d3-11f0-bfce-80ce6232908a', name: 'HCM Certifications' },
+    { id: 'ed7c5da6-36d3-11f0-bfce-80ce6232908a', name: 'SCM Certifications' },
+    { id: 'ed7c5e82-36d3-11f0-bfce-80ce6232908a', name: 'CX Certifications' }
+  ];
 
-    certCategories.forEach(category => {
-      this.jobPostService.getCertificationsByCategory(category.id).subscribe({
-        next: (data: any[]) => {
-          this.groupedCertifications.push({
-            categoryName: category.name,
-            items: data.map(item => ({ ...item, selected: false })) || []
-          });
-        },
-        error: (err) => {
-          console.error(`❌ Failed to load certifications for ${category.name}:`, err);
-        }
-      });
+  certCategories.forEach(category => {
+    this.jobPostService.getCertificationsByCategory(category.id).subscribe({
+      next: (data: any[]) => {
+        this.groupedCertifications.push({
+          categoryName: category.name,
+          items: data.map(item => {
+            // Handle different certification data structures
+            if (item.name) {
+              return { ...item, selected: false };
+            } 
+            // Handle object-type certifications
+            else if (item.certificationName) {
+              return { 
+                ...item,
+                name: item.certificationName,
+                selected: false 
+              };
+            }
+            // Handle string-type certifications
+            else if (typeof item === 'string') {
+              return { 
+                id: item, 
+                name: item,
+                selected: false 
+              };
+            }
+            // Fallback to ID display
+            return { 
+              ...item,
+              name: item.id,
+              selected: false 
+            };
+          }) || []
+        });
+      },
+      error: (err) => {
+        console.error(`❌ Failed to load certifications for ${category.name}:`, err);
+      }
     });
-  }
+  });
+}
 }
