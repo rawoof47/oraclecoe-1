@@ -50,4 +50,10 @@ export class JobPostSkillController {
       data: skills,
     };
   }
+
+  // ✅ NEW: GET /job-post-skills/mappings (for filtering)
+  @Get('mappings')
+  async findAllMappings() {
+    return this.jobPostSkillService.findAllMappings();
+  }
 }

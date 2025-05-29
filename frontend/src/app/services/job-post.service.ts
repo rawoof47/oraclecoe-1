@@ -21,6 +21,7 @@ export class JobPostService {
   private skillUrl = 'http://localhost:3000/skills';
   private jobPostSkillsUrl = 'http://localhost:3000/job-post-skills';
   private certificationsUrl = 'http://localhost:3000/certifications';
+  private jobPostCertificationsUrl = 'http://localhost:3000/job-post-certifications';
 
   constructor(private http: HttpClient) {}
 
@@ -87,9 +88,23 @@ export class JobPostService {
    * ✅ Save selected certifications for a job post
    */
   saveCertifications(jobPostId: string, certificationIds: string[]): Observable<any> {
-    return this.http.post(`${this.certificationsUrl}/save`, {
-      jobPostId,
-      certificationIds,
+    return this.http.post(`${this.jobPostCertificationsUrl}`, {
+      job_post_id: jobPostId,
+      certification_ids: certificationIds,
     });
+  }
+
+  /**
+   * 🔄 Get all job-post-skill mappings (used in filters)
+   */
+  getJobPostSkills(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.jobPostSkillsUrl}/mappings`);
+  }
+
+  /**
+   * 🔄 Get all job-post-certification mappings (used in filters)
+   */
+  getJobPostCertifications(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.jobPostCertificationsUrl}/mappings`);
   }
 }

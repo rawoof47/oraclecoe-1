@@ -9,6 +9,7 @@ import { BackToTopComponent } from '../../common/back-to-top/back-to-top.compone
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { SkillFiltersComponent } from './filters/skills-filter/skills-filter.component';
+
 @Component({
   selector: 'app-jobs',
   standalone: true,
@@ -53,12 +54,16 @@ export class JobsComponent implements OnInit {
   ];
   selectedNoticePeriod: string = '';
 
-  // ✅ Search input fields
   searchTerm: string = '';
   searchKeyword: string = '';
   searchLocation: string = '';
 
   currentUserId = 'fba1cb74-3a09-11f0-8520-ac1f6bbcd360';
+
+  selectedSkillIds: string[] = [];
+  selectedCertIds: string[] = [];
+
+  filteredJobIdsFromSkills: string[] = []; // ✅ new property
 
   constructor(private http: HttpClient) {
     console.log('JobsComponent: constructor called');
@@ -126,6 +131,17 @@ export class JobsComponent implements OnInit {
     this.filterJobs();
   }
 
+  onFiltersChanged(filters: { skillIds: string[]; certIds: string[] }): void {
+    this.selectedSkillIds = filters.skillIds;
+    this.selectedCertIds = filters.certIds;
+    this.filterJobs();
+  }
+
+  onFilteredJobIds(filteredJobIds: string[]): void {
+    this.filteredJobIdsFromSkills = filteredJobIds; // ✅ correct assignment
+    this.filterJobs();
+  }
+
   filterJobs(): void {
     this.jobs = this.allJobs.filter((job) => {
       const matchesWorkMode = this.selectedWorkMode
@@ -153,13 +169,18 @@ export class JobsComponent implements OnInit {
         ? job.location?.toLowerCase().includes(this.searchLocation.toLowerCase())
         : true;
 
+      const matchesSkillFilter =
+        this.filteredJobIdsFromSkills.length === 0 ||
+        this.filteredJobIdsFromSkills.includes(job.id); // ✅ updated logic
+
       return (
         matchesWorkMode &&
         matchesEmploymentType &&
         matchesNoticePeriod &&
         matchesSearch &&
         matchesKeyword &&
-        matchesLocation
+        matchesLocation &&
+        matchesSkillFilter // ✅ use pre-filtered job IDs
       );
     });
 
@@ -187,7 +208,6 @@ export class JobsComponent implements OnInit {
     });
   }
 
-  // ✅ Called when user clicks the search button in the search bar
   onSearch(): void {
     this.jobs = this.allJobs.filter((job) => {
       const keywordMatch = this.searchKeyword

@@ -52,7 +52,11 @@
 
 
     
-    <app-skills-filter></app-skills-filter>
+     <!-- ✅ Updated Skills Filter Component with new output binding -->
+    <app-skills-filter
+      (filtersChanged)="onFiltersChanged($event)"
+      (filteredJobIds)="onFilteredJobIds($event)"
+    ></app-skills-filter>
 
     <!-- Employment Type Dropdown -->
     <div class="form-group custom-multiselect">

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JobPostCertification } from './entities/job-post-certification.entity';
@@ -33,5 +33,27 @@ export class JobPostCertificationsService {
     );
 
     return this.repo.save(entries);
+  }
+
+  // ✅ Fetch all mappings for filtering use (corrected select syntax)
+  async findAllMappings() {
+    return this.repo.find({
+      select: {
+        job_post_id: true,
+        certification_id: true,
+      },
+    });
+  }
+
+  // ✅ Get only certification IDs linked to a specific job post
+  async getByJobPostId(jobPostId: string): Promise<JobPostCertification[]> {
+    if (!jobPostId) {
+      throw new BadRequestException('jobPostId is required.');
+    }
+
+    return this.repo.find({
+      where: { job_post_id: jobPostId },
+      select: ['certification_id'], // Only return certification IDs
+    });
   }
 }
