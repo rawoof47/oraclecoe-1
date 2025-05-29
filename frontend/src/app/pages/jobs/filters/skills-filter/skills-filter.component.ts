@@ -35,7 +35,6 @@ export class SkillFiltersComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('🔄 Initializing SkillFiltersComponent...');
-
     this.loadJobMappings();
     this.loadSkillsByCategory();
     this.loadCertificationsByCategory();
@@ -164,8 +163,12 @@ export class SkillFiltersComponent implements OnInit {
   private loadJobMappings(): void {
     this.jobPostService.getJobPostSkills().subscribe({
       next: (data: any[]) => {
-        console.log('✅ Job skill mappings loaded:', data);
-        this.jobSkillMappings = data;
+        console.log('✅ Raw skill mappings:', data);
+        this.jobSkillMappings = data.map(item => ({
+          job_post_id: item.job_post_id ?? item.jobPostId ?? '',
+          skill_id: item.skill_id ?? item.skillId ?? item.id
+        }));
+        console.log('✅ Processed job skill mappings:', this.jobSkillMappings);
       },
       error: (err) => console.error('❌ Failed to load job post skills:', err),
     });
@@ -173,12 +176,10 @@ export class SkillFiltersComponent implements OnInit {
     this.jobPostService.getJobPostCertifications().subscribe({
       next: (data: any[]) => {
         console.log('✅ Raw certification mappings:', data);
-
         this.jobCertMappings = data.map(item => ({
           job_post_id: item.job_post_id,
           certification_id: item.certification_id || item.certId || item.id
         }));
-
         console.log('✅ Processed job certification mappings:', this.jobCertMappings);
       },
       error: (err) => console.error('❌ Failed to load job post certifications:', err),

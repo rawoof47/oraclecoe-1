@@ -36,6 +36,13 @@ export class JobPostSkillController {
     };
   }
 
+  // ✅ FIXED: Static route comes before dynamic route
+  // GET /job-post-skills/mappings (for filtering)
+  @Get('mappings')
+  async findAllMappings() {
+    return this.jobPostSkillService.findAllMappings();
+  }
+
   // GET /job-post-skills/:jobPostId
   @Get(':jobPostId')
   async getSkills(@Param('jobPostId') jobPostId: string) {
@@ -49,11 +56,5 @@ export class JobPostSkillController {
       message: 'Skills fetched successfully.',
       data: skills,
     };
-  }
-
-  // ✅ NEW: GET /job-post-skills/mappings (for filtering)
-  @Get('mappings')
-  async findAllMappings() {
-    return this.jobPostSkillService.findAllMappings();
   }
 }
