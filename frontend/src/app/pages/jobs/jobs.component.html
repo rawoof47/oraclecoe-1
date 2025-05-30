@@ -49,6 +49,16 @@
 <div class="filters-wrapper d-flex justify-content-center mt-4">
   <div class="job-filters d-flex align-items-center flex-wrap gap-2 justify-content-center">
     <a href="#" class="text-primary mx-2">All Jobs <strong>({{ jobCount }})</strong></a>
+    
+
+    <div class="reset-container ms-auto">
+      <button 
+        class="reset-button"
+        (click)="onGlobalReset()"
+      >
+        <i class="fas fa-undo-alt"></i> Reset Filters
+      </button>
+    </div>
 
     <!-- ✅ Updated Skills Filter Component with globalReset output -->
     <app-skills-filter
@@ -111,26 +121,19 @@
     </select>
 
     <!-- Notice Period Dropdown -->
-    <div class="form-group custom-notice-period">
-      <ng-select
-        [items]="noticePeriodOptions"
-        bindLabel=""
-        [(ngModel)]="selectedNoticePeriod"
-        [searchable]="false"
-        [clearable]="true"
-        placeholder="Notice Period"
-        class="notice-period-dropdown"
-        (change)="onNoticePeriodChange()"
-      >
-      </ng-select>
-    </div>
-  </div>
-</div>
-  <div class="reset-container text-center my-3">
-  <button class="reset-button btn btn-outline-danger" (click)="onGlobalReset()">
-    Reset All Filters
-  </button>
-</div>
+    <!-- Notice Period Dropdown (styled like Work Mode) -->
+<select
+  [(ngModel)]="selectedNoticePeriod"
+  (change)="onNoticePeriodChange()"
+  class="form-select form-select-sm d-inline-block w-auto mx-2"
+>
+  <option value="">All Notice Periods</option>
+  <option *ngFor="let period of noticePeriodOptions" [value]="period">
+    {{ period }}
+  </option>
+</select>
+
+
 <!-- Job Listings -->
 <section class="job-area-list ptb-100">
   <div class="container">
