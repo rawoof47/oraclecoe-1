@@ -116,7 +116,7 @@
       (change)="onWorkModeChange()"
       class="form-select form-select-sm d-inline-block w-auto mx-2"
     >
-      <option value="">All Work Modes</option>
+      <option value="">Select Work Modes</option>
       <option *ngFor="let mode of workModeOptions" [value]="mode">{{ mode }}</option>
     </select>
 
@@ -127,7 +127,7 @@
   (change)="onNoticePeriodChange()"
   class="form-select form-select-sm d-inline-block w-auto mx-2"
 >
-  <option value="">All Notice Periods</option>
+  <option value="">Select Notice Periods</option>
   <option *ngFor="let period of noticePeriodOptions" [value]="period">
     {{ period }}
   </option>
