@@ -18,4 +18,11 @@ export interface JobPost {
   updated_at?: string; // ISO 8601 format
   created_by?: string; // UUID
   updated_by?: string; // UUID
+
+  // ✅ New fields added for job detail view
+  work_mode?: 'Remote' | 'On-site' | 'Hybrid';
+  role_summary?: string;
+  preferred_qualifications?: string;
+  what_we_offer?: string;
+  how_to_apply?: string;
 }

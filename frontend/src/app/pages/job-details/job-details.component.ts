@@ -1,43 +1,100 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule, NgIf } from '@angular/common';
+import { RouterLink, ActivatedRoute } from '@angular/router';
+import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
+
 import { NavbarComponent } from '../../common/navbar/navbar.component';
 import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
-import { NgIf } from '@angular/common';
-import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
+import { JobPostService } from '../../services/job-post.service';
+import { JobPost } from '../../auth/models/job-post.model';
 
 @Component({
-    selector: 'app-job-details',
-    imports: [RouterLink, NgIf, CarouselModule, NavbarComponent, FooterComponent, BackToTopComponent],
-    templateUrl: './job-details.component.html',
-    styleUrl: './job-details.component.scss'
+  selector: 'app-job-details',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterLink,
+    NgIf,
+    CarouselModule,
+    NavbarComponent,
+    FooterComponent,
+    BackToTopComponent
+  ],
+  templateUrl: './job-details.component.html',
+  styleUrls: ['./job-details.component.scss']
 })
-export class JobDetailsComponent {
+export class JobDetailsComponent implements OnInit {
+  jobPost: JobPost | null = null;
+  isLoading = true;
+  error: string | null = null;
+  isOpen = false;
 
-    // Video Popup
-    isOpen = false;
-    openPopup(): void {
-        this.isOpen = true;
-    }
-    closePopup(): void {
-        this.isOpen = false;
-    }
-    
-    // Owl Carousel
-    videoSlides: OwlOptions = {
-        margin: 0,
-        nav: true,
-        loop: true,
-        dots: false,
-        items: 1,
-        smartSpeed: 1000,
-        autoplay: true,
-        autoplayTimeout: 4000,
-        autoplayHoverPause: true,
-        navText: [
-            "<i class='flaticon-left-arrow'></i>",
-            "<i class='flaticon-right-arrow'></i>"
-        ]
-    }
+  constructor(
+    private route: ActivatedRoute,
+    private jobPostService: JobPostService
+  ) {}
 
+  ngOnInit(): void {
+    console.log('[JobDetailsComponent] ngOnInit called');
+    this.route.paramMap.subscribe(params => {
+      const jobId = params.get('id');
+      console.log('[JobDetailsComponent] Extracted jobId from route:', jobId);
+      if (jobId) {
+        this.fetchJobPost(jobId);
+      } else {
+        console.error('[JobDetailsComponent] Invalid job ID in route param');
+        this.error = 'Invalid job ID';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  fetchJobPost(jobId: string): void {
+    console.log(`[JobDetailsComponent] Initiating API call for jobId: ${jobId}`);
+    this.jobPostService.getById(jobId).subscribe({
+      next: (res: any) => {
+        console.log('[JobDetailsComponent] Raw API Response:', res);
+        if (res && res.data && res.data.data) {
+          this.jobPost = res.data.data;
+          console.log('[JobDetailsComponent] Parsed jobPost object:', this.jobPost);
+        } else {
+          console.warn('[JobDetailsComponent] Unexpected API response format:', res);
+          this.error = 'Unexpected response format';
+        }
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('[JobDetailsComponent] API call failed:', err);
+        this.error = err.error?.message || 'Failed to load job details';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  openPopup(): void {
+    console.log('[JobDetailsComponent] Popup opened');
+    this.isOpen = true;
+  }
+
+  closePopup(): void {
+    console.log('[JobDetailsComponent] Popup closed');
+    this.isOpen = false;
+  }
+
+  videoSlides: OwlOptions = {
+    margin: 0,
+    nav: true,
+    loop: true,
+    dots: false,
+    items: 1,
+    smartSpeed: 1000,
+    autoplay: true,
+    autoplayTimeout: 4000,
+    autoplayHoverPause: true,
+    navText: [
+      "<i class='flaticon-left-arrow'></i>",
+      "<i class='flaticon-right-arrow'></i>"
+    ]
+  };
 }
