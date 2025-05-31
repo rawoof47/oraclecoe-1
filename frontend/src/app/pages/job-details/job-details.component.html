@@ -49,32 +49,56 @@
           <div class="details-item">
 
             <div class="details-inner" *ngIf="jobPost.job_description">
-              <h3>Job Description</h3>
+              <h3>Job Description:</h3>
               <p>{{ jobPost.job_description }}</p>
             </div>
 
             <div class="details-inner" *ngIf="jobPost.role_summary">
-              <h3>Role Summary</h3>
+              <h3>Role Summary:</h3>
               <p>{{ jobPost.role_summary }}</p>
             </div>
 
             <div class="details-inner" *ngIf="jobPost.preferred_qualifications">
-              <h3>Preferred Qualifications</h3>
+              <h3>Preferred Qualifications:</h3>
               <p>{{ jobPost.preferred_qualifications }}</p>
             </div>
 
             <div class="details-inner" *ngIf="jobPost.what_we_offer">
-              <h3>What We Offer</h3>
+              <h3>What We Offer:</h3>
               <p>{{ jobPost.what_we_offer }}</p>
             </div>
 
             <div class="details-inner" *ngIf="jobPost.how_to_apply">
-              <h3>How to Apply</h3>
+              <h3>How to Apply:</h3>
               <p>{{ jobPost.how_to_apply }}</p>
             </div>
 
+           
+            <!-- Existing Job Details Template -->
+
+<!-- Skills Section -->
+            <div class="details-inner" *ngIf="jobSkills?.length">
+              <h3>Required Skills:</h3>
+              <div class="skills-container">
+                <div *ngFor="let item of jobSkills" class="skill-item">
+                  {{ item.skill.name }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Certifications Section -->
+            <div class="details-inner" *ngIf="jobCertifications?.length">
+              <h3>Required Certifications:</h3>
+              <div class="certifications-container">
+                <div *ngFor="let item of jobCertifications" class="certification-item">
+                  {{ item.certification.certification_name }}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+
+
 
         <!-- Sidebar -->
         <div class="col-lg-4 col-md-12">

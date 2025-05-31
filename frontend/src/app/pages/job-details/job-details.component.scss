@@ -324,3 +324,76 @@
 
 /* Max width 991px */
 @media only screen and (max-width: 991px) {}
+
+
+// Skills and Certifications Common Styles
+// Skills & Certifications Styles
+.details-inner {
+  .skills-container, 
+  .certifications-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+    
+    .skill-item, 
+    .certification-item {
+      background-color: #e3f2fd; /* Changed to light blue background */
+      color: #000000;            /* Changed to dark blue text */
+      padding: 8px 15px;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background-color: #000000; /* Dark blue background on hover */
+        color: white;             /* White text on hover */
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+      }
+    }
+  }
+}
+
+/* Responsive adjustments - UNCHANGED */
+@media only screen and (max-width: 767px) {
+  .details-inner {
+    .skills-container, 
+    .certifications-container {
+      gap: 8px;
+      
+      .skill-item, 
+      .certification-item {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+      }
+    }
+  }
+}
+
+/* Ensure sidebar stays on right - UNCHANGED */
+@media only screen and (min-width: 992px) {
+  .job-details-area .container .row {
+    display: flex;
+    flex-direction: row;
+    
+    .col-lg-8 {
+      order: 1;
+    }
+    
+    .col-lg-4 {
+      order: 2;
+    }
+  }
+}
+
+@media only screen and (max-width: 991px) {
+  .job-details-area .container .row {
+    flex-direction: column;
+    
+    .col-lg-8, .col-lg-4 {
+      width: 100%;
+    }
+  }
+}

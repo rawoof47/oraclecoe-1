@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Certification } from './entities/certification.entity';
 import { JobPostCertification } from '../job-post-certification/entities/job-post-certification.entity';
 import { CreateCertificationDto } from './dto/create-certification.dto';
@@ -56,5 +56,18 @@ export class CertificationsService {
       message: 'Certifications saved successfully',
       data: entities,
     };
+  }
+
+  /**
+   * ✅ Get certifications by array of IDs (for frontend display)
+   */
+  async findByIds(ids: string[]) {
+    if (!ids || ids.length === 0) {
+      return [];
+    }
+
+    return this.certificationRepository.find({
+      where: { id: In(ids) },
+    });
   }
 }

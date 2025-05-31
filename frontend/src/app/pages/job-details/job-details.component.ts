@@ -30,20 +30,26 @@ export class JobDetailsComponent implements OnInit {
   error: string | null = null;
   isOpen = false;
 
+  jobSkills: any[] = [];
+  jobCertifications: any[] = [];
+
   constructor(
     private route: ActivatedRoute,
     private jobPostService: JobPostService
   ) {}
 
   ngOnInit(): void {
-    console.log('[JobDetailsComponent] ngOnInit called');
+    console.log('[JobDetailsComponent] ✅ ngOnInit called');
     this.route.paramMap.subscribe(params => {
       const jobId = params.get('id');
-      console.log('[JobDetailsComponent] Extracted jobId from route:', jobId);
+      console.log('[JobDetailsComponent] ✅ Extracted jobId from route:', jobId);
+
       if (jobId) {
         this.fetchJobPost(jobId);
+        this.fetchJobSkills(jobId);
+        this.fetchJobCertifications(jobId);
       } else {
-        console.error('[JobDetailsComponent] Invalid job ID in route param');
+        console.error('[JobDetailsComponent] ❌ Invalid job ID in route param');
         this.error = 'Invalid job ID';
         this.isLoading = false;
       }
@@ -51,34 +57,60 @@ export class JobDetailsComponent implements OnInit {
   }
 
   fetchJobPost(jobId: string): void {
-    console.log(`[JobDetailsComponent] Initiating API call for jobId: ${jobId}`);
+    console.log(`[JobDetailsComponent] 🔄 Initiating job post API call for jobId: ${jobId}`);
     this.jobPostService.getById(jobId).subscribe({
       next: (res: any) => {
-        console.log('[JobDetailsComponent] Raw API Response:', res);
+        console.log('[JobDetailsComponent] 📦 Raw API response for job post:', res);
         if (res && res.data && res.data.data) {
           this.jobPost = res.data.data;
-          console.log('[JobDetailsComponent] Parsed jobPost object:', this.jobPost);
+          console.log('[JobDetailsComponent] ✅ Parsed jobPost object:', this.jobPost);
         } else {
-          console.warn('[JobDetailsComponent] Unexpected API response format:', res);
+          console.warn('[JobDetailsComponent] ⚠️ Unexpected API response format for job post:', res);
           this.error = 'Unexpected response format';
         }
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('[JobDetailsComponent] API call failed:', err);
+        console.error('[JobDetailsComponent] ❌ API call failed for job post:', err);
         this.error = err.error?.message || 'Failed to load job details';
         this.isLoading = false;
       }
     });
   }
 
+  fetchJobSkills(jobId: string): void {
+    console.log(`[JobDetailsComponent] 🔄 Fetching skills for jobId: ${jobId}`);
+    this.jobPostService.getSkillsByJobPostId(jobId).subscribe({
+      next: (res: any) => {
+        this.jobSkills = res?.data || res || [];
+        console.log('[JobDetailsComponent] ✅ Loaded job skills:', this.jobSkills);
+      },
+      error: (err) => {
+        console.error('[JobDetailsComponent] ❌ Failed to fetch job skills:', err);
+      }
+    });
+  }
+
+  fetchJobCertifications(jobId: string): void {
+    console.log(`[JobDetailsComponent] 🔄 Fetching certifications for jobId: ${jobId}`);
+    this.jobPostService.getCertificationsByJobPostId(jobId).subscribe({
+      next: (res: any) => {
+        this.jobCertifications = res?.data || res || [];
+        console.log('[JobDetailsComponent] ✅ Loaded job certifications:', this.jobCertifications);
+      },
+      error: (err) => {
+        console.error('[JobDetailsComponent] ❌ Failed to fetch job certifications:', err);
+      }
+    });
+  }
+
   openPopup(): void {
-    console.log('[JobDetailsComponent] Popup opened');
+    console.log('[JobDetailsComponent] ✅ Popup opened');
     this.isOpen = true;
   }
 
   closePopup(): void {
-    console.log('[JobDetailsComponent] Popup closed');
+    console.log('[JobDetailsComponent] ✅ Popup closed');
     this.isOpen = false;
   }
 

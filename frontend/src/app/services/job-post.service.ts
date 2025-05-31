@@ -107,4 +107,18 @@ export class JobPostService {
   getJobPostCertifications(): Observable<any[]> {
     return this.http.get<any[]>(`${this.jobPostCertificationsUrl}/mappings`);
   }
+
+  /**
+   * 🆕 Get skills by job post ID
+   */
+  getSkillsByJobPostId(jobPostId: string): Observable<any> {
+    return this.http.get<any>(`${this.jobPostSkillsUrl}/${jobPostId}`);
+  }
+
+  /**
+   * 🆕 Get certifications by job post ID
+   */
+  getCertificationsByJobPostId(jobPostId: string): Observable<any> {
+    return this.http.get<any>(`${this.jobPostCertificationsUrl}/${jobPostId}`);
+  }
 }

@@ -46,14 +46,19 @@ export class JobPostCertificationsService {
   }
 
   // ✅ Get only certification IDs linked to a specific job post
-  async getByJobPostId(jobPostId: string): Promise<JobPostCertification[]> {
+  async getByJobPostId(jobPostId: string) {
     if (!jobPostId) {
       throw new BadRequestException('jobPostId is required.');
     }
 
     return this.repo.find({
       where: { job_post_id: jobPostId },
-      select: ['certification_id'], // Only return certification IDs
+      relations: ['certification'], // 🔥 Join related Certification entity
     });
+  }
+
+  // ✅ Alias for compatibility with controller method name
+  async getCertsByJob(jobPostId: string) {
+    return this.getByJobPostId(jobPostId);
   }
 }
