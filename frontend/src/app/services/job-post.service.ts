@@ -22,6 +22,7 @@ export class JobPostService {
   private jobPostSkillsUrl = 'http://localhost:3000/job-post-skills';
   private certificationsUrl = 'http://localhost:3000/certifications';
   private jobPostCertificationsUrl = 'http://localhost:3000/job-post-certifications';
+  private applicationUrl = 'http://localhost:3000/applications';
 
   constructor(private http: HttpClient) {}
 
@@ -120,5 +121,25 @@ export class JobPostService {
    */
   getCertificationsByJobPostId(jobPostId: string): Observable<any> {
     return this.http.get<any>(`${this.jobPostCertificationsUrl}/${jobPostId}`);
+  }
+
+  /**
+   * 🆕 Check if user has already applied to a job
+   */
+  checkIfUserApplied(userId: string, jobId: string): Observable<{ applied: boolean }> {
+    return this.http.post<{ applied: boolean }>(
+      `${this.applicationUrl}/check-by-user-and-job`,
+      { user_id: userId, job_id: jobId }
+    );
+  }
+
+  /**
+   * 🆕 Apply to a job
+   */
+  applyToJob(userId: string, jobId: string): Observable<any> {
+    return this.http.post(`${this.applicationUrl}/by-user`, {
+      user_id: userId,
+      job_id: jobId
+    });
   }
 }

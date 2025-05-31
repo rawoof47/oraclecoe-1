@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 
 import { NavbarComponent } from '../../common/navbar/navbar.component';
@@ -8,6 +8,7 @@ import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
 import { JobPostService } from '../../services/job-post.service';
 import { JobPost } from '../../auth/models/job-post.model';
+import { AuthStateService } from '../../services/auth-state.service';
 
 @Component({
   selector: 'app-job-details',
@@ -33,21 +34,35 @@ export class JobDetailsComponent implements OnInit {
   jobSkills: any[] = [];
   jobCertifications: any[] = [];
 
+  userId: string | null = null;
+  jobId: string = '';
+  hasApplied = false;
+  applyStatusMessage = '';
+
   constructor(
     private route: ActivatedRoute,
-    private jobPostService: JobPostService
+    private router: Router,
+    private jobPostService: JobPostService,
+    private authState: AuthStateService
   ) {}
 
   ngOnInit(): void {
     console.log('[JobDetailsComponent] ✅ ngOnInit called');
-    this.route.paramMap.subscribe(params => {
-      const jobId = params.get('id');
-      console.log('[JobDetailsComponent] ✅ Extracted jobId from route:', jobId);
 
-      if (jobId) {
-        this.fetchJobPost(jobId);
-        this.fetchJobSkills(jobId);
-        this.fetchJobCertifications(jobId);
+    // ✅ Synchronously get user ID
+    this.userId = this.authState.getCurrentUserId();
+
+    this.route.paramMap.subscribe(params => {
+      const jobIdParam = params.get('id');
+      if (jobIdParam) {
+        this.jobId = jobIdParam;
+        this.fetchJobPost(this.jobId);
+        this.fetchJobSkills(this.jobId);
+        this.fetchJobCertifications(this.jobId);
+
+        if (this.userId) {
+          this.checkIfUserAlreadyApplied(this.userId, this.jobId);
+        }
       } else {
         console.error('[JobDetailsComponent] ❌ Invalid job ID in route param');
         this.error = 'Invalid job ID';
@@ -57,21 +72,16 @@ export class JobDetailsComponent implements OnInit {
   }
 
   fetchJobPost(jobId: string): void {
-    console.log(`[JobDetailsComponent] 🔄 Initiating job post API call for jobId: ${jobId}`);
     this.jobPostService.getById(jobId).subscribe({
       next: (res: any) => {
-        console.log('[JobDetailsComponent] 📦 Raw API response for job post:', res);
-        if (res && res.data && res.data.data) {
+        if (res?.data?.data) {
           this.jobPost = res.data.data;
-          console.log('[JobDetailsComponent] ✅ Parsed jobPost object:', this.jobPost);
         } else {
-          console.warn('[JobDetailsComponent] ⚠️ Unexpected API response format for job post:', res);
           this.error = 'Unexpected response format';
         }
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('[JobDetailsComponent] ❌ API call failed for job post:', err);
         this.error = err.error?.message || 'Failed to load job details';
         this.isLoading = false;
       }
@@ -79,11 +89,9 @@ export class JobDetailsComponent implements OnInit {
   }
 
   fetchJobSkills(jobId: string): void {
-    console.log(`[JobDetailsComponent] 🔄 Fetching skills for jobId: ${jobId}`);
     this.jobPostService.getSkillsByJobPostId(jobId).subscribe({
       next: (res: any) => {
         this.jobSkills = res?.data || res || [];
-        console.log('[JobDetailsComponent] ✅ Loaded job skills:', this.jobSkills);
       },
       error: (err) => {
         console.error('[JobDetailsComponent] ❌ Failed to fetch job skills:', err);
@@ -92,11 +100,9 @@ export class JobDetailsComponent implements OnInit {
   }
 
   fetchJobCertifications(jobId: string): void {
-    console.log(`[JobDetailsComponent] 🔄 Fetching certifications for jobId: ${jobId}`);
     this.jobPostService.getCertificationsByJobPostId(jobId).subscribe({
       next: (res: any) => {
         this.jobCertifications = res?.data || res || [];
-        console.log('[JobDetailsComponent] ✅ Loaded job certifications:', this.jobCertifications);
       },
       error: (err) => {
         console.error('[JobDetailsComponent] ❌ Failed to fetch job certifications:', err);
@@ -104,13 +110,57 @@ export class JobDetailsComponent implements OnInit {
     });
   }
 
+  checkIfUserAlreadyApplied(userId: string, jobId: string): void {
+    this.jobPostService.checkIfUserApplied(userId, jobId).subscribe({
+      next: (res: { applied: boolean }) => {
+        this.hasApplied = res.applied;
+        this.applyStatusMessage = res.applied
+          ? 'You have already applied for this job.'
+          : 'You can apply for this job.';
+      },
+      error: (err) => {
+        console.error('[JobDetailsComponent] ❌ Failed to check application status:', err);
+        this.applyStatusMessage = 'Unable to verify application status.';
+      }
+    });
+  }
+
+  applyToJob(): void {
+    if (this.hasApplied) return;
+
+    // ✅ Check if user is logged in
+    if (!this.userId) {
+      alert('Please log in to apply for this job');
+      this.router.navigate(['/login'], {
+        queryParams: { returnUrl: this.router.url }
+      });
+      return;
+    }
+
+    this.jobPostService.applyToJob(this.userId, this.jobId).subscribe({
+      next: () => {
+        this.hasApplied = true;
+        this.applyStatusMessage = 'You have successfully applied for this job.';
+        alert('✅ Application submitted successfully!');
+      },
+      error: (error) => {
+        if (error.status === 409) {
+          this.hasApplied = true;
+          this.applyStatusMessage = 'You have already applied for this job.';
+          alert('⚠️ You have already applied for this job.');
+        } else {
+          console.error('[JobDetailsComponent] ❌ Failed to apply:', error);
+          alert('❌ Failed to submit application. Please try again.');
+        }
+      }
+    });
+  }
+
   openPopup(): void {
-    console.log('[JobDetailsComponent] ✅ Popup opened');
     this.isOpen = true;
   }
 
   closePopup(): void {
-    console.log('[JobDetailsComponent] ✅ Popup closed');
     this.isOpen = false;
   }
 

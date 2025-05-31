@@ -26,7 +26,17 @@
             </div>
             <div class="col-lg-4 col-md-12">
               <div class="right">
-                <a class="cmn-btn" [routerLink]="'/apply/' + jobPost.id">Apply Now <i class="bx bx-plus"></i></a>
+                <!-- UPDATED BUTTON BLOCK -->
+                <button class="cmn-btn"
+        [disabled]="hasApplied"
+        (click)="applyToJob()">
+  {{ hasApplied ? 'Already Applied' : (userId ? 'Apply Now' : 'Login to Apply') }}
+</button>
+
+                <div *ngIf="applyStatusMessage" class="text-muted mt-2">
+                  {{ applyStatusMessage }}
+                </div>
+
                 <ul>
                   <li><a role="button"><i class="bx bx-heart"></i> Save</a></li>
                   <li><a role="button"><i class="bx bx-share-alt"></i> Share</a></li>
@@ -73,10 +83,7 @@
               <p>{{ jobPost.how_to_apply }}</p>
             </div>
 
-           
-            <!-- Existing Job Details Template -->
-
-<!-- Skills Section -->
+            <!-- Skills Section -->
             <div class="details-inner" *ngIf="jobSkills?.length">
               <h3>Required Skills:</h3>
               <div class="skills-container">
@@ -97,8 +104,6 @@
             </div>
           </div>
         </div>
-
-
 
         <!-- Sidebar -->
         <div class="col-lg-4 col-md-12">
