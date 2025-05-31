@@ -96,7 +96,7 @@ export class SkillFiltersComponent implements OnInit {
 
     const jobIdsFromCerts = selectedCertIds.length
       ? this.jobCertMappings
-          .filter(m => selectedCertIds.includes(m.certification_id))
+          .filter(m => m.certification_id && selectedCertIds.includes(m.certification_id))
           .map(m => m.job_post_id)
       : [];
 
@@ -141,13 +141,16 @@ export class SkillFiltersComponent implements OnInit {
 
     certCategories.forEach(category => {
       this.jobPostService.getCertificationsByCategory(category.id).subscribe({
-        next: (data: any[]) => {
+        next: (response: any) => {
+          const data = response.data || response;
           console.log(`✅ Loaded ${category.name}:`, data);
-          const mappedItems = data.map(item => ({
-            id: item.id,
-            name: item.certification_name,
+
+          const mappedItems = data.map((item: any) => ({
+            id: item.id || item.certification_id,
+            name: item.certification_name || item.name,
             selected: false
           }));
+
           this.groupedCertifications.push({
             categoryName: category.name,
             items: mappedItems
@@ -174,19 +177,25 @@ export class SkillFiltersComponent implements OnInit {
     });
 
     this.jobPostService.getJobPostCertifications().subscribe({
-      next: (data: any[]) => {
+      next: (response: any) => {
+        console.log('🔥 FULL CERT RESPONSE:', response);
+        console.log('🔥 RESPONSE TYPE:', typeof response);
+        console.log('🔥 IS ARRAY?', Array.isArray(response));
+
+        const data = response.data || response;
         console.log('✅ Raw certification mappings:', data);
-        this.jobCertMappings = data.map(item => ({
-          job_post_id: item.job_post_id,
+
+        this.jobCertMappings = data.map((item: any) => ({
+          job_post_id: item.job_post_id || item.jobPostId,
           certification_id: item.certification_id || item.certId || item.id
         }));
+
         console.log('✅ Processed job certification mappings:', this.jobCertMappings);
       },
       error: (err) => console.error('❌ Failed to load job post certifications:', err),
     });
   }
 
-  // ✅ Simplified Reset Method
   reset(): void {
     this.selectedSkills = [];
     this.selectedCertifications = [];
