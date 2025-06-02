@@ -1,272 +1,180 @@
 <app-navbar />
 
-<!-- Page Banner -->
-<div
-    class="page-title-area two"
-    style="background-image: url(img/page-title-bg.jpg);"
->
-    <div class="d-table">
-        <div class="d-table-cell">
-            <div class="container">
-                <div class="row align-items-end">
-                    <div class="col-lg-8 col-md-12">
-                        <div class="left">
-                            <img src="img/job-details1.png" alt="Details">
-                            <h2>Product Designer</h2>
-                            <ul>
-                                <li><i class='bx bx-pie-chart-alt-2'></i> Sales & Marketing</li>
-                                <li><i class='bx bx-time'></i> Posted date: 10 months ago</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-12">
-                        <div class="right">
-                            <a class="cmn-btn" routerLink="/job-details">Apply Now <i class='bx bx-plus'></i></a>
-                            <ul>
-                                <li><a routerLink="/job-details"><i class='bx bx-heart'></i> Save</a></li>
-                                <li><a routerLink="/job-details"><i class='bx bx-share-alt'></i> Share</a></li>
-                                <li><a routerLink="/job-details"><i class='bx bxs-report'></i> Report</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<!-- Loading and Error Handling -->
+<div class="container mt-5" *ngIf="isLoading || error">
+  <div class="alert alert-info" *ngIf="isLoading">Loading job details...</div>
+  <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
 </div>
 
-<!-- Job Details -->
-<div class="job-details-area ptb-100">
-    <div class="container">
-        <div class="row">
+<!-- Page Content -->
+<div *ngIf="jobPost">
+  <!-- Page Banner -->
+  <div class="page-title-area two" style="background-image: url(img/page-title-bg.jpg);">
+    <div class="d-table">
+      <div class="d-table-cell">
+        <div class="container">
+          <div class="row align-items-end">
             <div class="col-lg-8 col-md-12">
-                <div class="details-item">
-                    <div class="details-inner">
-                        <h3>Job Description</h3>
-                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
-                    </div>
-                    <div class="details-inner">
-                        <h3>Our Company</h3>
-                        <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here.</p>
-                    </div>
-                    <div class="details-inner">
-                        <h3>Previous Interview</h3>
-                        <div class="job-details-slider">
-                            <owl-carousel-o [options]="videoSlides">
-                                <ng-template carouselSlide>
-                                    <div class="slider-item">
-                                        <img src="img/job-details1.jpg" alt="Details">
-                                        <div class="video-wrap">
-                                            <button type="button" (click)="openPopup()">
-                                                <i class='bx bx-play'></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </ng-template>
-                                <ng-template carouselSlide>
-                                    <div class="slider-item">
-                                        <img src="img/job-details2.jpg" alt="Details">
-                                        <div class="video-wrap">
-                                            <button type="button" (click)="openPopup()">
-                                                <i class='bx bx-play'></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </ng-template>
-                                <ng-template carouselSlide>
-                                    <div class="slider-item">
-                                        <img src="img/job-details3.jpg" alt="Details">
-                                        <div class="video-wrap">
-                                            <button type="button" (click)="openPopup()">
-                                                <i class='bx bx-play'></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </ng-template>
-                            </owl-carousel-o>
-                        </div>
-                    </div>
-                    <div class="details-inner">
-                        <h3>Job Responsibilities</h3>
-                        <ul>
-                            <li>
-                                <i class='bx bx-message-square-check'></i>
-                                They want to know that you weren’t lying on your resume about responsibilities.
-                            </li>
-                            <li>
-                                <i class='bx bx-message-square-check'></i>
-                                They want to check if your job responsibilities overlap with the role on offer.
-                            </li>
-                            <li>
-                                <i class='bx bx-message-square-check'></i>
-                                They want to put you at ease. Let’s face it. It’s an easy question.
-                            </li>
-                            <li>
-                                <i class='bx bx-message-square-check'></i>
-                                They want you to expand on the points that you included in your resume.
-                            </li>
-                            <li>
-                                <i class='bx bx-message-square-check'></i>
-                                They want to put you at ease. Let’s face it. It’s an easy question.
-                            </li>
-                            <li>
-                                <i class='bx bx-message-square-check'></i>
-                                They want to check if your job responsibilities overlap with the role on offer.
-                            </li>
-                            <li>
-                                <i class='bx bx-message-square-check'></i>
-                                Want you to expand on the points that you included in your resume.
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="details-inner">
-                        <h3>Job Responsibilities</h3>
-                        <ul>
-                            <li>
-                                <i class='bx bx-message-square-check'></i>
-                                Ability to work under pressure
-                            </li>
-                            <li>
-                                <i class='bx bx-message-square-check'></i>
-                                Enterprise and entrepreneurial skills
-                            </li>
-                            <li>
-                                <i class='bx bx-message-square-check'></i>
-                                Negotiation and persuasion
-                            </li>
-                            <li>
-                                <i class='bx bx-message-square-check'></i>
-                                Understand where the other person is coming from so that you can both get what
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="details-inner">
-                        <h3>Our Mission</h3>
-                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
-                    </div>
-                    <div class="details-inner">
-                        <h3>Our Vision</h3>
-                        <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true.</p>
-                    </div>
-                </div>
+              <div class="left">
+                <img src="img/job-details1.png" alt="Job Illustration" />
+                <h2>{{ jobPost.job_title }}</h2>
+                <ul>
+                  <li><i class="bx bx-briefcase"></i> {{ jobPost.employment_type }}</li>
+                  <li><i class="bx bx-time"></i> Posted: {{ jobPost.created_at | date: 'mediumDate' }}</li>
+                </ul>
+              </div>
             </div>
             <div class="col-lg-4 col-md-12">
-                <div class="widget-area">
-                    <div class="job widget-item">
-                        <h3>Find A Job</h3>
-                        <form>
-                            <label><i class="flaticon-send"></i></label>
-                            <input type="text" class="form-control" placeholder="Email address">
-                            <button type="submit" class="btn">Get Job Alert</button>
-                        </form>
-                    </div>
-                    <div class="information widget-item">
-                        <h3>Job Information</h3>
-                        <ul>
-                            <li>
-                                <img src="img/job-details-icon.png" alt="Details">
-                                <h4>Salary</h4>
-                                <span>$1,500 - $2,000</span>
-                            </li>
-                            <li>
-                                <img src="img/job-details-icon.png" alt="Details">
-                                <h4>Category</h4>
-                                <span>Sales & Marketing</span>
-                            </li>
-                            <li>
-                                <img src="img/job-details-icon.png" alt="Details">
-                                <h4>Location</h4>
-                                <span>10th St Long Island, NY</span>
-                            </li>
-                            <li>
-                                <img src="img/job-details-icon.png" alt="Details">
-                                <h4>Offered Salary</h4>
-                                <span>$2,000 - $2,500/month</span>
-                            </li>
-                            <li>
-                                <img src="img/job-details-icon.png" alt="Details">
-                                <h4>Posted</h4>
-                                <span>7 Months Ago</span>
-                            </li>
-                            <li>
-                                <img src="img/job-details-icon.png" alt="Details">
-                                <h4>Experience</h4>
-                                <span>2 Years</span>
-                            </li>
-                            <li>
-                                <img src="img/job-details-icon.png" alt="Details">
-                                <h4>Industry</h4>
-                                <span>Development</span>
-                            </li>
-                            <li>
-                                <img src="img/job-details-icon.png" alt="Details">
-                                <h4>Level</h4>
-                                <span>Employee</span>
-                            </li>
-                            <li>
-                                <img src="img/job-details-icon.png" alt="Details">
-                                <h4>Applied</h4>
-                                <span>01</span>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="owner">
-                        <div class="top">
-                            <img src="img/home-one/job4.png" alt="Owner">
-                            <h3>Owner Info</h3>
-                            <i class="flaticon-send"></i>
-                            <span>Los Angeles, CA, USA</span>
-                        </div>
-                        <div class="information widget-item">
-                            <ul>
-                                <li>
-                                    <img src="img/job-details-icon.png" alt="Details">
-                                    <h4>Phone</h4>
-                                    <a href="tel:+34561232349987">+3456 123 234 9987</a>
-                                </li>
-                                <li>
-                                    <img src="img/job-details-icon.png" alt="Details">
-                                    <h4>Email</h4>
-                                    <a href="mailto:hello&#64;alzo.com">hello&#64;alzo.com</a>
-                                </li>
-                                <li>
-                                    <img src="img/job-details-icon.png" alt="Details">
-                                    <h4>Location</h4>
-                                    <a href="#" target="_blank">www.alzothemes.com</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+              <div class="right">
+                <!-- UPDATED BUTTON BLOCK -->
+                <button class="cmn-btn"
+        [disabled]="hasApplied"
+        (click)="applyToJob()">
+  {{ hasApplied ? 'Already Applied' : (userId ? 'Apply Now' : 'Login to Apply') }}
+</button>
 
-<!-- Video Popup -->
-<div
-    class="mfp-wrap mfp-close-btn-in mfp-auto-cursor mfp-fade mfp-ready"
-    *ngIf="isOpen"
-    tabindex="-1"
->
-    <div class="mfp-container mfp-iframe-holder">
-        <div class="mfp-content">
-            <div class="mfp-iframe-scaler">
-                <button
-                    (click)="closePopup()"
-                    title="Close (Esc)"
-                    type="button"
-                    class="mfp-close"
-                >
-                    ×
-                </button>
-                <iframe src="https://www.youtube.com/embed/u31qwQUeGuM" title="Placeholder video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <div *ngIf="applyStatusMessage" class="text-muted mt-2">
+                  {{ applyStatusMessage }}
+                </div>
+
+                <ul>
+                  <li><a role="button"><i class="bx bx-heart"></i> Save</a></li>
+                  <li><a role="button"><i class="bx bx-share-alt"></i> Share</a></li>
+                  <li><a role="button"><i class="bx bxs-report"></i> Report</a></li>
+                </ul>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
+
+  <!-- Job Details -->
+  <div class="job-details-area ptb-100">
+    <div class="container">
+      <div class="row">
+        <!-- Main Description -->
+        <div class="col-lg-8 col-md-12">
+          <div class="details-item">
+
+            <div class="details-inner" *ngIf="jobPost.job_description">
+              <h3>Job Description:</h3>
+              <p>{{ jobPost.job_description }}</p>
+            </div>
+
+            <div class="details-inner" *ngIf="jobPost.role_summary">
+              <h3>Role Summary:</h3>
+              <p>{{ jobPost.role_summary }}</p>
+            </div>
+
+            <div class="details-inner" *ngIf="jobPost.preferred_qualifications">
+              <h3>Preferred Qualifications:</h3>
+              <p>{{ jobPost.preferred_qualifications }}</p>
+            </div>
+
+            <div class="details-inner" *ngIf="jobPost.what_we_offer">
+              <h3>What We Offer:</h3>
+              <p>{{ jobPost.what_we_offer }}</p>
+            </div>
+
+            <div class="details-inner" *ngIf="jobPost.how_to_apply">
+              <h3>How to Apply:</h3>
+              <p>{{ jobPost.how_to_apply }}</p>
+            </div>
+
+            <!-- Skills Section -->
+            <div class="details-inner" *ngIf="jobSkills?.length">
+              <h3>Required Skills:</h3>
+              <div class="skills-container">
+                <div *ngFor="let item of jobSkills" class="skill-item">
+                  {{ item.skill.name }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Certifications Section -->
+            <div class="details-inner" *ngIf="jobCertifications?.length">
+              <h3>Required Certifications:</h3>
+              <div class="certifications-container">
+                <div *ngFor="let item of jobCertifications" class="certification-item">
+                  {{ item.certification.certification_name }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4 col-md-12">
+          <div class="widget-area">
+            <div class="information widget-item">
+              <h3>Job Information</h3>
+              <ul>
+                <li *ngIf="jobPost.location">
+                  <img src="img/job-details-icon.png" alt="Location Icon" />
+                  <h4>Location</h4>
+                  <span>{{ jobPost.location }}</span>
+                </li>
+
+                <li *ngIf="jobPost.certifications_required">
+                  <img src="img/job-details-icon.png" alt="Certification Icon" />
+                  <h4>Certifications</h4>
+                  <span>{{ jobPost.certifications_required }}</span>
+                </li>
+
+                <li *ngIf="jobPost.experience_min !== undefined && jobPost.experience_max !== undefined">
+                  <img src="img/job-details-icon.png" alt="Experience Icon" />
+                  <h4>Experience</h4>
+                  <span>{{ jobPost.experience_min }} - {{ jobPost.experience_max }} years</span>
+                </li>
+
+                <li *ngIf="jobPost.employment_type">
+                  <img src="img/job-details-icon.png" alt="Employment Icon" />
+                  <h4>Employment Type</h4>
+                  <span>{{ jobPost.employment_type }}</span>
+                </li>
+
+                <li *ngIf="jobPost.compensation_range">
+                  <img src="img/job-details-icon.png" alt="Compensation Icon" />
+                  <h4>Compensation Range</h4>
+                  <span>{{ jobPost.compensation_range }}</span>
+                </li>
+
+                <li *ngIf="jobPost.notice_period">
+                  <img src="img/job-details-icon.png" alt="Notice Icon" />
+                  <h4>Notice Period</h4>
+                  <span>{{ jobPost.notice_period }}</span>
+                </li>
+
+                <li *ngIf="jobPost.work_mode">
+                  <img src="img/job-details-icon.png" alt="Work Mode Icon" />
+                  <h4>Work Mode</h4>
+                  <span>{{ jobPost.work_mode }}</span>
+                </li>
+
+                <li *ngIf="jobPost.application_deadline">
+                  <img src="img/job-details-icon.png" alt="Deadline Icon" />
+                  <h4>Deadline</h4>
+                  <span>{{ jobPost.application_deadline | date: 'mediumDate' }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Video Popup Overlay -->
+  <div class="popup-video" *ngIf="isOpen">
+    <div class="overlay" (click)="closePopup()"></div>
+    <div class="video-content">
+      <button class="close-btn" (click)="closePopup()">X</button>
+      <!-- Optional embedded video iframe goes here -->
+    </div>
+  </div>
 </div>
-<div class="mfp-bg mfp-fade mfp-ready" *ngIf="isOpen"></div>
 
 <app-footer />
-
 <app-back-to-top />

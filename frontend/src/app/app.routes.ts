@@ -25,7 +25,7 @@ import { CandidateDetailsComponent } from './pages/candidate-details/candidate-d
 import { BlogComponent } from './pages/blog/blog.component';
 import { BlogDetailsComponent } from './pages/blog-details/blog-details.component';
 import { ContactUsComponent } from './pages/contact-us/contact-us.component';
-import { CandidateProfileComponent } from './pages/candidate-profile/candidate-profile.component'; // ✅ New Import
+import { CandidateProfileComponent } from './pages/candidate-profile/candidate-profile.component';
 import { AdminLoginComponent } from './auth/containers/admin/admin-login/admin-login.component';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
 
@@ -75,14 +75,14 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard('candidate')]
   },
   {
-    path: 'job-details',
+    path: 'job-details/:id',
     component: JobDetailsComponent,
     canActivate: [authGuard, roleGuard('candidate')]
   },
   {
     path: 'candidate-profile',
     component: CandidateProfileComponent,
-    canActivate: [authGuard, roleGuard('candidate')] // ✅ New Route
+    canActivate: [authGuard, roleGuard('candidate')]
   },
   {
     path: 'post-a-job',

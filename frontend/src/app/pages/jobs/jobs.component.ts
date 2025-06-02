@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { NavbarComponent } from '../../common/navbar/navbar.component';
 import { PageBannerComponent } from '../../common/page-banner/page-banner.component';
 import { FooterComponent } from '../../common/footer/footer.component';
@@ -9,6 +9,8 @@ import { BackToTopComponent } from '../../common/back-to-top/back-to-top.compone
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { SkillFiltersComponent } from './filters/skills-filter/skills-filter.component';
+import { AuthStateService } from '../../services/auth-state.service';
+
 @Component({
   selector: 'app-jobs',
   standalone: true,
@@ -27,6 +29,8 @@ import { SkillFiltersComponent } from './filters/skills-filter/skills-filter.com
   styleUrls: ['./jobs.component.scss']
 })
 export class JobsComponent implements OnInit {
+  @ViewChild(SkillFiltersComponent) skillsFilter!: SkillFiltersComponent;
+
   jobs: any[] = [];
   allJobs: any[] = [];
   jobCount = 0;
@@ -53,20 +57,31 @@ export class JobsComponent implements OnInit {
   ];
   selectedNoticePeriod: string = '';
 
-  // ✅ Search input fields
   searchTerm: string = '';
   searchKeyword: string = '';
   searchLocation: string = '';
 
-  currentUserId = 'fba1cb74-3a09-11f0-8520-ac1f6bbcd360';
+  currentUserId: string | null = null; // ✅ Replaced hardcoded user ID
 
-  constructor(private http: HttpClient) {
-    console.log('JobsComponent: constructor called');
-  }
+  selectedSkillIds: string[] = [];
+  selectedCertIds: string[] = [];
+  filteredJobIdsFromSkills: string[] = [];
+
+  appliedStatus: { [jobId: string]: boolean } = {};
+
+  constructor(
+    private http: HttpClient,
+    private authState: AuthStateService, // ✅ Inject auth service
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    console.log('JobsComponent: ngOnInit called');
+    this.currentUserId = this.authState.getCurrentUserId(); // ✅ Get current user ID
     this.fetchJobs();
+  }
+
+  redirectToLogin(): void {
+    this.router.navigate(['/login']);
   }
 
   fetchJobs(): void {
@@ -76,12 +91,67 @@ export class JobsComponent implements OnInit {
         this.jobs = data;
         this.jobCount = data.length;
         this.loading = false;
+        this.checkAppliedStatuses();
       },
       error: (err) => {
         console.error('Error fetching jobs:', err);
         this.error = 'Failed to load job data.';
         alert('❌ Error loading job listings.');
         this.loading = false;
+      }
+    });
+  }
+
+  checkAppliedStatuses(): void {
+    if (!this.currentUserId) return; // ✅ Skip if not logged in
+
+    this.jobs.forEach(job => {
+      const payload = {
+        user_id: this.currentUserId,
+        job_id: job.id
+      };
+
+      this.http.post<{ applied: boolean }>(
+        'http://localhost:3000/applications/check-by-user-and-job',
+        payload
+      ).subscribe({
+        next: (res) => {
+          this.appliedStatus[job.id] = res.applied;
+        },
+        error: (err) => {
+          console.error(`Error checking status for job ${job.id}:`, err);
+          this.appliedStatus[job.id] = false;
+        }
+      });
+    });
+  }
+
+  applyToJob(jobId: string): void {
+    if (!this.currentUserId) {
+      alert('Please log in to apply for jobs');
+      this.redirectToLogin();
+      return;
+    }
+
+    const payload = {
+      user_id: this.currentUserId,
+      job_id: jobId
+    };
+
+    this.http.post('http://localhost:3000/applications/by-user', payload).subscribe({
+      next: () => {
+        this.appliedStatus[jobId] = true;
+        alert('✅ Application submitted successfully!');
+      },
+      error: (error) => {
+        if (error.status === 409) {
+          this.appliedStatus[jobId] = true;
+          alert('⚠️ You have already applied for this job.');
+        } else if (error.status === 404) {
+          alert('❌ Candidate profile not found for current user.');
+        } else {
+          alert('❌ Failed to submit application.');
+        }
       }
     });
   }
@@ -104,9 +174,7 @@ export class JobsComponent implements OnInit {
     if (value === 'title') {
       this.jobs.sort((a, b) => a.job_title.localeCompare(b.job_title));
     } else if (value === 'date') {
-      this.jobs.sort(
-        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
+      this.jobs.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     }
   }
 
@@ -126,16 +194,26 @@ export class JobsComponent implements OnInit {
     this.filterJobs();
   }
 
+  onFiltersChanged(filters: { skillIds: string[]; certIds: string[] }): void {
+    this.selectedSkillIds = filters.skillIds;
+    this.selectedCertIds = filters.certIds;
+    this.filterJobs();
+  }
+
+  onFilteredJobIds(filteredJobIds: string[]): void {
+    this.filteredJobIdsFromSkills = filteredJobIds;
+    this.filterJobs();
+  }
+
   filterJobs(): void {
     this.jobs = this.allJobs.filter((job) => {
       const matchesWorkMode = this.selectedWorkMode
         ? job.work_mode?.toLowerCase() === this.selectedWorkMode.toLowerCase()
         : true;
 
-      const matchesEmploymentType =
-        this.selectedEmploymentTypes.length > 0
-          ? this.selectedEmploymentTypes.includes(job.employment_type)
-          : true;
+      const matchesEmploymentType = this.selectedEmploymentTypes.length > 0
+        ? this.selectedEmploymentTypes.includes(job.employment_type)
+        : true;
 
       const matchesNoticePeriod = this.selectedNoticePeriod
         ? job.notice_period === this.selectedNoticePeriod
@@ -153,13 +231,17 @@ export class JobsComponent implements OnInit {
         ? job.location?.toLowerCase().includes(this.searchLocation.toLowerCase())
         : true;
 
+      const matchesSkillFilter = this.filteredJobIdsFromSkills.length === 0
+        || this.filteredJobIdsFromSkills.includes(job.id);
+
       return (
         matchesWorkMode &&
         matchesEmploymentType &&
         matchesNoticePeriod &&
         matchesSearch &&
         matchesKeyword &&
-        matchesLocation
+        matchesLocation &&
+        matchesSkillFilter
       );
     });
 
@@ -187,7 +269,6 @@ export class JobsComponent implements OnInit {
     });
   }
 
-  // ✅ Called when user clicks the search button in the search bar
   onSearch(): void {
     this.jobs = this.allJobs.filter((job) => {
       const keywordMatch = this.searchKeyword
@@ -211,25 +292,21 @@ export class JobsComponent implements OnInit {
     this.onEmploymentTypeChange();
   }
 
-  applyToJob(jobId: string): void {
-    const payload = {
-      user_id: this.currentUserId,
-      job_id: jobId
-    };
+  onGlobalReset(): void {
+    this.selectedEmploymentTypes = [];
+    this.selectedWorkMode = '';
+    this.selectedNoticePeriod = '';
+    this.searchTerm = '';
+    this.searchKeyword = '';
+    this.searchLocation = '';
+    this.selectedSkillIds = [];
+    this.selectedCertIds = [];
+    this.filteredJobIdsFromSkills = [];
 
-    this.http.post('http://localhost:3000/applications/by-user', payload).subscribe({
-      next: () => {
-        alert('✅ Application submitted successfully!');
-      },
-      error: (error) => {
-        if (error.status === 409) {
-          alert('⚠️ You have already applied for this job.');
-        } else if (error.status === 404) {
-          alert('❌ Candidate profile not found for current user.');
-        } else {
-          alert('❌ Failed to submit application.');
-        }
-      }
-    });
+    if (this.skillsFilter) {
+      this.skillsFilter.reset();
+    }
+
+    this.filterJobs();
   }
 }

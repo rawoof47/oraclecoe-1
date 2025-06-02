@@ -17,7 +17,7 @@ export class JobPostSkillService {
     private readonly jobPostSkillRepo: Repository<JobPostSkill>,
 
     @Inject(forwardRef(() => JobPostsService))
-    private readonly jobPostsService: JobPostsService, // 👈 circular injection
+    private readonly jobPostsService: JobPostsService,
   ) {}
 
   // ✅ Save multiple skills for a job post (used in CREATE)
@@ -55,7 +55,7 @@ export class JobPostSkillService {
     await this.jobPostSkillRepo.delete({ job_post_id: jobPostId });
 
     if (skillIds.length === 0) {
-      return []; // Return empty array if no skills to add
+      return [];
     }
 
     const newSkills = skillIds.map((skillId) =>
@@ -68,14 +68,36 @@ export class JobPostSkillService {
     return this.jobPostSkillRepo.save(newSkills);
   }
 
-  // ✅ Get all skills linked to a specific job post
-  async getSkillsByJob(jobPostId: string) {
+  // ✅ Get all full skill entities linked to a specific job post (original)
+  async getAllSkillsByJob(jobPostId: string) {
     if (!jobPostId) {
       throw new BadRequestException('jobPostId is required.');
     }
 
     return this.jobPostSkillRepo.find({
       where: { job_post_id: jobPostId },
+    });
+  }
+
+  // ✅ Get only skill IDs linked to a specific job post
+  async getSkillsByJob(jobPostId: string): Promise<JobPostSkill[]> {
+    if (!jobPostId) {
+      throw new BadRequestException('jobPostId is required.');
+    }
+
+    return this.jobPostSkillRepo.find({
+      where: { job_post_id: jobPostId },
+      select: ['skill_id'],
+    });
+  }
+
+  // ✅ Fetch all mappings for filtering use (corrected select syntax)
+  async findAllMappings() {
+    return this.jobPostSkillRepo.find({
+      select: {
+        job_post_id: true,
+        skill_id: true,
+      },
     });
   }
 }

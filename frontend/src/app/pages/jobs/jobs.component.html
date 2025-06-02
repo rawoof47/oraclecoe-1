@@ -9,7 +9,7 @@
 <section class="search-bar-section py-5 text-center">
   <div class="container">
     <h2 class="mb-4">
-      Create the <strong>future</strong> with us
+      Your next <strong>career milestone</strong> starts here
     </h2>
     <div class="search-form-wrapper d-flex justify-content-center">
       <div class="search-bar d-flex shadow rounded overflow-hidden" style="max-width: 700px; width: 100%;">
@@ -45,14 +45,26 @@
   </div>
 </section>
 
- <!-- Filters Wrapper -->
+<!-- Filters Wrapper -->
 <div class="filters-wrapper d-flex justify-content-center mt-4">
   <div class="job-filters d-flex align-items-center flex-wrap gap-2 justify-content-center">
     <a href="#" class="text-primary mx-2">All Jobs <strong>({{ jobCount }})</strong></a>
-
-
     
-    <app-skills-filter></app-skills-filter>
+
+    <div class="reset-container ms-auto">
+      <button 
+        class="reset-button"
+        (click)="onGlobalReset()"
+      >
+        <i class="fas fa-undo-alt"></i> Reset Filters
+      </button>
+    </div>
+
+    <!-- ✅ Updated Skills Filter Component with globalReset output -->
+    <app-skills-filter
+      (filtersChanged)="onFiltersChanged($event)"
+      (filteredJobIds)="onFilteredJobIds($event)"
+    ></app-skills-filter>
 
     <!-- Employment Type Dropdown -->
     <div class="form-group custom-multiselect">
@@ -104,29 +116,22 @@
       (change)="onWorkModeChange()"
       class="form-select form-select-sm d-inline-block w-auto mx-2"
     >
-      <option value="">All Work Modes</option>
+      <option value="">Select Work Modes</option>
       <option *ngFor="let mode of workModeOptions" [value]="mode">{{ mode }}</option>
     </select>
 
     <!-- Notice Period Dropdown -->
-    <div class="form-group custom-notice-period">
-      <ng-select
-        [items]="noticePeriodOptions"
-        bindLabel=""
-        [(ngModel)]="selectedNoticePeriod"
-        [searchable]="false"
-        [clearable]="true"
-        placeholder="Notice Period"
-        class="notice-period-dropdown"
-        (change)="onNoticePeriodChange()"
-      >
-      </ng-select>
-    </div>
-  </div>
-</div>
-
-
-
+    <!-- Notice Period Dropdown (styled like Work Mode) -->
+<select
+  [(ngModel)]="selectedNoticePeriod"
+  (change)="onNoticePeriodChange()"
+  class="form-select form-select-sm d-inline-block w-auto mx-2"
+>
+  <option value="">Select Notice Periods</option>
+  <option *ngFor="let period of noticePeriodOptions" [value]="period">
+    {{ period }}
+  </option>
+</select>
 
 
 <!-- Job Listings -->
@@ -207,14 +212,27 @@
               </div>
             </a>
 
-            <div class="text-right mt-3">
-              <button
-                class="btn btn-success btn-sm"
-                (click)="applyToJob(job.id)"
-              >
-                Apply
-              </button>
-            </div>
+           <div class="text-right mt-3">
+  <!-- Show different buttons based on state -->
+  <button *ngIf="!appliedStatus[job.id] && currentUserId" 
+          class="btn btn-success btn-sm"
+          (click)="applyToJob(job.id)">
+    Apply
+  </button>
+  
+  <button *ngIf="appliedStatus[job.id]" 
+          class="btn btn-secondary btn-sm" 
+          disabled>
+    Already Applied
+  </button>
+  
+  <button *ngIf="!currentUserId" 
+          class="btn btn-outline-primary btn-sm"
+          (click)="redirectToLogin()">
+    Login to Apply
+  </button>
+</div>
+
           </article>
         </div>
 

@@ -4,7 +4,10 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { Certification } from 'src/certifications/entities/certification.entity'; // Adjust the path as needed
 
 @Entity('job_post_certifications')
 export class JobPostCertification {
@@ -16,6 +19,10 @@ export class JobPostCertification {
 
   @Column({ type: 'char', length: 36 })
   certification_id: string;
+
+  @ManyToOne(() => Certification, { eager: true }) // Eager fetch ensures data is loaded automatically
+  @JoinColumn({ name: 'certification_id' })
+  certification: Certification;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

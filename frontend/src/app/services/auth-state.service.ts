@@ -69,4 +69,23 @@ export class AuthStateService {
     if (!this.isBrowser) return false;
     return !!localStorage.getItem('access_token');
   }
+
+  // ✅ New method to get current user synchronously
+  getCurrentUser(): User | null {
+    if (!this.isBrowser) return null;
+    const userJson = localStorage.getItem('user');
+    return userJson ? JSON.parse(userJson) : null;
+  }
+
+  // ✅ New method to get user ID synchronously
+  getCurrentUserId(): string | null {
+    const user = this.getCurrentUser();
+    return user ? user.id : null;
+  }
+
+  // ✅ New method to get user role
+  getCurrentUserRole(): string | null {
+    const user = this.getCurrentUser();
+    return user ? user.role : null;
+  }
 }

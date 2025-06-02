@@ -60,6 +60,27 @@ export class ApplicationsController {
     return this.applicationsService.create(dto);
   }
 
+  @Post('check-by-user-and-job') // ✅ NEW ENDPOINT
+  @HttpCode(HttpStatus.OK)
+  async checkByUserAndJob(
+    @Body() payload: { user_id: string; job_id: string },
+  ): Promise<{ applied: boolean }> {
+    const candidate = await this.candidateProfileRepository.findOne({
+      where: { user_id: payload.user_id },
+    });
+
+    if (!candidate) {
+      return { applied: false };
+    }
+
+    const application = await this.applicationsService.findByCandidateAndJob(
+      candidate.id,
+      payload.job_id
+    );
+
+    return { applied: !!application && !application.withdrawn };
+  }
+
   @Get()
   async findAll(): Promise<Application[]> {
     return this.applicationsService.findAll();
@@ -81,7 +102,7 @@ export class ApplicationsController {
     );
   }
 
-  // ✅ NEW: Get all job_ids the candidate has already applied to (excluding withdrawn)
+  // ✅ Get all job_ids the candidate has already applied to (excluding withdrawn)
   @Get('user/:candidateId')
   @HttpCode(HttpStatus.OK)
   async getAppliedJobsByCandidate(

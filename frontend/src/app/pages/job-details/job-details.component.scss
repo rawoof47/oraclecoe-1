@@ -324,3 +324,219 @@
 
 /* Max width 991px */
 @media only screen and (max-width: 991px) {}
+
+
+// Skills and Certifications Common Styles
+// Skills & Certifications Styles
+.details-inner {
+  .skills-container, 
+  .certifications-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+    
+    .skill-item, 
+    .certification-item {
+      background-color: #e3f2fd; /* Changed to light blue background */
+      color: #000000;            /* Changed to dark blue text */
+      padding: 8px 15px;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background-color: #000000; /* Dark blue background on hover */
+        color: white;             /* White text on hover */
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+      }
+    }
+  }
+}
+
+/* Responsive adjustments - UNCHANGED */
+@media only screen and (max-width: 767px) {
+  .details-inner {
+    .skills-container, 
+    .certifications-container {
+      gap: 8px;
+      
+      .skill-item, 
+      .certification-item {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+      }
+    }
+  }
+}
+
+/* Ensure sidebar stays on right - UNCHANGED */
+@media only screen and (min-width: 992px) {
+  .job-details-area .container .row {
+    display: flex;
+    flex-direction: row;
+    
+    .col-lg-8 {
+      order: 1;
+    }
+    
+    .col-lg-4 {
+      order: 2;
+    }
+  }
+}
+
+@media only screen and (max-width: 991px) {
+  .job-details-area .container .row {
+    flex-direction: column;
+    
+    .col-lg-8, .col-lg-4 {
+      width: 100%;
+    }
+  }
+}
+/* Apply button styles - Enhanced Version */
+.cmn-btn {
+  --btn-pink: var(--pink-color);
+  --btn-blue: var(--blue-color);
+  --btn-white: #ffffff;
+  --btn-disabled-bg: #e0e0e0;
+  --btn-disabled-text: #666666;
+  
+  background-color: var(--btn-pink);
+  color: var(--btn-white);
+  border: none;
+
+  /* ↓↓↓ Decreased button size ↓↓↓ */
+  padding: 10px 24px; // Previously 12px 32px
+  border-radius: 6px;
+  font-weight: 600;
+
+  /* ↓↓↓ Decreased font size ↓↓↓ */
+  font-size: 15px; // Previously 16px
+
+  line-height: 1.5;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  box-shadow: 
+    0 2px 4px rgba(239, 70, 5, 0.2),
+    0 4px 12px rgba(239, 70, 5, 0.15);
+
+  /* ↓↓↓ Decreased minimum width ↓↓↓ */
+  min-width: 140px; // Previously 160px
+
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  &:hover:not([disabled]) {
+    background-color: var(--btn-blue);
+    transform: translateY(-2px);
+    box-shadow: 
+      0 4px 8px rgba(0, 101, 255, 0.2),
+      0 8px 24px rgba(0, 101, 255, 0.25);
+  }
+
+  &:active:not([disabled]) {
+    transform: translateY(0);
+    box-shadow: 
+      0 2px 4px rgba(0, 101, 255, 0.2),
+      0 4px 8px rgba(0, 101, 255, 0.15);
+  }
+
+  &:focus:not([disabled]) {
+    outline: none;
+    box-shadow: 
+      0 0 0 3px rgba(0, 101, 255, 0.3),
+      0 4px 12px rgba(0, 101, 255, 0.25);
+  }
+
+  &[disabled] {
+    background-color: var(--btn-disabled-bg);
+    color: var(--btn-disabled-text);
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+    opacity: 0.8;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 100%;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+    z-index: -1;
+    transition: transform 0.6s, opacity 0.6s;
+  }
+
+  &:not([disabled]):active::after {
+    transform: translate(-50%, -50%) scale(30);
+    opacity: 1;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), 
+                opacity 0.6s ease;
+  }
+
+  &.loading {
+    pointer-events: none;
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+    }
+  }
+}
+
+/* Status message styling - enhanced */
+.text-muted {
+  font-size: 14px;
+  color: var(--btn-white);
+  font-style: italic;
+  margin-top: 8px;
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+  
+  &.success {
+    color: #4caf50;
+  }
+  
+  &.error {
+    color: #f44336;
+  }
+  
+  &.info {
+    color: #2196f3;
+  }
+}
+
+/* Animation for loading spinner */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media only screen and (max-width: 767px) {
+  .cmn-btn {
+    padding: 8px 20px; // Slightly smaller for small screens
+    font-size: 14px;
+    min-width: 120px;
+  }
+}
