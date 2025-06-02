@@ -142,4 +142,15 @@ export class ApplicationsService {
     if (!application) throw new NotFoundException('Application not found');
     await this.applicationRepository.remove(application);
   }
+
+  // ✅ NEW METHOD — Get applied job IDs by user_id
+  async getAppliedJobIdsByUser(user_id: string): Promise<string[]> {
+    const candidateProfile = await this.candidateProfilesRepository.findOne({
+      where: { user_id },
+    });
+
+    if (!candidateProfile) return [];
+
+    return this.getAppliedJobIdsByCandidate(candidateProfile.id);
+  }
 }

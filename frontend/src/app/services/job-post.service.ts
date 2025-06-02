@@ -23,6 +23,7 @@ export class JobPostService {
   private certificationsUrl = 'http://localhost:3000/certifications';
   private jobPostCertificationsUrl = 'http://localhost:3000/job-post-certifications';
   private applicationUrl = 'http://localhost:3000/applications';
+  private candidateProfilesUrl = 'http://localhost:3000/candidate-profiles';
 
   constructor(private http: HttpClient) {}
 
@@ -141,5 +142,32 @@ export class JobPostService {
       user_id: userId,
       job_id: jobId
     });
+  }
+
+  /**
+   * 🆕 Get candidate profile by user ID
+   */
+  getCandidateProfile(userId: string): Observable<any> {
+    return this.http.get<any>(
+      `${this.candidateProfilesUrl}/by-user/${userId}`
+    );
+  }
+
+  /**
+   * 🆕 Get applied job IDs by candidate ID
+   */
+  getAppliedJobIdsByCandidate(candidateId: string): Observable<string[]> {
+    return this.http.get<string[]>(
+      `${this.applicationUrl}/user/${candidateId}`
+    );
+  }
+
+  /**
+   * 🆕 Get applied job IDs by user ID
+   */
+  getAppliedJobIdsByUser(userId: string): Observable<string[]> {
+    return this.http.get<string[]>(
+      `${this.applicationUrl}/by-user/${userId}`
+    );
   }
 }

@@ -1,0 +1,599 @@
+// Applied Jobs Dashboard SCSS
+// ===========================
+
+// Variables
+$spacing-unit: 1rem;
+$border-radius: 0.5rem;
+$shadow-base: 0 4px 12px rgba(0, 0, 0, 0.06);
+$shadow-hover: 0 6px 18px rgba(0, 0, 0, 0.1);
+$color-primary: #3b82f6;
+$color-primary-dark: #2563eb;
+$color-success: #10b981;
+$color-success-dark: #059669;
+$color-light: #f8fafc;
+$color-danger: #ef4444;
+$color-danger-dark: #dc2626;
+$color-warning: #f59e0b;
+$color-gray-100: #f1f5f9;
+$color-gray-200: #e2e8f0;
+$color-gray-300: #cbd5e1;
+$color-gray-500: #64748b;
+$color-gray-700: #334155;
+$transition-base: all 0.25s ease;
+$transition-fast: all 0.15s ease;
+
+// Main container
+.dashboard-area {
+  padding: 4rem 0;
+  background-color: $color-light;
+  
+  .container {
+    max-width: 1200px;
+  }
+}
+
+// Dashboard header
+.dashboard-header {
+  margin-bottom: 2.5rem;
+  
+  .dashboard-heading {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: $color-gray-700;
+    margin-bottom: 0.5rem;
+  }
+  
+  .dashboard-subheading {
+    color: $color-gray-500;
+    font-size: 1.1rem;
+  }
+}
+
+.badge-light {
+  background-color: rgba($color-primary, 0.1);
+  color: $color-primary-dark;
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.95rem;
+  border-radius: 50px;
+  letter-spacing: 0.3px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+// Alert styling
+.alert {
+  border-radius: $border-radius;
+  padding: $spacing-unit * 1.5;
+  margin-bottom: $spacing-unit * 2;
+  border: 1px solid transparent;
+  box-shadow: $shadow-base;
+  display: flex;
+  align-items: flex-start;
+  
+  &-icon {
+    margin-right: 1rem;
+    font-size: 1.5rem;
+  }
+  
+  &-content {
+    flex: 1;
+  }
+  
+  &-danger {
+    background-color: rgba($color-danger, 0.08);
+    border-color: rgba($color-danger, 0.15);
+    color: darken($color-danger, 15%);
+    
+    .close {
+      color: darken($color-danger, 15%);
+      opacity: 0.8;
+      transition: $transition-fast;
+      
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+// Job card styling
+.job-listings {
+  margin-bottom: 2rem;
+}
+
+.employer-item {
+  background: white;
+  transition: $transition-base;
+  overflow: hidden;
+  border-radius: $border-radius;
+  border: 1px solid $color-gray-200;
+  box-shadow: $shadow-base;
+  margin-bottom: 1.5rem;
+  
+  .card-body {
+    position: relative;
+    padding: 1.75rem;
+  }
+  
+  // Hover effect
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-hover;
+    border-color: rgba($color-primary, 0.3);
+    
+    .job-title {
+      color: $color-primary-dark;
+    }
+  }
+}
+
+// Employer logo
+.employer-logo {
+  width: 90px;
+  height: 90px;
+  border-radius: $border-radius;
+  overflow: hidden;
+  background: white;
+  border: 1px solid $color-gray-200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 1.5rem;
+  
+  .job-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 0.5rem;
+  }
+}
+
+// Job title and company
+.job-header {
+  margin-bottom: 1.25rem;
+}
+
+.job-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: $color-gray-700;
+  transition: color 0.2s ease;
+  margin-bottom: 0.35rem;
+  line-height: 1.3;
+}
+
+.company-name {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: $color-gray-700;
+  display: flex;
+  align-items: center;
+  
+  i {
+    margin-right: 0.5rem;
+    color: $color-primary;
+    font-size: 0.9em;
+  }
+}
+
+// Job metadata
+.job-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+  
+  li {
+    display: flex;
+    align-items: center;
+    font-size: 0.95rem;
+    color: $color-gray-700;
+    font-weight: 500;
+  }
+  
+  i {
+    color: $color-primary;
+    margin-right: 0.6rem;
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+  }
+}
+
+// Job description
+.job-description {
+  color: $color-gray-500;
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 1.75rem;
+  position: relative;
+  padding-top: 1rem;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: $color-gray-200;
+    border-radius: 2px;
+  }
+}
+
+// Status badge
+.application-status {
+  display: inline-flex;
+  align-items: center;
+  
+  .status-icon {
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+  }
+  
+  .badge {
+    font-weight: 600;
+    padding: 0.6rem 1.25rem;
+    font-size: 0.95rem;
+    border-radius: 50px;
+    letter-spacing: 0.4px;
+    
+    &-success {
+      background-color: rgba($color-success, 0.12);
+      color: $color-success-dark;
+    }
+    
+    &-warning {
+      background-color: rgba($color-warning, 0.12);
+      color: darken($color-warning, 25%);
+    }
+    
+    &-danger {
+      background-color: rgba($color-danger, 0.12);
+      color: $color-danger-dark;
+    }
+  }
+}
+
+// Job details grid
+.job-extra-info {
+  background-color: rgba($color-gray-100, 0.5);
+  border-radius: $border-radius;
+  padding: 1.5rem;
+  margin: 1.75rem 0;
+  border: 1px solid $color-gray-200;
+  
+  .detail-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.25rem;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  .detail-label {
+    font-size: 0.85rem;
+    color: $color-gray-500;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.35rem;
+    display: flex;
+    align-items: center;
+    
+    i {
+      margin-right: 0.5rem;
+      font-size: 0.95rem;
+    }
+  }
+  
+  .detail-value {
+    font-size: 1.05rem;
+    color: $color-gray-700;
+    font-weight: 500;
+  }
+}
+
+// Tags styling
+.job-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+  
+  .badge {
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding: 0.65rem 1.25rem;
+    border-radius: 50px;
+    display: inline-flex;
+    align-items: center;
+    transition: $transition-fast;
+    
+    &-primary {
+      background: rgba($color-primary, 0.1);
+      color: $color-primary-dark;
+      
+      &:hover {
+        background: rgba($color-primary, 0.2);
+      }
+    }
+    
+    &-secondary {
+      background: rgba($color-gray-500, 0.1);
+      color: darken($color-gray-500, 20%);
+      
+      &:hover {
+        background: rgba($color-gray-500, 0.2);
+      }
+    }
+    
+    i {
+      margin-right: 0.5rem;
+      font-size: 0.85rem;
+    }
+  }
+}
+
+// Application footer
+.application-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid $color-gray-200;
+  margin-top: 1rem;
+}
+
+.application-date {
+  font-size: 0.9rem;
+  color: $color-gray-500;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  
+  i {
+    margin-right: 0.5rem;
+  }
+}
+
+.btn-success {
+  background-color: rgba($color-success, 0.12);
+  color: $color-success-dark;
+  border: none;
+  font-weight: 600;
+  padding: 0.7rem 1.5rem;
+  border-radius: 50px;
+  transition: $transition-base;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  
+  &:hover {
+    background-color: rgba($color-success, 0.2);
+    transform: translateY(-2px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  &:disabled {
+    opacity: 0.7;
+    transform: none;
+  }
+  
+  i {
+    margin-right: 0.5rem;
+    font-size: 1rem;
+  }
+}
+
+// Empty state
+.empty-state {
+  background: white;
+  border-radius: $border-radius;
+  box-shadow: $shadow-base;
+  max-width: 600px;
+  margin: 3rem auto;
+  padding: 4rem !important;
+  text-align: center;
+  border: 1px solid $color-gray-200;
+  
+  .empty-icon {
+    color: $color-gray-200;
+    font-size: 5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  h3 {
+    color: $color-gray-700;
+    font-weight: 700;
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  p {
+    color: $color-gray-500;
+    font-size: 1.1rem;
+    max-width: 80%;
+    margin: 0 auto 2rem;
+    line-height: 1.7;
+  }
+  
+  .btn-primary {
+    padding: 0.85rem 2rem;
+    font-weight: 600;
+    border-radius: 50px;
+    font-size: 1.05rem;
+    transition: $transition-base;
+    box-shadow: 0 4px 6px rgba($color-primary, 0.15);
+    
+    i {
+      margin-right: 0.75rem;
+    }
+    
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 10px rgba($color-primary, 0.2);
+    }
+  }
+}
+
+// Loading indicator
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  padding: 3rem;
+  
+  .spinner-border {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-width: 0.2em;
+    border-color: $color-primary;
+    border-right-color: transparent;
+    margin-bottom: 1.5rem;
+  }
+  
+  p {
+    color: $color-gray-500;
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 1199.98px) {
+  .employer-logo {
+    width: 80px;
+    height: 80px;
+    margin-right: 1.25rem;
+  }
+  
+  .job-title {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .dashboard-area {
+    padding: 3rem 0;
+  }
+  
+  .employer-logo {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .job-extra-info {
+    .col-md-6 {
+      margin-bottom: 1.25rem;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+@media (max-width: 767.98px) {
+  .dashboard-header {
+    margin-bottom: 1.75rem;
+    
+    .dashboard-heading {
+      font-size: 1.6rem;
+    }
+  }
+  
+  .d-flex.justify-content-between {
+    flex-direction: column;
+    align-items: flex-start !important;
+    
+    .badge-light {
+      margin-top: 1rem;
+    }
+  }
+  
+  .employer-item {
+    margin-bottom: 1.25rem !important;
+    
+    .card-body {
+      padding: 1.5rem;
+    }
+  }
+  
+  .job-extra-info {
+    margin: 1.25rem 0;
+    padding: 1.25rem;
+  }
+  
+  .d-flex.justify-content-between.align-items-center {
+    flex-direction: column;
+    align-items: flex-start !important;
+    
+    .btn {
+      margin-top: 1.25rem;
+      align-self: stretch;
+      width: 100%;
+      text-align: center;
+    }
+  }
+  
+  .job-meta {
+    gap: 1rem;
+    
+    li {
+      font-size: 0.9rem;
+    }
+  }
+  
+  .application-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .dashboard-heading {
+    font-size: 1.45rem;
+  }
+  
+  .employer-logo {
+    width: 65px;
+    height: 65px;
+    margin-right: 1rem;
+  }
+  
+  .job-title {
+    font-size: 1.15rem;
+  }
+  
+  .job-meta {
+    flex-direction: column;
+    gap: 0.75rem;
+    
+    li {
+      margin-bottom: 0.5rem;
+    }
+  }
+  
+  .empty-state {
+    padding: 2.5rem 1.5rem !important;
+    
+    h3 {
+      font-size: 1.5rem;
+    }
+    
+    p {
+      max-width: 100%;
+      font-size: 1rem;
+    }
+  }
+}

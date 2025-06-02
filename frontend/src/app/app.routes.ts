@@ -28,6 +28,7 @@ import { ContactUsComponent } from './pages/contact-us/contact-us.component';
 import { CandidateProfileComponent } from './pages/candidate-profile/candidate-profile.component';
 import { AdminLoginComponent } from './auth/containers/admin/admin-login/admin-login.component';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
+import { AppliedJobsComponent } from './pages/applied-jobs/applied-jobs.component'; // ✅ NEW
 
 // Guards
 import { authGuard } from './guards/auth.guard';
@@ -58,7 +59,7 @@ export const routes: Routes = [
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'terms-conditions', component: TermsConditionsComponent },
 
-  // 🔒 Protected Routes
+  // 🔒 Protected Candidate Routes
   {
     path: 'dashboard',
     component: DashboardComponent,
@@ -85,6 +86,13 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard('candidate')]
   },
   {
+    path: 'applied-jobs', // ✅ NEW ROUTE
+    component: AppliedJobsComponent,
+    canActivate: [authGuard, roleGuard('candidate')]
+  },
+
+  // 🔒 Protected Recruiter Routes
+  {
     path: 'post-a-job',
     component: PostAJobComponent,
     canActivate: [authGuard, roleGuard('recruiter')]
@@ -96,7 +104,6 @@ export const routes: Routes = [
   },
 
   { path: 'admin/login', component: AdminLoginComponent },
-
   { path: 'admin-dashboard', component: AdminDashboardComponent },
 
   // Catch-all for unknown paths
