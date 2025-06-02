@@ -1,0 +1,32 @@
+# ----------------------
+# App Configuration
+# ----------------------
+APP_PORT=3001
+
+# ----------------------
+# Database Configuration (Updated for DreamHost)
+# ----------------------
+DB_HOST=ahlin.iad1-mysql-e2-2a.dreamhost.com
+DB_PORT=3306
+DB_USERNAME=yardglobal
+DB_PASSWORD=Yard@^78
+DB_NAME=oracle_job_portal
+
+# ----------------------
+# JWT Configuration (Change these secrets in production)
+# ----------------------
+JWT_SECRET=yourAccessTokenSecret
+JWT_REFRESH_SECRET=yourRefreshTokenSecret
+
+# ----------------------
+# Optional: Token Expiry Settings
+# ----------------------
+JWT_ACCESS_TOKEN_EXPIRY=15m
+JWT_REFRESH_TOKEN_EXPIRY=7d
+
+# ----------------------
+# Swagger Configuration (Optional)
+# ----------------------
+SWAGGER_TITLE=Oracle Job Portal API
+SWAGGER_DESCRIPTION=API documentation for Oracle COE Job Portal
+SWAGGER_VERSION=1.0
