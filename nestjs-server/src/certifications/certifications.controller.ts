@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { CertificationsService } from './certifications.service';
 import { CreateCertificationDto } from './dto/create-certification.dto';
 
@@ -24,5 +24,11 @@ export class CertificationsController {
   @Post('save')
   saveCertifications(@Body() body: { jobPostId: string; certificationIds: string[] }) {
     return this.certificationsService.saveCertifications(body.jobPostId, body.certificationIds);
+  }
+
+  // ✅ Optional: Get certifications by list of IDs
+  @Post('by-ids')
+  findByIds(@Body() body: { ids: string[] }) {
+    return this.certificationsService.findByIds(body.ids);
   }
 }

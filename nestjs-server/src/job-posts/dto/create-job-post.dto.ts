@@ -6,6 +6,7 @@ import {
   IsDateString,
   IsNotEmpty,
   IsArray,
+  IsIn,
 } from 'class-validator';
 
 export class CreateJobPostDto {
@@ -62,9 +63,8 @@ export class CreateJobPostDto {
   updatedBy?: string;
 
   @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  workMode?: string[];
+  @IsIn(['Remote', 'On-site', 'Hybrid'])
+  workMode?: 'Remote' | 'On-site' | 'Hybrid';
 
   // ✅ New columns
   @IsString()

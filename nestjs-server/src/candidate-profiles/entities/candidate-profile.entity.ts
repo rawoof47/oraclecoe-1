@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('candidate_profiles')
 export class CandidateProfile {
@@ -8,39 +14,39 @@ export class CandidateProfile {
   @Column({ type: 'char', length: 36 })
   user_id: string;
 
-  @Column({ type: 'char', length: 36, nullable: true })
-  status_id: string | null;
-
-  @Column({ type: 'varchar', length: 150, nullable: true })
-  location: string | null;
+  @Column({ type: 'text', nullable: true })
+  about_me: string;
 
   @Column({ type: 'text', nullable: true })
-  summary: string | null;
+  professional_summary: string;
+
+  @Column({ type: 'text', nullable: true })
+  social_links: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  resume_link: string;
+
+  @Column({ type: 'text', nullable: true })
+  education: string;
 
   @Column({ type: 'decimal', precision: 3, scale: 1, nullable: true })
-  experience_years: number | null;
+  experience_years: number;
 
   @Column({ type: 'varchar', length: 20, nullable: true })
-  notice_period: string | null;
+  notice_period: string;
 
-  @Column({ type: 'tinyint', width: 1, default: () => '0' })
-  remote_preference: boolean;
+  @Column({ type: 'char', length: 36, nullable: true })
+  status_id: string;
 
-  @Column({ type: 'text', nullable: true })
-  resume_url: string | null;
-
-  @Column({ type: 'text', nullable: true })
-  profile_photo_url: string | null;
-
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn()
   created_at: Date;
 
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @UpdateDateColumn()
   updated_at: Date;
 
   @Column({ type: 'char', length: 36, nullable: true })
-  created_by: string | null;
+  created_by: string;
 
   @Column({ type: 'char', length: 36, nullable: true })
-  updated_by: string | null;
+  updated_by: string;
 }

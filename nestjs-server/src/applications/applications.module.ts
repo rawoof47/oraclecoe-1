@@ -3,10 +3,13 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApplicationsService } from './applications.service';
 import { ApplicationsController } from './applications.controller';
-import { Application } from './entities/application.entity';  // Adjust the path if necessary
+import { Application } from './entities/application.entity';
+import { CandidateProfile } from 'src/candidate-profiles/entities/candidate-profile.entity'; // ✅ Import candidate profile entity
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Application])],  // Import Application repository
+  imports: [
+    TypeOrmModule.forFeature([Application, CandidateProfile]), // ✅ Include both repositories
+  ],
   providers: [ApplicationsService],
   controllers: [ApplicationsController],
 })

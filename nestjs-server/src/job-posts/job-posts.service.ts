@@ -38,10 +38,7 @@ export class JobPostsService {
     jobPost.application_deadline = createJobPostDto.applicationDeadline ?? null;
     jobPost.created_by = createJobPostDto.createdBy ?? null;
     jobPost.updated_by = createJobPostDto.updatedBy ?? null;
-
-    jobPost.work_mode = Array.isArray(createJobPostDto.workMode)
-      ? createJobPostDto.workMode.join(',')
-      : null;
+    jobPost.work_mode = createJobPostDto.workMode ?? null;
 
     // ✅ New fields
     jobPost.role_summary = createJobPostDto.roleSummary ?? null;
@@ -50,9 +47,7 @@ export class JobPostsService {
     jobPost.how_to_apply = createJobPostDto.howToApply ?? null;
 
     if (!jobPost.job_title || !jobPost.job_description) {
-      throw new BadRequestException(
-        'Job Title and Job Description are required.',
-      );
+      throw new BadRequestException('Job Title and Job Description are required.');
     }
 
     const savedPost = await this.jobPostRepository.save(jobPost);
@@ -82,16 +77,25 @@ export class JobPostsService {
     };
   }
 
-  // ✅ Get all job posts
+  // ✅ Get all job posts (with skill_ids and certification_ids)
   async findAll() {
     const jobPosts = await this.jobPostRepository.find();
+
+    const jobsWithRelations = await Promise.all(
+      jobPosts.map(async (job) => ({
+        ...job,
+        skill_ids: await this.getSkillIdsForJob(job.id),
+        certification_ids: await this.getCertificationIdsForJob(job.id),
+      })),
+    );
+
     return {
       message: 'Job posts fetched successfully',
-      data: jobPosts,
+      data: jobsWithRelations,
     };
   }
 
-  // ✅ Get a job post by ID
+  // ✅ Get a job post by ID (with skill_ids and certification_ids)
   async findOne(id: string) {
     const jobPost = await this.jobPostRepository.findOne({ where: { id } });
 
@@ -101,7 +105,11 @@ export class JobPostsService {
 
     return {
       message: 'Job post fetched successfully',
-      data: jobPost,
+      data: {
+        ...jobPost,
+        skill_ids: await this.getSkillIdsForJob(id),
+        certification_ids: await this.getCertificationIdsForJob(id),
+      },
     };
   }
 
@@ -115,15 +123,12 @@ export class JobPostsService {
 
     Object.assign(jobPost, updateJobPostDto);
 
-    // Convert arrays to comma-separated strings if provided
-    if (Array.isArray(updateJobPostDto.workMode)) {
-      jobPost.work_mode = updateJobPostDto.workMode.join(',');
+    if (updateJobPostDto.workMode) {
+      jobPost.work_mode = updateJobPostDto.workMode;
     }
 
     if (!jobPost.job_title || !jobPost.job_description) {
-      throw new BadRequestException(
-        'Job Title and Job Description are required.',
-      );
+      throw new BadRequestException('Job Title and Job Description are required.');
     }
 
     const updatedPost = await this.jobPostRepository.save(jobPost);
@@ -165,5 +170,17 @@ export class JobPostsService {
       message: 'Job post deleted successfully',
       data: deleted,
     };
+  }
+
+  // 🔁 Helper method to get skill IDs for a job post
+  private async getSkillIdsForJob(jobId: string): Promise<string[]> {
+    const skills = await this.jobPostSkillService.getSkillsByJob(jobId);
+    return skills.map((skill) => skill.skill_id);
+  }
+
+  // 🔁 Helper method to get certification IDs for a job post
+  private async getCertificationIdsForJob(jobId: string): Promise<string[]> {
+    const certs = await this.jobPostCertificationsService.getByJobPostId(jobId);
+    return certs.map((cert) => cert.certification_id);
   }
 }

@@ -5,6 +5,7 @@ import {
   IsNumber,
   IsDateString,
   IsArray,
+  IsIn,
 } from 'class-validator';
 
 export class UpdateJobPostDto {
@@ -65,9 +66,8 @@ export class UpdateJobPostDto {
   updatedBy?: string;
 
   @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  workMode?: string[];
+  @IsIn(['Remote', 'On-site', 'Hybrid'])
+  workMode?: 'Remote' | 'On-site' | 'Hybrid';
 
   // ✅ New fields from updated JobPost entity
   @IsString()

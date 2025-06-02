@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { RouterModule, Router } from '@angular/router'; // ✅ Added RouterModule here
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { AuthService } from '../../../services/auth.service';
@@ -10,7 +10,7 @@ import { RegisterRequest } from '../../models/register-request.model';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatSnackBarModule],
+  imports: [CommonModule, ReactiveFormsModule, MatSnackBarModule, RouterModule], // ✅ Include RouterModule
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
@@ -22,7 +22,8 @@ export class RegisterComponent {
     Candidate: 'c1bb8df5-2c01-11f0-b60f-80ce6232908a',
     Recruiter: 'c1bb84ef-2c01-11f0-b60f-80ce6232908a'
   };
-  private readonly defaultStatusId = 'b2fe49c1-2aeb-4a96-b661-e685366c4917';
+  private readonly defaultStatusId = '17d2f849-3a1a-11f0-8520-ac1f6bbcd360';
+
 
   constructor(
     private fb: FormBuilder,

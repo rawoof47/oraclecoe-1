@@ -1,0 +1,53 @@
+<div class="dropdown-container">
+  <!-- Skills Dropdown -->
+  <div class="dropdown">
+    <div class="dropdown-header" (click)="toggleSkillsDropdown()">
+      <span>Select Skills</span>
+      <span class="arrow">&#9662;</span>
+    </div>
+
+    <div class="dropdown-list" *ngIf="showSkillsDropdown">
+      <div *ngFor="let group of groupedSkills" class="dropdown-group">
+        <div class="group-title">{{ group.categoryName }}</div>
+
+        <div *ngFor="let skill of group.items" class="dropdown-item">
+          <input
+            type="checkbox"
+            [checked]="skill.selected"
+            (change)="onSkillChange(skill)"
+            [id]="'skill-' + skill.id"
+          />
+          <label [for]="'skill-' + skill.id">
+            {{ skill.name || 'Unnamed Skill' }}
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Certifications Dropdown -->
+  <div class="dropdown">
+    <div class="dropdown-header" (click)="toggleCertsDropdown()">
+      <span>Select Certifications</span>
+      <span class="arrow">&#9662;</span>
+    </div>
+
+    <div class="dropdown-list" *ngIf="showCertsDropdown">
+      <div *ngFor="let group of groupedCertifications" class="dropdown-group">
+        <div class="group-title">{{ group.categoryName }}</div>
+
+        <div *ngFor="let cert of group.items" class="dropdown-item">
+          <input
+            type="checkbox"
+            [checked]="cert.selected"
+            (change)="onCertChange(cert)"
+            [id]="'cert-' + cert.id"
+          />
+          <label [for]="'cert-' + cert.id">
+            {{ cert.name || 'Unnamed Certification' }}
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
