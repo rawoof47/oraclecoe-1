@@ -1,109 +1,152 @@
 <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="profile-form">
 
-  <!-- About Me -->
-  <div class="form-group">
-    <label for="about_me">About Me</label>
-    <textarea id="about_me" formControlName="about_me"></textarea>
+  <!-- About Me & Professional Summary side by side -->
+  <div class="form-row">
+    <div class="form-group col-6">
+      <label for="about_me">About Me</label>
+      <textarea id="about_me" formControlName="about_me" placeholder="Tell us about yourself"></textarea>
+    </div>
+
+    <div class="form-group col-6">
+      <label for="professional_summary">Professional Summary</label>
+      <textarea id="professional_summary" formControlName="professional_summary" placeholder="Summarize your professional profile"></textarea>
+    </div>
   </div>
 
-  <!-- Professional Summary -->
-  <div class="form-group">
-    <label for="professional_summary">Professional Summary</label>
-    <textarea id="professional_summary" formControlName="professional_summary"></textarea>
-  </div>
+  <!-- Social Links & Resume Link -->
+  <div class="form-row">
+    <div class="form-group col-6">
+      <label for="social_links">Social Links</label>
+      <textarea id="social_links" formControlName="social_links" placeholder="Comma-separated URLs"></textarea>
+    </div>
 
-  <!-- Social Links -->
-  <div class="form-group">
-    <label for="social_links">Social Links</label>
-    <textarea id="social_links" formControlName="social_links" placeholder="Comma-separated URLs"></textarea>
-  </div>
-
-  <!-- Resume Link -->
-  <div class="form-group">
-    <label for="resume_link">Resume Link</label>
-    <input id="resume_link" type="url" formControlName="resume_link" />
+    <div class="form-group col-6">
+      <label for="resume_link">Resume Link</label>
+      <input id="resume_link" type="url" formControlName="resume_link" placeholder="https://yourresume.link" />
+    </div>
   </div>
 
   <!-- Education -->
   <div class="form-group">
     <label for="education">Education</label>
-    <textarea id="education" formControlName="education"></textarea>
+    <textarea id="education" formControlName="education" placeholder="Your education details"></textarea>
   </div>
 
-  <!-- Experience Years -->
-  <div class="form-group">
-    <label for="experience_years">Experience (Years)</label>
-    <input id="experience_years" type="number" formControlName="experience_years" min="0" max="50" />
+  <!-- Experience Years & Notice Period side by side -->
+  <div class="form-row">
+    <div class="form-group col-3">
+      <label for="experience_years">Experience (Years)</label>
+      <input id="experience_years" type="number" formControlName="experience_years" min="0" max="50" placeholder="e.g. 5" />
+    </div>
+
+    <div class="form-group col-3">
+      <label for="notice_period">Notice Period</label>
+      <input id="notice_period" type="text" formControlName="notice_period" placeholder="e.g. 1 month" />
+    </div>
   </div>
 
-  <!-- Notice Period -->
+  <!-- Skills Section -->
   <div class="form-group">
-    <label for="notice_period">Notice Period</label>
-    <input id="notice_period" type="text" formControlName="notice_period" />
+    <label>Skills:</label>
+    <div class="multi-select-row">
+      <ng-select
+        [items]="functionalSkills"
+        bindLabel="name"
+        bindValue="id"
+        [multiple]="true"
+        [searchable]="true"
+        [closeOnSelect]="false"
+        formControlName="functionalSkills"
+        placeholder="Functional Skills"
+      ></ng-select>
+
+      <ng-select
+        [items]="technicalSkills"
+        bindLabel="name"
+        bindValue="id"
+        [multiple]="true"
+        [searchable]="true"
+        [closeOnSelect]="false"
+        formControlName="technicalSkills"
+        placeholder="Technical Skills"
+      ></ng-select>
+
+      <ng-select
+        [items]="oracleMiddlewareSkills"
+        bindLabel="name"
+        bindValue="id"
+        [multiple]="true"
+        [searchable]="true"
+        [closeOnSelect]="false"
+        formControlName="oracleMiddlewareSkills"
+        placeholder="Middleware & DB Skills"
+      ></ng-select>
+
+      <ng-select
+        [items]="reportingSkills"
+        bindLabel="name"
+        bindValue="id"
+        [multiple]="true"
+        [searchable]="true"
+        [closeOnSelect]="false"
+        formControlName="reportingSkills"
+        placeholder="Reporting Skills"
+      ></ng-select>
+    </div>
   </div>
 
-  <!-- Functional Skills -->
+  <!-- Certifications Section -->
   <div class="form-group">
-    <label class="form-label">Functional Skills:</label>
-    <ng-select
-      [items]="functionalSkills"
-      bindLabel="name"
-      bindValue="id"
-      [multiple]="true"
-      [searchable]="true"
-      [closeOnSelect]="false"
-      formControlName="functionalSkills"
-      placeholder="Select Functional Skills"
-      class="form-control ng-select-matching"
-    ></ng-select>
-  </div>
+    <label>Certifications:</label>
+    <div class="multi-select-row">
+      <ng-select
+        *ngIf="financialCertifications.length > 0"
+        [items]="financialCertifications"
+        bindLabel="certification_name"
+        bindValue="id"
+        [multiple]="true"
+        [searchable]="true"
+        [closeOnSelect]="false"
+        formControlName="financialCertifications"
+        placeholder="Financial"
+      ></ng-select>
 
-  <!-- Technical Skills -->
-  <div class="form-group">
-    <label class="form-label">Technical Skills:</label>
-    <ng-select
-      [items]="technicalSkills"
-      bindLabel="name"
-      bindValue="id"
-      [multiple]="true"
-      [searchable]="true"
-      [closeOnSelect]="false"
-      formControlName="technicalSkills"
-      placeholder="Select Technical Skills"
-      class="form-control ng-select-matching"
-    ></ng-select>
-  </div>
+      <ng-select
+        *ngIf="hcmCertifications.length > 0"
+        [items]="hcmCertifications"
+        bindLabel="certification_name"
+        bindValue="id"
+        [multiple]="true"
+        [searchable]="true"
+        [closeOnSelect]="false"
+        formControlName="hcmCertifications"
+        placeholder="HCM"
+      ></ng-select>
 
-  <!-- Oracle Middleware Skills -->
-  <div class="form-group">
-    <label class="form-label">Oracle Middleware & Database Skills:</label>
-    <ng-select
-      [items]="oracleMiddlewareSkills"
-      bindLabel="name"
-      bindValue="id"
-      [multiple]="true"
-      [searchable]="true"
-      [closeOnSelect]="false"
-      formControlName="oracleMiddlewareSkills"
-      placeholder="Select Middleware Skills"
-      class="form-control ng-select-matching"
-    ></ng-select>
-  </div>
+      <ng-select
+        *ngIf="scmCertifications.length > 0"
+        [items]="scmCertifications"
+        bindLabel="certification_name"
+        bindValue="id"
+        [multiple]="true"
+        [searchable]="true"
+        [closeOnSelect]="false"
+        formControlName="scmCertifications"
+        placeholder="SCM"
+      ></ng-select>
 
-  <!-- Reporting Skills -->
-  <div class="form-group">
-    <label class="form-label">Analytics & Reporting Skills:</label>
-    <ng-select
-      [items]="reportingSkills"
-      bindLabel="name"
-      bindValue="id"
-      [multiple]="true"
-      [searchable]="true"
-      [closeOnSelect]="false"
-      formControlName="reportingSkills"
-      placeholder="Select Reporting Skills"
-      class="form-control ng-select-matching"
-    ></ng-select>
+      <ng-select
+        *ngIf="cxCertifications.length > 0"
+        [items]="cxCertifications"
+        bindLabel="certification_name"
+        bindValue="id"
+        [multiple]="true"
+        [searchable]="true"
+        [closeOnSelect]="false"
+        formControlName="cxCertifications"
+        placeholder="CX"
+      ></ng-select>
+    </div>
   </div>
 
   <!-- Submit Button -->

@@ -77,7 +77,7 @@ export class PostAJobComponent implements OnInit {
       experienceMax: [null, [Validators.required, Validators.min(0)]],
       employmentType: [[], Validators.required], // updated for multi-select
       compensationRange: ['', Validators.required],
-      workMode: ['', Validators.required],
+      workMode: [null, Validators.required],
       jobDescription: ['', Validators.required],
       noticePeriod: ['', Validators.required],
       applicationDeadline: [''],

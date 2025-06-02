@@ -37,17 +37,31 @@ export class CandidateProfileComponent implements OnInit {
   oracleMiddlewareSkills: Skill[] = [];
   reportingSkills: Skill[] = [];
 
+  // Certification categories
+  financialCertifications: Skill[] = [];
+  hcmCertifications: Skill[] = [];
+  scmCertifications: Skill[] = [];
+  cxCertifications: Skill[] = [];
+
   // Category IDs (must match backend)
   private readonly SKILL_CATEGORIES = {
-    functional: '1',
-    technical: '2',
-    oracleMiddleware: '3',
-    reporting: '4'
+    functional: '612222a1-791a-4125-be8d-1d86808a37bf',
+    technical: 'b9677d69-356f-11f0-bd34-80ce6232908a',
+    oracleMiddleware: '0ec31fb0-3591-11f0-ae4b-80ce6232908a',
+    reporting: '843a8e1d-3591-11f0-ae4b-80ce6232908a'
+  };
+
+  private readonly CERTIFICATION_CATEGORIES = {
+    financialCertifications: 'ed7c50c7-36d3-11f0-bfce-80ce6232908a',
+    hcmCertifications: 'ed7c5c88-36d3-11f0-bfce-80ce6232908a',
+    scmCertifications: 'ed7c5da6-36d3-11f0-bfce-80ce6232908a',
+    cxCertifications: 'ed7c5e82-36d3-11f0-bfce-80ce6232908a'
   };
 
   ngOnInit(): void {
     this.initializeForm();
     this.loadSkillsByCategories();
+    this.loadCertificationsByCategories();
   }
 
   initializeForm(): void {
@@ -63,7 +77,12 @@ export class CandidateProfileComponent implements OnInit {
       functionalSkills: [[]],
       technicalSkills: [[]],
       oracleMiddlewareSkills: [[]],
-      reportingSkills: [[]]
+      reportingSkills: [[]],
+
+      financialCertifications: [[]],
+      hcmCertifications: [[]],
+      scmCertifications: [[]],
+      cxCertifications: [[]]
     });
   }
 
@@ -89,6 +108,31 @@ export class CandidateProfileComponent implements OnInit {
     });
   }
 
+  loadCertificationsByCategories(): void {
+    this.profileService.getCertificationsByCategory(this.CERTIFICATION_CATEGORIES.financialCertifications).subscribe({
+      next: (certs) => {
+        console.log('Financial Certifications:', certs); // 👈 Check this
+        this.financialCertifications = certs;
+      },
+      error: () => this.showSnackBar('Failed to load financial certifications.', 'snackbar-error')
+    });
+  
+    this.profileService.getCertificationsByCategory(this.CERTIFICATION_CATEGORIES.hcmCertifications).subscribe({
+      next: (certs) => (this.hcmCertifications = certs),
+      error: () => this.showSnackBar('Failed to load HCM certifications.', 'snackbar-error')
+    });
+  
+    this.profileService.getCertificationsByCategory(this.CERTIFICATION_CATEGORIES.scmCertifications).subscribe({
+      next: (certs) => (this.scmCertifications = certs),
+      error: () => this.showSnackBar('Failed to load SCM certifications.', 'snackbar-error')
+    });
+  
+    this.profileService.getCertificationsByCategory(this.CERTIFICATION_CATEGORIES.cxCertifications).subscribe({
+      next: (certs) => (this.cxCertifications = certs),
+      error: () => this.showSnackBar('Failed to load CX certifications.', 'snackbar-error')
+    });
+  }
+
   onSubmit(): void {
     if (this.profileForm.invalid) {
       this.showSnackBar('Please fill in all required fields correctly.', 'snackbar-warning');
@@ -104,11 +148,21 @@ export class CandidateProfileComponent implements OnInit {
     this.isSubmitting = true;
 
     const formValues = this.profileForm.value;
+
+    // Combine all selected skill IDs
     const allSkillIds: number[] = [
       ...formValues.functionalSkills.map((s: Skill) => s.id),
       ...formValues.technicalSkills.map((s: Skill) => s.id),
       ...formValues.oracleMiddlewareSkills.map((s: Skill) => s.id),
       ...formValues.reportingSkills.map((s: Skill) => s.id)
+    ];
+
+    // Combine all selected certification IDs
+    const allCertificationIds: number[] = [
+      ...formValues.financialCertifications.map((c: Skill) => c.id),
+      ...formValues.hcmCertifications.map((c: Skill) => c.id),
+      ...formValues.scmCertifications.map((c: Skill) => c.id),
+      ...formValues.cxCertifications.map((c: Skill) => c.id)
     ];
 
     const payload = {
@@ -119,7 +173,8 @@ export class CandidateProfileComponent implements OnInit {
       education: formValues.education,
       experience_years: formValues.experience_years,
       notice_period: formValues.notice_period,
-      skill_ids: allSkillIds
+      skill_ids: allSkillIds,
+      certification_ids: allCertificationIds
     };
 
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });

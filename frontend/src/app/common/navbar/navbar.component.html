@@ -35,6 +35,16 @@
             </a>
           </li>
 
+          <!-- Notifications Icon -->
+
+
+
+  <li class="nav-item d-flex align-items-center">
+    <a routerLink="/notifications" class="nav-link d-flex align-items-center">
+      <mat-icon style="font-size: 28px;">notifications</mat-icon>
+    </a>
+  </li>
+
           <!-- Profile Dropdown -->
           <li class="nav-item dropdown" *ngIf="isLoggedIn$ | async">
             <a class="profile-dropdown-toggle nav-link" href="javascript:void(0)" data-bs-toggle="dropdown" aria-expanded="false" aria-label="User profile menu">
@@ -43,9 +53,9 @@
               </div>
             </a>
             <ul class="dropdown-menu dropdown-menu-end profile-dropdown">
-              <li><a class="dropdown-item" routerLink="/profile"><mat-icon class="me-2">person</mat-icon>My Profile</a></li>
+              <li><a class="dropdown-item" routerLink="/dashboard"><mat-icon class="me-2">person</mat-icon>My Profile</a></li>
               <li><a class="dropdown-item" routerLink="/settings"><mat-icon class="me-2">settings</mat-icon>Account Settings</a></li>
-              <li><a class="dropdown-item" routerLink="/notifications"><mat-icon class="me-2">notifications</mat-icon>Notifications <span class="notification-badge">3</span></a></li>
+             
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item logout-item" (click)="logout()"><mat-icon class="me-2">logout</mat-icon>Log Out</a></li>
             </ul>
