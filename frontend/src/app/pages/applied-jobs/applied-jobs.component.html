@@ -36,127 +36,32 @@
           <div class="job-listings">
             <article
               *ngFor="let job of appliedJobPosts"
-              class="employer-item card mb-4 border-0 shadow-hover"
+              class="card mb-3 border-0 shadow-sm"
             >
               <div class="card-body p-4">
-                <a
+                <!-- Wrap content in routerLink -->
+                <a 
                   [routerLink]="['/job-details', job.id]"
-                  class="job-link d-block text-decoration-none"
+                  class="d-block text-decoration-none text-body"
                 >
-                  <!-- Title and Logo -->
-                  <div class="d-flex align-items-start mb-3">
-  <div class="employer-logo mr-3 flex-shrink-0">
-    <img
-  src="/src/assets/img/home-two/cat7.png"
-  alt="{{ job.job_title }} logo"
-  class="job-img rounded"
-/>
-
-  </div>
+                  <div class="d-flex justify-content-between align-items-start">
+                    <!-- Job Info -->
                     <div>
-                      <h3 class="job-title mb-1">{{ job.job_title }}</h3>
+                      <h3 class="h5 font-weight-bold mb-1">{{ job.job_title }}</h3>
                       <div class="company-name text-muted mb-2">
-                        Company name not specified
+                        Company name
                       </div>
-                      <!-- Meta -->
-                      <ul class="job-meta list-inline mb-3">
-                        <li class="list-inline-item mr-3">
-                          <i class="fas fa-map-marker-alt text-primary mr-1"></i>
-                          {{ job.location || 'Location not specified' }}
-                        </li>
-                        <li class="list-inline-item">
-                          <i class="far fa-clock text-primary mr-1"></i>
-                          Posted {{ formatPostedDate(job.created_at) }}
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <!-- Description -->
-                  <div class="job-description mb-3 text-muted">
-                    {{
-                      job.job_description
-                        ? (job.job_description.length > 120
-                          ? (job.job_description | slice:0:120) + '...'
-                          : job.job_description)
-                        : 'No description provided.'
-                    }}
-                  </div>
-
-                  <!-- Status Indicator -->
-                  <div class="application-status mb-3">
-                    <span class="badge badge-success badge-pill">
-                      <i class="fas fa-check-circle mr-1"></i> Application Submitted
-                    </span>
-                  </div>
-
-                  <!-- Extra Info -->
-                  <div class="job-extra-info mb-3">
-                    <div class="row">
-                      <div class="col-md-6 mb-2 mb-md-0">
-                        <div class="detail-item">
-                          <span class="detail-label">Experience</span>
-                          <span class="detail-value">
-                            {{ job.experience_min || '0' }} - {{ job.experience_max || 'N/A' }} years
-                          </span>
-                        </div>
-                      </div>
-                      <div class="col-md-6 mb-2 mb-md-0">
-                        <div class="detail-item">
-                          <span class="detail-label">Compensation</span>
-                          <span class="detail-value">
-                            {{ job.compensation_range || 'Not specified' }}
-                          </span>
-                        </div>
-                      </div>
-                      <div class="col-md-6 mb-2 mb-md-0">
-                        <div class="detail-item">
-                          <span class="detail-label">Work Mode</span>
-                          <span class="detail-value">
-                            {{ job.work_mode || 'Not specified' }}
-                          </span>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="detail-item">
-                          <span class="detail-label">Deadline</span>
-                          <span class="detail-value">
-                            {{
-                              job.application_deadline
-                                ? (job.application_deadline | date: 'mediumDate')
-                                : 'N/A'
-                            }}
-                          </span>
-                        </div>
+                      <div class="text-muted small">
+                        Applied on {{ job.created_at | date: 'mediumDate' }}
                       </div>
                     </div>
-                  </div>
 
-                  <!-- Tags -->
-                  <div class="job-tags">
-                    <span
-                      *ngIf="job.modules_required"
-                      class="badge badge-primary badge-pill mr-2 mb-1"
-                    >
-                      <i class="fas fa-cube mr-1"></i>
-                      {{ job.modules_required }}
-                    </span>
-                    <span class="badge badge-secondary badge-pill mb-1">
-                      <i class="fas fa-briefcase mr-1"></i>
-                      {{ job.employment_type || 'N/A' }}
+                    <!-- Status Badge -->
+                    <span class="badge badge-success badge-pill align-self-start">
+                      <i class="fas fa-check-circle mr-1"></i> Applied
                     </span>
                   </div>
                 </a>
-
-                <!-- Applied Status Button -->
-                <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
-                  <div class="application-date text-muted small">
-                    Applied on {{ job.created_at | date: 'mediumDate' }}
-                  </div>
-                  <button class="btn btn-success btn-sm" disabled>
-                    <i class="fas fa-check-circle mr-1"></i> Applied
-                  </button>
-                </div>
               </div>
             </article>
           </div>
