@@ -3,7 +3,7 @@
     background-repeat: no-repeat;
     background-size: cover;
     position: relative;
-    height: 500px;
+    height: 300px;
     z-index: 1;
 
     &:before {
@@ -66,7 +66,7 @@
         right: 0;
         content: '';
         z-index: -1;
-        height: 115px;
+        height: 0;
         position: absolute;
         background-color: var(--white-color);
     }
