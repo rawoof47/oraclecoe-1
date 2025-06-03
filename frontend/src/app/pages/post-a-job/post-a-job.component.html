@@ -297,19 +297,34 @@
 
 
           <!-- Compensation Range -->
-          <div class="col-lg-6 col-md-12">
-            <div class="form-inline-group">
-              <label class="form-label">Compensation Range:</label>
-              <select formControlName="compensationRange" class="form-control">
-                <option value="">Select Compensation Range</option>
-                <option value="<500000">&lt; ₹500,000</option>
-                <option value="500000-1000000">₹500,000 - ₹1,000,000</option>
-                <option value="1000000-1500000">₹1,000,000 - ₹1,500,000</option>
-                <option value="1500000-2000000">₹1,500,000 - ₹2,000,000</option>
-                <option value=">2000000">&gt; ₹2,000,000</option>
-              </select>
-            </div>
-          </div>
+<div class="col-lg-6 col-md-12">
+  <div class="form-inline-group">
+    <label class="form-label">Compensation Range:</label>
+    <select formControlName="compensationRange" class="form-control">
+      <option value="">Select Compensation Range</option>
+      <option value="<500000">&lt; ₹500,000</option>
+      <option value="500000-1000000">₹500,000 - ₹1,000,000</option>
+      <option value="1000000-1500000">₹1,000,000 - ₹1,500,000</option>
+      <option value="1500000-2000000">₹1,500,000 - ₹2,000,000</option>
+      <option value=">2000000">&gt; ₹2,000,000</option>
+    </select>
+    
+    <!-- Display selected value formatted with currency + commas -->
+    <div class="mt-2 text-muted" *ngIf="jobForm?.get('compensationRange')?.value as comp">
+      Selected: 
+      <ng-container *ngIf="comp.startsWith('<')">
+        &lt; ₹{{ comp.slice(1) | number:'1.0-0' }}
+      </ng-container>
+      <ng-container *ngIf="comp.startsWith('>')">
+        &gt; ₹{{ comp.slice(1) | number:'1.0-0' }}
+      </ng-container>
+      <ng-container *ngIf="comp.includes('-')">
+        ₹{{ comp.split('-')[0] | number:'1.0-0' }} - ₹{{ comp.split('-')[1] | number:'1.0-0' }}
+      </ng-container>
+    </div>
+  </div>
+</div>
+
 
           <!-- Job Description -->
           <div class="col-lg-12 col-md-12">
