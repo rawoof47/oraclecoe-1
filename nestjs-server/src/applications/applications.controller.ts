@@ -111,6 +111,15 @@ export class ApplicationsController {
     return this.applicationsService.getAppliedJobIdsByCandidate(candidateId);
   }
 
+  // ✅ New endpoint using userId directly
+  @Get('by-user/:userId')
+  @HttpCode(HttpStatus.OK)
+  async getAppliedJobsByUser(
+    @Param('userId') userId: string,
+  ): Promise<string[]> {
+    return this.applicationsService.getAppliedJobIdsByUser(userId);
+  }
+
   @Put(':id')
   async update(
     @Param('id') id: string,

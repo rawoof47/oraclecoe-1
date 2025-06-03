@@ -28,10 +28,10 @@
               <div class="right">
                 <!-- UPDATED BUTTON BLOCK -->
                 <button class="cmn-btn"
-        [disabled]="hasApplied"
-        (click)="applyToJob()">
-  {{ hasApplied ? 'Already Applied' : (userId ? 'Apply Now' : 'Login to Apply') }}
-</button>
+                        [disabled]="hasApplied"
+                        (click)="applyToJob()">
+                  {{ hasApplied ? 'Already Applied' : (userId ? 'Apply Now' : 'Login to Apply') }}
+                </button>
 
                 <div *ngIf="applyStatusMessage" class="text-muted mt-2">
                   {{ applyStatusMessage }}
@@ -138,7 +138,7 @@
                 <li *ngIf="jobPost.compensation_range">
                   <img src="img/job-details-icon.png" alt="Compensation Icon" />
                   <h4>Compensation Range</h4>
-                  <span>{{ jobPost.compensation_range }}</span>
+                  <span>{{ jobPost.compensation_range | compensationFormat }}</span>
                 </li>
 
                 <li *ngIf="jobPost.notice_period">

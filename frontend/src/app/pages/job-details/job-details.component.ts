@@ -10,6 +10,9 @@ import { JobPostService } from '../../services/job-post.service';
 import { JobPost } from '../../auth/models/job-post.model';
 import { AuthStateService } from '../../services/auth-state.service';
 
+// ✅ Import the pipe from its shared location
+import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.pipe';
+
 @Component({
   selector: 'app-job-details',
   standalone: true,
@@ -20,7 +23,8 @@ import { AuthStateService } from '../../services/auth-state.service';
     CarouselModule,
     NavbarComponent,
     FooterComponent,
-    BackToTopComponent
+    BackToTopComponent,
+    CompensationFormatPipe // ✅ Include in component imports
   ],
   templateUrl: './job-details.component.html',
   styleUrls: ['./job-details.component.scss']
@@ -49,7 +53,6 @@ export class JobDetailsComponent implements OnInit {
   ngOnInit(): void {
     console.log('[JobDetailsComponent] ✅ ngOnInit called');
 
-    // ✅ Synchronously get user ID
     this.userId = this.authState.getCurrentUserId();
 
     this.route.paramMap.subscribe(params => {
@@ -128,7 +131,6 @@ export class JobDetailsComponent implements OnInit {
   applyToJob(): void {
     if (this.hasApplied) return;
 
-    // ✅ Check if user is logged in
     if (!this.userId) {
       alert('Please log in to apply for this job');
       this.router.navigate(['/login'], {
