@@ -9,4 +9,6 @@ export interface Application {
   created_at: string;
   job_post?: JobPost;  // Make optional
   withdrawal_reason?: string;
+  updated_at?: string; 
+  
 }

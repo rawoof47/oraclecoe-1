@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { of, catchError, map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms'; // ✅ Required for ngModel
 
 // Custom UI Components
 import { NavbarComponent } from '../../common/navbar/navbar.component';
@@ -19,11 +20,12 @@ import { ApplicationStatusService } from '../../services/application-status.serv
 import { JobPost } from '../../auth/models/job-post.model';
 import { Application } from '../../auth/models/application.model';
 
-// Extended model to use in the component
 export interface AppliedJobPost extends JobPost {
   application_id: string;
   withdrawn: boolean;
-  withdrawal_reason?: string; // ✅ Add this if you want to display reason later
+  withdrawal_reason?: string;
+  applied_date: string;
+  withdrawn_date?: string;
 }
 
 @Component({
@@ -32,10 +34,11 @@ export interface AppliedJobPost extends JobPost {
   imports: [
     CommonModule,
     RouterModule,
+    FormsModule, // ✅ Required to use [(ngModel)] in the template
     NavbarComponent,
     FooterComponent,
     PageBannerComponent,
-    BackToTopComponent
+    BackToTopComponent,
   ],
   templateUrl: './applied-jobs.component.html',
   styleUrls: ['./applied-jobs.component.scss']
@@ -44,6 +47,14 @@ export class AppliedJobsComponent implements OnInit {
   appliedJobPosts: AppliedJobPost[] = [];
   loading = true;
   error: string | null = null;
+
+  // Modal handling properties
+  showWithdrawModal = false;
+  showReasonModal = false;
+  currentApplicationId: string | null = null;
+  currentJobId: string | null = null;
+  currentWithdrawalReason = '';
+  viewReasonText = '';
 
   constructor(
     private jobPostService: JobPostService,
@@ -85,7 +96,10 @@ export class AppliedJobsComponent implements OnInit {
               ...(app.job_post as JobPost),
               application_id: app.id,
               withdrawn: app.withdrawn,
-              withdrawal_reason: app.withdrawal_reason // ✅ Map reason if present
+              withdrawal_reason: app.withdrawal_reason,
+              applied_date: app.created_at,
+withdrawn_date: app.updated_at
+
             };
             return job;
           })
@@ -119,42 +133,62 @@ export class AppliedJobsComponent implements OnInit {
   }
 
   formatPostedDate(dateStr?: string): string {
-    if (!dateStr) return 'Unknown date';
-
-    const postedDate = new Date(dateStr);
-    const now = new Date();
-    const diff = Math.floor((+now - +postedDate) / (1000 * 60 * 60 * 24));
-
-    if (diff === 0) return 'Today';
-    if (diff === 1) return '1 day ago';
-    if (diff < 30) return `${diff} days ago`;
-
-    const months = Math.floor(diff / 30);
-    return months === 1 ? '1 month ago' : `${months} months ago`;
+    if (!dateStr) return 'N/A';
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   }
 
-  // ✅ Updated to ask for withdrawal reason
-  withdrawApplication(applicationId: string, jobId: string): void {
+  // ✅ Show custom modal to withdraw application
+  openWithdrawModal(applicationId: string, jobId: string): void {
+    this.currentApplicationId = applicationId;
+    this.currentJobId = jobId;
+    this.currentWithdrawalReason = '';
+    this.showWithdrawModal = true;
+  }
+
+  openReasonModal(reason: string): void {
+    this.viewReasonText = reason;
+    this.showReasonModal = true;
+  }
+
+  closeModals(): void {
+    this.showWithdrawModal = false;
+    this.showReasonModal = false;
+    this.currentApplicationId = null;
+    this.currentJobId = null;
+    this.currentWithdrawalReason = '';
+    this.viewReasonText = '';
+  }
+
+  submitWithdrawal(): void {
+    if (!this.currentApplicationId || !this.currentJobId || !this.currentWithdrawalReason.trim()) {
+      return;
+    }
+
     const userId = this.authStateService.getCurrentUserId();
     if (!userId) {
-      console.warn('[withdrawApplication] No user ID found');
+      console.warn('[submitWithdrawal] No user ID found');
       return;
     }
 
-    const reason = prompt('Please provide a reason for withdrawing your application:');
-    if (!reason || !reason.trim()) {
-      console.warn('[withdrawApplication] Reason is required');
-      return;
-    }
-
-    this.jobPostService.withdrawApplication(applicationId, userId, reason).subscribe({
+    this.jobPostService.withdrawApplication(
+      this.currentApplicationId,
+      userId,
+      this.currentWithdrawalReason
+    ).subscribe({
       next: () => {
-        console.log('[withdrawApplication] Successfully withdrew application:', applicationId);
-        this.applicationStatusService.updateStatus(jobId, false);
+        console.log('[submitWithdrawal] Successfully withdrew application:', this.currentApplicationId);
+        this.applicationStatusService.updateStatus(this.currentJobId!, false);
+        this.closeModals();
         this.refreshAppliedJobs();
       },
       error: (err) => {
-        console.error('[withdrawApplication] Error withdrawing application:', err);
+        console.error('[submitWithdrawal] Error withdrawing application:', err);
+        this.closeModals();
       }
     });
   }
