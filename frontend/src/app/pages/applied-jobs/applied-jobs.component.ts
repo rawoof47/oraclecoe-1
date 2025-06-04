@@ -97,10 +97,15 @@ export class AppliedJobsComponent implements OnInit {
               application_id: app.id,
               withdrawn: app.withdrawn,
               withdrawal_reason: app.withdrawal_reason,
-              applied_date: app.created_at,
-withdrawn_date: app.updated_at
-
+              applied_date: app.applied_on,
+              withdrawn_date: app.updated_on
             };
+
+            // ✅ Log date parsing for debugging
+            console.log(`[Mapping] Job ID: ${job.id}`);
+            console.log(`[Mapping] applied_date raw: ${job.applied_date}, parsed:`, new Date(job.applied_date));
+            console.log(`[Mapping] withdrawn_date raw: ${job.withdrawn_date}, parsed:`, job.withdrawn_date ? new Date(job.withdrawn_date) : 'N/A');
+
             return job;
           })
           .filter((job): job is AppliedJobPost => job !== null);
@@ -114,6 +119,7 @@ withdrawn_date: app.updated_at
       })
     ).subscribe({
       next: (enrichedJobs) => {
+        console.log('[loadAppliedJobs] Enriched Jobs:', enrichedJobs);
         this.appliedJobPosts = enrichedJobs;
         this.loading = false;
       },
@@ -135,6 +141,10 @@ withdrawn_date: app.updated_at
   formatPostedDate(dateStr?: string): string {
     if (!dateStr) return 'N/A';
     const date = new Date(dateStr);
+    if (isNaN(date.getTime())) {
+      console.warn('[formatPostedDate] Invalid date string:', dateStr);
+      return 'Invalid date';
+    }
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
