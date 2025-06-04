@@ -8,8 +8,8 @@
 
 <!-- Page Content -->
 <div *ngIf="jobPost">
-  <!-- Page Banner -->
-  <div class="page-title-area two" style="background-image: url(img/page-title-bg.jpg);">
+  <!-- Banner -->
+  <div class="page-title-area two" style="background-image: url('img/page-title-bg.jpg');">
     <div class="d-table">
       <div class="d-table-cell">
         <div class="container">
@@ -26,21 +26,21 @@
             </div>
             <div class="col-lg-4 col-md-12">
               <div class="right">
-                <!-- UPDATED BUTTON BLOCK -->
+                <!-- Apply Button -->
                 <button class="cmn-btn"
                         [disabled]="hasApplied"
                         (click)="applyToJob()">
                   {{ hasApplied ? 'Already Applied' : (userId ? 'Apply Now' : 'Login to Apply') }}
                 </button>
-
                 <div *ngIf="applyStatusMessage" class="text-muted mt-2">
                   {{ applyStatusMessage }}
                 </div>
 
+                <!-- Actions -->
                 <ul>
-                  <li><a role="button"><i class="bx bx-heart"></i> Save</a></li>
-                  <li><a role="button"><i class="bx bx-share-alt"></i> Share</a></li>
-                  <li><a role="button"><i class="bx bxs-report"></i> Report</a></li>
+                  <li><a role="button" aria-label="Save job"><i class="bx bx-heart"></i> Save</a></li>
+                  <li><a role="button" aria-label="Share job"><i class="bx bx-share-alt"></i> Share</a></li>
+                  <li><a role="button" aria-label="Report job"><i class="bx bxs-report"></i> Report</a></li>
                 </ul>
               </div>
             </div>
@@ -50,14 +50,13 @@
     </div>
   </div>
 
-  <!-- Job Details -->
+  <!-- Job Details Section -->
   <div class="job-details-area ptb-100">
     <div class="container">
       <div class="row">
-        <!-- Main Description -->
+        <!-- Main Content -->
         <div class="col-lg-8 col-md-12">
           <div class="details-item">
-
             <div class="details-inner" *ngIf="jobPost.job_description">
               <h3>Job Description:</h3>
               <p>{{ jobPost.job_description }}</p>
@@ -83,78 +82,78 @@
               <p>{{ jobPost.how_to_apply }}</p>
             </div>
 
-            <!-- Skills Section -->
+            <!-- Skills -->
             <div class="details-inner" *ngIf="jobSkills?.length">
               <h3>Required Skills:</h3>
               <div class="skills-container">
                 <div *ngFor="let item of jobSkills" class="skill-item">
-                  {{ item.skill.name }}
+                  {{ item.skill?.name }}
                 </div>
               </div>
             </div>
 
-            <!-- Certifications Section -->
+            <!-- Certifications -->
             <div class="details-inner" *ngIf="jobCertifications?.length">
               <h3>Required Certifications:</h3>
               <div class="certifications-container">
                 <div *ngFor="let item of jobCertifications" class="certification-item">
-                  {{ item.certification.certification_name }}
+                  {{ item.certification?.certification_name }}
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Sidebar -->
+        <!-- Sidebar Info -->
         <div class="col-lg-4 col-md-12">
           <div class="widget-area">
             <div class="information widget-item">
               <h3>Job Information</h3>
               <ul>
                 <li *ngIf="jobPost.location">
-                  <img src="img/job-details-icon.png" alt="Location Icon" />
+                  <img src="img/job-details-icon.png" alt="Location" />
                   <h4>Location</h4>
                   <span>{{ jobPost.location }}</span>
                 </li>
 
                 <li *ngIf="jobPost.certifications_required">
-                  <img src="img/job-details-icon.png" alt="Certification Icon" />
+                  <img src="img/job-details-icon.png" alt="Certification" />
                   <h4>Certifications</h4>
                   <span>{{ jobPost.certifications_required }}</span>
                 </li>
 
                 <li *ngIf="jobPost.experience_min !== undefined && jobPost.experience_max !== undefined">
-                  <img src="img/job-details-icon.png" alt="Experience Icon" />
+                  <img src="img/job-details-icon.png" alt="Experience" />
                   <h4>Experience</h4>
                   <span>{{ jobPost.experience_min }} - {{ jobPost.experience_max }} years</span>
                 </li>
 
                 <li *ngIf="jobPost.employment_type">
-                  <img src="img/job-details-icon.png" alt="Employment Icon" />
+                  <img src="img/job-details-icon.png" alt="Employment Type" />
                   <h4>Employment Type</h4>
                   <span>{{ jobPost.employment_type }}</span>
                 </li>
 
                 <li *ngIf="jobPost.compensation_range">
-                  <img src="img/job-details-icon.png" alt="Compensation Icon" />
+                  <img src="img/job-details-icon.png" alt="Compensation" />
                   <h4>Compensation Range</h4>
                   <span>{{ jobPost.compensation_range | compensationFormat }}</span>
                 </li>
 
                 <li *ngIf="jobPost.notice_period">
-                  <img src="img/job-details-icon.png" alt="Notice Icon" />
+                  <img src="img/job-details-icon.png" alt="Notice Period" />
                   <h4>Notice Period</h4>
                   <span>{{ jobPost.notice_period }}</span>
                 </li>
 
                 <li *ngIf="jobPost.work_mode">
-                  <img src="img/job-details-icon.png" alt="Work Mode Icon" />
+                  <img src="img/job-details-icon.png" alt="Work Mode" />
                   <h4>Work Mode</h4>
                   <span>{{ jobPost.work_mode }}</span>
                 </li>
 
                 <li *ngIf="jobPost.application_deadline">
-                  <img src="img/job-details-icon.png" alt="Deadline Icon" />
+                  <img src="img/job-details-icon.png" alt="Deadline" />
                   <h4>Deadline</h4>
                   <span>{{ jobPost.application_deadline | date: 'mediumDate' }}</span>
                 </li>
@@ -166,12 +165,12 @@
     </div>
   </div>
 
-  <!-- Video Popup Overlay -->
+  <!-- Optional Video Popup -->
   <div class="popup-video" *ngIf="isOpen">
     <div class="overlay" (click)="closePopup()"></div>
     <div class="video-content">
       <button class="close-btn" (click)="closePopup()">X</button>
-      <!-- Optional embedded video iframe goes here -->
+      <!-- <iframe src="..." allowfullscreen></iframe> -->
     </div>
   </div>
 </div>

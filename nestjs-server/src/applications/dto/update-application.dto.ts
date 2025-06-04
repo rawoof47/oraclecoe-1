@@ -2,7 +2,7 @@
 
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateApplicationDto } from './create-application.dto';
-import { IsUUID, IsOptional, IsBoolean } from 'class-validator';
+import { IsUUID, IsOptional, IsBoolean, IsString, MaxLength } from 'class-validator';
 
 /**
  * DTO for updating an existing job application.
@@ -36,6 +36,14 @@ export class UpdateApplicationDto extends PartialType(CreateApplicationDto) {
   @IsOptional()
   @IsBoolean()
   withdrawn?: boolean;
+
+  /**
+   * Reason for withdrawing the application (optional).
+   */
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  withdrawal_reason?: string;
 
   /**
    * UUID of the user who updated the record (optional).

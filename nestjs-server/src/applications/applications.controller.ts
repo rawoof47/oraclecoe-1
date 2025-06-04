@@ -35,6 +35,7 @@ export class ApplicationsController {
     return this.applicationsService.create(createApplicationDto);
   }
 
+  // ✅ Updated to handle reapplication
   @Post('by-user')
   @HttpCode(HttpStatus.CREATED)
   async createByUser(
@@ -48,22 +49,16 @@ export class ApplicationsController {
       throw new NotFoundException('Candidate profile not found for the user');
     }
 
-    const dto: CreateApplicationDto = {
-      candidate_id: candidate.id,
+    return this.applicationsService.createFromUser({
+      user_id: payload.user_id,
       job_id: payload.job_id,
-      application_status_id: '12c7f28f-3a21-11f0-8520-ac1f6bbcd360',
-      withdrawn: false,
-      created_by: payload.user_id,
-      updated_by: payload.user_id,
-    };
-
-    return this.applicationsService.create(dto);
+    });
   }
 
-  @Post('check-by-user-and-job') // ✅ NEW ENDPOINT
+  @Post('check-by-user-and-job')
   @HttpCode(HttpStatus.OK)
   async checkByUserAndJob(
-    @Body() payload: { user_id: string; job_id: string },
+    @Body() payload: { user_id: string; job_id: string; include_withdrawn?: boolean },
   ): Promise<{ applied: boolean }> {
     const candidate = await this.candidateProfileRepository.findOne({
       where: { user_id: payload.user_id },
@@ -78,7 +73,10 @@ export class ApplicationsController {
       payload.job_id,
     );
 
-    return { applied: !!application && !application.withdrawn };
+    return {
+      applied: !!application &&
+        (payload.include_withdrawn ? true : !application.withdrawn),
+    };
   }
 
   @Get()
@@ -132,21 +130,22 @@ export class ApplicationsController {
     await this.applicationsService.remove(id);
   }
 
-  // ✅ NEW — Withdraw endpoint
+  // ✅ Withdraw application with reason
   @Put('withdraw/:id')
   @HttpCode(HttpStatus.OK)
   async withdraw(
     @Param('id') id: string,
-    @Body() body: { user_id: string },
+    @Body() body: { user_id: string; reason?: string },
   ): Promise<Application> {
-    return this.applicationsService.withdraw(id, body.user_id);
+    return this.applicationsService.withdrawWithReason(id, body.user_id, body.reason);
   }
-  // ✅ Add this NEW endpoint to return full applications
-@Get('by-user-full/:userId')
-@HttpCode(HttpStatus.OK)
-async getApplicationsByUserFull(
-  @Param('userId') userId: string,
-): Promise<Application[]> {
-  return this.applicationsService.findByUser(userId);
-}
+
+  // ✅ Get all full applications for a user
+  @Get('by-user-full/:userId')
+  @HttpCode(HttpStatus.OK)
+  async getApplicationsByUserFull(
+    @Param('userId') userId: string,
+  ): Promise<Application[]> {
+    return this.applicationsService.findByUser(userId);
+  }
 }

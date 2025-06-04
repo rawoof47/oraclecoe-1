@@ -41,6 +41,9 @@ export class Application {
   @Column({ type: 'tinyint', width: 1, default: () => '0' })
   withdrawn: boolean;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  withdrawal_reason: string | null;
+
   @Column({ type: 'char', length: 36, nullable: true })
   created_by: string | null;
 

@@ -51,10 +51,11 @@
                     </a>
 
                     <!-- Withdraw Button -->
-    <button *ngIf="!job.withdrawn" 
-            (click)="withdrawApplication(job.application_id)"
-            class="btn btn-outline-danger btn-sm mt-2">
-      <i class="fas fa-times mr-1"></i> Withdraw Application
+    <button 
+      *ngIf="!job.withdrawn" 
+      class="btn btn-danger" 
+      (click)="withdrawApplication(job.application_id, job.id!)">
+      Withdraw Application
     </button>
     
     <!-- Withdrawn label -->
@@ -62,6 +63,12 @@
       <i class="fas fa-ban mr-1"></i> Withdrawn
     </span>
   </div>
+  
+<!-- ✅ Withdrawal Reason -->
+<div *ngIf="job.withdrawn && job.withdrawal_reason" class="mt-2 text-muted small">
+  <strong>Reason:</strong> {{ job.withdrawal_reason }}
+</div>
+
   <!-- Status Badge - Updated to show proper status -->
   <span class="badge badge-pill align-self-start"
         [ngClass]="{

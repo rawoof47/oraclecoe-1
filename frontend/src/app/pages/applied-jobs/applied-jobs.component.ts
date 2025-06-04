@@ -13,6 +13,7 @@ import { BackToTopComponent } from '../../common/back-to-top/back-to-top.compone
 // Services
 import { JobPostService } from '../../services/job-post.service';
 import { AuthStateService } from '../../services/auth-state.service';
+import { ApplicationStatusService } from '../../services/application-status.service';
 
 // Models
 import { JobPost } from '../../auth/models/job-post.model';
@@ -22,7 +23,7 @@ import { Application } from '../../auth/models/application.model';
 export interface AppliedJobPost extends JobPost {
   application_id: string;
   withdrawn: boolean;
-  
+  withdrawal_reason?: string; // ✅ Add this if you want to display reason later
 }
 
 @Component({
@@ -47,7 +48,8 @@ export class AppliedJobsComponent implements OnInit {
   constructor(
     private jobPostService: JobPostService,
     private authStateService: AuthStateService,
-    private http: HttpClient
+    private http: HttpClient,
+    private applicationStatusService: ApplicationStatusService
   ) {}
 
   ngOnInit(): void {
@@ -74,23 +76,21 @@ export class AppliedJobsComponent implements OnInit {
         const enriched: AppliedJobPost[] = applications
           .filter(app => app.job_post)
           .map(app => {
-  console.log('[Application] app.id:', app.id, 'job_post:', app.job_post);
-  if (!app.job_post) {
-    console.warn('[Skipped] Application has no job_post:', app.id);
-    return null;
-  }
+            if (!app.job_post) {
+              console.warn('[Skipped] Application has no job_post:', app.id);
+              return null;
+            }
 
-  const job: AppliedJobPost = {
-    ...(app.job_post as JobPost),
-    application_id: app.id,
-    withdrawn: app.withdrawn
-  };
-  console.log('[Mapped] Enriched job:', job);
-  return job;
-}).filter((job): job is AppliedJobPost => job !== null)
+            const job: AppliedJobPost = {
+              ...(app.job_post as JobPost),
+              application_id: app.id,
+              withdrawn: app.withdrawn,
+              withdrawal_reason: app.withdrawal_reason // ✅ Map reason if present
+            };
+            return job;
+          })
+          .filter((job): job is AppliedJobPost => job !== null);
 
-
-        console.log('[loadAppliedJobs] Enriched job posts:', enriched);
         return enriched;
       }),
       catchError(err => {
@@ -102,7 +102,6 @@ export class AppliedJobsComponent implements OnInit {
       next: (enrichedJobs) => {
         this.appliedJobPosts = enrichedJobs;
         this.loading = false;
-        console.log('[loadAppliedJobs] Final applied job posts:', this.appliedJobPosts);
       },
       error: (err) => {
         console.error('[loadAppliedJobs] Unexpected error loading jobs:', err);
@@ -113,7 +112,6 @@ export class AppliedJobsComponent implements OnInit {
   }
 
   refreshAppliedJobs(): void {
-    console.log('[refreshAppliedJobs] Refreshing jobs...');
     this.loading = true;
     this.error = null;
     this.appliedJobPosts = [];
@@ -121,7 +119,6 @@ export class AppliedJobsComponent implements OnInit {
   }
 
   formatPostedDate(dateStr?: string): string {
-    console.log('[formatPostedDate] Input date:', dateStr);
     if (!dateStr) return 'Unknown date';
 
     const postedDate = new Date(dateStr);
@@ -136,17 +133,24 @@ export class AppliedJobsComponent implements OnInit {
     return months === 1 ? '1 month ago' : `${months} months ago`;
   }
 
-  withdrawApplication(applicationId: string): void {
+  // ✅ Updated to ask for withdrawal reason
+  withdrawApplication(applicationId: string, jobId: string): void {
     const userId = this.authStateService.getCurrentUserId();
     if (!userId) {
       console.warn('[withdrawApplication] No user ID found');
       return;
     }
 
-    console.log('[withdrawApplication] Withdrawing application ID:', applicationId);
-    this.jobPostService.withdrawApplication(applicationId, userId).subscribe({
+    const reason = prompt('Please provide a reason for withdrawing your application:');
+    if (!reason || !reason.trim()) {
+      console.warn('[withdrawApplication] Reason is required');
+      return;
+    }
+
+    this.jobPostService.withdrawApplication(applicationId, userId, reason).subscribe({
       next: () => {
         console.log('[withdrawApplication] Successfully withdrew application:', applicationId);
+        this.applicationStatusService.updateStatus(jobId, false);
         this.refreshAppliedJobs();
       },
       error: (err) => {

@@ -86,10 +86,17 @@ export class JobPostService {
     return this.http.get<any>(`${this.jobPostCertificationsUrl}/${jobPostId}`);
   }
 
+  /**
+   * ✅ Updated to include include_withdrawn flag
+   */
   checkIfUserApplied(userId: string, jobId: string): Observable<{ applied: boolean }> {
     return this.http.post<{ applied: boolean }>(
       `${this.applicationUrl}/check-by-user-and-job`,
-      { user_id: userId, job_id: jobId }
+      {
+        user_id: userId,
+        job_id: jobId,
+        include_withdrawn: false, // 👈 Ensures withdrawn apps don't count
+      }
     );
   }
 
@@ -121,9 +128,10 @@ export class JobPostService {
   /**
    * 🆕 Withdraw a job application
    */
-  withdrawApplication(applicationId: string, userId: string): Observable<any> {
+  withdrawApplication(applicationId: string, userId: string, reason: string): Observable<any> {
     return this.http.put(`${this.applicationUrl}/withdraw/${applicationId}`, {
       user_id: userId,
+      reason: reason,
     });
   }
 
