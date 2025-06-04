@@ -50,31 +50,33 @@
                       <div class="text-muted small">Job ID: {{ job.id }}</div>
                     </a>
 
-                    <!-- Withdraw Button (only if not withdrawn) -->
-                    <button
-                      *ngIf="!job.withdrawn"
-                      (click)="withdrawApplication(job.application_id)"
-                      class="btn btn-outline-danger btn-sm mt-2"
-                    >
-                      <i class="fas fa-times mr-1"></i> Withdraw Application
-                    </button>
+                    <!-- Withdraw Button -->
+    <button *ngIf="!job.withdrawn" 
+            (click)="withdrawApplication(job.application_id)"
+            class="btn btn-outline-danger btn-sm mt-2">
+      <i class="fas fa-times mr-1"></i> Withdraw Application
+    </button>
+    
+    <!-- Withdrawn label -->
+    <span *ngIf="job.withdrawn" class="badge badge-secondary mt-2">
+      <i class="fas fa-ban mr-1"></i> Withdrawn
+    </span>
+  </div>
+  <!-- Status Badge - Updated to show proper status -->
+  <span class="badge badge-pill align-self-start"
+        [ngClass]="{
+          'badge-success': !job.withdrawn,
+          'badge-secondary': job.withdrawn
+        }">
+    <i class="fas mr-1"
+       [ngClass]="{
+         'fa-check-circle': !job.withdrawn,
+         'fa-ban': job.withdrawn
+       }"></i>
+    {{ job.withdrawn ? 'Withdrawn' : 'Applied' }}
+  </span>
 
-                    <!-- Withdrawn label -->
-                    <span
-                      *ngIf="job.withdrawn"
-                      class="badge badge-secondary mt-2"
-                    >
-                      <i class="fas fa-ban mr-1"></i> Withdrawn
-                    </span>
-                  </div>
-
-                  <!-- Applied Badge -->
-                  <span
-                    *ngIf="!job.withdrawn"
-                    class="badge badge-success badge-pill align-self-start"
-                  >
-                    <i class="fas fa-check-circle mr-1"></i> Applied
-                  </span>
+                  
                 </div>
               </div>
             </article>

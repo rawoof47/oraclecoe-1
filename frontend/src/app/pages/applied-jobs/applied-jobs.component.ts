@@ -22,6 +22,7 @@ import { Application } from '../../auth/models/application.model';
 export interface AppliedJobPost extends JobPost {
   application_id: string;
   withdrawn: boolean;
+  
 }
 
 @Component({
