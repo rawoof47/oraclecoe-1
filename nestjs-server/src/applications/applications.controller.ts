@@ -75,7 +75,7 @@ export class ApplicationsController {
 
     const application = await this.applicationsService.findByCandidateAndJob(
       candidate.id,
-      payload.job_id
+      payload.job_id,
     );
 
     return { applied: !!application && !application.withdrawn };
@@ -102,7 +102,6 @@ export class ApplicationsController {
     );
   }
 
-  // ✅ Get all job_ids the candidate has already applied to (excluding withdrawn)
   @Get('user/:candidateId')
   @HttpCode(HttpStatus.OK)
   async getAppliedJobsByCandidate(
@@ -111,7 +110,6 @@ export class ApplicationsController {
     return this.applicationsService.getAppliedJobIdsByCandidate(candidateId);
   }
 
-  // ✅ New endpoint using userId directly
   @Get('by-user/:userId')
   @HttpCode(HttpStatus.OK)
   async getAppliedJobsByUser(
@@ -133,4 +131,22 @@ export class ApplicationsController {
   async remove(@Param('id') id: string): Promise<void> {
     await this.applicationsService.remove(id);
   }
+
+  // ✅ NEW — Withdraw endpoint
+  @Put('withdraw/:id')
+  @HttpCode(HttpStatus.OK)
+  async withdraw(
+    @Param('id') id: string,
+    @Body() body: { user_id: string },
+  ): Promise<Application> {
+    return this.applicationsService.withdraw(id, body.user_id);
+  }
+  // ✅ Add this NEW endpoint to return full applications
+@Get('by-user-full/:userId')
+@HttpCode(HttpStatus.OK)
+async getApplicationsByUserFull(
+  @Param('userId') userId: string,
+): Promise<Application[]> {
+  return this.applicationsService.findByUser(userId);
+}
 }

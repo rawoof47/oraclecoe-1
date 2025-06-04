@@ -83,7 +83,7 @@ export class ApplicationsService {
     return application;
   }
 
-  // ✅ Get all applications by user_id (resolves candidate_id)
+  // ✅ FIXED: Get all applications by user_id with job_post relation
   async findByUser(user_id: string): Promise<Application[]> {
     const candidateProfile = await this.candidateProfilesRepository.findOne({
       where: { user_id },
@@ -93,10 +93,12 @@ export class ApplicationsService {
       throw new NotFoundException(`No candidate profile found for user_id ${user_id}`);
     }
 
-    return this.applicationRepository.find({
-      where: { candidate_id: candidateProfile.id },
-      order: { applied_on: 'DESC' },
-    });
+    return this.applicationRepository
+      .createQueryBuilder('application')
+      .leftJoinAndSelect('application.job_post', 'job_post')
+      .where('application.candidate_id = :candidateId', { candidateId: candidateProfile.id })
+      .orderBy('application.applied_on', 'DESC')
+      .getMany();
   }
 
   // ✅ Get application by candidate_id + job_id
@@ -152,5 +154,17 @@ export class ApplicationsService {
     if (!candidateProfile) return [];
 
     return this.getAppliedJobIdsByCandidate(candidateProfile.id);
+  }
+
+  // ✅ Withdraw application by ID
+  async withdraw(id: string, user_id: string): Promise<Application> {
+    const application = await this.applicationRepository.findOne({ where: { id } });
+    if (!application) throw new NotFoundException('Application not found');
+
+    application.application_status_id = '99e8ca42-4058-11f0-8520-ac1f6bbcd360';
+    application.withdrawn = true;
+    application.updated_by = user_id;
+
+    return this.applicationRepository.save(application);
   }
 }

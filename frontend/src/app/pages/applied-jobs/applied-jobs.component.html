@@ -39,29 +39,43 @@
               class="card mb-3 border-0 shadow-sm"
             >
               <div class="card-body p-4">
-                <!-- Wrap content in routerLink -->
-                <a 
-                  [routerLink]="['/job-details', job.id]"
-                  class="d-block text-decoration-none text-body"
-                >
-                  <div class="d-flex justify-content-between align-items-start">
-                    <!-- Job Info -->
-                    <div>
+                <div class="d-flex justify-content-between align-items-start">
+                  <!-- Job Info + Link -->
+                  <div class="flex-grow-1">
+                    <a
+                      [routerLink]="['/job-details', job.id]"
+                      class="d-block text-decoration-none text-body mb-2"
+                    >
                       <h3 class="h5 font-weight-bold mb-1">{{ job.job_title }}</h3>
-                      <div class="company-name text-muted mb-2">
-                        Company name
-                      </div>
-                      <div class="text-muted small">
-                        Applied on {{ job.created_at | date: 'mediumDate' }}
-                      </div>
-                    </div>
+                      <div class="text-muted small">Job ID: {{ job.id }}</div>
+                    </a>
 
-                    <!-- Status Badge -->
-                    <span class="badge badge-success badge-pill align-self-start">
-                      <i class="fas fa-check-circle mr-1"></i> Applied
+                    <!-- Withdraw Button (only if not withdrawn) -->
+                    <button
+                      *ngIf="!job.withdrawn"
+                      (click)="withdrawApplication(job.application_id)"
+                      class="btn btn-outline-danger btn-sm mt-2"
+                    >
+                      <i class="fas fa-times mr-1"></i> Withdraw Application
+                    </button>
+
+                    <!-- Withdrawn label -->
+                    <span
+                      *ngIf="job.withdrawn"
+                      class="badge badge-secondary mt-2"
+                    >
+                      <i class="fas fa-ban mr-1"></i> Withdrawn
                     </span>
                   </div>
-                </a>
+
+                  <!-- Applied Badge -->
+                  <span
+                    *ngIf="!job.withdrawn"
+                    class="badge badge-success badge-pill align-self-start"
+                  >
+                    <i class="fas fa-check-circle mr-1"></i> Applied
+                  </span>
+                </div>
               </div>
             </article>
           </div>

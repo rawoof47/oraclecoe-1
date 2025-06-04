@@ -4,7 +4,10 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { JobPost } from 'src/job-posts/entities/job-post.entity';
 
 @Entity('applications')
 export class Application {
@@ -43,4 +46,9 @@ export class Application {
 
   @Column({ type: 'char', length: 36, nullable: true })
   updated_by: string | null;
+
+  // ✅ Relation to job_post for JOINs in queries
+  @ManyToOne(() => JobPost, (jobPost) => jobPost.applications, { eager: false })
+  @JoinColumn({ name: 'job_id' })
+  job_post: JobPost;
 }

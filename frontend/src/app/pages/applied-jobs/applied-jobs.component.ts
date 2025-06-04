@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { of, switchMap, catchError, map } from 'rxjs';
+import { of, catchError, map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
-// Custom UI Components (standalone)
+// Custom UI Components
 import { NavbarComponent } from '../../common/navbar/navbar.component';
 import { FooterComponent } from '../../common/footer/footer.component';
 import { PageBannerComponent } from '../../common/page-banner/page-banner.component';
@@ -16,6 +16,13 @@ import { AuthStateService } from '../../services/auth-state.service';
 
 // Models
 import { JobPost } from '../../auth/models/job-post.model';
+import { Application } from '../../auth/models/application.model';
+
+// Extended model to use in the component
+export interface AppliedJobPost extends JobPost {
+  application_id: string;
+  withdrawn: boolean;
+}
 
 @Component({
   selector: 'app-applied-jobs',
@@ -32,7 +39,7 @@ import { JobPost } from '../../auth/models/job-post.model';
   styleUrls: ['./applied-jobs.component.scss']
 })
 export class AppliedJobsComponent implements OnInit {
-  appliedJobPosts: JobPost[] = [];
+  appliedJobPosts: AppliedJobPost[] = [];
   loading = true;
   error: string | null = null;
 
@@ -40,102 +47,85 @@ export class AppliedJobsComponent implements OnInit {
     private jobPostService: JobPostService,
     private authStateService: AuthStateService,
     private http: HttpClient
-  ) {
-    console.log('[Constructor] AppliedJobsComponent constructed');
-  }
+  ) {}
 
   ngOnInit(): void {
-    console.log('[ngOnInit] AppliedJobsComponent initialized');
+    console.log('[Init] AppliedJobsComponent initialized');
     this.loadAppliedJobs();
   }
 
-  /**
-   * 🔄 Loads applied jobs for the logged-in user using efficient single-fetch + filter strategy
-   */
   private loadAppliedJobs(): void {
-    console.log('[loadAppliedJobs] Start loading applied jobs...');
-
+    console.log('[loadAppliedJobs] Start fetching applied jobs...');
     const userId = this.authStateService.getCurrentUserId();
-    console.log('[loadAppliedJobs] Retrieved userId from AuthStateService:', userId);
+    console.log('[loadAppliedJobs] Current User ID:', userId);
 
     if (!userId) {
-      console.warn('[loadAppliedJobs] No authenticated user found.');
       this.error = 'User not authenticated.';
       this.loading = false;
+      console.warn('[loadAppliedJobs] User not authenticated');
       return;
     }
 
-    this.jobPostService.getAppliedJobIdsByUser(userId).pipe(
-      switchMap(jobIds => {
-        console.log('[loadAppliedJobs] Received applied job IDs:', jobIds);
+    this.jobPostService.getApplicationsByUserFull(userId).pipe(
+      map((applications: Application[]) => {
+        console.log('[loadAppliedJobs] Raw applications received:', applications);
 
-        if (!jobIds.length) {
-          console.warn('[loadAppliedJobs] No applied jobs found for user.');
-          return of([]);
-        }
+        const enriched: AppliedJobPost[] = applications
+          .filter(app => app.job_post)
+          .map(app => {
+  console.log('[Application] app.id:', app.id, 'job_post:', app.job_post);
+  if (!app.job_post) {
+    console.warn('[Skipped] Application has no job_post:', app.id);
+    return null;
+  }
 
-        const jobIdSet = new Set(jobIds); // for faster lookup
+  const job: AppliedJobPost = {
+    ...(app.job_post as JobPost),
+    application_id: app.id,
+    withdrawn: app.withdrawn
+  };
+  console.log('[Mapped] Enriched job:', job);
+  return job;
+}).filter((job): job is AppliedJobPost => job !== null)
 
-        // Fetch all jobs from backend
-        return this.http.get<JobPost[]>('http://localhost:3000/jobs').pipe(
-          map(allJobs => {
-  const filteredJobs = allJobs.filter(job => job.id && jobIdSet.has(job.id));
-  console.log('[loadAppliedJobs] Filtered applied jobs:', filteredJobs);
-  return filteredJobs;
-}),
 
-          catchError(err => {
-            console.error('[loadAppliedJobs] Error fetching all jobs:', err);
-            this.error = 'Failed to fetch jobs data';
-            return of([]);
-          })
-        );
+        console.log('[loadAppliedJobs] Enriched job posts:', enriched);
+        return enriched;
       }),
       catchError(err => {
-        console.error('[loadAppliedJobs] Error fetching applied job IDs:', err);
-        this.error = 'Failed to fetch applied job IDs';
+        console.error('[loadAppliedJobs] Failed to load applications:', err);
+        this.error = 'Failed to load applications';
         return of([]);
       })
     ).subscribe({
-      next: (appliedJobs) => {
-        this.appliedJobPosts = appliedJobs;
+      next: (enrichedJobs) => {
+        this.appliedJobPosts = enrichedJobs;
         this.loading = false;
-        console.log('[loadAppliedJobs] Applied jobs loaded successfully.');
+        console.log('[loadAppliedJobs] Final applied job posts:', this.appliedJobPosts);
       },
       error: (err) => {
-        console.error('[loadAppliedJobs] Unexpected error:', err);
-        this.error = 'Unexpected error loading applied jobs';
+        console.error('[loadAppliedJobs] Unexpected error loading jobs:', err);
+        this.error = 'Unexpected error occurred.';
         this.loading = false;
       }
     });
   }
 
-  /**
-   * 🆕 Manually refresh the applied jobs list
-   */
   refreshAppliedJobs(): void {
-    console.log('[refreshAppliedJobs] Triggered');
+    console.log('[refreshAppliedJobs] Refreshing jobs...');
     this.loading = true;
     this.error = null;
     this.appliedJobPosts = [];
     this.loadAppliedJobs();
   }
 
-  /**
-   * 🗓️ Formats the posted date into a human-readable string
-   */
   formatPostedDate(dateStr?: string): string {
-    console.log('[formatPostedDate] Input:', dateStr);
-
-    if (!dateStr) {
-      console.warn('[formatPostedDate] No date string provided.');
-      return 'Unknown date';
-    }
+    console.log('[formatPostedDate] Input date:', dateStr);
+    if (!dateStr) return 'Unknown date';
 
     const postedDate = new Date(dateStr);
     const now = new Date();
     const diff = Math.floor((+now - +postedDate) / (1000 * 60 * 60 * 24));
-    console.log(`[formatPostedDate] Days difference from today: ${diff}`);
 
     if (diff === 0) return 'Today';
     if (diff === 1) return '1 day ago';
@@ -143,5 +133,24 @@ export class AppliedJobsComponent implements OnInit {
 
     const months = Math.floor(diff / 30);
     return months === 1 ? '1 month ago' : `${months} months ago`;
+  }
+
+  withdrawApplication(applicationId: string): void {
+    const userId = this.authStateService.getCurrentUserId();
+    if (!userId) {
+      console.warn('[withdrawApplication] No user ID found');
+      return;
+    }
+
+    console.log('[withdrawApplication] Withdrawing application ID:', applicationId);
+    this.jobPostService.withdrawApplication(applicationId, userId).subscribe({
+      next: () => {
+        console.log('[withdrawApplication] Successfully withdrew application:', applicationId);
+        this.refreshAppliedJobs();
+      },
+      error: (err) => {
+        console.error('[withdrawApplication] Error withdrawing application:', err);
+      }
+    });
   }
 }
