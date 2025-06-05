@@ -28,7 +28,8 @@ import { ContactUsComponent } from './pages/contact-us/contact-us.component';
 import { CandidateProfileComponent } from './pages/candidate-profile/candidate-profile.component';
 import { AdminLoginComponent } from './auth/containers/admin/admin-login/admin-login.component';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
-import { AppliedJobsComponent } from './pages/applied-jobs/applied-jobs.component'; // ✅ NEW
+import { AppliedJobsComponent } from './pages/applied-jobs/applied-jobs.component';
+import { JobApplicantsComponent } from './pages/job-applicants/job-applicants.component'; // ✅ NEW
 
 // Guards
 import { authGuard } from './guards/auth.guard';
@@ -59,7 +60,7 @@ export const routes: Routes = [
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'terms-conditions', component: TermsConditionsComponent },
 
-  // 🔒 Protected Candidate Routes
+  // 🔒 Candidate Routes
   {
     path: 'dashboard',
     component: DashboardComponent,
@@ -86,12 +87,12 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard('candidate')]
   },
   {
-    path: 'applied-jobs', // ✅ NEW ROUTE
+    path: 'applied-jobs',
     component: AppliedJobsComponent,
     canActivate: [authGuard, roleGuard('candidate')]
   },
 
-  // 🔒 Protected Recruiter Routes
+  // 🔒 Recruiter Routes
   {
     path: 'post-a-job',
     component: PostAJobComponent,
@@ -102,10 +103,15 @@ export const routes: Routes = [
     component: SingleResumeComponent,
     canActivate: [authGuard, roleGuard('recruiter')]
   },
+  {
+    path: 'job-applicants', // ✅ NEW ROUTE
+    component: JobApplicantsComponent,
+    canActivate: [authGuard, roleGuard('recruiter')]
+  },
 
   { path: 'admin/login', component: AdminLoginComponent },
   { path: 'admin-dashboard', component: AdminDashboardComponent },
 
-  // Catch-all for unknown paths
+  // Catch-all route
   { path: '**', component: ErrorPageComponent }
 ];

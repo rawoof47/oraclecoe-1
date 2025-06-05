@@ -1,0 +1,17 @@
+<div class="job-applicants-page">
+  <h2>Job Applicants</h2>
+
+  <div class="applicant-card" *ngFor="let applicant of applicants">
+    <div class="info">
+      <h3>{{ applicant.name }}</h3>
+      <p>Email: {{ applicant.email }}</p>
+      <p>Applied on: {{ applicant.appliedDate }}</p>
+      <p>Status: <strong>{{ applicant.status }}</strong></p>
+    </div>
+    <div class="actions">
+      <a [href]="applicant.resumeUrl" target="_blank" class="btn">View Resume</a>
+      <button class="btn shortlist-btn">Shortlist</button>
+      <button class="btn reject-btn">Reject</button>
+    </div>
+  </div>
+</div>
