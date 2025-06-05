@@ -137,3 +137,117 @@ $shadow-color: rgba(0, 0, 0, 0.05);
 .mb-2 {
   margin-bottom: 0.5rem;
 }
+/* ... existing styles ... */
+
+$border-color: #e0e0e0;
+$title-color: #2d3748;
+$separator-color: #edf2f7;
+$shadow-color: rgba(0, 0, 0, 0.05);
+
+// Existing styles
+.job-listings {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.card {
+  border: 1px dashed $border-color;
+  border-radius: 12px;
+  padding: 1.75rem;
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px $shadow-color;
+  font-family: 'Segoe UI', sans-serif;
+  transition: transform 0.2s ease-in-out;
+}
+
+// ... other existing styles ...
+
+// Add dashboard sidebar styles
+.dashboard-area {
+  .profile-item {
+    text-align: center;
+    margin-bottom: 30px;
+
+    img {
+      display: block;
+      border-radius: 50%;
+      border: 5px solid white;
+      box-shadow: 0px 0px 20px 0px rgba(221, 221, 221, 0.14);
+      margin-bottom: 15px;
+      margin-left: auto;
+      margin-right: auto;
+      width: 300px;
+      height: 300px;
+      object-fit: cover;
+    }
+    h2 {
+      font-size: 25px;
+      color: #1c1150; // Blue color
+      margin-bottom: 5px;
+    }
+    span {
+      display: block;
+      margin-bottom: 30px;
+      color: #6c757d;
+    }
+  }
+  .nav-pills {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    
+    .nav-link {
+      color: #495057;
+      font-size: 17px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      transition: all 0.3s ease;
+
+      i {
+        display: inline-block;
+        font-size: 20px;
+        margin-right: 10px;
+        color: #dc3545; // Pink color
+      }
+
+      &:hover, &.active {
+        background-color: #1c1150; // Blue color
+        color: white;
+        
+        i {
+          color: white;
+        }
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 991px) {
+  .dashboard-area {
+    .profile-item {
+      img {
+        width: 120px;
+        height: 120px;
+      }
+      h2 {
+        font-size: 22px;
+      }
+    }
+    .nav-pills {
+      margin-bottom: 30px;
+      
+      .nav-link {
+        font-size: 20px;
+        padding: 20px 20px;
+      }
+    }
+  }
+}
+
+// ... other existing styles ...
