@@ -169,4 +169,9 @@ export class JobPostService {
       { status }
     );
   }
+  getByRecruiter(recruiterId: string): Observable<JobPostListResponse> {
+  return this.http.get<JobPostListResponse>(
+    `${this.baseUrl}/by-recruiter/${recruiterId}`
+  );
+}
 }

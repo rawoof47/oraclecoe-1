@@ -183,4 +183,20 @@ export class JobPostsService {
     const certs = await this.jobPostCertificationsService.getByJobPostId(jobId);
     return certs.map((cert) => cert.certification_id);
   }
+  // Add this method to JobPostsService class
+async findByRecruiter(recruiterId: string) {
+  const jobPosts = await this.jobPostRepository.find({ 
+    where: { recruiter_id: recruiterId } 
+  });
+
+  const jobsWithRelations = await Promise.all(
+    jobPosts.map(async (job) => ({
+      ...job,
+      skill_ids: await this.getSkillIdsForJob(job.id),
+      certification_ids: await this.getCertificationIdsForJob(job.id),
+    })),
+  );
+
+  return jobsWithRelations;
+}
 }
