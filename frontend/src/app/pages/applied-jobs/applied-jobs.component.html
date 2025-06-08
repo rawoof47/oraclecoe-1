@@ -8,7 +8,7 @@
 <div class="dashboard-area ptb-100">
   <div class="container">
     <div class="row">
-      <!-- Sidebar Column - Same as dashboard -->
+      <!-- Sidebar -->
       <div class="col-lg-4 col-md-12">
         <div class="profile-item">
           <img src="img/dashboard1.jpg" alt="Dashboard">
@@ -22,7 +22,6 @@
           <a class="nav-link active" [routerLink]="['/applied-jobs']" routerLinkActive="active">
             <i class="bx bxs-inbox"></i> Applied Jobs
           </a>
-          
           <a routerLink="/single-resume" class="nav-link">
             <i class="bx bx-note"></i> My Resume
           </a>
@@ -32,9 +31,8 @@
         </div>
       </div>
 
-      <!-- Main Content Column -->
+      <!-- Main Content -->
       <div class="col-lg-8 col-md-12">
-        <!-- ... existing applied jobs content ... -->
         <div class="d-flex justify-content-between align-items-center mb-4">
           <h2 class="dashboard-heading">Your Applications</h2>
           <span class="badge badge-pill badge-light">
@@ -52,7 +50,6 @@
         <!-- Jobs List -->
 <ng-container *ngIf="!loading && appliedJobPosts.length > 0; else noJobs">
   <div class="position-relative">
-    <!-- TOP-RIGHT BADGE -->
     <div class="applied-badge-top-right">
       <span class="badge bg-success text-white">
         {{ appliedJobPosts.length }} Applied
@@ -65,42 +62,47 @@
           <div class="d-flex justify-content-between align-items-start">
             <div class="flex-grow-1">
               <a [routerLink]="['/job-details', job.id]" class="d-block text-decoration-none text-body mb-2">
-                <h3 class="h5 font-weight-bold mb-1">{{ job.job_title }}</h3>
-                <div class="text-muted small">Job ID: {{ job.id }}</div>
+                <h3 class="h5 font-weight-bold mb-1">
+                  <i class="fas fa-suitcase mr-2 text-primary"></i> {{ job.job_title }}
+                </h3>
                 <div class="text-muted small">
+                  <i class="fas fa-building-columns mr-2 text-info"></i> Tech Solutions Inc.
+                </div>
+                <div class="text-muted small">
+                  <i class="fas fa-clock-rotate-left mr-2 text-warning"></i>
                   <span *ngIf="!job.withdrawn">Applied on: {{ formatPostedDate(job.applied_date) }}</span>
                   <span *ngIf="job.withdrawn">Withdrawn on: {{ formatPostedDate(job.withdrawn_date) }}</span>
                 </div>
               </a>
 
               <div class="mt-3 d-flex gap-2 flex-wrap">
-                <a [routerLink]="['/job-details', job.id]" class="btn btn-outline-primary">
-                  <i class="fas fa-eye mr-1"></i> View Job
+                <a [routerLink]="['/job-details', job.id]" class="btn btn-primary">
+                  <i class="fas fa-binoculars mr-1"></i> View Job
                 </a>
 
                 <button *ngIf="!job.withdrawn"
-                        class="btn btn-outline-danger"
+                        class="btn btn-danger"
                         (click)="openWithdrawModal(job.application_id, job.id!)">
-                  <i class="fas fa-ban mr-1"></i> Withdraw
+                  <i class="fas fa-user-xmark mr-1"></i> Withdraw
                 </button>
 
                 <button *ngIf="job.withdrawn && job.withdrawal_reason"
-                        class="btn btn-outline-secondary"
+                        class="btn btn-secondary"
                         (click)="openReasonModal(job.withdrawal_reason!)">
-                  <i class="fas fa-info-circle mr-1"></i> View Reason
+                  <i class="fas fa-comment-dots mr-1"></i> View Reason
                 </button>
               </div>
             </div>
 
             <span class="badge badge-pill align-self-start"
                   [ngClass]="{
-                    'badge-success': !job.withdrawn,
-                    'badge-secondary': job.withdrawn
+                    'badge-primary': !job.withdrawn,
+                    'badge-light text-dark': job.withdrawn
                   }">
               <i class="fas mr-1"
                  [ngClass]="{
-                   'fa-check-circle': !job.withdrawn,
-                   'fa-ban': job.withdrawn
+                   'fa-circle-check': !job.withdrawn,
+                   'fa-rotate-left': job.withdrawn
                  }"></i>
               {{ job.withdrawn ? 'Withdrawn' : 'Applied' }}
             </span>
@@ -110,7 +112,6 @@
     </div>
   </div>
 </ng-container>
-
 
 
         <!-- No Jobs Template -->
@@ -140,7 +141,6 @@
 </div>
 
 <!-- MODALS -->
-
 <!-- Withdrawal Modal -->
 <div *ngIf="showWithdrawModal" class="modal-backdrop show" (click)="closeModals()"></div>
 <div *ngIf="showWithdrawModal"
