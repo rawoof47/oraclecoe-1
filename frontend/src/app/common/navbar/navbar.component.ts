@@ -9,7 +9,8 @@ import {
   faSignOutAlt, 
   faUser, 
   faCog, 
-  faBell 
+  faBell,
+  faTachometerAlt
 } from '@fortawesome/free-solid-svg-icons';
 import { MatIconModule } from '@angular/material/icon';
 @Component({
@@ -40,7 +41,7 @@ export class NavbarComponent {
     private library: FaIconLibrary // ✅ Injected FaIconLibrary
   ) {
     // Add icons to library
-    library.addIcons(faUserCircle, faSignOutAlt, faUser, faCog, faBell);
+    library.addIcons(faUserCircle, faSignOutAlt, faUser, faCog, faBell, faTachometerAlt);
 
     // Auth state initialization
     this.isLoggedIn$ = this.authStateService.isLoggedIn$;

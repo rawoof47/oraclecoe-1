@@ -1,10 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Application } from './entities/application.entity';
 import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
 import { CandidateProfile } from 'src/candidate-profiles/entities/candidate-profile.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class ApplicationsService {
@@ -14,9 +19,11 @@ export class ApplicationsService {
 
     @InjectRepository(CandidateProfile)
     private readonly candidateProfilesRepository: Repository<CandidateProfile>,
+
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
   ) {}
 
-  // ✅ Create a new application using candidate_id directly
   async create(createApplicationDto: CreateApplicationDto): Promise<Application> {
     const application = this.applicationRepository.create({
       candidate_id: createApplicationDto.candidate_id,
@@ -30,7 +37,6 @@ export class ApplicationsService {
     return this.applicationRepository.save(application);
   }
 
-  // ✅ Enhanced: Reapply reuses withdrawn application row
   async createFromUser(payload: { user_id: string; job_id: string }): Promise<Application> {
     const candidateProfile = await this.candidateProfilesRepository.findOne({
       where: { user_id: payload.user_id },
@@ -42,7 +48,6 @@ export class ApplicationsService {
 
     const candidate_id = candidateProfile.id;
 
-    // Check if a withdrawn application already exists
     const existing = await this.applicationRepository.findOne({
       where: {
         candidate_id,
@@ -52,17 +57,15 @@ export class ApplicationsService {
     });
 
     if (existing) {
-      // Reactivate the withdrawn application
       existing.withdrawn = false;
       existing.withdrawal_reason = null;
-      existing.application_status_id = '12c7f28f-3a21-11f0-8520-ac1f6bbcd360'; // Applied status
+      existing.application_status_id = '12c7f28f-3a21-11f0-8520-ac1f6bbcd360';
       existing.updated_by = payload.user_id;
-      existing.applied_on = new Date(); // optional: reset apply date
+      existing.applied_on = new Date();
 
       return this.applicationRepository.save(existing);
     }
 
-    // If no withdrawn application, create a new one
     const createDto: CreateApplicationDto = {
       candidate_id,
       job_id: payload.job_id,
@@ -194,5 +197,106 @@ export class ApplicationsService {
     }
 
     return this.applicationRepository.save(application);
+  }
+
+ async findByRecruiter(recruiterId: string): Promise<any[]> {
+  console.log(`[DEBUG] Searching applications for recruiter: ${recruiterId}`);
+
+  const results = await this.applicationRepository
+    .createQueryBuilder('app')
+    .innerJoin('job_posts', 'job', 'job.id = app.job_id')
+    .innerJoin('candidate_profiles', 'candidate', 'candidate.id = app.candidate_id')
+    .innerJoin('users', 'user', 'user.id = candidate.user_id') // ✅ Join users for full_name
+    .where('job.recruiter_id = :recruiterId', { recruiterId })
+    .orderBy('app.applied_on', 'DESC')
+    .select([
+      'app.id AS application_id',
+      'app.job_id AS job_id',
+      'app.candidate_id AS candidate_id',
+      'app.application_status_id AS status_id',
+      'app.applied_on AS applied_on',
+      'app.updated_on AS updated_on',
+      'app.withdrawn AS withdrawn',
+      'app.withdrawal_reason AS withdrawal_reason',
+      'job.job_title AS job_title',
+      'user.full_name AS candidate_name' // ✅ Select candidate's full name
+    ])
+    .getRawMany();
+
+  console.log(`[DEBUG] Found ${results.length} applications`);
+  if (results.length > 0) {
+    console.log('[DEBUG] First application:', results[0]);
+  }
+
+  return results;
+}
+
+
+
+  async updateStatus(id: string, status: string): Promise<Application> {
+    const application = await this.applicationRepository.findOne({ where: { id } });
+    if (!application) throw new NotFoundException('Application not found');
+
+    application.application_status_id = status;
+    return this.applicationRepository.save(application);
+    
+  }
+
+  async findDetailedByUser(user_id: string): Promise<Application[]> {
+    const candidateProfile = await this.candidateProfilesRepository.findOne({
+      where: { user_id },
+    });
+
+    if (!candidateProfile) {
+      throw new NotFoundException(`No candidate profile found for user_id ${user_id}`);
+    }
+
+    return this.applicationRepository.find({
+      where: { candidate_id: candidateProfile.id },
+      relations: ['job_post', 'candidate', 'candidate_profile'],
+      order: { applied_on: 'DESC' },
+    });
+  }
+
+  // ✅ New: Get withdrawal reason
+  async getWithdrawnReason(id: string): Promise<{ reason: string | null }> {
+    const application = await this.applicationRepository.findOne({
+      where: { id },
+      select: ['withdrawn', 'withdrawal_reason'],
+    });
+
+    if (!application || !application.withdrawn) {
+      throw new NotFoundException('Withdrawn application not found');
+    }
+
+    return { reason: application.withdrawal_reason || null };
+  }
+
+  // ✅ New: Reactivate a withdrawn application
+  async reactivate(id: string, userId: string): Promise<Application> {
+    const application = await this.applicationRepository.findOne({
+      where: { id },
+      relations: ['candidate_profile'],
+    });
+
+    if (!application) {
+      throw new NotFoundException('Application not found');
+    }
+
+    const candidate = await this.candidateProfilesRepository.findOne({
+      where: { id: application.candidate_id },
+    });
+
+    if (!candidate || candidate.user_id !== userId) {
+      throw new ForbiddenException('Unauthorized to reactivate this application');
+    }
+
+    application.withdrawn = false;
+    application.withdrawal_reason = null;
+    application.application_status_id = '12c7f28f-3a21-11f0-8520-ac1f6bbcd360';
+    application.updated_by = userId;
+    application.applied_on = new Date();
+
+    return await this.applicationRepository.save(application);
   }
 }

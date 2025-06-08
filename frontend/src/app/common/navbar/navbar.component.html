@@ -48,6 +48,13 @@
                   <mat-icon class="me-2">person</mat-icon>My Profile
                 </a>
               </li>
+
+              <!-- Recruiter Dashboard Link (NEW) -->
+  <li *ngIf="(userRole$ | async) === 'recruiter'">
+    <a class="dropdown-item" routerLink="/recruiter-dashboard">
+      <mat-icon class="me-2">dashboard</mat-icon>Dashboard
+    </a>
+  </li>
               <li><a class="dropdown-item" routerLink="/settings"><mat-icon class="me-2">settings</mat-icon>Account Settings</a></li>
               <li><a class="dropdown-item" routerLink="/notifications"><mat-icon class="me-2">notifications</mat-icon>Notifications <span class="notification-badge">3</span></a></li>
               <li><hr class="dropdown-divider"></li>

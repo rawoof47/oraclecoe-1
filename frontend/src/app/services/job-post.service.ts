@@ -95,7 +95,7 @@ export class JobPostService {
       {
         user_id: userId,
         job_id: jobId,
-        include_withdrawn: false, // 👈 Ensures withdrawn apps don't count
+        include_withdrawn: false,
       }
     );
   }
@@ -141,6 +141,32 @@ export class JobPostService {
   getApplicationsByUserFull(userId: string): Observable<Application[]> {
     return this.http.get<Application[]>(
       `${this.applicationUrl}/by-user-full/${userId}`
+    );
+  }
+
+  /**
+   * 🆕 Get job title by job ID
+   */
+  getJobTitle(jobId: string): Observable<JobPost> {
+    return this.http.get<JobPost>(`${this.baseUrl}/${jobId}`);
+  }
+
+  /**
+   * 🆕 Get applications submitted to jobs owned by a recruiter
+   */
+  getApplicationsByRecruiter(recruiterId: string): Observable<Application[]> {
+    return this.http.get<Application[]>(
+      `${this.applicationUrl}/by-recruiter/${recruiterId}`
+    );
+  }
+
+  /**
+   * 🆕 Update application status (e.g., shortlist, reject)
+   */
+  updateApplicationStatus(applicationId: string, status: string): Observable<Application> {
+    return this.http.put<Application>(
+      `${this.applicationUrl}/${applicationId}/status`,
+      { status }
     );
   }
 }

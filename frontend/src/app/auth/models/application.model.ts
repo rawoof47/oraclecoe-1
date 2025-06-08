@@ -1,4 +1,11 @@
 import { JobPost } from './job-post.model';
+export interface CandidateProfile {
+  id: string;
+  fullname: string;
+  email: string;
+  resume_url?: string;
+  // Add more fields if needed
+}
 
 export interface Application {
   id: string;
@@ -12,4 +19,5 @@ export interface Application {
   updated_at?: string; 
   applied_on: string;            // ✅ Correctly named for applied_date mapping
   updated_on: string;            // ✅ Correctly named for withdrawn_date mapping
+  candidate_profile?: CandidateProfile;
 }

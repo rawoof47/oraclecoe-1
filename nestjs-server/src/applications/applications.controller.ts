@@ -35,7 +35,6 @@ export class ApplicationsController {
     return this.applicationsService.create(createApplicationDto);
   }
 
-  // ✅ Updated to handle reapplication
   @Post('by-user')
   @HttpCode(HttpStatus.CREATED)
   async createByUser(
@@ -130,7 +129,6 @@ export class ApplicationsController {
     await this.applicationsService.remove(id);
   }
 
-  // ✅ Withdraw application with reason
   @Put('withdraw/:id')
   @HttpCode(HttpStatus.OK)
   async withdraw(
@@ -140,12 +138,44 @@ export class ApplicationsController {
     return this.applicationsService.withdrawWithReason(id, body.user_id, body.reason);
   }
 
-  // ✅ Get all full applications for a user
   @Get('by-user-full/:userId')
   @HttpCode(HttpStatus.OK)
   async getApplicationsByUserFull(
     @Param('userId') userId: string,
   ): Promise<Application[]> {
     return this.applicationsService.findByUser(userId);
+  }
+
+  @Get('by-recruiter/:recruiterId')
+  @HttpCode(HttpStatus.OK)
+  async getApplicationsByRecruiter(
+    @Param('recruiterId') recruiterId: string,
+  ): Promise<Application[]> {
+    return this.applicationsService.findByRecruiter(recruiterId);
+  }
+
+  @Put(':id/status')
+  async updateStatus(
+    @Param('id') id: string,
+    @Body() body: { status: string },
+  ): Promise<Application> {
+    return this.applicationsService.updateStatus(id, body.status);
+  }
+
+  // ✅ New: Get withdrawal reason
+  @Get('withdrawal-reason/:id')
+  @HttpCode(HttpStatus.OK)
+  async getWithdrawalReason(@Param('id') id: string): Promise<{ reason: string | null }> {
+    return this.applicationsService.getWithdrawnReason(id);
+  }
+
+  // ✅ New: Reactivate withdrawn application
+  @Put('reactivate/:id')
+  @HttpCode(HttpStatus.OK)
+  async reactivateApplication(
+    @Param('id') id: string,
+    @Body() body: { user_id: string },
+  ): Promise<Application> {
+    return this.applicationsService.reactivate(id, body.user_id);
   }
 }

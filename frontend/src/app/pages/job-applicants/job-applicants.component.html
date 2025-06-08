@@ -1,17 +1,84 @@
-<div class="job-applicants-page">
+<app-navbar />
+
+<div class="job-applicants-page container my-5">
   <h2>Job Applicants</h2>
 
-  <div class="applicant-card" *ngFor="let applicant of applicants">
-    <div class="info">
-      <h3>{{ applicant.name }}</h3>
-      <p>Email: {{ applicant.email }}</p>
-      <p>Applied on: {{ applicant.appliedDate }}</p>
-      <p>Status: <strong>{{ applicant.status }}</strong></p>
-    </div>
-    <div class="actions">
-      <a [href]="applicant.resumeUrl" target="_blank" class="btn">View Resume</a>
-      <button class="btn shortlist-btn">Shortlist</button>
-      <button class="btn reject-btn">Reject</button>
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="text-center my-4">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-2">Loading applicants...</p>
+  </div>
+  
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && !errorMessage && applicants.length === 0" class="text-center my-5">
+    <img src="/assets/images/no-applicants.svg" alt="No applicants" style="max-width: 200px;">
+    <h3 class="mt-3">No applicants yet</h3>
+    <p>Your job postings haven't received applications yet</p>
+  </div>
+
+  <!-- Applicants List -->
+  <div *ngFor="let applicant of applicants" class="card applicant-card shadow-sm p-4 mb-4">
+    <div class="d-flex align-items-start">
+      <!-- Avatar with initials -->
+      <div
+        class="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+        style="width: 50px; height: 50px; font-size: 1.2rem;">
+        {{ applicant.name | initials }}
+      </div>
+
+      <div class="flex-grow-1">
+        <!-- Applicant info -->
+        <div class="mb-2">
+          <h5 class="mb-0">{{ applicant.name }}</h5>
+          <small class="text-muted">{{ applicant.email }}</small>
+        </div>
+
+        <!-- Resume -->
+        <div *ngIf="applicant.resumeUrl">
+          <a [href]="applicant.resumeUrl" target="_blank" class="btn btn-sm btn-outline-secondary">
+            View Resume
+          </a>
+        </div>
+
+        <!-- Job Info -->
+        <div class="mt-2">
+          <strong>Applied for:</strong> {{ applicant.job_title }}<br>
+          <strong>Applied on:</strong> {{ applicant.appliedDate | date:'mediumDate' }}
+        </div>
+
+        <!-- Status -->
+        <div class="mt-2" [class.text-danger]="applicant.withdrawn">
+          <strong>Status:</strong>
+          <span class="badge bg-secondary">{{ applicant.status }}</span>
+        </div>
+
+        <!-- Actions -->
+        <div class="mt-3">
+          <!-- Status actions only for active applications -->
+          <div *ngIf="!applicant.withdrawn">
+            <button class="btn btn-sm btn-success me-2"
+                    (click)="updateStatus(applicant.application_id, 'SHORTLISTED_STATUS_ID')">
+              Shortlist
+            </button>
+            <button class="btn btn-sm btn-danger"
+                    (click)="updateStatus(applicant.application_id, 'REJECTED_STATUS_ID')">
+              Reject
+            </button>
+          </div>
+
+          <div *ngIf="applicant.withdrawn" class="text-muted">
+            Application withdrawn
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
+<app-footer />
+<app-back-to-top />

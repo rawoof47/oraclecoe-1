@@ -1,75 +1,86 @@
 .job-applicants-page {
-  padding: 24px;
-  max-width: 900px;
-  margin: auto;
-  font-family: 'Segoe UI', sans-serif;
+  padding-top: 2rem;
+  padding-bottom: 4rem;
 
   h2 {
-    font-size: 28px;
-    margin-bottom: 24px;
-    color: #1c1150;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: #343a40;
+  }
+
+  .error-message {
+    color: #dc3545;
+    background: #f8d7da;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .loading {
+    text-align: center;
+    .spinner-border {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+  }
+
+  .no-applicants {
+    img {
+      max-width: 180px;
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      color: #6c757d;
+    }
+
+    p {
+      color: #adb5bd;
+    }
   }
 
   .applicant-card {
-    background: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
+    border: 1px solid #e9ecef;
+    border-radius: 0.75rem;
+    transition: box-shadow 0.2s ease;
 
-    .info {
-      h3 {
-        font-size: 20px;
-        margin-bottom: 5px;
-        color: #2d3748;
-      }
-
-      p {
-        margin: 2px 0;
-        font-size: 14px;
-        color: #4a5568;
-      }
+    &:hover {
+      box-shadow: 0 0 0.75rem rgba(0, 0, 0, 0.05);
     }
 
-    .actions {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+    .avatar {
+      background-color: #0d6efd !important;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
 
-      .btn {
-        padding: 8px 12px;
-        border-radius: 5px;
-        border: none;
-        cursor: pointer;
-        font-size: 14px;
-        transition: background 0.3s ease;
+    h5 {
+      margin-bottom: 0.25rem;
+      font-size: 1.1rem;
+    }
 
-        &.shortlist-btn {
-          background-color: #38a169;
-          color: white;
-        }
+    small {
+      font-size: 0.85rem;
+    }
 
-        &.reject-btn {
-          background-color: #e53e3e;
-          color: white;
-        }
+    .badge {
+      padding: 0.4em 0.65em;
+      font-size: 0.75rem;
+      border-radius: 0.4rem;
+    }
 
-        &:hover {
-          opacity: 0.9;
-        }
-      }
+    .btn-sm {
+      font-size: 0.8rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: 0.3rem;
+    }
 
-      a.btn {
-        background-color: #3182ce;
-        color: white;
-        text-decoration: none;
-        text-align: center;
-      }
+    .text-muted {
+      font-size: 0.9rem;
     }
   }
 }

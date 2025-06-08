@@ -29,7 +29,9 @@ import { CandidateProfileComponent } from './pages/candidate-profile/candidate-p
 import { AdminLoginComponent } from './auth/containers/admin/admin-login/admin-login.component';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
 import { AppliedJobsComponent } from './pages/applied-jobs/applied-jobs.component';
-import { JobApplicantsComponent } from './pages/job-applicants/job-applicants.component'; // ✅ NEW
+import { JobApplicantsComponent } from './pages/job-applicants/job-applicants.component';
+import { RecruiterDashboardComponent } from './dashboard/recruiter-dashboard/recruiter-dashboard.component';
+import { PostedJobsComponent } from './pages/posted-jobs/posted-jobs.component'; // ✅ NEW
 
 // Guards
 import { authGuard } from './guards/auth.guard';
@@ -104,8 +106,18 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard('recruiter')]
   },
   {
-    path: 'job-applicants', // ✅ NEW ROUTE
+    path: 'job-applicants',
     component: JobApplicantsComponent,
+    canActivate: [authGuard, roleGuard('recruiter')]
+  },
+  {
+    path: 'recruiter-dashboard',
+    component: RecruiterDashboardComponent,
+    canActivate: [authGuard, roleGuard('recruiter')]
+  },
+  {
+    path: 'recruiter/posted-jobs', // ✅ NEW ROUTE
+    component: PostedJobsComponent,
     canActivate: [authGuard, roleGuard('recruiter')]
   },
 

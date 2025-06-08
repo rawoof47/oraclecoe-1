@@ -1,0 +1,203 @@
+<app-navbar></app-navbar>
+
+<app-page-banner
+  [pageTitle]="'Recruiter Dashboard'"
+  [backgroundImage]="'img/page-title-bg.jpg'"
+></app-page-banner>
+
+<div class="dashboard-area ptb-100">
+  <div class="container">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-lg-4 col-md-12">
+        <div class="profile-item">
+          <!-- Updated profile image -->
+          <img
+            src="img/ChatGPT Image Jun 8, 2025, 02_58_52 PM.png"
+            alt="Recruiter Headshot"
+          />
+          <h2>Sarah Johnson</h2>
+          <span>Talent Acquisition Manager</span>
+        </div>
+        <div class="nav flex-column nav-pills">
+          <a
+            class="nav-link"
+            routerLink="/recruiter-dashboard"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <i class="bx bx-user"></i> My Profile
+          </a>
+          <a class="nav-link" routerLink="/post-a-job" routerLinkActive="active">
+            <i class="bx bx-plus"></i> Post a New Job
+          </a>
+          <a
+            class="nav-link"
+            routerLink="/recruiter/posted-jobs"
+            routerLinkActive="active"
+          >
+            <i class="bx bx-list-ul"></i> Posted Jobs
+          </a>
+          <a
+            class="nav-link"
+            routerLink="/job-applicants"
+            routerLinkActive="active"
+          >
+            <i class="bx bx-file"></i> Applications
+          </a>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-lg-8 col-md-12">
+        <div class="profile-content">
+          <form>
+            <!-- Company Info -->
+            <div class="profile-content-inner">
+              <h2>Company Information</h2>
+              <div class="row">
+                <div class="col-lg-6 col-md-12">
+                  <div class="form-group">
+                    <label>Company Name:</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      value="Tech Innovations Inc."
+                      readonly
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                  <div class="form-group">
+                    <label>Industry:</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      value="Information Technology"
+                      readonly
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                  <div class="form-group">
+                    <label>Company Size:</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      value="500+ Employees"
+                      readonly
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                  <div class="form-group">
+                    <label>Website:</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      value="www.techinnovations.com"
+                      readonly
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-12 col-md-12">
+                  <div class="form-group">
+                    <label>Company Description:</label>
+                    <textarea class="form-control" rows="4" readonly>
+Leading provider of innovative tech solutions with offices in 5 countries. We specialize in AI-driven platforms for enterprise solutions.
+                    </textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recruiter Profile -->
+            <div class="profile-content-inner">
+              <h2>Recruiter Profile</h2>
+              <div class="row">
+                <div class="col-lg-6 col-md-12">
+                  <div class="form-group">
+                    <label>Your Name:</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      value="Sarah Johnson"
+                      readonly
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                  <div class="form-group">
+                    <label>Your Email:</label>
+                    <input
+                      type="email"
+                      class="form-control"
+                      value="sarah@techinnovations.com"
+                      readonly
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                  <div class="form-group">
+                    <label>Phone:</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      value="+1 (555) 123-4567"
+                      readonly
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                  <div class="form-group">
+                    <label>Position:</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      value="Senior Talent Acquisition Manager"
+                      readonly
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="profile-content-inner">
+              <h2>Recruitment Stats</h2>
+              <div class="row stats-row">
+                <div class="col-lg-3 col-md-6 col-6">
+                  <div class="stats-box">
+                    <h3>24</h3>
+                    <p>Active Jobs</p>
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-6">
+                  <div class="stats-box">
+                    <h3>142</h3>
+                    <p>Applications</p>
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-6">
+                  <div class="stats-box">
+                    <h3>38</h3>
+                    <p>Interviews</p>
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-6">
+                  <div class="stats-box">
+                    <h3>12</h3>
+                    <p>Hired</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>
+<app-back-to-top></app-back-to-top>
