@@ -199,39 +199,31 @@ export class ApplicationsService {
     return this.applicationRepository.save(application);
   }
 
- async findByRecruiter(recruiterId: string): Promise<any[]> {
-  console.log(`[DEBUG] Searching applications for recruiter: ${recruiterId}`);
+  async findByRecruiter(recruiterId: string): Promise<any[]> {
+    const results = await this.applicationRepository
+      .createQueryBuilder('app')
+      .innerJoin('job_posts', 'job', 'job.id = app.job_id')
+      .innerJoin('candidate_profiles', 'candidate', 'candidate.id = app.candidate_id')
+      .innerJoin('users', 'user', 'user.id = candidate.user_id')
+      .where('job.recruiter_id = :recruiterId', { recruiterId })
+      .orderBy('app.applied_on', 'DESC')
+      .select([
+        'app.id AS application_id',
+        'app.job_id AS job_id',
+        'app.candidate_id AS candidate_id',
+        'app.application_status_id AS status_id',
+        'app.applied_on AS applied_on',
+        'app.updated_on AS updated_on',
+        'app.withdrawn AS withdrawn',
+        'app.withdrawal_reason AS withdrawal_reason',
+        'job.job_title AS job_title',
+        'user.full_name AS candidate_name',
+        'user.email AS candidate_email'
+      ])
+      .getRawMany();
 
-  const results = await this.applicationRepository
-    .createQueryBuilder('app')
-    .innerJoin('job_posts', 'job', 'job.id = app.job_id')
-    .innerJoin('candidate_profiles', 'candidate', 'candidate.id = app.candidate_id')
-    .innerJoin('users', 'user', 'user.id = candidate.user_id') // ✅ Join users for full_name
-    .where('job.recruiter_id = :recruiterId', { recruiterId })
-    .orderBy('app.applied_on', 'DESC')
-    .select([
-      'app.id AS application_id',
-      'app.job_id AS job_id',
-      'app.candidate_id AS candidate_id',
-      'app.application_status_id AS status_id',
-      'app.applied_on AS applied_on',
-      'app.updated_on AS updated_on',
-      'app.withdrawn AS withdrawn',
-      'app.withdrawal_reason AS withdrawal_reason',
-      'job.job_title AS job_title',
-      'user.full_name AS candidate_name' // ✅ Select candidate's full name
-    ])
-    .getRawMany();
-
-  console.log(`[DEBUG] Found ${results.length} applications`);
-  if (results.length > 0) {
-    console.log('[DEBUG] First application:', results[0]);
+    return results;
   }
-
-  return results;
-}
-
-
 
   async updateStatus(id: string, status: string): Promise<Application> {
     const application = await this.applicationRepository.findOne({ where: { id } });
@@ -239,7 +231,6 @@ export class ApplicationsService {
 
     application.application_status_id = status;
     return this.applicationRepository.save(application);
-    
   }
 
   async findDetailedByUser(user_id: string): Promise<Application[]> {
@@ -258,7 +249,6 @@ export class ApplicationsService {
     });
   }
 
-  // ✅ New: Get withdrawal reason
   async getWithdrawnReason(id: string): Promise<{ reason: string | null }> {
     const application = await this.applicationRepository.findOne({
       where: { id },
@@ -272,7 +262,6 @@ export class ApplicationsService {
     return { reason: application.withdrawal_reason || null };
   }
 
-  // ✅ New: Reactivate a withdrawn application
   async reactivate(id: string, userId: string): Promise<Application> {
     const application = await this.applicationRepository.findOne({
       where: { id },
@@ -298,5 +287,22 @@ export class ApplicationsService {
     application.applied_on = new Date();
 
     return await this.applicationRepository.save(application);
+  }
+
+  // ✅ New Method: Get Applications Count by Job IDs
+  async getCountByJobs(jobIds: string[]): Promise<Record<string, number>> {
+    const counts = await this.applicationRepository
+      .createQueryBuilder('app')
+      .select('app.job_id', 'jobId')
+      .addSelect('COUNT(app.id)', 'count')
+      .where('app.job_id IN (:...jobIds)', { jobIds })
+      .andWhere('app.withdrawn = :withdrawn', { withdrawn: false })
+      .groupBy('app.job_id')
+      .getRawMany();
+
+    return counts.reduce((acc, curr) => {
+      acc[curr.jobId] = parseInt(curr.count);
+      return acc;
+    }, {} as Record<string, number>);
   }
 }

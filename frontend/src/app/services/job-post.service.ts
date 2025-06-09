@@ -174,4 +174,10 @@ export class JobPostService {
     `${this.baseUrl}/by-recruiter/${recruiterId}`
   );
 }
+getApplicationsCountByJobIds(jobIds: string[]): Observable<Record<string, number>> {
+  return this.http.post<Record<string, number>>(
+    `${this.applicationUrl}/count-by-jobs`,
+    { jobIds }
+  );
+}
 }

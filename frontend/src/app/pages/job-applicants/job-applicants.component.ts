@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router'; // ✅ NEW
+import { ActivatedRoute } from '@angular/router';
 import { JobPostService } from '../../services/job-post.service';
 import { AuthService } from '../../services/auth.service';
 import { Applicant } from '../../auth/models/applicant.model';
@@ -27,7 +27,10 @@ export class JobApplicantsComponent implements OnInit {
   applicants: Applicant[] = [];
   isLoading = true;
   errorMessage: string | null = null;
-  jobId: string | null = null; // ✅ NEW
+  jobId: string | null = null;
+
+  // ✅ For Modal
+  selectedApplicant: any = null;
 
   statusMap: Record<string, string> = {
     '12c7f28f-3a21-11f0-8520-ac1f6bbcd360': 'Applied',
@@ -39,14 +42,14 @@ export class JobApplicantsComponent implements OnInit {
   constructor(
     private jobPostService: JobPostService,
     private authService: AuthService,
-    private route: ActivatedRoute // ✅ NEW
+    private route: ActivatedRoute
   ) {}
 
   async ngOnInit() {
     console.log('[Init] Component initializing...');
     this.route.params.subscribe(async (params) => {
-      this.jobId = params['jobId'] || null; // ✅ Get jobId from route
-      await this.loadApplicants(); // ✅ Load applicants (filtered if jobId is present)
+      this.jobId = params['jobId'] || null;
+      await this.loadApplicants();
     });
   }
 
@@ -60,7 +63,6 @@ export class JobApplicantsComponent implements OnInit {
         this.jobPostService.getApplicationsByRecruiter(recruiterId)
       );
 
-      // ✅ Filter applications if jobId is present
       if (this.jobId) {
         applications = applications.filter((app: any) => app.job_id === this.jobId);
       }
@@ -74,7 +76,6 @@ export class JobApplicantsComponent implements OnInit {
         id: app.candidate_id,
         application_id: app.application_id,
         name: app.candidate_name || 'Unknown Candidate',
-        email: 'Hidden for privacy',
         appliedDate: app.applied_on,
         status: this.mapStatus(app.status_id, app.withdrawn),
         status_id: app.status_id,
@@ -82,7 +83,9 @@ export class JobApplicantsComponent implements OnInit {
         job_title: app.job_title || 'Unknown Position',
         withdrawn: app.withdrawn,
         candidate_id: app.candidate_id,
-        resumeUrl: null
+        resumeUrl: null,
+        email: app.candidate_email,
+        withdrawalReason: app.withdrawal_reason || null
       }));
     } catch (error) {
       console.error('[Error] Failed to load applicants:', error);
@@ -113,5 +116,15 @@ export class JobApplicantsComponent implements OnInit {
           alert('Failed to update status. Please try again.');
         }
       });
+  }
+
+  // ✅ Open Withdrawal Reason Modal
+  viewWithdrawalReason(applicant: any) {
+    this.selectedApplicant = applicant;
+  }
+
+  // ✅ Close Modal
+  closeReasonModal() {
+    this.selectedApplicant = null;
   }
 }

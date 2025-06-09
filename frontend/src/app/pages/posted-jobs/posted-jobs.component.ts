@@ -19,7 +19,7 @@ import { PageBannerComponent } from '../../common/page-banner/page-banner.compon
 import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
-import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.pipe'; // ✅ Added
+import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.pipe';
 
 @Component({
   selector: 'app-posted-jobs',
@@ -27,22 +27,16 @@ import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.p
   imports: [
     CommonModule,
     RouterModule,
-
-    // Angular Material Modules
     MatCardModule,
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
     MatDialogModule,
-
-    // Shared Components
     NavbarComponent,
     PageBannerComponent,
     FooterComponent,
     BackToTopComponent,
-
-    // Pipes
-    CompensationFormatPipe // ✅ Registered pipe here
+    CompensationFormatPipe
   ],
   templateUrl: './posted-jobs.component.html',
   styleUrls: ['./posted-jobs.component.scss'],
@@ -78,7 +72,24 @@ export class PostedJobsComponent implements OnInit {
     this.jobPostService.getByRecruiter(this.recruiterId!).subscribe({
       next: (response) => {
         this.jobPosts = response.data || [];
-        this.loading = false;
+
+        const jobIds = this.jobPosts.map(job => job.id!);
+        if (jobIds.length > 0) {
+          this.jobPostService.getApplicationsCountByJobIds(jobIds).subscribe({
+            next: (counts) => {
+              this.jobPosts = this.jobPosts.map(job => ({
+                ...job,
+                applicationsCount: counts[job.id!] || 0
+              }));
+              this.loading = false;
+            },
+            error: () => {
+              this.handleApplicationsError();
+            }
+          });
+        } else {
+          this.loading = false;
+        }
       },
       error: () => {
         this.error = 'Failed to load job posts. Please try again later.';
@@ -87,12 +98,16 @@ export class PostedJobsComponent implements OnInit {
     });
   }
 
-  formatDate(date: string | Date): string {
-    return this.datePipe.transform(date, 'MMM d, yyyy') || '';
+  private handleApplicationsError(): void {
+    this.jobPosts = this.jobPosts.map(job => ({
+      ...job,
+      applicationsCount: 0
+    }));
+    this.loading = false;
   }
 
-  getApplicationsCount(job: JobPost): number {
-    return job.applications?.length || 0;
+  formatDate(date: string | Date): string {
+    return this.datePipe.transform(date, 'MMM d, yyyy') || '';
   }
 
   openDeleteDialog(jobId: string): void {

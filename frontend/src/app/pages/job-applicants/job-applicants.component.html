@@ -51,15 +51,22 @@
           <strong>Applied on:</strong> {{ applicant.appliedDate | date:'mediumDate' }}
         </div>
 
-        <!-- Status -->
+        <!-- Status section -->
         <div class="mt-2" [class.text-danger]="applicant.withdrawn">
-          <strong>Status:</strong>
+          <strong>Status: </strong>
           <span class="badge bg-secondary">{{ applicant.status }}</span>
+
+          <!-- View Withdrawal Reason Button -->
+          <button
+  *ngIf="applicant.withdrawn"
+  class="btn btn-sm btn-view-reason ms-2"
+  (click)="viewWithdrawalReason(applicant)">
+  View Reason
+</button>
         </div>
 
         <!-- Actions -->
         <div class="mt-3">
-          <!-- Status actions only for active applications -->
           <div *ngIf="!applicant.withdrawn">
             <button class="btn btn-sm btn-success me-2"
                     (click)="updateStatus(applicant.application_id, 'SHORTLISTED_STATUS_ID')">
@@ -70,10 +77,27 @@
               Reject
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-          <div *ngIf="applicant.withdrawn" class="text-muted">
-            Application withdrawn
-          </div>
+  <!-- Withdrawal Reason Modal -->
+  <div *ngIf="selectedApplicant" class="modal-overlay" (click)="closeReasonModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h5>Withdrawal Reason</h5>
+        <button class="modal-close" (click)="closeReasonModal()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="applicant-info">
+          <strong>{{ selectedApplicant?.name }}</strong>
+          <span>{{ selectedApplicant?.email }}</span>
+        </p>
+        <div class="reason-box">
+          <p>{{ selectedApplicant?.withdrawalReason || 'No reason provided' }}</p>
         </div>
       </div>
     </div>

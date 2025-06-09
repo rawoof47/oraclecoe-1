@@ -11,4 +11,5 @@ export interface Applicant {
   withdrawn: boolean;
   candidate_id: string;
   resumeUrl: string | null;
+  withdrawalReason?: string | null; // ✅ Add this
 }

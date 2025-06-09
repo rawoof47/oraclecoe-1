@@ -178,4 +178,13 @@ export class ApplicationsController {
   ): Promise<Application> {
     return this.applicationsService.reactivate(id, body.user_id);
   }
+
+  // applications.controller.ts
+@Post('count-by-jobs')
+@HttpCode(HttpStatus.OK)
+async getCountByJobs(
+  @Body() body: { jobIds: string[] }
+): Promise<Record<string, number>> {
+  return this.applicationsService.getCountByJobs(body.jobIds);
+}
 }

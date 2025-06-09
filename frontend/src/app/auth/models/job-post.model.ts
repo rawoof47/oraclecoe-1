@@ -30,4 +30,5 @@ export interface JobPost {
 
   // ✅ Add applications relationship
   applications?: Application[];
+  applicationsCount?: number;
 }
