@@ -19,6 +19,7 @@ import { PageBannerComponent } from '../../common/page-banner/page-banner.compon
 import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
+import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.pipe'; // ✅ Added
 
 @Component({
   selector: 'app-posted-jobs',
@@ -39,6 +40,9 @@ import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dial
     PageBannerComponent,
     FooterComponent,
     BackToTopComponent,
+
+    // Pipes
+    CompensationFormatPipe // ✅ Registered pipe here
   ],
   templateUrl: './posted-jobs.component.html',
   styleUrls: ['./posted-jobs.component.scss'],
@@ -54,7 +58,7 @@ export class PostedJobsComponent implements OnInit {
     private jobPostService: JobPostService,
     private datePipe: DatePipe,
     private dialog: MatDialog,
-    private router: Router // ✅ Inject Router
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -121,6 +125,6 @@ export class PostedJobsComponent implements OnInit {
   }
 
   viewApplicants(jobId: string): void {
-    this.router.navigate(['/job-applicants', jobId]); // ✅ Navigate to job-applicants page
+    this.router.navigate(['/job-applicants', jobId]);
   }
 }

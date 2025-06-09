@@ -106,9 +106,14 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard('recruiter')]
   },
   {
+    path: 'job-applicants/:jobId',
+    component: JobApplicantsComponent,
+    canActivate: [authGuard, roleGuard('recruiter')],
+  },
+  {
     path: 'job-applicants',
     component: JobApplicantsComponent,
-    canActivate: [authGuard, roleGuard('recruiter')]
+    canActivate: [authGuard, roleGuard('recruiter')],
   },
   {
     path: 'recruiter-dashboard',

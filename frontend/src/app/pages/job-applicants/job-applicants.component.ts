@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router'; // ✅ NEW
 import { JobPostService } from '../../services/job-post.service';
 import { AuthService } from '../../services/auth.service';
 import { Applicant } from '../../auth/models/applicant.model';
@@ -26,6 +27,7 @@ export class JobApplicantsComponent implements OnInit {
   applicants: Applicant[] = [];
   isLoading = true;
   errorMessage: string | null = null;
+  jobId: string | null = null; // ✅ NEW
 
   statusMap: Record<string, string> = {
     '12c7f28f-3a21-11f0-8520-ac1f6bbcd360': 'Applied',
@@ -36,12 +38,16 @@ export class JobApplicantsComponent implements OnInit {
 
   constructor(
     private jobPostService: JobPostService,
-    private authService: AuthService
+    private authService: AuthService,
+    private route: ActivatedRoute // ✅ NEW
   ) {}
 
   async ngOnInit() {
     console.log('[Init] Component initializing...');
-    await this.loadApplicants();
+    this.route.params.subscribe(async (params) => {
+      this.jobId = params['jobId'] || null; // ✅ Get jobId from route
+      await this.loadApplicants(); // ✅ Load applicants (filtered if jobId is present)
+    });
   }
 
   async loadApplicants() {
@@ -50,9 +56,14 @@ export class JobApplicantsComponent implements OnInit {
       const recruiterId = currentUser?.id;
       if (!recruiterId) throw new Error('Recruiter ID not found');
 
-      const applications = await lastValueFrom(
+      let applications = await lastValueFrom(
         this.jobPostService.getApplicationsByRecruiter(recruiterId)
       );
+
+      // ✅ Filter applications if jobId is present
+      if (this.jobId) {
+        applications = applications.filter((app: any) => app.job_id === this.jobId);
+      }
 
       if (!applications.length) {
         this.isLoading = false;
