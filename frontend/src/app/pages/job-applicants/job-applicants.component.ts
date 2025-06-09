@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
@@ -28,6 +29,11 @@ export class JobApplicantsComponent implements OnInit {
   isLoading = true;
   errorMessage: string | null = null;
   jobId: string | null = null;
+  
+  // Snackbar properties
+  showSnackbar = false;
+  snackbarMessage = '';
+  snackbarType: 'success' | 'error' = 'success';
 
   // ✅ For Modal
   selectedApplicant: any = null;
@@ -35,8 +41,8 @@ export class JobApplicantsComponent implements OnInit {
   statusMap: Record<string, string> = {
     '12c7f28f-3a21-11f0-8520-ac1f6bbcd360': 'Applied',
     '99e8ca42-4058-11f0-8520-ac1f6bbcd360': 'Withdrawn',
-    'SHORTLISTED_STATUS_ID': 'Shortlisted',
-    'REJECTED_STATUS_ID': 'Rejected'
+    'e8d0da93-452c-11f0-8520-ac1f6bbcd360': 'Shortlisted',
+    'e8d0fb03-452c-11f0-8520-ac1f6bbcd360': 'Rejected'
   };
 
   constructor(
@@ -90,6 +96,7 @@ export class JobApplicantsComponent implements OnInit {
     } catch (error) {
       console.error('[Error] Failed to load applicants:', error);
       this.errorMessage = 'Failed to load applicants. Please try again later.';
+      this.showSnackbarMessage('Failed to load applicants', 'error');
     } finally {
       this.isLoading = false;
     }
@@ -109,11 +116,18 @@ export class JobApplicantsComponent implements OnInit {
           if (applicant) {
             applicant.status = this.mapStatus(newStatusId, false);
             applicant.status_id = newStatusId;
+            
+            // Show snackbar based on action
+            const message = newStatusId === 'e8d0da93-452c-11f0-8520-ac1f6bbcd360' 
+              ? 'Applicant shortlisted successfully' 
+              : 'Applicant rejected successfully';
+              
+            this.showSnackbarMessage(message, 'success');
           }
         },
         error: (err) => {
           console.error('[UpdateStatus] Status update failed:', err);
-          alert('Failed to update status. Please try again.');
+          this.showSnackbarMessage('Failed to update status. Please try again.', 'error');
         }
       });
   }
@@ -126,5 +140,16 @@ export class JobApplicantsComponent implements OnInit {
   // ✅ Close Modal
   closeReasonModal() {
     this.selectedApplicant = null;
+  }
+  
+  // Show snackbar message
+  showSnackbarMessage(message: string, type: 'success' | 'error') {
+    this.snackbarMessage = message;
+    this.snackbarType = type;
+    this.showSnackbar = true;
+    
+    setTimeout(() => {
+      this.showSnackbar = false;
+    }, 3000);
   }
 }

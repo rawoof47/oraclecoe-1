@@ -1,7 +1,16 @@
+
 <app-navbar />
 
 <div class="job-applicants-page container my-5">
   <h2>Job Applicants</h2>
+
+  <!-- Snackbar Notification -->
+  <div *ngIf="showSnackbar" class="snackbar" [class.snackbar-success]="snackbarType === 'success'" [class.snackbar-error]="snackbarType === 'error'">
+    {{ snackbarMessage }}
+    <button class="snackbar-close" (click)="showSnackbar = false">
+      <i class="bi bi-x"></i>
+    </button>
+  </div>
 
   <!-- Error Message -->
   <div *ngIf="errorMessage" class="alert alert-danger">
@@ -58,23 +67,32 @@
 
           <!-- View Withdrawal Reason Button -->
           <button
-  *ngIf="applicant.withdrawn"
-  class="btn btn-sm btn-view-reason ms-2"
-  (click)="viewWithdrawalReason(applicant)">
-  View Reason
-</button>
+            *ngIf="applicant.withdrawn"
+            class="btn btn-sm btn-view-reason ms-2"
+            (click)="viewWithdrawalReason(applicant)">
+            View Reason
+          </button>
         </div>
 
         <!-- Actions -->
         <div class="mt-3">
           <div *ngIf="!applicant.withdrawn">
-            <button class="btn btn-sm btn-success me-2"
-                    (click)="updateStatus(applicant.application_id, 'SHORTLISTED_STATUS_ID')">
-              Shortlist
+            <!-- Shortlist Button - Changes to green and says "Shortlisted" when selected -->
+            <button class="btn btn-sm me-2"
+                    [class.btn-success]="applicant.status_id !== 'e8d0da93-452c-11f0-8520-ac1f6bbcd360'"
+                    [class.btn-outline-success]="applicant.status_id === 'e8d0da93-452c-11f0-8520-ac1f6bbcd360'"
+                    [disabled]="applicant.status_id === 'e8d0da93-452c-11f0-8520-ac1f6bbcd360'"
+                    (click)="updateStatus(applicant.application_id, 'e8d0da93-452c-11f0-8520-ac1f6bbcd360')">
+              {{ applicant.status_id === 'e8d0da93-452c-11f0-8520-ac1f6bbcd360' ? 'Shortlisted' : 'Shortlist' }}
             </button>
-            <button class="btn btn-sm btn-danger"
-                    (click)="updateStatus(applicant.application_id, 'REJECTED_STATUS_ID')">
-              Reject
+            
+            <!-- Reject Button -->
+            <button class="btn btn-sm"
+                    [class.btn-danger]="applicant.status_id !== 'e8d0fb03-452c-11f0-8520-ac1f6bbcd360'"
+                    [class.btn-outline-danger]="applicant.status_id === 'e8d0fb03-452c-11f0-8520-ac1f6bbcd360'"
+                    [disabled]="applicant.status_id === 'e8d0fb03-452c-11f0-8520-ac1f6bbcd360'"
+                    (click)="updateStatus(applicant.application_id, 'e8d0fb03-452c-11f0-8520-ac1f6bbcd360')">
+              {{ applicant.status_id === 'e8d0fb03-452c-11f0-8520-ac1f6bbcd360' ? 'Rejected' : 'Reject' }}
             </button>
           </div>
         </div>
