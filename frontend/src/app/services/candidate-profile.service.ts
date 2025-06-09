@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 export class CandidateProfileService {
   private baseUrl = 'http://localhost:3000/candidate-profiles';
   private skillUrl = 'http://localhost:3000/skills';
+  private certificationUrl = 'http://localhost:3000/certifications';
 
   constructor(private http: HttpClient) {}
 
@@ -26,7 +27,10 @@ export class CandidateProfileService {
   getSkillsByCategory(categoryId: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.skillUrl}/${categoryId}`);
   }
-
+// New method to fetch certifications by category
+getCertificationsByCategory(categoryId: string): Observable<any[]> {
+  return this.http.get<any[]>(`${this.certificationUrl}/by-category/${categoryId}`);
+}
   /**
    * Get all available skills (not used for category-wise selection, but kept optionally)
    */

@@ -28,11 +28,8 @@ import { ContactUsComponent } from './pages/contact-us/contact-us.component';
 import { CandidateProfileComponent } from './pages/candidate-profile/candidate-profile.component';
 import { AdminLoginComponent } from './auth/containers/admin/admin-login/admin-login.component';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
-import { AppliedJobsComponent } from './pages/applied-jobs/applied-jobs.component';
-import { JobApplicantsComponent } from './pages/job-applicants/job-applicants.component';
-import { RecruiterDashboardComponent } from './dashboard/recruiter-dashboard/recruiter-dashboard.component';
-import { PostedJobsComponent } from './pages/posted-jobs/posted-jobs.component'; // ✅ NEW
-
+import { AppliedJobsComponent } from './pages/applied-jobs/applied-jobs.component'; // ✅ NEW
+import { PostTrainingsComponent } from './pages/post-trainings/post-trainings.component'
 // Guards
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
@@ -61,8 +58,10 @@ export const routes: Routes = [
   { path: 'coming-soon', component: ComingSoonComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'terms-conditions', component: TermsConditionsComponent },
+  { path: 'admin/trainings/post', component: PostTrainingsComponent },
 
-  // 🔒 Candidate Routes
+
+  // 🔒 Protected Candidate Routes
   {
     path: 'dashboard',
     component: DashboardComponent,
@@ -89,12 +88,12 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard('candidate')]
   },
   {
-    path: 'applied-jobs',
+    path: 'applied-jobs', // ✅ NEW ROUTE
     component: AppliedJobsComponent,
     canActivate: [authGuard, roleGuard('candidate')]
   },
 
-  // 🔒 Recruiter Routes
+  // 🔒 Protected Recruiter Routes
   {
     path: 'post-a-job',
     component: PostAJobComponent,
@@ -105,30 +104,24 @@ export const routes: Routes = [
     component: SingleResumeComponent,
     canActivate: [authGuard, roleGuard('recruiter')]
   },
-  {
-    path: 'job-applicants/:jobId',
-    component: JobApplicantsComponent,
-    canActivate: [authGuard, roleGuard('recruiter')],
-  },
-  {
-    path: 'job-applicants',
-    component: JobApplicantsComponent,
-    canActivate: [authGuard, roleGuard('recruiter')],
-  },
-  {
-    path: 'recruiter-dashboard',
-    component: RecruiterDashboardComponent,
-    canActivate: [authGuard, roleGuard('recruiter')]
-  },
-  {
-    path: 'recruiter/posted-jobs', // ✅ NEW ROUTE
-    component: PostedJobsComponent,
-    canActivate: [authGuard, roleGuard('recruiter')]
-  },
 
   { path: 'admin/login', component: AdminLoginComponent },
-  { path: 'admin-dashboard', component: AdminDashboardComponent },
+  { path: 'admin-dashboard', component: AdminDashboardComponent,
+    children: [
+      { path: 'candidates', component: CandidatesComponent },
+      { path: 'employers', component: EmployersComponent },
+      { path: 'trainings/post', component: PostTrainingsComponent },
+      
 
-  // Catch-all route
-  { path: '**', component: ErrorPageComponent }
+    ]
+   },
+  
+
+  // Catch-all for unknown paths
+  { path: '**', component: ErrorPageComponent },
+
+   
 ];
+
+
+ 

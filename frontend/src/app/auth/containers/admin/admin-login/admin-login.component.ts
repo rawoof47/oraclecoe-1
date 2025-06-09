@@ -72,8 +72,8 @@ export class AdminLoginComponent {
         this.authStateService.setAuthState(token, user);
         this.showSnackBar('Login successful!', 'snack-success');
 
-        // ✅ Navigate to admin dashboard
-        this.router.navigate(['/admin-dashboard']);
+      
+        this.router.navigate(['/index-2']);
       },
       error: (err) => {
         this.isSubmitting = false;
