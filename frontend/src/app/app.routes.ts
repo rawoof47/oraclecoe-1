@@ -29,10 +29,14 @@ import { CandidateProfileComponent } from './pages/candidate-profile/candidate-p
 import { AdminLoginComponent } from './auth/containers/admin/admin-login/admin-login.component';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
 import { AppliedJobsComponent } from './pages/applied-jobs/applied-jobs.component'; // ✅ NEW
+import { EnrollModalComponent } from './pages/enroll-modal/enroll-modal.component';
+
 
 // Guards
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
+import { TrainingsComponent } from './pages/trainings/trainings.component';
+import { CourseDetailsComponent } from './pages/course-details/course-details.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/index-2', pathMatch: 'full' },
@@ -58,8 +62,10 @@ export const routes: Routes = [
   { path: 'coming-soon', component: ComingSoonComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'terms-conditions', component: TermsConditionsComponent },
-
-  // 🔒 Protected Candidate Routes
+  {path: 'trainings',component:TrainingsComponent},
+  {path:'enroll-modal',component:EnrollModalComponent},
+  {path: 'course-details/:id',component:CourseDetailsComponent},
+   // 🔒 Protected Candidate Routes
   {
     path: 'dashboard',
     component: DashboardComponent,
@@ -105,7 +111,12 @@ export const routes: Routes = [
 
   { path: 'admin/login', component: AdminLoginComponent },
   { path: 'admin-dashboard', component: AdminDashboardComponent },
-
+ 
   // Catch-all for unknown paths
-  { path: '**', component: ErrorPageComponent }
+  { path: '**', component: ErrorPageComponent },
+  //trainings--course details
+  {
+  path: 'course-details/:id',
+  loadComponent: () => import('./pages/course-details/course-details.component').then(m => m.CourseDetailsComponent)
+}
 ];

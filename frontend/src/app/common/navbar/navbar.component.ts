@@ -2,7 +2,7 @@ import { AsyncPipe, NgClass, NgIf } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthStateService } from '../../services/auth-state.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { 
   faUserCircle, 
@@ -12,49 +12,50 @@ import {
   faBell 
 } from '@fortawesome/free-solid-svg-icons';
 import { MatIconModule } from '@angular/material/icon';
+
 @Component({
   selector: 'app-navbar',
   standalone: true,
   imports: [
     RouterLink,
     RouterLinkActive,
-    NgClass,
-    MatIconModule ,
-    NgIf,
-    AsyncPipe,
-    FontAwesomeModule // ✅ Added Font Awesome module
+    //NgClass,
+    MatIconModule,
+    //NgIf,
+    //AsyncPipe,
+    FontAwesomeModule
   ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
+  // Existing properties
   isSticky = false;
   navbarToggleClassApplied = false;
-
   isLoggedIn$: Observable<boolean>;
   userRole$: Observable<string | null>;
+
+  // New feature properties (additions only)
+  unreadNotifications$: Observable<number> = of(3); // Replace with actual service
+  currentTheme: 'light' | 'dark' = 'light';
+  searchQuery = '';
+  isSearchFocused = false;
 
   constructor(
     public router: Router,
     private authStateService: AuthStateService,
-    private library: FaIconLibrary // ✅ Injected FaIconLibrary
+    private library: FaIconLibrary
   ) {
-    // Add icons to library
     library.addIcons(faUserCircle, faSignOutAlt, faUser, faCog, faBell);
-
-    // Auth state initialization
     this.isLoggedIn$ = this.authStateService.isLoggedIn$;
     this.userRole$ = this.authStateService.userRole$;
     this.authStateService.restoreStateFromLocalStorage();
   }
 
+  // Existing methods
   @HostListener('window:scroll', ['$event'])
   checkScroll() {
-    const scrollPosition =
-      window.scrollY ||
-      document.documentElement.scrollTop ||
-      document.body.scrollTop ||
-      0;
+    const scrollPosition = window.scrollY || document.documentElement.scrollTop;
     this.isSticky = scrollPosition >= 50;
   }
 
@@ -65,5 +66,19 @@ export class NavbarComponent {
   logout() {
     this.authStateService.clearAuthState();
     this.router.navigate(['/login']);
+  }
+
+  // New feature methods (additions only)
+  toggleTheme() {
+    this.currentTheme = this.currentTheme === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', this.currentTheme);
+  }
+
+  search() {
+    if (this.searchQuery.trim()) {
+      this.router.navigate(['/search'], { 
+        queryParams: { q: this.searchQuery } 
+      });
+    }
   }
 }

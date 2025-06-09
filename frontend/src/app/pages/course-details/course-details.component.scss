@@ -1,0 +1,73 @@
+.course-details-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #f9f9fc;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+
+  .course-title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .course-description {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+  }
+
+  .preferred-for {
+    font-style: italic;
+    color: #444;
+    margin-bottom: 1rem;
+  }
+
+  .mode-dropdown {
+    margin: 0.5rem 0 1rem;
+    padding: 0.5rem;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .mode-info {
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+    border: 1px solid #ddd;
+
+    .mode-heading {
+      font-size: 1.2rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    ul {
+      list-style: disc;
+      padding-left: 1.5rem;
+    }
+
+    li {
+      margin: 0.25rem 0;
+      color: #333;
+    }
+  }
+
+  .enroll-btn {
+    margin-top: 1.5rem;
+    background-color: #4f46e5;
+    color: #fff;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+
+    &:hover {
+      background-color: #4338ca;
+    }
+  }
+}

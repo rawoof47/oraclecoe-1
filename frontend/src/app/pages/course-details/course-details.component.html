@@ -1,0 +1,35 @@
+<div class="course-details-wrapper">
+  <div *ngIf="course">
+    <h1 class="course-title">{{ course.name }}</h1>
+    <p class="course-description">{{ course.description }}</p>
+    <p class="preferred-for">Preferred For: <strong>{{ course.preferredFor }}</strong></p>
+
+    <label for="mode-select">Choose Mode:</label>
+    <select id="mode-select" [(ngModel)]="selectedMode" class="mode-dropdown">
+      <option value="online">Online</option>
+      <option value="office">Office</option>
+      <option value="hybrid">Hybrid</option>
+    </select>
+
+    <div class="mode-info" *ngIf="selectedMode">
+      <h3 class="mode-heading">{{ selectedMode | titlecase }} Mode Details</h3>
+      <p><strong>Duration:</strong> {{ course.modes[selectedMode].duration }}</p>
+      <p><strong>Fee:</strong> ₹{{ course.modes[selectedMode].fee }}</p>
+      <p *ngIf="course.modes[selectedMode].permonth">
+        <strong>Per Month:</strong> ₹{{ course.modes[selectedMode].permonth }}
+      </p>
+      <p><strong>Content:</strong> {{ course.modes[selectedMode].content }}</p>
+      <ul>
+        <li *ngFor="let point of course.modes[selectedMode].highlights">✔️ {{ point }}</li>
+      </ul>
+    </div>
+
+    <button class="enroll-btn" (click)="showEnrollModal = true">Enroll Now</button>
+
+    <app-enroll-modal *ngIf="showEnrollModal"
+                      [courseName]="course.name"
+                      [selectedMode]="selectedMode"
+                      (close)="showEnrollModal = false">
+    </app-enroll-modal>
+  </div>
+</div>
