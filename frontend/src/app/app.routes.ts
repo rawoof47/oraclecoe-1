@@ -29,7 +29,7 @@ import { CandidateProfileComponent } from './pages/candidate-profile/candidate-p
 import { AdminLoginComponent } from './auth/containers/admin/admin-login/admin-login.component';
 import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
 import { AppliedJobsComponent } from './pages/applied-jobs/applied-jobs.component'; // ✅ NEW
-
+import { PostTrainingsComponent } from './pages/post-trainings/post-trainings.component'
 // Guards
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
@@ -58,6 +58,8 @@ export const routes: Routes = [
   { path: 'coming-soon', component: ComingSoonComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'terms-conditions', component: TermsConditionsComponent },
+  { path: 'admin/trainings/post', component: PostTrainingsComponent },
+
 
   // 🔒 Protected Candidate Routes
   {
@@ -104,8 +106,22 @@ export const routes: Routes = [
   },
 
   { path: 'admin/login', component: AdminLoginComponent },
-  { path: 'admin-dashboard', component: AdminDashboardComponent },
+  // { path: 'admin-dashboard', component: AdminDashboardComponent,
+  //   children: [
+  //     { path: 'candidates', component: CandidatesComponent },
+  //     { path: 'employers', component: EmployersComponent },
+  //     { path: 'trainings/post', component: PostTrainingsComponent },
+      
+
+  //   ]
+  //  },
+  
 
   // Catch-all for unknown paths
-  { path: '**', component: ErrorPageComponent }
+  { path: '**', component: ErrorPageComponent },
+
+   
 ];
+
+
+ 

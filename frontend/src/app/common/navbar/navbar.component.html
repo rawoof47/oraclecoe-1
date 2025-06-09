@@ -21,6 +21,10 @@
             <li class="nav-item"><a routerLink="/employers" class="nav-link" routerLinkActive="active">Companies</a></li>
             <li class="nav-item"><a routerLink="/about" class="nav-link" routerLinkActive="active">About</a></li>
             <li class="nav-item"><a routerLink="/contact" class="nav-link" routerLinkActive="active">Contact</a></li>
+         <!-- 👇 Trainings (Visible only to Admins) -->
+    <li class="nav-item" *ngIf="(userRole$ | async) === 'Admin'">
+      <a routerLink="/admin/trainings" class="nav-link" routerLinkActive="active">Trainings</a>
+    </li>
           </ul>
         </div>
 
@@ -34,6 +38,16 @@
               <span class="post-icon">+</span>
             </a>
           </li>
+
+          <!-- post training button  -->
+
+          <li class="nav-item" *ngIf="(userRole$ | async) === 'Admin'">
+            <a routerLink="/admin/trainings/post" class="post-job-button d-flex align-items-center text-white text-decoration-none nav-link">
+              <span class="post-label">Post A Training</span>
+              <span class="post-icon">+</span>
+            </a>
+          </li>
+
 
           <!-- Notifications Icon -->
           <li class="nav-item d-flex align-items-center">

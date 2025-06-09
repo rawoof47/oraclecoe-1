@@ -1,0 +1,101 @@
+form {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 1.5rem 2rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+  
+    div {
+      margin-bottom: 1.25rem;
+  
+      label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.4rem;
+        color: #222;
+        cursor: pointer;
+      }
+  
+      input[type="text"],
+      input[type="date"],
+      input[type="number"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        border: 1.8px solid #ccc;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        font-family: inherit;
+  
+        &:focus {
+          border-color: #005fcc;
+          box-shadow: 0 0 8px rgba(0, 95, 204, 0.3);
+          outline: none;
+        }
+      }
+  
+      textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+  
+      input[type="checkbox"] {
+        width: auto;
+        margin-right: 0.5rem;
+        cursor: pointer;
+      }
+  
+      /* Error message */
+      div[ng-reflect-ng-if='true'] {
+        margin-top: 0.3rem;
+        color: #d93025; /* Google red for errors */
+        font-size: 0.85rem;
+        font-style: italic;
+      }
+    }
+  
+    /* Modules checkbox group */
+    [formArrayName="modules"] {
+      label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+      }
+      div {
+        margin-bottom: 0.4rem;
+        font-weight: 500;
+        color: #444;
+  
+        input[type="checkbox"] {
+          vertical-align: middle;
+        }
+      }
+    }
+  
+    button[type="submit"] {
+      background-color: #005fcc;
+      color: white;
+      border: none;
+      padding: 0.7rem 1.6rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.25s ease;
+  
+      &:hover {
+        background-color: #004bb5;
+      }
+  
+      &:disabled {
+        background-color: #a0a0a0;
+        cursor: not-allowed;
+      }
+    }
+  }
+  
