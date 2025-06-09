@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
-import { RouterLink, ActivatedRoute, Router } from '@angular/router';
+import {  ActivatedRoute, Router } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
+//import { RouterLink } from '@angular/router';
 
 import { NavbarComponent } from '../../common/navbar/navbar.component';
 import { FooterComponent } from '../../common/footer/footer.component';
@@ -9,6 +10,7 @@ import { BackToTopComponent } from '../../common/back-to-top/back-to-top.compone
 import { JobPostService } from '../../services/job-post.service';
 import { JobPost } from '../../auth/models/job-post.model';
 import { AuthStateService } from '../../services/auth-state.service';
+
 
 // ✅ Import the pipe from its shared location
 import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.pipe';
@@ -18,7 +20,7 @@ import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.p
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
+    //RouterLink,
     NgIf,
     CarouselModule,
     NavbarComponent,

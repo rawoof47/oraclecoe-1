@@ -30,7 +30,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@ng-select/ng-select": "^14.7.0",
-    "bootstrap": "^5.3.3",
+    "bootstrap": "^5.3.6",
     "boxicons": "^2.1.4",
     "express": "^4.18.2",
     "magnific-popup": "^1.2.0",
