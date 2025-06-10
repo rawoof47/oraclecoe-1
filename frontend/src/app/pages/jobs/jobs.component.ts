@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Pipe, PipeTransform, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
@@ -10,41 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { SkillFiltersComponent } from './filters/skills-filter/skills-filter.component';
 import { AuthStateService } from '../../services/auth-state.service';
-import { ApplicationStatusService } from '../../services/application-status.service'; // ✅ new import
-import { Subject } from 'rxjs'; // ✅ new import
-import { takeUntil } from 'rxjs/operators'; // ✅ new import
-
-// ✅ Pipe Definition
-@Pipe({
-  name: 'compensationFormat',
-  standalone: true
-})
-export class CompensationFormatPipe implements PipeTransform {
-  transform(value: string | null | undefined): string {
-    if (!value) return 'Not specified';
-
-    const formatAmount = (numStr: string): string => {
-      const num = parseInt(numStr, 10);
-      return isNaN(num) ? numStr : '₹' + num.toLocaleString('en-IN');
-    };
-
-    if (value.startsWith('<')) {
-      return '< ' + formatAmount(value.substring(1));
-    }
-
-    if (value.startsWith('>')) {
-      return '> ' + formatAmount(value.substring(1));
-    }
-
-    const parts = value.split('-');
-    if (parts.length === 2) {
-      return `${formatAmount(parts[0])} - ${formatAmount(parts[1])}`;
-    }
-
-    return formatAmount(value);
-  }
-}
-
+import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.pipe';
 @Component({
   selector: 'app-jobs',
   standalone: true,
@@ -57,13 +23,13 @@ export class CompensationFormatPipe implements PipeTransform {
     BackToTopComponent,
     FormsModule,
     NgSelectModule,
+    CompensationFormatPipe,
     SkillFiltersComponent,
-    CompensationFormatPipe
   ],
   templateUrl: './jobs.component.html',
   styleUrls: ['./jobs.component.scss']
 })
-export class JobsComponent implements OnInit, OnDestroy {
+export class JobsComponent implements OnInit {
   @ViewChild(SkillFiltersComponent) skillsFilter!: SkillFiltersComponent;
 
   jobs: any[] = [];
@@ -96,37 +62,23 @@ export class JobsComponent implements OnInit, OnDestroy {
   searchKeyword: string = '';
   searchLocation: string = '';
 
-  currentUserId: string | null = null;
+  currentUserId: string | null = null; // ✅ Replaced hardcoded user ID
 
   selectedSkillIds: string[] = [];
   selectedCertIds: string[] = [];
   filteredJobIdsFromSkills: string[] = [];
 
   appliedStatus: { [jobId: string]: boolean } = {};
-  private destroy$ = new Subject<void>(); // ✅ new
 
   constructor(
     private http: HttpClient,
-    private authState: AuthStateService,
-    private router: Router,
-    private applicationStatusService: ApplicationStatusService // ✅ new
+    private authState: AuthStateService, // ✅ Inject auth service
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.currentUserId = this.authState.getCurrentUserId();
+    this.currentUserId = this.authState.getCurrentUserId(); // ✅ Get current user ID
     this.fetchJobs();
-
-    // ✅ Subscribe to shared application status updates
-    this.applicationStatusService.statusUpdated$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(({ jobId, applied }) => {
-        this.appliedStatus[jobId] = applied;
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   redirectToLogin(): void {
@@ -152,7 +104,7 @@ export class JobsComponent implements OnInit, OnDestroy {
   }
 
   checkAppliedStatuses(): void {
-    if (!this.currentUserId) return;
+    if (!this.currentUserId) return; // ✅ Skip if not logged in
 
     this.jobs.forEach(job => {
       const payload = {
@@ -175,65 +127,35 @@ export class JobsComponent implements OnInit, OnDestroy {
     });
   }
 
- applyToJob(jobId: string): void {
-  if (!this.currentUserId) {
-    alert('Please log in to apply for jobs');
-    this.redirectToLogin();
-    return;
-  }
+  applyToJob(jobId: string): void {
+    if (!this.currentUserId) {
+      alert('Please log in to apply for jobs');
+      this.redirectToLogin();
+      return;
+    }
 
-  const payload = {
-    user_id: this.currentUserId,
-    job_id: jobId
-  };
+    const payload = {
+      user_id: this.currentUserId,
+      job_id: jobId
+    };
 
-  this.http.post('http://localhost:3000/applications/by-user', payload).subscribe({
-    next: () => {
-      this.applicationStatusService.updateStatus(jobId, true); // ✅ broadcast update
-
-      // ✅ Refresh status from backend after applying
-      this.checkAppliedStatusForJob(jobId);
-
-      alert('✅ Application submitted successfully!');
-    },
-    error: (error) => {
-      if (error.status === 409) {
-        this.applicationStatusService.updateStatus(jobId, true); // ✅ broadcast update
-        this.checkAppliedStatusForJob(jobId); // ✅ refresh status
-        alert('⚠️ You have already applied for this job.');
-      } else if (error.status === 404) {
-        alert('❌ Candidate profile not found for current user.');
-      } else {
-        alert('❌ Failed to submit application.');
+    this.http.post('http://localhost:3000/applications/by-user', payload).subscribe({
+      next: () => {
+        this.appliedStatus[jobId] = true;
+        alert('✅ Application submitted successfully!');
+      },
+      error: (error) => {
+        if (error.status === 409) {
+          this.appliedStatus[jobId] = true;
+          alert('⚠️ You have already applied for this job.');
+        } else if (error.status === 404) {
+          alert('❌ Candidate profile not found for current user.');
+        } else {
+          alert('❌ Failed to submit application.');
+        }
       }
-    }
-  });
-}
-// ✅ New helper method to refresh applied status for a single job
-private checkAppliedStatusForJob(jobId: string): void {
-  if (!this.currentUserId) return;
-
-  const payload = {
-    user_id: this.currentUserId,
-    job_id: jobId,
-    include_withdrawn: false
-  };
-
-  this.http.post<{ applied: boolean }>(
-    'http://localhost:3000/applications/check-by-user-and-job',
-    payload
-  ).subscribe({
-    next: (res) => {
-      this.appliedStatus = {
-        ...this.appliedStatus,
-        [jobId]: res.applied
-      };
-    },
-    error: (err) => {
-      console.error(`Error checking status for job ${jobId}:`, err);
-    }
-  });
-}
+    });
+  }
 
   formatPostedDate(dateStr: string): string {
     if (!dateStr) return 'Unknown date';

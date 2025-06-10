@@ -1,5 +1,6 @@
-<div class="dropdown-container">
+<div class="row">
   <!-- Skills Dropdown -->
+  <div class="col-sm-12 col-lg-6 col-md-6">
   <div class="dropdown">
     <div class="dropdown-header" (click)="toggleSkillsDropdown()">
       <span>Select Skills</span>
@@ -24,8 +25,9 @@
       </div>
     </div>
   </div>
-
+</div>
   <!-- Certifications Dropdown -->
+<div class="col-sm-12 col-lg-6 col-md-6"> 
   <div class="dropdown">
     <div class="dropdown-header" (click)="toggleCertsDropdown()">
       <span>Select Certifications</span>
@@ -47,7 +49,7 @@
             {{ cert.name || 'Unnamed Certification' }}
           </label>
         </div>
-      </div>
+      </div></div>
     </div>
   </div>
 </div>

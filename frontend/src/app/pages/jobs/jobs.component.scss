@@ -7,28 +7,32 @@ $border-color: #ddd;
 $badge-bg-primary: #007bff;
 $badge-bg-secondary: #6c757d;
 $badge-text-color: #fff;
-$font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
 .job-area-list {
-  background-color: #f9f9f9;
-  padding: 100px 0;
-  font-family: $font-family;
+  background-color: #fff;
+  padding: 10px 0;
   color: $text-color;
 
   .job-listings {
-    article.employer-item {
+    .employer-item {
       background-color: $background-color;
-      border: 1px solid $border-color;
+      // border: 1px solid $border-color;
+      border: 1px dashed var(--pink-color);
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
       padding: 20px;
       margin-bottom: 2rem;
       transition: box-shadow 0.3s ease;
+      position: relative;
 
       &:hover {
         box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
       }
-
+      .applyBtn{
+        position: absolute;
+        top: 15px;
+        right: 15px;
+      }
       a.job-link {
         display: block;
         color: $text-color;
@@ -78,7 +82,7 @@ $font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
       p.job-description {
         margin-bottom: 1.25rem;
-        font-size: 1rem;
+        font-size: 0.8rem;
         line-height: 1.5;
         color: $text-color;
         min-height: 60px;
@@ -143,6 +147,7 @@ $font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
 // Search bar and heading
 .search-bar-section {
+      width:100%;
   h2 {
     font-weight: 400;
     font-size: 2rem;
@@ -153,6 +158,12 @@ $font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
 }
 
+.search-bar{
+  width: 100%;
+    .text-left{
+      text-align: left;
+    }
+}
 // Filter links
 .job-filters {
   a {
@@ -404,4 +415,134 @@ $font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     align-items: center;
     padding: 0 15px;
   }
+}
+
+
+/* New Styles 2/6/2024 created by kiran */
+
+.job-filter-area {
+    .form-group {
+        margin-bottom: 30px;
+
+        .form-control {
+            height: 50px;
+            border: 1px dashed var(--pink-color);
+            padding-left: 15px;
+            transition: var(--transition);
+            font-size: 14px;
+
+            &:focus {
+                box-shadow: none;
+                border: 1px dashed var(--blue-color);
+            }
+        }
+        select {
+            height: 50px;
+            border: 1px dashed var(--pink-color);
+            padding-left: 15px;
+            transition: var(--transition);
+            font-size: 14px;
+            display: block;
+            width: 100%;
+            line-height: 50px;
+            margin-bottom: 30px;
+
+            .list {
+                width: 100%;
+                display: block;
+            }
+        }
+        .ng-select {
+            height: 50px;
+            border: 1px dashed var(--pink-color);
+            padding-left: 15px;
+            transition: var(--transition);
+            font-size: 14px;
+            display: block;
+            width: 100%;
+            line-height: 50px;
+            margin-bottom: 30px;
+
+            .list {
+                width: 100%;
+                display: block;
+            }
+            
+        }
+    }
+    .cmn-btn {
+        border: 0;
+        transition: var(--transition);
+        width: 100%;
+        display: block;
+        margin-bottom: 30px;
+    }
+}
+
+.job-showing-area {
+    h4 {
+        font-size: 20px;
+        color: var(--blue-color);
+        margin-bottom: 20px;
+    }
+    .showing {
+        background-color: #f8e8e9;
+        padding: 15px 15px;
+        border-radius: 5px;
+        margin-bottom: 50px;
+
+        .left {
+            .form-group {
+                margin-bottom: 0;
+
+                select {
+                    height: 45px;
+                    line-height: 45px;
+                    border-radius: 5px;
+                    padding-left: 15px;
+                    border: 0;
+                    width: 200px;
+                    display: block;
+                    
+                    .list {
+                        width: 100%;
+                        display: block;
+                    }
+                }
+            }
+        }
+        .right {
+            ul {
+                margin: 0;
+                padding: 0;
+                text-align: end;
+
+                li {
+                    list-style-type: none;
+                    display: inline-block;
+                    margin-left: 8px;
+
+                    a {
+                        display: block;
+                        width: 40px;
+                        height: 40px;
+                        line-height: 40px;
+                        color: var(--blue-color);
+                        background-color: var(--white-color);
+                        border-radius: 5px;
+                        text-align: center;
+                        font-size: 30px;
+
+                        i {
+                            line-height: 40px;
+                        }
+                        &:hover {
+                            color: var(--white-color);
+                            background-color: var(--pink-color);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
