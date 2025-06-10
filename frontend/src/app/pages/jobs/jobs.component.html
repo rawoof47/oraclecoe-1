@@ -1,70 +1,130 @@
 <app-navbar></app-navbar>
 
-<br><br/>
+<app-page-banner
+  [pageTitle]="'Jobs'"
+  [backgroundImage]="'img/page-title-bg.jpg'"
+></app-page-banner>
+
+
 
 <!-- ✅ Working Search Bar -->
 <section class="search-bar-section py-5 text-center">
   <div class="container">
-    <h2 class="mb-4">
-      Your next <strong>career milestone</strong> starts here
-    </h2>
-    <div class="search-form-wrapper d-flex justify-content-center">
-      <div class="search-bar d-flex shadow rounded overflow-hidden" style="max-width: 700px; width: 100%;">
+    <div class="row">
+      <div class="col-md-12">
+      <h2 class="mb-4">Your next <strong>career milestone</strong> starts here</h2>
+      <div class="search-form-wrapper d-flex justify-content-center">
+      <div class="search-bar d-flex shadow rounded overflow-hidden">
         <div class="p-3 border-right flex-grow-1">
-          <label class="d-block text-uppercase text-muted small mb-1">Find</label>
-          <input
-            type="text"
-            class="form-control border-0 p-0"
-            placeholder="Job title, skill, keyword"
-            [(ngModel)]="searchKeyword"
-            name="searchKeyword"
-          />
+          <label class="d-block text-uppercase text-muted text-left small mb-1">Find</label>
+          <input type="text" class="form-control p-2" placeholder="Job title, skill, keyword" [(ngModel)]="searchKeyword" name="searchKeyword" />
         </div>
         <div class="p-3 border-right flex-grow-1">
-          <label class="d-block text-uppercase text-muted small mb-1">Location</label>
-          <input
-            type="text"
-            class="form-control border-0 p-0"
-            placeholder="City, state, country"
-            [(ngModel)]="searchLocation"
-            name="searchLocation"
-          />
+          <label class="d-block text-uppercase text-muted text-left small mb-1">Location</label>
+          <input type="text" class="form-control p-2" placeholder="City, state, country" [(ngModel)]="searchLocation" name="searchLocation"/>
         </div>
-        <button
-          class="btn btn-dark d-flex align-items-center justify-content-center px-4"
-          style="border-radius: 0;"
-          (click)="onSearch()"
-        >
+        <button class="btn btn-dark d-flex align-items-center justify-content-center px-4" style="border-radius: 0;" (click)="onSearch()">
           <i class="fas fa-search text-white"></i>
         </button>
       </div>
     </div>
+      </div>
+    </div>
+    
   </div>
 </section>
 
-<!-- Filters Wrapper -->
-<div class="filters-wrapper d-flex justify-content-center mt-4">
-  <div class="job-filters d-flex align-items-center flex-wrap gap-2 justify-content-center">
-    <a href="#" class="text-primary mx-2">All Jobs <strong>({{ jobCount }})</strong></a>
-    
 
-    <div class="reset-container ms-auto">
-      <button 
-        class="reset-button"
-        (click)="onGlobalReset()"
-      >
+<div class="job-filter-area pt-20">
+    <div class="container">
+      <div class="row">
+
+                <div class="col-sm-12 col-lg-6 col-md-6">
+                      <!-- ✅ Updated Skills Filter Component with globalReset output -->
+                    <app-skills-filter (filtersChanged)="onFiltersChanged($event)" (filteredJobIds)="onFilteredJobIds($event)"></app-skills-filter>
+                </div>    
+                <div class="col-sm-6 col-lg-3 col-md-3">
+                  <!-- Employment Type Dropdown -->
+                    <div class="form-group">
+                      <ng-select [items]="employmentTypeOptions"
+                        [(ngModel)]="selectedEmploymentTypes" [multiple]="true"
+                        [closeOnSelect]="false" [searchable]="false"
+                        [clearable]="false" bindLabel="."
+                        placeholder="Select employment types" class="employment-type-dropdown" (change)="onEmploymentTypeChange()">
+                        <ng-template ng-multi-label-tmp>
+                          <span class="selected-count">
+                            {{ selectedEmploymentTypes.length }} of {{ employmentTypeOptions.length }} selected
+                          </span>
+                        </ng-template>
+
+                        <ng-template ng-dropdown-header-tmp>
+                          <div class="select-all-option" (click)="toggleSelectAll($event)">
+                            <input type="checkbox" [checked]="selectedEmploymentTypes.length === employmentTypeOptions.length"
+                              class="select-all-checkbox"/>
+                            <label>Select all</label>
+                          </div>
+                        </ng-template>
+
+                        <ng-template ng-option-tmp let-item="item">
+                          <div class="checkbox-option" (click)="$event.preventDefault(); toggleSelectAll(item)">
+                            <input type="checkbox" [checked]="selectedEmploymentTypes.includes(item)"
+                              class="custom-checkbox"/>
+                            <label class="customCheckBoxLabel">{{ item }}</label>
+                          </div>
+                        </ng-template>
+                      </ng-select>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3 col-md-3">
+                   <div class="form-group">
+                        <!-- Work Mode Dropdown -->
+                        <select [(ngModel)]="selectedWorkMode"
+                          (change)="onWorkModeChange()">
+                          <option value="">Select Work Modes</option>
+                          <option *ngFor="let mode of workModeOptions" [value]="mode">{{ mode }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3 col-md-3">
+                  <div class="form-group">
+                      <select [(ngModel)]="selectedNoticePeriod" (change)="onNoticePeriodChange()">
+                          <option value="">Select Notice Periods</option>
+                          <option *ngFor="let period of noticePeriodOptions" [value]="period">
+                            {{ period }}
+                          </option>
+                      </select>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3 col-md-3"> 
+                        <button  class="btn cmn-btn" (click)="onGlobalReset()">
+                          <i class="fas fa-undo-alt"></i> Reset Filters
+                        </button>
+                </div> 
+      </div>
+    </div>
+</div>
+
+<div class="job-showing-area">
+    <div class="container">
+        <h4>All Jobs <strong>({{ jobCount }})</strong></h4>
+    </div>
+</div>
+
+<!-- Filters Wrapper -->
+<!-- <div class="filters-wrapper d-flex justify-content-center mt-4">
+  <div class="job-filters d-flex align-items-center flex-wrap gap-2 justify-content-center"> -->
+    <!-- <a href="#" class="text-primary mx-2">All Jobs <strong>({{ jobCount }})</strong></a> -->
+    <!-- <div class="reset-container ms-auto">
+      <button  class="reset-button" (click)="onGlobalReset()">
         <i class="fas fa-undo-alt"></i> Reset Filters
       </button>
-    </div>
+    </div> -->
 
     <!-- ✅ Updated Skills Filter Component with globalReset output -->
-    <app-skills-filter
-      (filtersChanged)="onFiltersChanged($event)"
-      (filteredJobIds)="onFilteredJobIds($event)"
-    ></app-skills-filter>
+    <!-- <app-skills-filter (filtersChanged)="onFiltersChanged($event)" (filteredJobIds)="onFilteredJobIds($event)"></app-skills-filter> -->
 
     <!-- Employment Type Dropdown -->
-    <div class="form-group custom-multiselect">
+    <!-- <div class="form-group custom-multiselect">
       <ng-select
         [items]="employmentTypeOptions"
         [(ngModel)]="selectedEmploymentTypes"
@@ -75,8 +135,7 @@
         bindLabel="."
         placeholder="Select employment types"
         class="employment-type-dropdown"
-        (change)="onEmploymentTypeChange()"
-      >
+        (change)="onEmploymentTypeChange()">
         <ng-template ng-multi-label-tmp>
           <span class="selected-count">
             {{ selectedEmploymentTypes.length }} of {{ employmentTypeOptions.length }} selected
@@ -85,41 +144,35 @@
 
         <ng-template ng-dropdown-header-tmp>
           <div class="select-all-option" (click)="toggleSelectAll($event)">
-            <input 
-              type="checkbox" 
-              [checked]="selectedEmploymentTypes.length === employmentTypeOptions.length"
-              class="select-all-checkbox"
-            />
+            <input type="checkbox" [checked]="selectedEmploymentTypes.length === employmentTypeOptions.length"
+              class="select-all-checkbox"/>
             <label>Select all</label>
           </div>
         </ng-template>
 
         <ng-template ng-option-tmp let-item="item">
           <div class="checkbox-option" (click)="$event.preventDefault(); toggleSelectAll(item)">
-            <input 
-              type="checkbox"
-              [checked]="selectedEmploymentTypes.includes(item)"
-              class="custom-checkbox"
-            />
+            <input type="checkbox" [checked]="selectedEmploymentTypes.includes(item)"
+              class="custom-checkbox"/>
             <label>{{ item }}</label>
           </div>
         </ng-template>
       </ng-select>
-    </div>
+    </div> -->
 
     <!-- Work Mode Dropdown -->
-    <select
+    <!-- <select
       [(ngModel)]="selectedWorkMode"
       (change)="onWorkModeChange()"
       class="form-select form-select-sm d-inline-block w-auto mx-2"
     >
       <option value="">Select Work Modes</option>
       <option *ngFor="let mode of workModeOptions" [value]="mode">{{ mode }}</option>
-    </select>
+    </select> -->
 
     <!-- Notice Period Dropdown -->
     <!-- Notice Period Dropdown (styled like Work Mode) -->
-<select
+<!-- <select
   [(ngModel)]="selectedNoticePeriod"
   (change)="onNoticePeriodChange()"
   class="form-select form-select-sm d-inline-block w-auto mx-2"
@@ -128,61 +181,31 @@
   <option *ngFor="let period of noticePeriodOptions" [value]="period">
     {{ period }}
   </option>
-</select>
+</select> -->
 
 
 <!-- Job Listings -->
-<section class="job-area-list ptb-100">
+<div class="job-area-list">
   <div class="container">
-    <div class="row">
-      <main class="col-lg-8 col-md-12">
-
-        <div *ngIf="!loading && jobs.length > 0" class="job-listings">
-          <article
-            *ngFor="let job of jobs"
-            class="employer-item mb-5 p-4 border rounded shadow-sm"
-          >
-            <a
-              [routerLink]="['/job-details', job.id]"
-              class="job-link d-block text-decoration-none text-dark"
-            >
+        <div *ngIf="!loading && jobs.length > 0" class="row">
+          <div *ngFor="let job of jobs" class="col-lg-6 col-md-6 ">
+            <div class="job-listings">
+            <div class="employer-item">
+            <a [routerLink]="['/job-details', job.id]" class="job-link d-block text-decoration-none text-dark">
               <div class="d-flex align-items-center mb-3">
-                <img
-                  [src]="job.image_url || 'img/home-one/job1.png'"
-                  alt="Employer"
-                  class="job-img mr-3 rounded"
-                  style="width: 80px; height: 80px; object-fit: cover"
-                />
-                <h3 class="mb-0">{{ job.job_title }}</h3>
+                <img [src]="job.image_url || 'img/home-one/job1.png'" alt="Employer" class="job-img mr-3 rounded" style="width: 60px; height: 60px; object-fit: cover"/>
+                <h5 class="mb-0">{{ job.job_title }}</h5>
               </div>
               <ul class="job-meta list-inline mb-3 text-muted">
-                <li class="list-inline-item mr-3">
-                  <i class="flaticon-send mr-1"></i>
-                  {{ job.location || 'Not specified' }}
-                </li>
-                <li class="list-inline-item">
-                  {{ formatPostedDate(job.created_at) }}
-                </li>
+                <li class="list-inline-item mr-3"><i class="flaticon-send mr-1"></i>{{ job.location || 'Not specified' }}</li>
+                <li class="list-inline-item">{{ formatPostedDate(job.created_at) }}</li>
               </ul>
-
-              <p class="job-description mb-3">
-                {{ job.job_description || 'No description provided.' }}
-              </p>
+              <p class="job-description mb-3">{{ job.job_description || 'No description provided.' }}</p>
 
               <div class="job-extra-info mb-3 d-flex flex-wrap text-secondary small">
-                <span class="mr-3">
-                  <strong>Experience:</strong>
-                  {{ job.experience_min || '0' }} - {{ job.experience_max || 'N/A' }} years
-                </span>
-                <span class="mr-3">
-  <strong>Compensation:</strong>
-  {{ job.compensation_range | compensationFormat }}
-</span>
-
-                <span class="mr-3">
-                  <strong>Notice Period:</strong>
-                  {{ job.notice_period || 'N/A' }}
-                </span>
+                <span class="mr-3"><strong>Experience:</strong>{{ job.experience_min || '0' }} - {{ job.experience_max || 'N/A' }} years</span>
+                <span class="mr-3"><strong>Compensation:</strong>{{ job.compensation_range || 'Not specified' }}</span>
+                <span class="mr-3"><strong>Notice Period:</strong>{{ job.notice_period || 'N/A' }}</span>
                 <span class="mr-3">
                   <strong>Deadline:</strong>
                   {{
@@ -191,59 +214,28 @@
                       : 'N/A'
                   }}
                 </span>
-                <span>
-                  <strong>Work Mode:</strong>
-                  {{ job.work_mode || 'Not specified' }}
-                </span>
+                <span><strong>Work Mode:</strong>{{ job.work_mode || 'Not specified' }}</span>
               </div>
 
               <div class="job-tags d-flex flex-wrap">
-                <span
-                  class="badge badge-primary mr-2 mb-1"
-                  *ngIf="job.modules_required"
-                >
-                  {{ job.modules_required }}
-                </span>
-                <span class="badge badge-secondary mb-1">
-                  {{ job.employment_type || 'N/A' }}
-                </span>
+                <span class="badge badge-primary mr-2 mb-1" *ngIf="job.modules_required">{{ job.modules_required }}</span>
+                <span class="badge badge-secondary mb-1">{{ job.employment_type || 'N/A' }}</span>
               </div>
             </a>
-
-           <div class="text-right mt-3">
+<div class="applyBtn">
   <!-- Show different buttons based on state -->
-  <button *ngIf="!appliedStatus[job.id] && currentUserId" 
-          class="btn btn-success btn-sm"
-          (click)="applyToJob(job.id)">
-    Apply
-  </button>
-  
-  <button *ngIf="appliedStatus[job.id]" 
-          class="btn btn-secondary btn-sm" 
-          disabled>
-    Already Applied
-  </button>
-  
-  <button *ngIf="!currentUserId" 
-          class="btn btn-outline-primary btn-sm"
-          (click)="redirectToLogin()">
-    Login to Apply
-  </button>
+  <button *ngIf="!appliedStatus[job.id] && currentUserId"  class="btn btn-success btn-sm" (click)="applyToJob(job.id)">Apply</button>
+  <button *ngIf="appliedStatus[job.id]" class="btn btn-secondary btn-sm"  disabled> Already Applied </button> 
+  <button *ngIf="!currentUserId" class="btn btn-outline-primary btn-sm" (click)="redirectToLogin()"> Login to Apply </button>
 </div>
-
-          </article>
+</div>
         </div>
-
-        <div *ngIf="loading" class="text-center mt-5">
-          <p>Loading jobs...</p>
-        </div>
-        <div *ngIf="!loading && jobs.length === 0" class="text-center mt-5">
-          <p>No job posts found.</p>
-        </div>
-      </main>
+        <div *ngIf="loading" class="text-center mt-5"><p>Loading jobs...</p></div>
+        <div *ngIf="!loading && jobs.length === 0" class="text-center mt-5"><p>No job posts found.</p></div>
+      </div>
     </div>
   </div>
-</section>
+</div>
 
 <app-footer></app-footer>
 <app-back-to-top></app-back-to-top>

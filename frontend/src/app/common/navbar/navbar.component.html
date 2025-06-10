@@ -48,24 +48,17 @@
                   <mat-icon class="me-2">person</mat-icon>My Profile
                 </a>
               </li>
-
-              <!-- Recruiter Dashboard Link (NEW) -->
-  <li *ngIf="(userRole$ | async) === 'recruiter'">
-    <a class="dropdown-item" routerLink="/recruiter-dashboard">
-      <mat-icon class="me-2">dashboard</mat-icon>Dashboard
-    </a>
-  </li>
-              <li><a class="dropdown-item" routerLink="/settings"><mat-icon class="me-2">settings</mat-icon>Account Settings</a></li>
-              <li><a class="dropdown-item" routerLink="/notifications"><mat-icon class="me-2">notifications</mat-icon>Notifications <span class="notification-badge">3</span></a></li>
+              <li><a class="dropdown-item" routerLink="/settings"><mat-icon class="me-2 menuIcon">settings</mat-icon>Account Settings</a></li>
+              <li><a class="dropdown-item" routerLink="/notifications"><mat-icon class="me-2 menuIcon">notifications</mat-icon>Notifications <span class="notification-badge">3</span></a></li>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item logout-item" (click)="logout()"><mat-icon class="me-2">logout</mat-icon>Log Out</a></li>
+              <li><a class="dropdown-item logout-item" (click)="logout()"><mat-icon class="me-2 menuIcon">logout</mat-icon>Log Out</a></li>
             </ul>
           </li>
 
           <!-- Login/Register -->
           <li class="nav-item dropdown" *ngIf="!(isLoggedIn$ | async)">
             <a href="javascript:void(0)" class="nav-link dropdown-toggle text-primary" data-bs-toggle="dropdown">
-              <mat-icon class="me-1">login</mat-icon> Login/Register <mat-icon class="ms-1">arrow_drop_down</mat-icon>
+              <mat-icon class="me-1">login</mat-icon> Login/Register 
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
               <li><a routerLink="/login" class="dropdown-item">Login</a></li>

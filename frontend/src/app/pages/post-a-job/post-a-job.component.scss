@@ -1,6 +1,6 @@
 .post-job-area {
-  background-color: #f9f9f9;
-  padding-top: 100px;
+  background-color: #fff;
+  padding-top: 50px;
   padding-bottom: 100px;
 
   .container {
@@ -8,10 +8,19 @@
   }
 
   .post-item {
-    background-color: #ffffff;
+    background-color: #f9f9f9;
     padding: 40px 50px 50px;
     border-radius: 10px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        label {
+            width: 180px;
+            font-weight:600;
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 0;
+            white-space: nowrap;
+            padding-top: 12px;
+          }
 
     .form-inline-group {
       display: flex;
@@ -21,7 +30,7 @@
 
       label {
         width: 180px;
-        font-weight: 600;
+        font-weight:600;
         font-size: 15px;
         color: #333;
         margin-bottom: 0;
@@ -67,10 +76,10 @@
       ::ng-deep {
         // Main container styling
         .ng-select-container {
-          min-height: 48px;
+          // min-height: 48px;
           border: 1px solid #ffffff; // Black outline added
           border-radius: 4px;
-          padding: 6px 12px;
+          // padding: 6px 12px;
           align-items: flex-start;
           background-color: #fff !important;
           transition: all 0.3s ease;
@@ -80,7 +89,7 @@
             align-items: flex-start !important;
             flex-wrap: wrap !important;
             gap: 6px !important;
-            padding-top: 4px !important;
+            // padding-top: 4px !important;
           }
 
           // Placeholder text styling
@@ -144,7 +153,7 @@
           word-break: break-word;
 
           .ng-value-icon {
-            color: white;
+            color: black;
             margin-right: 4px;
             &:hover {
               background-color: transparent;
@@ -257,4 +266,20 @@
 .ng-select.is-invalid .ng-select-container {
   border: 1px solid #dc3545;
   background-color: #fff5f5;
+}
+
+// .mat-mdc-tab-body-content {
+//   height: 100%;
+//   overflow:unset !important;
+//    overflow-x: unset !important;
+//   overflow-y: unset !important;
+//   padding: 20px 0px;
+// }
+// .mat-mdc-tab-body.mat-mdc-tab-body-active {
+//   position: relative;
+//   overflow-x: unset !important;
+//   overflow-y: unset !important;
+// }
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option:hover{
+  background: #ccc;
 }

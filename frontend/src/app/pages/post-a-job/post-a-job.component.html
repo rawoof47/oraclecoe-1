@@ -1,261 +1,240 @@
 <app-navbar />
 
+<app-page-banner
+  [pageTitle]="'Post A Job'"
+  [backgroundImage]="'img/page-title-bg.jpg'"
+/>
 
-
-<div class="post-job-area ptb-100">
+<div class="post-job-area ptb-20">
   <div class="container">
     <form [formGroup]="jobForm" (ngSubmit)="onSubmit()">
       <div class="post-item">
         <div class="row">
           <!-- Job Title -->
-          <div class="col-lg-6 col-md-12">
-            <div class="form-inline-group">
-              <label class="form-label">Job Title:</label>
-              <input
-                type="text"
-                formControlName="jobTitle"
-                placeholder="Web Developer"
-                class="form-control"
-              />
+          <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="form-label">Job Title</label>
+              <input type="text" formControlName="jobTitle" placeholder="Web Developer" class="form-control"/>
+          </div>
+          <!-- Region -->
+          <div class="col-lg-3 col-md-3 col-sm-12">
+            <div class="location-field">
+              <label class="form-label">Region</label>
+             <select formControlName="compensationRange" class="form-control">
+                <option value="">Select Region</option>
+                <option value="<500000">US & Canada</option>
+                <option value="500000-1000000">APAC</option>
+                <option value="1000000-1500000">EMEA</option>
+                <option value="1500000-2000000">Middle East</option>
+              </select>
             </div>
           </div>
-
           <!-- Location -->
-          <div class="col-lg-6 col-md-12">
-            <div class="form-inline-group location-field">
-              <label class="form-label">Location:</label>
-              <input
-                type="text"
-                formControlName="location"
-                placeholder="City, Country"
-                class="form-control"
-              />
+          <div class="col-lg-3 col-md-3 col-sm-12">
+            <div class="location-field">
+              <label class="form-label">Location</label>
+              <input type="text" formControlName="location" placeholder="City, Country" class="form-control"/>
             </div>
           </div>
 
           <!-- Work Mode -->
-<div class="col-lg-6 col-md-12">
-  <div class="form-inline-group">
-    <label for="workMode" class="form-label">
-      Work Mode <span class="text-danger">*</span>
-    </label>
-    <ng-select
-      [items]="workModeOptions"
-      bindLabel=""
-      bindValue=""
-      formControlName="workMode"
-      placeholder="Select work mode"
-      [searchable]="false"
-      [clearable]="false"
-      id="workMode"
-      [class.is-invalid]="jobForm.get('workMode')?.touched && jobForm.get('workMode')?.invalid"
-    >
-    </ng-select>
-  
-  </div>
+          <!-- <div class="col-lg-6 col-md-12">
+              <label for="workMode" class="form-label">
+                Work Mode <span class="text-danger">*</span>
+              </label>
+              <ng-select
+                [items]="workModeOptions"
+                bindLabel="" bindValue=""
+                formControlName="workMode" placeholder="Select work mode"
+                [searchable]="false" [clearable]="false" id="workMode"
+                [class.is-invalid]="jobForm.get('workMode')?.touched && jobForm.get('workMode')?.invalid">
+              </ng-select>
+            </div> -->
+        <div class="col-lg-2 col-md-2 col-sm-12">
+        <label for="workMode" class="form-label"> Work Mode <span class="text-danger">*</span></label>
+        
+        <ng-select id="workMode"
+          [items]="workModeOptions"
+          bindLabel="name"              
+          bindValue="id" formControlName="workMode"
+          placeholder="Select work mode"
+          [searchable]="false"
+          [clearable]="false" [appendTo]="'body'" 
+          [class.is-invalid]="jobForm.get('workMode')?.touched && jobForm.get('workMode')?.invalid"
+          class="form-control ng-select-matching">
+        </ng-select>
+
+        <!-- Error message if field is invalid -->
+        <div *ngIf="jobForm.get('workMode')?.touched && jobForm.get('workMode')?.invalid" class="invalid-feedback d-block">
+          Work mode is required.
+        </div>
+      </div>
+
+<hr class="mt-4 my-6 border-t-2 border-dashed border-gray-300">
+
+<div class="overflow-y-auto flex-1">
+    <mat-tab-group class="jobPost">
+       
+    <!-- Tab 1: Personal Details --> 
+          <mat-tab label="Skills">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+           <!-- Functional Skills -->
+          <div>
+                  <label class="form-label">Functional Skills</label>
+                  <ng-select
+                    [items]="functionalSkills"
+                    bindLabel="name"
+                    [multiple]="true"
+                    formControlName="functionalSkills" 
+                    placeholder="Select Functional Skills"
+                    [searchable]="true"
+                    [closeOnSelect]="false" [appendTo]="'body'" 
+                    class="form-control ng-select-matching"></ng-select>
+              </div>
+          <!-- Analytics & Reporting -->
+          <div>
+              <label class="form-label">Analytics & Reporting Skills</label>
+              <ng-select
+                [items]="reportingSkills"
+                bindLabel="name"
+                [multiple]="true"
+                formControlName="reportingSkills"
+                placeholder="Select Reporting Skills"
+                [searchable]="true"
+                [closeOnSelect]="false" [appendTo]="'body'" 
+                class="form-control ng-select-matching">
+              </ng-select>
+            </div> 
+          <!-- Technical Skills -->
+          <div>
+              <label class="form-label">Technical Skills</label>
+              <ng-select
+                [items]="technicalSkills"
+                bindLabel="name"
+                [multiple]="true"
+                formControlName="technicalSkills"
+                placeholder="Select Technical Skills"
+                [searchable]="true"
+                [closeOnSelect]="false" [appendTo]="'body'" 
+                class="form-control ng-select-matching"
+              ></ng-select>
+          </div>
+          <!-- Oracle Middleware Skills -->
+            <div>
+                <label class="form-label">Oracle Middleware & Database skills</label>
+                <ng-select
+                  [items]="oracleMiddlewareSkills"
+                  bindLabel="name"
+                  [multiple]="true" formControlName="oracleMiddlewareSkills"
+                  placeholder="Select Middleware Skills"
+                  [searchable]="true" [closeOnSelect]="false" [appendTo]="'body'" 
+                  class="form-control ng-select-matching"></ng-select>
+            </div>
+          </div>
+     </mat-tab>
+     <mat-tab label="Certifications">      
+           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Financial Certifications -->
+            <div>
+                <label class="form-label">Financial Certifications</label>
+                <ng-select
+                  [items]="financialCertifications"
+                  bindLabel="certification_name"
+                  placeholder="Select financial certifications"
+                  [multiple]="true"
+                  formControlName="financialCertifications"
+                  [searchable]="true"
+                  [closeOnSelect]="false"  [appendTo]="'body'" 
+                  class="form-control ng-select-matching">
+                </ng-select>
+            </div>
+
+            <!-- SCM Certifications -->
+            <div >
+                <label class="form-label">SCM Certifications</label>
+                <ng-select
+                  [items]="scmCertifications"
+                  bindLabel="certification_name"
+                  placeholder="Select SCM certifications"
+                  [multiple]="true"
+                  formControlName="scmCertifications"
+                  [searchable]="true"
+                  [closeOnSelect]="false" [appendTo]="'body'" 
+                  class="form-control ng-select-matching"
+                >
+                </ng-select>
+            </div>
+            <!-- HCM Certifications -->
+            <div>
+                <label class="form-label">HCM Certifications</label>
+                <ng-select
+                  [items]="hcmCertifications"
+                  bindLabel="certification_name"
+                  placeholder="Select HCM certifications"
+                  [multiple]="true"
+                  formControlName="hcmCertifications"
+                  [searchable]="true"
+                  [closeOnSelect]="false" [appendTo]="'body'" 
+                  class="form-control ng-select-matching">
+                </ng-select>
+            </div>
+
+            <!-- CX Certifications -->
+            <div>
+                <label class="form-label">CX Certifications</label>
+                <ng-select
+                  [items]="cxCertifications"
+                  bindLabel="certification_name"
+                  placeholder="Select CX certifications"
+                  [multiple]="true"
+                  formControlName="cxCertifications"
+                  [searchable]="true"
+                  [closeOnSelect]="false" [appendTo]="'body'" 
+                  class="form-control ng-select-matching"
+                >
+                </ng-select>
+            </div>
+          </div>
+    </mat-tab>
+     <mat-tab label="Qualifications">
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> 
+              <!-- Preferred Qualifications -->
+              <div>
+                  <label class="form-label">Preferred Qualifications</label>
+                  <textarea
+                    formControlName="preferredQualifications"
+                    placeholder="Additional desirable qualifications"
+                    class="form-control"
+                  ></textarea>
+              </div>
+            </div>
+    </mat-tab>
+    </mat-tab-group> 
 </div>
-
-
-
-          
-
-          
-
-         <!-- Functional Skills -->
-<div class="col-lg-6 col-md-12">
-  <div class="form-inline-group">
-    <label class="form-label">
-      Functional Skills:
-    </label>
-    <ng-select
-      [items]="functionalSkills"
-      bindLabel="name"
-      [multiple]="true"
-      formControlName="functionalSkills"
-      placeholder="Select Functional Skills"
-      [searchable]="true"
-      [closeOnSelect]="false"
-      class="form-control ng-select-matching"
-    ></ng-select>
-  </div>
-</div>
-
-<!-- Technical Skills -->
-<div class="col-lg-6 col-md-12">
-  <div class="form-inline-group">
-    <label class="form-label">Technical Skills:</label>
-    <ng-select
-      [items]="technicalSkills"
-      bindLabel="name"
-      [multiple]="true"
-      formControlName="technicalSkills"
-      placeholder="Select Technical Skills"
-      [searchable]="true"
-      [closeOnSelect]="false"
-      class="form-control ng-select-matching"
-    ></ng-select>
-  </div>
-</div>
-
-<!-- Oracle Middleware Skills -->
-<div class="col-lg-6 col-md-12">
-  <div class="form-inline-group">
-    <label class="form-label">
-      Oracle Middleware &<br />
-      Database skills:
-    </label>
-    <ng-select
-      [items]="oracleMiddlewareSkills"
-      bindLabel="name"
-      [multiple]="true"
-      formControlName="oracleMiddlewareSkills"
-      placeholder="Select Middleware Skills"
-      [searchable]="true"
-      [closeOnSelect]="false"
-      class="form-control ng-select-matching"
-    ></ng-select>
-  </div>
-</div>
-
-<!-- Analytics & Reporting -->
-<div class="col-lg-6 col-md-12">
-  <div class="form-inline-group">
-    <label class="form-label">Analytics & Reporting Skills:</label>
-    <ng-select
-      [items]="reportingSkills"
-      bindLabel="name"
-      [multiple]="true"
-      formControlName="reportingSkills"
-      placeholder="Select Reporting Skills"
-      [searchable]="true"
-      [closeOnSelect]="false"
-      class="form-control ng-select-matching"
-    ></ng-select>
-  </div>
-</div>
-
-
-
-
-
-
-          
-
-
-          <!-- Financial Certifications -->
-  <div class="col-lg-6 col-md-12">
-    <div class="form-inline-group">
-      <label class="form-label">Financial Certifications</label>
-      <ng-select
-        [items]="financialCertifications"
-        bindLabel="certification_name"
-        placeholder="Select financial certifications"
-        [multiple]="true"
-        formControlName="financialCertifications"
-        [searchable]="true"
-        [closeOnSelect]="false"
-        class="form-control ng-select-matching"
-      >
-      </ng-select>
-    </div>
-  </div>
-
-  <!-- SCM Certifications -->
-  <div class="col-lg-6 col-md-12">
-    <div class="form-inline-group">
-      <label class="form-label">SCM Certifications</label>
-      <ng-select
-        [items]="scmCertifications"
-        bindLabel="certification_name"
-        placeholder="Select SCM certifications"
-        [multiple]="true"
-        formControlName="scmCertifications"
-        [searchable]="true"
-        [closeOnSelect]="false"
-        class="form-control ng-select-matching"
-      >
-      </ng-select>
-    </div>
-  </div>
-  <!-- HCM Certifications -->
-  <div class="col-lg-6 col-md-12 mt-3">
-    <div class="form-inline-group">
-      <label class="form-label">HCM Certifications</label>
-      <ng-select
-        [items]="hcmCertifications"
-        bindLabel="certification_name"
-        placeholder="Select HCM certifications"
-        [multiple]="true"
-        formControlName="hcmCertifications"
-        [searchable]="true"
-        [closeOnSelect]="false"
-        class="form-control ng-select-matching"
-      >
-      </ng-select>
-    </div>
-  </div>
-
-  <!-- CX Certifications -->
-  <div class="col-lg-6 col-md-12 mt-3">
-    <div class="form-inline-group">
-      <label class="form-label">CX Certifications</label>
-      <ng-select
-        [items]="cxCertifications"
-        bindLabel="certification_name"
-        placeholder="Select CX certifications"
-        [multiple]="true"
-        formControlName="cxCertifications"
-        [searchable]="true"
-        [closeOnSelect]="false"
-        class="form-control ng-select-matching"
-      >
-      </ng-select>
-    </div>
-  </div>
-
-
-          <!-- Preferred Qualifications -->
-<div class="col-lg-12 col-md-12">
-  <div class="form-inline-group">
-    <label class="form-label">Preferred Qualifications</label>
-    <textarea
-      formControlName="preferredQualifications"
-      placeholder="Additional desirable qualifications"
-      class="form-control"
-    ></textarea>
-  </div>
-</div>
-
-<!-- What We Offer -->
-<div class="col-lg-12 col-md-12">
-  <div class="form-inline-group">
-    <label class="form-label">What We Offer</label>
-    <textarea
-      formControlName="whatWeOffer"
-      placeholder="Benefits and perks"
-      class="form-control"
-    ></textarea>
-  </div>
-</div>
+<hr class="mt-4 my-6 border-t-2 border-dashed border-gray-300">
+          <!-- What We Offer -->
+          <div class="col-lg-12 col-md-6">
+              <label class="form-label">What We Offer</label>
+              <textarea
+                formControlName="whatWeOffer"
+                placeholder="Benefits and perks"
+                class="form-control"
+              ></textarea>
+          </div>
 
           <!-- Experience Min -->
-          <div class="col-lg-6 col-md-12">
-            <div class="form-inline-group">
-              <label class="form-label">Experience Min (years):</label>
+          <div class="col-lg-4 col-md-4">
+              <label class="form-label">Experience Min (years)</label>
               <input
                 type="number"
                 step="0.1"
                 formControlName="experienceMin"
                 placeholder="e.g. 1.5"
-                class="form-control"
-              />
-            </div>
+                class="form-control"/>
           </div>
 
           <!-- Experience Max -->
-          <div class="col-lg-6 col-md-12">
-            <div class="form-inline-group">
-              <label class="form-label">Experience Max (years):</label>
+          <div class="col-lg-4 col-md-4">
+              <label class="form-label">Experience Max (years)</label>
               <input
                 type="number"
                 step="0.1"
@@ -263,20 +242,29 @@
                 placeholder="e.g. 4.0"
                 class="form-control"
               />
-            </div>
           </div>
 
-          
+       <!-- Compensation Range -->
+          <div class="col-lg-4 col-md-4">
+              <label class="form-label">Compensation Range</label>
+              <select formControlName="compensationRange" class="form-control">
+                <option value="">Select Compensation Range</option>
+                <option value="<500000">Below ₹500,000</option>
+                <option value="500000-1000000">₹500,000 - ₹1,000,000</option>
+                <option value="1000000-1500000">₹1,000,000 - ₹1,500,000</option>
+                <option value="1500000-2000000">₹1,500,000 - ₹2,000,000</option>
+                <option value=">2000000">Above ₹2,000,000</option>
+              </select>
+          </div>     
 <!-- Employment Type -->
-<div class="col-lg-6 col-md-12 mt-3">
-  <div class="form-inline-group">
+<div class="col-lg-4 col-md-4 mt-3">
     <label class="form-label">Employment Type</label>
     <ng-select
       formControlName="employmentType"
       placeholder="Select employment types"
       [multiple]="true"
       [searchable]="false"
-      [closeOnSelect]="false"
+      [closeOnSelect]="false" [appendTo]="'body'" 
       class="form-control ng-select-matching"
     >
       <ng-option value="Full Time / Regular">Full Time / Regular</ng-option>
@@ -288,119 +276,93 @@
          class="text-danger small mt-1">
       Required field
     </div>
-  </div>
+</div>
+  <!-- Per hour -->
+<div class="col-lg-4 col-md-4 mt-3">
+    <label class="form-label">Per Hour</label>
+    <input type="text" class="form-control" placeholder="$10.00" />
 </div>
 
 
 
           <!-- Compensation Range -->
-<div class="col-lg-6 col-md-12">
-  <div class="form-inline-group">
-    <label class="form-label">Compensation Range:</label>
-    <select formControlName="compensationRange" class="form-control">
-      <option value="">Select Compensation Range</option>
-      <option value="<500000">&lt; ₹500,000</option>
-      <option value="500000-1000000">₹500,000 - ₹1,000,000</option>
-      <option value="1000000-1500000">₹1,000,000 - ₹1,500,000</option>
-      <option value="1500000-2000000">₹1,500,000 - ₹2,000,000</option>
-      <option value=">2000000">&gt; ₹2,000,000</option>
-    </select>
-    
-    <!-- Display selected value formatted with currency + commas -->
-    <div class="mt-2 text-muted" *ngIf="jobForm?.get('compensationRange')?.value as comp">
-      Selected: 
-      <ng-container *ngIf="comp.startsWith('<')">
-        &lt; ₹{{ comp.slice(1) | number:'1.0-0' }}
-      </ng-container>
-      <ng-container *ngIf="comp.startsWith('>')">
-        &gt; ₹{{ comp.slice(1) | number:'1.0-0' }}
-      </ng-container>
-      <ng-container *ngIf="comp.includes('-')">
-        ₹{{ comp.split('-')[0] | number:'1.0-0' }} - ₹{{ comp.split('-')[1] | number:'1.0-0' }}
-      </ng-container>
-    </div>
-  </div>
-</div>
-
+          <div class="col-lg-6 col-md-12">
+            <div class="form-inline-group">
+              <label class="form-label">Compensation Range:</label>
+              <select formControlName="compensationRange" class="form-control">
+                <option value="">Select Compensation Range</option>
+                <option value="<500000">&lt; ₹500,000</option>
+                <option value="500000-1000000">₹500,000 - ₹1,000,000</option>
+                <option value="1000000-1500000">₹1,000,000 - ₹1,500,000</option>
+                <option value="1500000-2000000">₹1,500,000 - ₹2,000,000</option>
+                <option value=">2000000">&gt; ₹2,000,000</option>
+              </select>
+            </div>
+          </div>
 
           <!-- Job Description -->
           <div class="col-lg-12 col-md-12">
-            <div class="form-inline-group">
-              <label class="form-label">Job Description:</label>
+              <label class="form-label">Job Description</label>
               <textarea
                 formControlName="jobDescription"
                 placeholder="Describe the job role, responsibilities, etc."
                 class="form-control"
               ></textarea>
-            </div>
           </div>
 
       
 <!-- Role Summary -->
 <div class="col-lg-12 col-md-12">
-  <div class="form-inline-group">
-    <label class="form-label">Role Summary *</label>
+    <label class="form-label">Role Summary <span class="text-danger">*</span></label>
     <textarea
       formControlName="roleSummary"
       placeholder="Key responsibilities and role overview"
-      class="form-control"
-    ></textarea>
+      class="form-control"></textarea>
     <div *ngIf="jobForm.get('roleSummary')?.invalid && (jobForm.get('roleSummary')?.touched)" class="text-danger small mt-1">
       Required field
-    </div>
   </div>
 </div>
-
-<!-- How to Apply -->
-<div class="col-lg-12 col-md-12">
-  <div class="form-inline-group">
-    <label class="form-label">How to Apply</label>
-    <textarea
-      formControlName="howToApply"
-      placeholder="Application instructions"
-      class="form-control"
-    ></textarea>
-  </div>
-</div>
-
-          <!-- Notice Period -->
+ <!-- Notice Period -->
           <div class="col-lg-6 col-md-12">
-            <div class="form-inline-group">
               <label class="form-label">Notice Period:</label>
               <select formControlName="noticePeriod" class="form-control">
                 <option value="">Select Notice Period</option>
                 <option value="Immediate">Immediate</option>
-                <option value="< 1 Month">&lt; 1 Month</option>
+                <option value="< 1 Month">Below 1 Month</option>
                 <option value="1 Month">1 Month</option>
                 <option value="2 Months">2 Months</option>
                 <option value="3 Months">3 Months</option>
               </select>
-            </div>
           </div>
 
           <!-- Application Deadline -->
           <div class="col-lg-6 col-md-12">
-            <div class="form-inline-group">
               <label class="form-label">Application Deadline:</label>
-              <input
-                type="date"
-                formControlName="applicationDeadline"
-                class="form-control"
-              />
-            </div>
+              <input type="date" formControlName="applicationDeadline" class="form-control cursor-pointer" />
           </div>
 
           <!-- Hidden Recruiter ID -->
           <input type="hidden" formControlName="recruiterId" />
         </div>
+<!-- How to Apply -->
+<div class="col-lg-12 col-md-12">
+    <label class="form-label">How to Apply</label>
+    <div>
+      <ul>
+        <li>Step 1 : Find the Job Posting</li>
+        <li>Step 2 : Read the Job Description Carefully</li>
+        <li>Step 3 : Update Your Resume</li>
+        <li>Step 4 : Click “Apply” and Fill in Details</li>
+        <li>Step 5 : Submit Your Application</li>
+      </ul>
+  </div>
+</div>
+
+         
 
         <!-- Submit Button Centered -->
         <div class="text-center mt-4">
-          <button
-            type="submit"
-            class="btn primary-btn"
-            [disabled]="loading"
-          >
+          <button type="submit" class="btn primary-btn" [disabled]="loading">
             {{ loading ? 'Posting...' : 'POST A JOB' }}
           </button>
         </div>
