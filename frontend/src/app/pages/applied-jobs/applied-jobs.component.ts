@@ -3,25 +3,24 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { of, catchError, map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { FormsModule } from '@angular/forms'; // ✅ Required for ngModel
+import { FormsModule } from '@angular/forms';
 
-// Custom UI Components
 import { NavbarComponent } from '../../common/navbar/navbar.component';
 import { FooterComponent } from '../../common/footer/footer.component';
 import { PageBannerComponent } from '../../common/page-banner/page-banner.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
 
-// Services
 import { JobPostService } from '../../services/job-post.service';
 import { AuthStateService } from '../../services/auth-state.service';
 import { ApplicationStatusService } from '../../services/application-status.service';
 
-// Models
 import { JobPost } from '../../auth/models/job-post.model';
 import { Application } from '../../auth/models/application.model';
 
 export interface AppliedJobPost extends JobPost {
   application_id: string;
+  status_id: string;
+  status: string;
   withdrawn: boolean;
   withdrawal_reason?: string;
   applied_date: string;
@@ -34,7 +33,7 @@ export interface AppliedJobPost extends JobPost {
   imports: [
     CommonModule,
     RouterModule,
-    FormsModule, // ✅ Required to use [(ngModel)] in the template
+    FormsModule,
     NavbarComponent,
     FooterComponent,
     PageBannerComponent,
@@ -48,13 +47,19 @@ export class AppliedJobsComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
-  // Modal handling properties
   showWithdrawModal = false;
   showReasonModal = false;
   currentApplicationId: string | null = null;
   currentJobId: string | null = null;
   currentWithdrawalReason = '';
   viewReasonText = '';
+
+  statusMap: Record<string, string> = {
+    '12c7f28f-3a21-11f0-8520-ac1f6bbcd360': 'Applied',
+    '99e8ca42-4058-11f0-8520-ac1f6bbcd360': 'Withdrawn',
+    'e8d0da93-452c-11f0-8520-ac1f6bbcd360': 'Shortlisted',
+    'e8d0fb03-452c-11f0-8520-ac1f6bbcd360': 'Rejected'
+  };
 
   constructor(
     private jobPostService: JobPostService,
@@ -66,6 +71,11 @@ export class AppliedJobsComponent implements OnInit {
   ngOnInit(): void {
     console.log('[Init] AppliedJobsComponent initialized');
     this.loadAppliedJobs();
+  }
+
+  private mapStatus(statusId: string, withdrawn: boolean): string {
+    if (withdrawn) return 'Withdrawn';
+    return this.statusMap[statusId] || statusId;
   }
 
   private loadAppliedJobs(): void {
@@ -87,25 +97,18 @@ export class AppliedJobsComponent implements OnInit {
         const enriched: AppliedJobPost[] = applications
           .filter(app => app.job_post)
           .map(app => {
-            if (!app.job_post) {
-              console.warn('[Skipped] Application has no job_post:', app.id);
-              return null;
-            }
-
             const job: AppliedJobPost = {
-              ...(app.job_post as JobPost),
-              application_id: app.id,
-              withdrawn: app.withdrawn,
+  ...(app.job_post as JobPost),
+  application_id: app.id,
+  status_id: app.application_status_id,
+              status: this.mapStatus(app.application_status_id, !!app.withdrawn),
+              withdrawn: !!app.withdrawn,
               withdrawal_reason: app.withdrawal_reason,
               applied_date: app.applied_on,
               withdrawn_date: app.updated_on
             };
 
-            // ✅ Log date parsing for debugging
-            console.log(`[Mapping] Job ID: ${job.id}`);
-            console.log(`[Mapping] applied_date raw: ${job.applied_date}, parsed:`, new Date(job.applied_date));
-            console.log(`[Mapping] withdrawn_date raw: ${job.withdrawn_date}, parsed:`, job.withdrawn_date ? new Date(job.withdrawn_date) : 'N/A');
-
+            console.log(`[Mapping] Job ID: ${job.id}, Status ID: ${job.status_id}, Status: ${job.status}`);
             return job;
           })
           .filter((job): job is AppliedJobPost => job !== null);
@@ -152,7 +155,6 @@ export class AppliedJobsComponent implements OnInit {
     });
   }
 
-  // ✅ Show custom modal to withdraw application
   openWithdrawModal(applicationId: string, jobId: string): void {
     this.currentApplicationId = applicationId;
     this.currentJobId = jobId;

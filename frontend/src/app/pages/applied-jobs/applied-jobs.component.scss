@@ -357,15 +357,16 @@ $card-gradient: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
     padding: 0.7rem 1.3rem;
     font-size: 0.9rem;
     border-radius: 24px;
-    background: linear-gradient(135deg, $primary-accent 0%, $secondary-accent 100%) !important;
-    color: white;
+    background-color: #dc3545 !important;
+    color: white !important;
     font-weight: 600;
     letter-spacing: 0.75px;
     transition: all 0.3s ease;
     
     &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 7px 18px rgba(78, 84, 200, 0.35);
+      background-color: darken(#dc3545, 5%) !important;
+      transform: none;
+      box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
     }
   }
 }
