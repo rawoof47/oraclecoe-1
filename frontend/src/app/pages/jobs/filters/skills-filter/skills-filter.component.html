@@ -1,7 +1,7 @@
 <div class="row">
   <!-- Skills Dropdown -->
   <div class="col-sm-12 col-lg-6 col-md-6">
-  <div class="dropdown">
+  <div class="dropdown" #skillsDropdown>
     <div class="dropdown-header" (click)="toggleSkillsDropdown()">
       <span>Select Skills</span>
       <span class="arrow">&#9662;</span>
@@ -28,7 +28,7 @@
 </div>
   <!-- Certifications Dropdown -->
 <div class="col-sm-12 col-lg-6 col-md-6"> 
-  <div class="dropdown">
+  <div class="dropdown" #certsDropdown>
     <div class="dropdown-header" (click)="toggleCertsDropdown()">
       <span>Select Certifications</span>
       <span class="arrow">&#9662;</span>
