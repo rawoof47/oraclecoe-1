@@ -234,17 +234,43 @@ $card-gradient: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
 // ==========================
 // Premium Badge Styles
 // ==========================
+@media (max-width: 768px) {
+  .badge {
+    font-size: 0.72rem;
+    padding: 6px 12px;
+    min-width: 80px;
+  }
+}
 .badge {
-  font-size: 0.72rem;
-  padding: 6px 12px;
-  font-weight: 600;
-  border-radius: 5px;
-  text-transform: uppercase;
-  letter-spacing: 0.75px;
-  transition: all 0.25s ease;
+  font-size: 0.8rem;  // Slightly larger font
+  padding: 8px 16px;   // More balanced padding
+  min-width: 100px;    // Consistent minimum width
+  text-align: center;  // Center text
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  .d-flex.gap-3 {
   position: relative;
-  overflow: hidden;
-  
+  z-index: 2; // Higher than other elements
+}
+
+// Add focus styles for accessibility
+button:focus {
+  box-shadow: 0 0 0 0.2rem rgba(74, 79, 197, 0.25);
+}
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
   &::after {
     content: '';
     position: absolute;
@@ -262,10 +288,27 @@ $card-gradient: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
   }
 }
 
+// Active badge styles
+.badge-primary {
+  background: linear-gradient(135deg, $primary-accent 0%, $secondary-accent 100%) !important;
+  color: white !important;
+  box-shadow: 0 4px 10px rgba(78, 84, 200, 0.25);
+  
+  &:hover {
+    background: linear-gradient(135deg, darken($primary-accent, 4%) 0%, darken($secondary-accent, 4%) 100%) !important;
+    box-shadow: 0 6px 15px rgba(78, 84, 200, 0.35);
+  }
+}
+
 .badge-success {
   background-color: $success-accent !important;
   color: white;
   box-shadow: 0 3px 6px rgba(46, 204, 113, 0.2);
+  
+  &:hover {
+    background-color: darken($success-accent, 5%) !important;
+    box-shadow: 0 5px 12px rgba(46, 204, 113, 0.3);
+  }
 }
 
 .badge-secondary {
@@ -273,10 +316,15 @@ $card-gradient: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
   color: white;
 }
 
-.badge-primary {
-  background: linear-gradient(135deg, $primary-accent 0%, $secondary-accent 100%) !important;
+.badge-danger {
+  background-color: #dc3545 !important;
   color: white !important;
-  box-shadow: 0 4px 10px rgba(78, 84, 200, 0.25);
+  box-shadow: 0 3px 6px rgba(220, 53, 69, 0.2);
+  
+  &:hover {
+    background-color: darken(#dc3545, 5%) !important;
+    box-shadow: 0 5px 12px rgba(220, 53, 69, 0.3);
+  }
 }
 
 .badge-light {
@@ -284,6 +332,37 @@ $card-gradient: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
   border: 1px solid #edf2f7;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   color: #4a5568 !important;
+}
+
+// Inactive badge styles
+.badge-inactive-primary {
+  background-color: rgba(9, 255, 255, 0.1) !important;
+  color: #4a4fc5 !important;
+  border: 1px solid rgb(19, 220, 255) !important;
+  
+  &:hover {
+    background-color: rgba(74, 79, 197, 0.2) !important;
+  }
+}
+
+.badge-inactive-success {
+  background-color: rgba(46, 204, 113, 0.1) !important;
+  color: #2ecc71 !important;
+  border: 1px solid rgba(46, 204, 113, 0.15) !important;
+  
+  &:hover {
+    background-color: rgba(46, 204, 113, 0.2) !important;
+  }
+}
+
+.badge-inactive-danger {
+  background-color: rgba(220, 53, 69, 0.1) !important;
+  color: #dc3545 !important;
+  border: 1px solid rgba(220, 53, 69, 0.15) !important;
+  
+  &:hover {
+    background-color: rgba(220, 53, 69, 0.2) !important;
+  }
 }
 
 // ==========================
@@ -344,30 +423,36 @@ $card-gradient: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
 }
 
 // ==========================
-// Applied Badge Top Right
+// Status Badges (Updated)
 // ==========================
-.applied-badge-top-right {
-  position: absolute;
-  top: -70px;
-  right: 0;
-  z-index: 100;
-  filter: drop-shadow(0 5px 10px rgba(78, 84, 200, 0.25));
+.badge-status-applied {
+  background-color: $primary-accent !important; // Blue
+  color: white !important;
+  
+  &:hover {
+    background-color: darken($primary-accent, 5%) !important;
+    box-shadow: 0 4px 8px rgba($primary-accent, 0.3);
+  }
+}
 
-  .badge {
-    padding: 0.7rem 1.3rem;
-    font-size: 0.9rem;
-    border-radius: 24px;
-    background-color: #dc3545 !important;
-    color: white !important;
-    font-weight: 600;
-    letter-spacing: 0.75px;
-    transition: all 0.3s ease;
-    
-    &:hover {
-      background-color: darken(#dc3545, 5%) !important;
-      transform: none;
-      box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
-    }
+.badge-status-shortlisted,
+.badge-status-rejected {
+  background-color: #dc3545 !important; // Red
+  color: white !important;
+  
+  &:hover {
+    background-color: darken(#dc3545, 5%) !important;
+    box-shadow: 0 4px 8px rgba(#dc3545, 0.3);
+  }
+}
+
+.badge-status-withdrawn {
+  background-color: #8a93a2 !important; // Grey
+  color: white !important;
+  
+  &:hover {
+    background-color: darken(#8a93a2, 5%) !important;
+    box-shadow: 0 4px 8px rgba(#8a93a2, 0.3);
   }
 }
 
@@ -494,4 +579,17 @@ $card-gradient: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
       }
     }
   }
+}
+// Add this to prevent expensive hover effects during filtering
+.filtering * {
+  transition: none !important;
+}
+
+// Add to loading indicator
+.loading-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
 }

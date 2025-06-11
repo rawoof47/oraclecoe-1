@@ -17,6 +17,8 @@ import { ApplicationStatusService } from '../../services/application-status.serv
 import { JobPost } from '../../auth/models/job-post.model';
 import { Application } from '../../auth/models/application.model';
 
+import { APPLICATION_STATUS, STATUS_LABELS } from '../../shared/constants/constants';
+
 export interface AppliedJobPost extends JobPost {
   application_id: string;
   status_id: string;
@@ -54,12 +56,9 @@ export class AppliedJobsComponent implements OnInit {
   currentWithdrawalReason = '';
   viewReasonText = '';
 
-  statusMap: Record<string, string> = {
-    '12c7f28f-3a21-11f0-8520-ac1f6bbcd360': 'Applied',
-    '99e8ca42-4058-11f0-8520-ac1f6bbcd360': 'Withdrawn',
-    'e8d0da93-452c-11f0-8520-ac1f6bbcd360': 'Shortlisted',
-    'e8d0fb03-452c-11f0-8520-ac1f6bbcd360': 'Rejected'
-  };
+  shortlistedCount = 0;
+  rejectedCount = 0;
+  appliedCount = 0;
 
   constructor(
     private jobPostService: JobPostService,
@@ -75,7 +74,23 @@ export class AppliedJobsComponent implements OnInit {
 
   private mapStatus(statusId: string, withdrawn: boolean): string {
     if (withdrawn) return 'Withdrawn';
-    return this.statusMap[statusId] || statusId;
+    return STATUS_LABELS[statusId] || statusId;
+  }
+
+  private updateCounts(): void {
+    this.appliedCount = this.appliedJobPosts.filter(job =>
+      job.status_id === APPLICATION_STATUS.APPLIED && !job.withdrawn
+    ).length;
+
+    this.shortlistedCount = this.appliedJobPosts.filter(job =>
+      job.status_id === APPLICATION_STATUS.SHORTLISTED && !job.withdrawn
+    ).length;
+
+    this.rejectedCount = this.appliedJobPosts.filter(job =>
+      job.status_id === APPLICATION_STATUS.REJECTED && !job.withdrawn
+    ).length;
+
+    console.log(`[Counts] Applied: ${this.appliedCount}, Shortlisted: ${this.shortlistedCount}, Rejected: ${this.rejectedCount}`);
   }
 
   private loadAppliedJobs(): void {
@@ -98,9 +113,9 @@ export class AppliedJobsComponent implements OnInit {
           .filter(app => app.job_post)
           .map(app => {
             const job: AppliedJobPost = {
-  ...(app.job_post as JobPost),
-  application_id: app.id,
-  status_id: app.application_status_id,
+              ...(app.job_post as JobPost),
+              application_id: app.id,
+              status_id: app.application_status_id,
               status: this.mapStatus(app.application_status_id, !!app.withdrawn),
               withdrawn: !!app.withdrawn,
               withdrawal_reason: app.withdrawal_reason,
@@ -124,6 +139,7 @@ export class AppliedJobsComponent implements OnInit {
       next: (enrichedJobs) => {
         console.log('[loadAppliedJobs] Enriched Jobs:', enrichedJobs);
         this.appliedJobPosts = enrichedJobs;
+        this.updateCounts();
         this.loading = false;
       },
       error: (err) => {
