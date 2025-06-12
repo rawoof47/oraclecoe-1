@@ -1,4 +1,12 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  HostListener,
+  ElementRef,
+  ViewChild
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { JobPostService } from '../../../../services/job-post.service';
@@ -31,6 +39,9 @@ export class SkillFiltersComponent implements OnInit {
   @Output() filteredJobIds = new EventEmitter<string[]>();
   @Output() filtersChanged = new EventEmitter<{ skillIds: string[]; certIds: string[] }>();
 
+  @ViewChild('skillsDropdown') skillsDropdown!: ElementRef;
+  @ViewChild('certsDropdown') certsDropdown!: ElementRef;
+
   constructor(private jobPostService: JobPostService) {}
 
   ngOnInit(): void {
@@ -38,6 +49,25 @@ export class SkillFiltersComponent implements OnInit {
     this.loadJobMappings();
     this.loadSkillsByCategory();
     this.loadCertificationsByCategory();
+  }
+
+  @HostListener('document:click', ['$event'])
+  handleClickOutside(event: MouseEvent) {
+    if (
+      this.showSkillsDropdown &&
+      this.skillsDropdown &&
+      !this.skillsDropdown.nativeElement.contains(event.target)
+    ) {
+      this.showSkillsDropdown = false;
+    }
+
+    if (
+      this.showCertsDropdown &&
+      this.certsDropdown &&
+      !this.certsDropdown.nativeElement.contains(event.target)
+    ) {
+      this.showCertsDropdown = false;
+    }
   }
 
   toggleSkillsDropdown(): void {

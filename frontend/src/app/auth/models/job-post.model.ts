@@ -1,3 +1,5 @@
+import { Application } from './application.model'; // ✅ Add this import
+
 export interface JobPost {
   id?: string; // UUID
   recruiter_id: string; // UUID of the recruiter
@@ -25,4 +27,8 @@ export interface JobPost {
   preferred_qualifications?: string;
   what_we_offer?: string;
   how_to_apply?: string;
+
+  // ✅ Add applications relationship
+  applications?: Application[];
+  applicationsCount?: number;
 }

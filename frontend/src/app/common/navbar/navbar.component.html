@@ -64,12 +64,38 @@
               </div>
             </a>
             <ul class="dropdown-menu dropdown-menu-end profile-dropdown">
+<<<<<<< HEAD
               <!-- Show 'My Profile' only for candidates -->
+=======
+
+              <!-- Candidate Dashboard -->
+>>>>>>> e78dc047cc8b583011a0f71a90cdd889d50d7abe
               <li *ngIf="(userRole$ | async) === 'candidate'">
                 <a class="dropdown-item" routerLink="/dashboard">
-                  <mat-icon class="me-2">person</mat-icon>My Profile
+                  <mat-icon class="me-2 menuIcon">person</mat-icon>My Profile
                 </a>
               </li>
+
+              <!-- Recruiter Dashboard -->
+              <li *ngIf="(userRole$ | async) === 'recruiter'">
+                <a class="dropdown-item" routerLink="/recruiter-dashboard">
+                  <mat-icon class="me-2 menuIcon">dashboard</mat-icon>Dashboard
+                </a>
+              </li>
+
+              <!-- Common Options -->
+              <li>
+                <a class="dropdown-item" routerLink="/settings">
+                  <mat-icon class="me-2 menuIcon">settings</mat-icon>Account Settings
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" routerLink="/notifications">
+                  <mat-icon class="me-2 menuIcon">notifications</mat-icon>
+                  Notifications <span class="notification-badge">3</span>
+                </a>
+              </li>
+<<<<<<< HEAD
               <!-- Or just show this line if you want everyone to see it -->
               <li>
                 <a class="dropdown-item" routerLink="/dashboard">
@@ -85,12 +111,34 @@
               <li>
                 <a class="dropdown-item logout-item" (click)="logout()">
                   <mat-icon class="me-2">logout</mat-icon>Log Out
+=======
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <a class="dropdown-item logout-item" (click)="logout()">
+                  <mat-icon class="me-2 menuIcon">logout</mat-icon>Log Out
+>>>>>>> e78dc047cc8b583011a0f71a90cdd889d50d7abe
                 </a>
               </li>
             </ul>
           </li>
         </ul> <!-- ✅ Properly closed -->
 
+<<<<<<< HEAD
+=======
+          <!-- Login/Register -->
+          <li class="nav-item dropdown" *ngIf="!(isLoggedIn$ | async)">
+            <a href="javascript:void(0)" class="nav-link dropdown-toggle text-primary" data-bs-toggle="dropdown">
+              <mat-icon class="me-1">login</mat-icon> Login/Register
+              <mat-icon class="ms-1">arrow_drop_down</mat-icon>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a routerLink="/login" class="dropdown-item">Login</a></li>
+              <li><a routerLink="/register" class="dropdown-item">Register</a></li>
+            </ul>
+          </li>
+
+        </ul>
+>>>>>>> e78dc047cc8b583011a0f71a90cdd889d50d7abe
 
         <!-- Rest of your original navbar remains unchanged -->
         <!-- ... -->

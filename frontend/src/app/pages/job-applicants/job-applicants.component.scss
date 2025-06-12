@@ -1,0 +1,649 @@
+// ==========================
+// Global Variables & Tokens
+// ==========================
+$primary-accent: #4a6cf7;  // Primary blue
+$success-accent: #0acf83;  // Success green
+$danger-color: #ff5a5f;    // Error red
+$neutral-light: #f8f9fa;
+$text-color: #2d3748;
+$muted-text: #718096;
+$border-radius: 12px;      // Slightly reduced
+$shadow-color: rgba(0, 0, 0, 0.05);
+$background-grey: #f5f7fa;
+$transition-base: all 0.2s ease;
+$card-min-size: 280px;     // More compact size
+
+// ==========================
+// Layout & Spacing
+// ==========================
+.job-applicants-page {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: $text-color;
+  background: linear-gradient(135deg, $background-grey 0%, #edf2f7 100%);
+  padding: 2.5rem 1.5rem;
+  min-height: 100vh;
+  
+  // Grid layout for applicant cards
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+
+  > h2, > .alert, > .spinner-border {
+    grid-column: 1 / -1;
+  }
+
+  h2 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    letter-spacing: -0.75px;
+    margin-bottom: 1.5rem;
+    color: #1a202c;
+    position: relative;
+    padding-bottom: 1rem;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 5rem;
+      height: 5px;
+      background: linear-gradient(90deg, $primary-accent, lighten($primary-accent, 25%));
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
+
+    &:hover::after {
+      width: 6rem;
+    }
+  }
+
+  .alert {
+    border-radius: $border-radius;
+    font-size: 0.95rem;
+    padding: 1.1rem 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-left: 5px solid $primary-accent;
+    background-color: lighten($primary-accent, 45%);
+    transition: transform 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  .spinner-border {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: 2.5rem auto;
+    color: $primary-accent;
+    border-width: 0.2em;
+    animation: spin 1s linear infinite;
+  }
+
+  // ==========================
+  // Enhanced Applicant Cards Grid
+  // ==========================
+  .applicant-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax($card-min-size, 1fr));
+    gap: 2rem;
+  }
+
+  .applicant-card {
+    border: 1px solid rgba(224, 224, 224, 0.6);
+    border-radius: $border-radius;
+    background-color: #fff;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
+    padding: 1.75rem;
+    transition: $transition-base;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    position: relative;
+    overflow: hidden;
+    
+    // Card accent bar
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, $primary-accent, lighten($primary-accent, 20%));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover {
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      transform: translateY(-5px);
+      
+      &::before {
+        opacity: 1;
+      }
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      
+      .avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, lighten($primary-accent, 15%), $primary-accent);
+        color: white;
+        box-shadow: 0 4px 10px rgba($primary-accent, 0.15);
+        font-size: 1.25rem;
+        position: relative;
+        overflow: hidden;
+        
+        // Avatar status indicator
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          width: 12px;
+          height: 12px;
+          background: $success-accent;
+          border-radius: 50%;
+          border: 2px solid white;
+        }
+      }
+
+      .applicant-info {
+        flex: 1;
+        
+        h5 {
+          font-size: 1.3rem;
+          font-weight: 800;
+          margin-bottom: 0.35rem;
+          line-height: 1.3;
+        }
+        
+        small {
+          color: $muted-text;
+          font-size: 0.9rem;
+          display: block;
+          margin-bottom: 0.5rem;
+        }
+        
+        .badge {
+          font-size: 0.8rem;
+          font-weight: 700;
+          background-color: rgba($primary-accent, 0.1);
+          color: $primary-accent;
+          padding: 0.4em 0.85em;
+          border-radius: 10px;
+          letter-spacing: 0.3px;
+          display: inline-block;
+          backdrop-filter: blur(4px);
+        }
+      }
+    }
+
+    .card-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      flex: 1;
+      
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.95rem;
+        
+        .label {
+          color: $muted-text;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+        
+        .value {
+          font-weight: 700;
+          text-align: right;
+          max-width: 65%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+
+    .card-footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      margin-top: auto;
+      padding-top: 0.75rem;
+      
+      .btn {
+        flex: 1;
+        min-width: 110px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        padding: 0.65rem 1rem;
+        border-radius: 10px;
+        transition: $transition-base;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        
+        &::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(255, 255, 255, 0.15);
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          z-index: -1;
+        }
+        
+        &:hover::after {
+          opacity: 1;
+        }
+        
+        &:focus {
+          outline: 3px solid rgba($primary-accent, 0.3);
+          outline-offset: 2px;
+        }
+      }
+
+      .btn-outline-secondary {
+        border: 1px solid #e2e8f0;
+        color: $text-color;
+        background-color: rgba(#e2e8f0, 0.2);
+        
+        &:hover {
+          background-color: #edf2f7;
+          border-color: #cbd5e0;
+        }
+      }
+
+      .btn-success {
+        background-color: $success-accent;
+        border-color: $success-accent;
+        box-shadow: 0 4px 10px rgba($success-accent, 0.25);
+        
+        &::after {
+          background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2));
+        }
+        
+        &:hover {
+          background-color: darken($success-accent, 5%);
+          box-shadow: 0 6px 15px rgba($success-accent, 0.35);
+        }
+      }
+
+      .btn-danger {
+        background-color: $danger-color;
+        border-color: $danger-color;
+        box-shadow: 0 4px 10px rgba($danger-color, 0.25);
+        
+        &::after {
+          background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2));
+        }
+        
+        &:hover {
+          background-color: darken($danger-color, 5%);
+          box-shadow: 0 6px 15px rgba($danger-color, 0.35);
+        }
+      }
+    }
+  }
+
+  // ==========================
+  // Enhanced Modal Styling
+  // ==========================
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+    backdrop-filter: blur(5px);
+    animation: fadeInOverlay 0.4s ease;
+  }
+
+  .modal-content {
+    background: #fff;
+    border-radius: $border-radius;
+    box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 520px;
+    padding: 1.75rem;
+    animation: fadeInModal 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+    border: none;
+    position: relative;
+    overflow: hidden;
+
+    // Modal accent
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, $primary-accent, lighten($primary-accent, 25%));
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid $neutral-light;
+
+      h5 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #1a202c;
+        letter-spacing: -0.5px;
+      }
+
+      .modal-close {
+        background: transparent;
+        border: none;
+        font-size: 1.6rem;
+        color: $muted-text;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: $transition-base;
+        position: relative;
+
+        &:hover {
+          color: $text-color;
+          background-color: $neutral-light;
+          transform: rotate(90deg);
+        }
+        
+        &:focus {
+          outline: 3px solid rgba($primary-accent, 0.3);
+        }
+      }
+    }
+
+    .modal-body {
+      .applicant-info {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 0.75rem 1.5rem;
+
+        .label {
+          color: $muted-text;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .value {
+          font-weight: 700;
+          word-break: break-word;
+          padding: 0.25rem 0;
+        }
+      }
+
+      .reason-title {
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        color: $danger-color;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.1rem;
+      }
+
+      .reason-box {
+        background-color: lighten($danger-color, 48%);
+        padding: 1.25rem;
+        border-radius: $border-radius;
+        font-size: 1rem;
+        color: darken($danger-color, 20%);
+        border-left: 5px solid $danger-color;
+        line-height: 1.6;
+        box-shadow: 0 3px 8px rgba($danger-color, 0.08);
+      }
+    }
+  }
+
+  @keyframes fadeInOverlay {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  @keyframes fadeInModal {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  // ==========================
+  // Responsive Design
+  // ==========================
+  @media (max-width: 768px) {
+    padding: 1.5rem 1rem;
+    gap: 1.5rem;
+
+    h2 {
+      font-size: 1.8rem;
+      padding-bottom: 0.75rem;
+      
+      &::after {
+        width: 3.5rem;
+      }
+    }
+
+    .applicant-cards-container {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .applicant-card {
+      padding: 1.5rem;
+      
+      .card-header .avatar {
+        width: 46px;
+        height: 46px;
+      }
+      
+      .card-footer {
+        flex-direction: column;
+        
+        .btn {
+          width: 100%;
+          min-width: auto;
+        }
+      }
+    }
+
+    .modal-content {
+      padding: 1.5rem 1.25rem;
+      
+      .modal-header h5 {
+        font-size: 1.35rem;
+      }
+    }
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .applicant-cards-container {
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.75rem;
+    }
+  }
+
+  @media (min-width: 1025px) {
+    padding: 3rem 2rem;
+    
+    .applicant-cards-container {
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2.25rem;
+    }
+  }
+}
+
+// ==========================
+// View Reason Button
+// ==========================
+.btn-view-reason {
+  background-color: transparent;
+  color: $danger-color;
+  border: 2px solid $danger-color;
+  border-radius: 10px;
+  padding: 0.25rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: $transition-base;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba($danger-color, 0.08);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+  }
+
+  &:hover,
+  &:focus {
+    background-color: transparent;
+    color: darken($danger-color, 12%);
+    border-color: darken($danger-color, 12%);
+    
+    &::after {
+      opacity: 1;
+    }
+  }
+
+  &:active {
+    background-color: rgba($danger-color, 0.15);
+    transform: translateY(2px);
+  }
+  
+  i {
+    font-size: 1.1rem;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// ... existing styles ...
+
+// ==========================
+// Snackbar Styling
+// ==========================
+.snackbar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 16px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: snackbarIn 0.3s ease-out, snackbarOut 0.3s ease-in 2.7s;
+  max-width: 90%;
+  width: max-content;
+  
+  &-success {
+    background-color: #0acf83;
+    color: white;
+  }
+  
+  &-error {
+    background-color: #ff5a5f;
+    color: white;
+  }
+  
+  &-close {
+    background: transparent;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0;
+    margin-left: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+    
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+@keyframes snackbarIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes snackbarOut {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+}
+
+// ... existing styles ...

@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { JobPostSkill } from 'src/job-post-skill/entities/job-post-skill.entity';
+import { Application } from 'src/applications/entities/application.entity';
 
 @Entity('job_posts')
 export class JobPost {
@@ -84,4 +85,8 @@ export class JobPost {
     cascade: true,
   })
   jobPostSkills: JobPostSkill[];
+
+  // ✅ NEW: Reverse relation for applications
+  @OneToMany(() => Application, (application) => application.job_post)
+  applications: Application[];
 }

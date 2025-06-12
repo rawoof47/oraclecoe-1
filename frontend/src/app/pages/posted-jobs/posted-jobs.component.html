@@ -1,0 +1,148 @@
+<app-navbar></app-navbar>
+
+<div class="dashboard-area ptb-100">
+  <div class="container">
+    <div class="row">
+      
+      <!-- Sidebar (Recruiter Info) -->
+      <div class="col-lg-4 col-md-12">
+        <div class="profile-item text-center mb-4">
+          <img
+            src="img/ChatGPT Image Jun 8, 2025, 02_58_52 PM.png"
+            alt="Recruiter Headshot"
+            class="img-fluid rounded-circle mb-3"
+            style="max-width: 150px;"
+          />
+          <h2 class="mb-1">Sarah Johnson</h2>
+          <span class="text-muted">Talent Acquisition Manager</span>
+        </div>
+        <div class="nav flex-column nav-pills">
+          <a
+            class="nav-link"
+            routerLink="/recruiter-dashboard"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <i class="bx bx-user"></i> My Profile
+          </a>
+          <a class="nav-link" routerLink="/post-a-job" routerLinkActive="active">
+            <i class="bx bx-plus"></i> Post a New Job
+          </a>
+          <a
+            class="nav-link active"
+            routerLink="/recruiter/posted-jobs"
+            routerLinkActive="active"
+          >
+            <i class="bx bx-list-ul"></i> Posted Jobs
+          </a>
+          <a
+            class="nav-link"
+            routerLink="/job-applicants"
+            routerLinkActive="active"
+          >
+            <i class="bx bx-file"></i> Applications
+          </a>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-lg-8 col-md-12">
+        <div class="profile-content">
+          <div class="jobs-content">
+
+            <div *ngIf="loading" class="loading-spinner text-center my-5">
+              <mat-spinner diameter="50"></mat-spinner>
+              <p class="mt-3">Loading your job posts...</p>
+            </div>
+
+            <div *ngIf="error" class="error-message text-danger text-center my-4">
+              <mat-icon>error_outline</mat-icon>
+              <p>{{ error }}</p>
+            </div>
+
+            <div *ngIf="!loading && !error && jobPosts.length === 0" class="no-jobs text-center my-5">
+              <mat-icon>work_outline</mat-icon>
+              <h3>No Jobs Posted Yet</h3>
+              <p>You haven't posted any jobs yet.</p>
+            </div>
+
+            <div *ngIf="jobPosts.length > 0" class="job-cards-grid row">
+              <div class="col-12" *ngFor="let job of jobPosts">
+                <mat-card class="job-card horizontal-card d-flex justify-content-between align-items-stretch shadow-sm p-3">
+                  
+                  <!-- Left Content -->
+                  <div class="card-content-wrapper flex-grow-1 pe-4 border-end">
+                    <div class="job-header d-flex gap-3 align-items-start mb-2">
+                      <div class="status-indicator mt-1" [class.active]="job.status_id === '36f3301d-318e-11f0-aa4d-80ce6232908a'"></div>
+                      <div>
+                        <h3 class="job-title mb-1">{{ job.job_title }}</h3>
+                        <div class="d-flex flex-wrap gap-3 text-muted small">
+                          <span class="d-flex align-items-center gap-1">
+                            <mat-icon fontIcon="location_on"></mat-icon>
+                            {{ job.location || 'Not specified' }}
+                          </span>
+                          <span class="d-flex align-items-center gap-1">
+                            <mat-icon fontIcon="business_center"></mat-icon>
+                            {{ job.work_mode || 'Not specified' }}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="job-meta-grid mt-3">
+                      <div class="meta-item">
+                        <mat-icon>schedule</mat-icon>
+                        <span>Posted: {{ job.created_at ? formatDate(job.created_at) : 'Not specified' }}</span>
+                      </div>
+                      <div class="meta-item">
+                        <mat-icon>event</mat-icon>
+                        <span>Deadline: {{ job.application_deadline ? formatDate(job.application_deadline) : 'None' }}</span>
+                      </div>
+                      <div class="meta-item">
+                        <mat-icon>payments</mat-icon>
+                        <span>{{ job.compensation_range | compensationFormat }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Right Content with Action Buttons -->
+                  <div class="d-flex flex-column justify-content-between ps-4 job-actions-area">
+                    <div class="d-flex flex-column gap-1 text-muted small mb-3">
+                      <div class="d-flex align-items-center gap-1">
+  <mat-icon>description</mat-icon>
+  <span>{{ job.applicationsCount }} Application(s)</span>
+</div>
+                      <div class="status-badge mt-1" [class.active]="job.status_id === '36f3301d-318e-11f0-aa4d-80ce6232908a'">
+                        {{ job.status_id === '36f3301d-318e-11f0-aa4d-80ce6232908a' ? 'Active' : 'Inactive' }}
+                      </div>
+                    </div>
+
+                    <mat-card-actions class="card-actions d-flex flex-wrap gap-2 justify-content-end">
+                      <!-- View Applicants Button -->
+                      <button mat-stroked-button color="primary" [routerLink]="['/job-applicants', job.id]">
+                        View Applicants
+                      </button>
+                      <!-- Edit Button -->
+                      <button mat-stroked-button [routerLink]="['/edit-job', job.id]">
+                        Edit
+                      </button>
+                      <!-- Delete Button with Confirmation -->
+                      <button mat-stroked-button color="warn" (click)="openDeleteDialog(job.id!)">
+                        Delete
+                      </button>
+                    </mat-card-actions>
+                  </div>
+
+                </mat-card>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>
+<app-back-to-top></app-back-to-top>

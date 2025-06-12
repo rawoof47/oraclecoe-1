@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
 import {  ActivatedRoute, Router } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
@@ -10,10 +10,16 @@ import { BackToTopComponent } from '../../common/back-to-top/back-to-top.compone
 import { JobPostService } from '../../services/job-post.service';
 import { JobPost } from '../../auth/models/job-post.model';
 import { AuthStateService } from '../../services/auth-state.service';
+<<<<<<< HEAD
 
 
 // ✅ Import the pipe from its shared location
+=======
+>>>>>>> e78dc047cc8b583011a0f71a90cdd889d50d7abe
 import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.pipe';
+import { ApplicationStatusService } from '../../services/application-status.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-job-details',
@@ -26,12 +32,12 @@ import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.p
     NavbarComponent,
     FooterComponent,
     BackToTopComponent,
-    CompensationFormatPipe // ✅ Include in component imports
+    CompensationFormatPipe
   ],
   templateUrl: './job-details.component.html',
   styleUrls: ['./job-details.component.scss']
 })
-export class JobDetailsComponent implements OnInit {
+export class JobDetailsComponent implements OnInit, OnDestroy {
   jobPost: JobPost | null = null;
   isLoading = true;
   error: string | null = null;
@@ -45,16 +51,17 @@ export class JobDetailsComponent implements OnInit {
   hasApplied = false;
   applyStatusMessage = '';
 
+  private destroy$ = new Subject<void>();
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private jobPostService: JobPostService,
-    private authState: AuthStateService
+    private authState: AuthStateService,
+    private applicationStatusService: ApplicationStatusService
   ) {}
 
   ngOnInit(): void {
-    console.log('[JobDetailsComponent] ✅ ngOnInit called');
-
     this.userId = this.authState.getCurrentUserId();
 
     this.route.paramMap.subscribe(params => {
@@ -68,22 +75,33 @@ export class JobDetailsComponent implements OnInit {
         if (this.userId) {
           this.checkIfUserAlreadyApplied(this.userId, this.jobId);
         }
+
+        this.applicationStatusService.statusUpdated$
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(({ jobId, applied }) => {
+            if (jobId === this.jobId) {
+              this.hasApplied = applied;
+              this.applyStatusMessage = applied
+                ? 'You have already applied for this job.'
+                : 'You can apply for this job.';
+            }
+          });
       } else {
-        console.error('[JobDetailsComponent] ❌ Invalid job ID in route param');
         this.error = 'Invalid job ID';
         this.isLoading = false;
       }
     });
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   fetchJobPost(jobId: string): void {
     this.jobPostService.getById(jobId).subscribe({
       next: (res: any) => {
-        if (res?.data?.data) {
-          this.jobPost = res.data.data;
-        } else {
-          this.error = 'Unexpected response format';
-        }
+        this.jobPost = res?.data?.data || null;
         this.isLoading = false;
       },
       error: (err) => {
@@ -145,6 +163,13 @@ export class JobDetailsComponent implements OnInit {
       next: () => {
         this.hasApplied = true;
         this.applyStatusMessage = 'You have successfully applied for this job.';
+        this.applicationStatusService.updateStatus(this.jobId, true);
+
+        // ✅ Add this to refresh status from server
+        if (this.userId) {
+          this.checkIfUserAlreadyApplied(this.userId, this.jobId);
+        }
+
         alert('✅ Application submitted successfully!');
       },
       error: (error) => {

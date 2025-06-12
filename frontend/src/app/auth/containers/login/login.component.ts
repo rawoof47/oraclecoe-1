@@ -68,7 +68,7 @@ export class LoginComponent {
           if (user.role === 'candidate') {
             this.router.navigate(['/jobs']);
           } else if (user.role === 'recruiter') {
-            this.router.navigate(['/post-a-job']);
+            this.router.navigate(['/recruiter-dashboard']);
           } else {
             this.showSnackBar('Unsupported role.', 'snack-error');
             console.warn('⚠️ Role not handled:', user.role);

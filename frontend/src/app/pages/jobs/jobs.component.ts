@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Pipe, PipeTransform } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
@@ -10,38 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { SkillFiltersComponent } from './filters/skills-filter/skills-filter.component';
 import { AuthStateService } from '../../services/auth-state.service';
-
-// ✅ Pipe Definition
-@Pipe({
-  name: 'compensationFormat',
-  standalone: true
-})
-export class CompensationFormatPipe implements PipeTransform {
-  transform(value: string | null | undefined): string {
-    if (!value) return 'Not specified';
-
-    const formatAmount = (numStr: string): string => {
-      const num = parseInt(numStr, 10);
-      return isNaN(num) ? numStr : '₹' + num.toLocaleString('en-IN');
-    };
-
-    if (value.startsWith('<')) {
-      return '< ' + formatAmount(value.substring(1));
-    }
-
-    if (value.startsWith('>')) {
-      return '> ' + formatAmount(value.substring(1));
-    }
-
-    const parts = value.split('-');
-    if (parts.length === 2) {
-      return `${formatAmount(parts[0])} - ${formatAmount(parts[1])}`;
-    }
-
-    return formatAmount(value);
-  }
-}
-
+import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.pipe';
 @Component({
   selector: 'app-jobs',
   standalone: true,
@@ -54,8 +23,8 @@ export class CompensationFormatPipe implements PipeTransform {
     BackToTopComponent,
     FormsModule,
     NgSelectModule,
+    CompensationFormatPipe,
     SkillFiltersComponent,
-    CompensationFormatPipe
   ],
   templateUrl: './jobs.component.html',
   styleUrls: ['./jobs.component.scss']
@@ -93,7 +62,7 @@ export class JobsComponent implements OnInit {
   searchKeyword: string = '';
   searchLocation: string = '';
 
-  currentUserId: string | null = null;
+  currentUserId: string | null = null; // ✅ Replaced hardcoded user ID
 
   selectedSkillIds: string[] = [];
   selectedCertIds: string[] = [];
@@ -103,12 +72,12 @@ export class JobsComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private authState: AuthStateService,
+    private authState: AuthStateService, // ✅ Inject auth service
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.currentUserId = this.authState.getCurrentUserId();
+    this.currentUserId = this.authState.getCurrentUserId(); // ✅ Get current user ID
     this.fetchJobs();
   }
 
@@ -135,7 +104,7 @@ export class JobsComponent implements OnInit {
   }
 
   checkAppliedStatuses(): void {
-    if (!this.currentUserId) return;
+    if (!this.currentUserId) return; // ✅ Skip if not logged in
 
     this.jobs.forEach(job => {
       const payload = {

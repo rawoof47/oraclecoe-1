@@ -48,22 +48,16 @@ export class ApplicationsController {
       throw new NotFoundException('Candidate profile not found for the user');
     }
 
-    const dto: CreateApplicationDto = {
-      candidate_id: candidate.id,
+    return this.applicationsService.createFromUser({
+      user_id: payload.user_id,
       job_id: payload.job_id,
-      application_status_id: '12c7f28f-3a21-11f0-8520-ac1f6bbcd360',
-      withdrawn: false,
-      created_by: payload.user_id,
-      updated_by: payload.user_id,
-    };
-
-    return this.applicationsService.create(dto);
+    });
   }
 
-  @Post('check-by-user-and-job') // ✅ NEW ENDPOINT
+  @Post('check-by-user-and-job')
   @HttpCode(HttpStatus.OK)
   async checkByUserAndJob(
-    @Body() payload: { user_id: string; job_id: string },
+    @Body() payload: { user_id: string; job_id: string; include_withdrawn?: boolean },
   ): Promise<{ applied: boolean }> {
     const candidate = await this.candidateProfileRepository.findOne({
       where: { user_id: payload.user_id },
@@ -75,10 +69,13 @@ export class ApplicationsController {
 
     const application = await this.applicationsService.findByCandidateAndJob(
       candidate.id,
-      payload.job_id
+      payload.job_id,
     );
 
-    return { applied: !!application && !application.withdrawn };
+    return {
+      applied: !!application &&
+        (payload.include_withdrawn ? true : !application.withdrawn),
+    };
   }
 
   @Get()
@@ -102,7 +99,6 @@ export class ApplicationsController {
     );
   }
 
-  // ✅ Get all job_ids the candidate has already applied to (excluding withdrawn)
   @Get('user/:candidateId')
   @HttpCode(HttpStatus.OK)
   async getAppliedJobsByCandidate(
@@ -111,7 +107,6 @@ export class ApplicationsController {
     return this.applicationsService.getAppliedJobIdsByCandidate(candidateId);
   }
 
-  // ✅ New endpoint using userId directly
   @Get('by-user/:userId')
   @HttpCode(HttpStatus.OK)
   async getAppliedJobsByUser(
@@ -133,4 +128,63 @@ export class ApplicationsController {
   async remove(@Param('id') id: string): Promise<void> {
     await this.applicationsService.remove(id);
   }
+
+  @Put('withdraw/:id')
+  @HttpCode(HttpStatus.OK)
+  async withdraw(
+    @Param('id') id: string,
+    @Body() body: { user_id: string; reason?: string },
+  ): Promise<Application> {
+    return this.applicationsService.withdrawWithReason(id, body.user_id, body.reason);
+  }
+
+  @Get('by-user-full/:userId')
+  @HttpCode(HttpStatus.OK)
+  async getApplicationsByUserFull(
+    @Param('userId') userId: string,
+  ): Promise<Application[]> {
+    return this.applicationsService.findByUser(userId);
+  }
+
+  @Get('by-recruiter/:recruiterId')
+  @HttpCode(HttpStatus.OK)
+  async getApplicationsByRecruiter(
+    @Param('recruiterId') recruiterId: string,
+  ): Promise<Application[]> {
+    return this.applicationsService.findByRecruiter(recruiterId);
+  }
+
+  @Put(':id/status')
+  async updateStatus(
+    @Param('id') id: string,
+    @Body() body: { status: string },
+  ): Promise<Application> {
+    return this.applicationsService.updateStatus(id, body.status);
+  }
+
+  // ✅ New: Get withdrawal reason
+  @Get('withdrawal-reason/:id')
+  @HttpCode(HttpStatus.OK)
+  async getWithdrawalReason(@Param('id') id: string): Promise<{ reason: string | null }> {
+    return this.applicationsService.getWithdrawnReason(id);
+  }
+
+  // ✅ New: Reactivate withdrawn application
+  @Put('reactivate/:id')
+  @HttpCode(HttpStatus.OK)
+  async reactivateApplication(
+    @Param('id') id: string,
+    @Body() body: { user_id: string },
+  ): Promise<Application> {
+    return this.applicationsService.reactivate(id, body.user_id);
+  }
+
+  // applications.controller.ts
+@Post('count-by-jobs')
+@HttpCode(HttpStatus.OK)
+async getCountByJobs(
+  @Body() body: { jobIds: string[] }
+): Promise<Record<string, number>> {
+  return this.applicationsService.getCountByJobs(body.jobIds);
+}
 }

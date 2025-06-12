@@ -3,6 +3,8 @@ import {
   IsNotEmpty,
   IsOptional,
   IsBoolean,
+  IsString,
+  MaxLength,
 } from 'class-validator';
 
 /**
@@ -37,6 +39,14 @@ export class CreateApplicationDto {
   @IsOptional()
   @IsBoolean()
   withdrawn?: boolean;
+
+  /**
+   * Reason for withdrawal if any.
+   */
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  withdrawal_reason?: string;
 
   /**
    * UUID of the user who created the record (optional).

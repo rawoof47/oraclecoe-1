@@ -1,0 +1,13 @@
+export const APPLICATION_STATUS = {
+  APPLIED: '12c7f28f-3a21-11f0-8520-ac1f6bbcd360',
+  WITHDRAWN: '99e8ca42-4058-11f0-8520-ac1f6bbcd360',
+  SHORTLISTED: 'e8d0da93-452c-11f0-8520-ac1f6bbcd360',
+  REJECTED: 'e8d0fb03-452c-11f0-8520-ac1f6bbcd360'
+};
+
+export const STATUS_LABELS: Record<string, string> = {
+  [APPLICATION_STATUS.APPLIED]: 'Applied',
+  [APPLICATION_STATUS.WITHDRAWN]: 'Withdrawn',
+  [APPLICATION_STATUS.SHORTLISTED]: 'Shortlisted',
+  [APPLICATION_STATUS.REJECTED]: 'Rejected'
+};

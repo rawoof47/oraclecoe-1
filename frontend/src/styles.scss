@@ -561,7 +561,55 @@ button {
 /* Max width 991px */
 @media only screen and (max-width: 991px) {}
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0;
+    //  font-family: Roboto, "Helvetica Neue", sans-serif; 
+    }
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { 
+    margin: 0; 
+    // font-family: Roboto, "Helvetica Neue", sans-serif; Add commentMore actions
+    }
+    // .jobPost .mat-mdc-tab-body.mat-mdc-tab-body-active{
+//   position: relative;
+//   overflow-x: unset !important;
+//   overflow-y: unset !important;
+// }
+.ng-dropdown-panel .ng-option {
+  cursor: pointer;
+}
+
+.ng-dropdown-panel .ng-option:hover {
+  background-color: #f0f9ff !important; /* Customize to your preferred color */
+  color: #000 !important;
+}
+
+.jobPost .mdc-tab{
+    font-weight: bold !important;
+}
+
+
+/* new styles -2/6/25 */
+
+            .employment-type-dropdown .ng-dropdown-panel {
+                box-sizing: border-box;
+                position: absolute;
+                opacity: 0;
+                width: 100%;
+                z-index: 1050;
+                -webkit-overflow-scrolling: touch;
+                background: #e4e4e4 !important;
+                left: 0px !important;
+              }
+              .ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
+                cursor: pointer;
+                white-space: nowrap;
+                padding-left: 15px;
+              }
+              .custom-checkbox .customCheckBoxLabel{
+                padding-left:10px;
+              }
+              .dropdown-item .mat-icon{
+                    position: relative;
+                    top: 7px;
+              }

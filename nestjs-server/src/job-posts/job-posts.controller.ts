@@ -97,4 +97,12 @@ export class JobPostsController {
     }
     return { message: 'Job post removed successfully', data: jobPost };
   }
+  @Get('by-recruiter/:recruiterId')
+async findByRecruiter(@Param('recruiterId') recruiterId: string) {
+  const jobPosts = await this.jobPostsService.findByRecruiter(recruiterId);
+  return { 
+    message: 'Job posts fetched successfully', 
+    data: jobPosts 
+  };
+}
 }

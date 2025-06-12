@@ -1,29 +1,52 @@
 <app-navbar></app-navbar>
 
-<app-page-banner
-  [pageTitle]="'Applied Jobs'"
-  [backgroundImage]="'img/page-title-bg.jpg'"
-></app-page-banner>
-
 <div class="dashboard-area ptb-100">
   <div class="container">
     <div class="row">
       <!-- Sidebar -->
       <div class="col-lg-4 col-md-12">
-        <!-- (Optional) Insert sidebar content here -->
+        <div class="profile-item">
+          <img src="img/dashboard1.jpg" alt="Dashboard">
+          <h2>Tom Henry</h2>
+          <span>Web Developer</span>
+        </div>
+        <div class="nav flex-column nav-pills">
+          <a class="nav-link" [routerLink]="['/dashboard']" routerLinkActive="active">
+            <i class="bx bx-user"></i> My Profile
+          </a>
+          <a class="nav-link active" [routerLink]="['/applied-jobs']" routerLinkActive="active">
+            <i class="bx bxs-inbox"></i> Applied Jobs
+          </a>
+          <a routerLink="/single-resume" class="nav-link">
+            <i class="bx bx-note"></i> My Resume
+          </a>
+          <a routerLink="/login" class="nav-link">
+            <i class="bx bx-log-out"></i> Logout
+          </a>
+        </div>
       </div>
 
-      <!-- Applied Jobs -->
-      <div class="col-lg-8 col-md-12">
-        <!-- Header with stats -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-          <h2 class="dashboard-heading">Your Applications</h2>
-          <span class="badge badge-pill badge-light">
-            {{ appliedJobPosts.length }} Applied Jobs
-          </span>
-        </div>
+      <!-- Main Content -->
+      <div class="col-lg-8 col-md-12" [class.filtering]="loading">
+        <!-- Filter Badges -->
+        <div class="d-flex flex-wrap gap-3 mb-3 align-items-center justify-content-between">
+  <div class="d-flex gap-3">
+    <span class="badge badge-pill badge-secondary">
+      {{ appliedJobPosts.length }} All jobs
+    </span>
+    <span class="badge badge-pill badge-primary">
+      {{ appliedCount }} Applied
+    </span>
+    <span class="badge badge-pill badge-success">
+      {{ shortlistedCount }} Shortlisted
+    </span>
+    <span class="badge badge-pill badge-danger">
+      {{ rejectedCount }} Rejected
+    </span>
+  </div>
+</div>
 
-        <!-- Error Message -->
+        <!-- Error Alert -->
         <div *ngIf="error" class="alert alert-danger alert-dismissible fade show">
           {{ error }}
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -33,35 +56,62 @@
 
         <!-- Jobs List -->
         <ng-container *ngIf="!loading && appliedJobPosts.length > 0; else noJobs">
-          <div class="job-listings">
-            <article
-              *ngFor="let job of appliedJobPosts"
-              class="card mb-3 border-0 shadow-sm"
-            >
+  <div class="job-listings">
+    <article *ngFor="let job of appliedJobPosts" class="card mb-3 border-0 shadow-sm">
               <div class="card-body p-4">
-                <!-- Wrap content in routerLink -->
-                <a 
-                  [routerLink]="['/job-details', job.id]"
-                  class="d-block text-decoration-none text-body"
-                >
-                  <div class="d-flex justify-content-between align-items-start">
-                    <!-- Job Info -->
-                    <div>
-                      <h3 class="h5 font-weight-bold mb-1">{{ job.job_title }}</h3>
-                      <div class="company-name text-muted mb-2">
-                        Company name
+                <div class="d-flex justify-content-between align-items-start">
+                  <div class="flex-grow-1">
+                    <a [routerLink]="['/job-details', job.id]" class="d-block text-decoration-none text-body mb-2">
+                      <h3 class="h5 font-weight-bold mb-1">
+                        <i class="fas fa-suitcase mr-2 text-primary"></i> {{ job.job_title }}
+                      </h3>
+                      <div class="text-muted small">
+                        <i class="fas fa-building-columns mr-2 text-info"></i> Tech Solutions Inc.
                       </div>
                       <div class="text-muted small">
-                        Applied on {{ job.created_at | date: 'mediumDate' }}
+                        <i class="fas fa-clock-rotate-left mr-2 text-warning"></i>
+                        <span *ngIf="!job.withdrawn">Applied on: {{ formatPostedDate(job.applied_date) }}</span>
+                        <span *ngIf="job.withdrawn">Withdrawn on: {{ formatPostedDate(job.withdrawn_date) }}</span>
                       </div>
-                    </div>
+                    </a>
 
-                    <!-- Status Badge -->
-                    <span class="badge badge-success badge-pill align-self-start">
-                      <i class="fas fa-check-circle mr-1"></i> Applied
-                    </span>
+                    <div class="mt-3 d-flex gap-2 flex-wrap">
+                      <a [routerLink]="['/job-details', job.id]" class="btn btn-primary">
+                        <i class="fas fa-binoculars mr-1"></i> View Job
+                      </a>
+
+                      <button *ngIf="!job.withdrawn"
+                              class="btn btn-danger"
+                              (click)="openWithdrawModal(job.application_id, job.id!)">
+                        <i class="fas fa-user-xmark mr-1"></i> Withdraw
+                      </button>
+
+                      <button *ngIf="job.withdrawn && job.withdrawal_reason"
+                              class="btn btn-secondary"
+                              (click)="openReasonModal(job.withdrawal_reason!)">
+                        <i class="fas fa-comment-dots mr-1"></i> View Reason
+                      </button>
+                    </div>
                   </div>
-                </a>
+
+                  <!-- Badge -->
+                  <span class="badge badge-pill align-self-start"
+                        [ngClass]="{
+                          'bg-primary text-white': job.status_id === '12c7f28f-3a21-11f0-8520-ac1f6bbcd360' && !job.withdrawn,
+                          'bg-success text-white': job.status_id === 'e8d0da93-452c-11f0-8520-ac1f6bbcd360' && !job.withdrawn,
+                          'bg-danger text-white' : job.status_id === 'e8d0fb03-452c-11f0-8520-ac1f6bbcd360' && !job.withdrawn,
+                          'bg-secondary text-white': job.withdrawn
+                        }">
+                    <i class="fas mr-1"
+                       [ngClass]="{
+                         'fa-circle-check': job.status_id === '12c7f28f-3a21-11f0-8520-ac1f6bbcd360' && !job.withdrawn,
+                         'fa-thumbs-up'   : job.status_id === 'e8d0da93-452c-11f0-8520-ac1f6bbcd360' && !job.withdrawn,
+                         'fa-ban'         : job.status_id === 'e8d0fb03-452c-11f0-8520-ac1f6bbcd360' && !job.withdrawn,
+                         'fa-rotate-left' : job.withdrawn
+                       }"></i>
+                    {{ job.status }}
+                  </span>
+                </div>
               </div>
             </article>
           </div>
@@ -81,13 +131,81 @@
           </div>
         </ng-template>
 
-        <!-- Loading Indicator -->
+        <!-- Loading Spinner -->
         <div *ngIf="loading" class="loading-indicator text-center py-5">
           <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
             <span class="sr-only">Loading applied jobs...</span>
           </div>
           <p class="mt-3 text-muted">Loading your applications...</p>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<!-- Withdrawal Modal -->
+<div *ngIf="showWithdrawModal" class="modal-backdrop show" (click)="closeModals()"></div>
+<div *ngIf="showWithdrawModal"
+     class="modal show d-block"
+     tabindex="-1"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="withdrawModalTitle"
+     (document:keydown.escape)="closeModals()">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h5 class="modal-title" id="withdrawModalTitle">Withdraw Application</h5>
+        <button type="button" class="close" (click)="closeModals()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="mb-3">Please provide a reason for withdrawing your application:</p>
+        <textarea class="form-control"
+                  rows="4"
+                  [(ngModel)]="currentWithdrawalReason"
+                  placeholder="Enter your reason..."
+                  autofocus></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModals()">Cancel</button>
+        <button type="button"
+                class="btn btn-danger"
+                [disabled]="!currentWithdrawalReason.trim()"
+                (click)="submitWithdrawal()">
+          Confirm Withdrawal
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Reason View Modal -->
+<div *ngIf="showReasonModal" class="modal-backdrop show" (click)="closeModals()"></div>
+<div *ngIf="showReasonModal"
+     class="modal show d-block"
+     tabindex="-1"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="reasonModalTitle"
+     (document:keydown.escape)="closeModals()">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h5 class="modal-title" id="reasonModalTitle">Withdrawal Reason</h5>
+        <button type="button" class="close" (click)="closeModals()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="p-3 bg-light rounded">
+          <p class="mb-0">{{ viewReasonText }}</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="closeModals()">Close</button>
       </div>
     </div>
   </div>
