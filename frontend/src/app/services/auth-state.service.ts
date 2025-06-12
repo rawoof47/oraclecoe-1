@@ -88,4 +88,10 @@ export class AuthStateService {
     const user = this.getCurrentUser();
     return user ? user.role : null;
   }
+
+  // auth-state.service.ts
+getAccessToken(): string | null {
+  if (!this.isBrowser) return null;
+  return localStorage.getItem('access_token');
+}
 }

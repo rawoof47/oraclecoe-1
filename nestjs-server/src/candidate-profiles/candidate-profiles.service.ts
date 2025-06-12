@@ -20,28 +20,41 @@ export class CandidateProfilesService {
     private readonly statusRepository: Repository<Status>,
   ) {}
 
-  // 🎯 Create a new candidate profile
+  // 🎯 Create or Update candidate profile if it exists (Upsert)
   async create(
     createCandidateProfileDto: CreateCandidateProfileDto,
     userId: string,
   ): Promise<CandidateProfile> {
-    console.log('🔧 [CREATE] Starting candidate profile creation...');
+    console.log('🔧 [UPSERT] Starting candidate profile process...');
     console.log('👤 User ID:', userId);
     console.log('📦 Payload:', createCandidateProfileDto);
 
     try {
+      const existingProfile = await this.candidateProfileRepository.findOne({
+        where: { user_id: userId },
+      });
+
+      if (existingProfile) {
+        console.log(`✏️ Profile already exists for user ID: ${userId}. Updating...`);
+        Object.assign(existingProfile, createCandidateProfileDto, {
+          updated_by: userId,
+        });
+
+        const updatedProfile = await this.candidateProfileRepository.save(existingProfile);
+        console.log('✅ Profile updated successfully:', updatedProfile);
+        return updatedProfile;
+      }
+
       const status = await this.statusRepository.findOne({
         where: { status_name: 'Profile Submitted' },
       });
 
       if (!status) {
         console.error('❌ Status "Profile Submitted" not found');
-        throw new NotFoundException(
-          'Default status "Profile Submitted" not found.',
-        );
+        throw new NotFoundException('Default status "Profile Submitted" not found.');
       }
 
-      const profile = this.candidateProfileRepository.create({
+      const newProfile = this.candidateProfileRepository.create({
         ...createCandidateProfileDto,
         user_id: userId,
         status_id: status.id,
@@ -49,14 +62,13 @@ export class CandidateProfilesService {
         updated_by: userId,
       });
 
-      const savedProfile = await this.candidateProfileRepository.save(profile);
-      console.log('✅ Candidate profile created successfully:', savedProfile);
+      const savedProfile = await this.candidateProfileRepository.save(newProfile);
+      console.log('✅ New candidate profile created:', savedProfile);
       return savedProfile;
+
     } catch (error) {
-      console.error('❌ Error during candidate profile creation:', error);
-      throw new InternalServerErrorException(
-        'Failed to create candidate profile.',
-      );
+      console.error('❌ Error during candidate profile upsert:', error);
+      throw new InternalServerErrorException('Failed to create or update candidate profile.');
     }
   }
 
@@ -156,5 +168,23 @@ export class CandidateProfilesService {
         'Failed to delete candidate profile.',
       );
     }
+  }
+
+  // ✅ Reusable method to upsert by updated_by
+  async updateProfile(data: UpdateCandidateProfileDto) {
+    let profile = await this.candidateProfileRepository.findOne({
+      where: { created_by: data.updated_by },
+    });
+
+    if (!profile) {
+      profile = this.candidateProfileRepository.create({
+        created_by: data.updated_by,
+        ...data,
+      });
+    } else {
+      profile = this.candidateProfileRepository.merge(profile, data);
+    }
+
+    return await this.candidateProfileRepository.save(profile);
   }
 }

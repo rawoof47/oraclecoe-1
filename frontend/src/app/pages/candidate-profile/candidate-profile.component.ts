@@ -108,14 +108,9 @@ export class CandidateProfileComponent implements OnInit {
 
     this.profileService.updateUserName(this.userId, firstName, lastName, middleName).subscribe({
       next: () => {
-        const profileData: CandidateProfile = {
-          about_me: rest.about_me,
-          professional_summary: rest.professional_summary,
-          social_links: rest.social_links,
-          resume_link: rest.resume_link,
-          education: rest.education,
-          experience_years: rest.experience_years,
-          notice_period: rest.notice_period,
+        const profileData = {
+          ...rest,
+          updated_by: this.userId,
         };
 
         this.profileService.saveCandidateProfile(profileData).subscribe({
@@ -123,16 +118,18 @@ export class CandidateProfileComponent implements OnInit {
             this.isSubmitting = false;
             this.showSnackBar('Profile saved successfully!', 'snackbar-success');
           },
-          error: () => {
+          error: (error) => {
             this.isSubmitting = false;
+            console.error('Profile save error:', error);
             this.showSnackBar('Failed to save profile', 'snackbar-error');
-          },
+          }
         });
       },
-      error: () => {
+      error: (error) => {
         this.isSubmitting = false;
+        console.error('Name update error:', error);
         this.showSnackBar('Failed to update name', 'snackbar-error');
-      },
+      }
     });
   }
 
