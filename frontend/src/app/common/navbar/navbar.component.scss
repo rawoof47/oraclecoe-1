@@ -170,4 +170,54 @@
 .menuIcon{
   position: relative;
   top: 6px;}
+<<<<<<< HEAD
 >>>>>>> e78dc047cc8b583011a0f71a90cdd889d50d7abe
+=======
+/* Add this new rule for the logo container */
+.logo-container {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 30px;
+}
+
+/* Updated logo size rules */
+.logo-lg {
+  max-height: 120px; /* Increased from 32px */
+  height: auto;
+  width: auto; /* Ensures proportional scaling */
+  transition: all 0.3s ease;
+}
+
+/* Optional: Adjust for mobile view */
+@media (max-width: 991.98px) {
+  .logo-lg {
+    max-height: 50px; /* Slightly larger than original mobile size */
+  }
+}
+
+/* Logo adjustments */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding-top: 4px; /* Adjust this value to move logo up/down */
+}
+
+.logo-lg {
+  max-height: 140px;
+  height: auto;
+  width: auto;
+  position: relative;
+  top: -12px; /* This moves the logo up (negative value) */
+  transition: all 0.3s ease;
+}
+
+/* Optional: Adjust for mobile view */
+@media (max-width: 991.98px) {
+  .logo-lg {
+    max-height: 36px;
+    top: -3px; /* Slightly less adjustment for mobile */
+  }
+}
+>>>>>>> 729a3cd (feat:(profile page))

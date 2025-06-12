@@ -4,20 +4,22 @@ import {
   Post,
   Body,
   Param,
-  Patch,
   Delete,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CandidateSkillsService } from './candidate-skills.service';
-import { CreateCandidateSkillDto } from './dto/create-candidate-skill.dto';
-import { UpdateCandidateSkillDto } from './dto/update-candidate-skill.dto';
+import { CreateCandidateSkillsBulkDto } from './dto/create-candidate-skill.dto';
 
-@Controller('candidate-skills')
+@Controller('candidate_skills')
 export class CandidateSkillsController {
-  constructor(private readonly candidateSkillsService: CandidateSkillsService) {}
+  constructor(
+    private readonly candidateSkillsService: CandidateSkillsService,
+  ) {}
 
   @Post()
-  create(@Body() createCandidateSkillDto: CreateCandidateSkillDto) {
-    return this.candidateSkillsService.create(createCandidateSkillDto);
+  create(@Body() dto: CreateCandidateSkillsBulkDto) {
+    return this.candidateSkillsService.create(dto);
   }
 
   @Get()
@@ -25,21 +27,22 @@ export class CandidateSkillsController {
     return this.candidateSkillsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.candidateSkillsService.findOne(id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateCandidateSkillDto: UpdateCandidateSkillDto,
-  ) {
-    return this.candidateSkillsService.update(id, updateCandidateSkillDto);
+  @Get('user/:user_id')
+  findByUser(@Param('user_id') userId: string) {
+    return this.candidateSkillsService.findByUserId(userId);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.candidateSkillsService.remove(id);
+  }
+
+  @Post('bulk-replace')
+  @UsePipes(new ValidationPipe({ transform: true })) // ✅ Validation enabled
+  bulkReplaceSkills(@Body() dto: CreateCandidateSkillsBulkDto) {
+    return this.candidateSkillsService.replaceSkills(
+      dto.user_id,
+      dto.skill_ids,
+    );
   }
 }

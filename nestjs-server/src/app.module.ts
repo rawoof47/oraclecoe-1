@@ -32,7 +32,11 @@ import { JobsModule } from './jobs/jobs.module';
 import { SkillsModule } from './skills/skills.module';
 import { CertificationsModule } from './certifications/certifications.module';
 import { JobPostCertificationsModule } from './job-post-certification/job-post-certifications.module';
+<<<<<<< HEAD
 import { TrainingModule } from './training/training.module';
+=======
+import { CandidateCertificationsModule } from './candidate_certifications/candidate_certifications.module';
+>>>>>>> 729a3cd (feat:(profile page))
 
 @Module({
   imports: [
@@ -84,7 +88,11 @@ import { TrainingModule } from './training/training.module';
     SkillsModule,
     CertificationsModule,
     JobPostCertificationsModule,
+<<<<<<< HEAD
     TrainingModule,
+=======
+    CandidateCertificationsModule,
+>>>>>>> 729a3cd (feat:(profile page))
   ],
   controllers: [AppController],
   providers: [AppService],
