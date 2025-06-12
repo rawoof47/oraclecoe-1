@@ -62,22 +62,21 @@ export class UserService {
     return user;
   }
 
-// Update an existing user
-async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-  const result = await this.userRepository.update(id, updateUserDto);
-  if (result.affected === 0) {
-    throw new NotFoundException('User not found');
+  // Update an existing user
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    const result = await this.userRepository.update(id, updateUserDto);
+    if (result.affected === 0) {
+      throw new NotFoundException('User not found');
+    }
+
+    const updatedUser = await this.userRepository.findOne({ where: { id } });
+
+    if (!updatedUser) {
+      throw new NotFoundException('User not found after update');
+    }
+
+    return updatedUser;
   }
-
-  const updatedUser = await this.userRepository.findOne({ where: { id } });
-
-  if (!updatedUser) {
-    throw new NotFoundException('User not found after update');
-  }
-
-  return updatedUser;
-}
-
 
   // Remove a user
   async remove(id: string): Promise<void> {
@@ -85,5 +84,26 @@ async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     if (result.affected === 0) {
       throw new NotFoundException('User not found');
     }
+  }
+
+  // ✅ Update only the name fields
+  async updateName(
+    id: string,
+    first_name: string,
+    last_name: string,
+    middle_name?: string,
+  ): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.first_name = first_name;
+    user.last_name = last_name;
+
+    // Explicitly update middle name only if it's provided
+    user.middle_name = (middle_name === undefined) ? user.middle_name : middle_name;
+
+    return await this.userRepository.save(user);
   }
 }

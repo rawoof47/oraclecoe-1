@@ -32,6 +32,7 @@ import { JobsModule } from './jobs/jobs.module';
 import { SkillsModule } from './skills/skills.module';
 import { CertificationsModule } from './certifications/certifications.module';
 import { JobPostCertificationsModule } from './job-post-certification/job-post-certifications.module';
+import { CandidateCertificationsModule } from './candidate_certifications/candidate_certifications.module';
 
 @Module({
   imports: [
@@ -83,6 +84,7 @@ import { JobPostCertificationsModule } from './job-post-certification/job-post-c
     SkillsModule,
     CertificationsModule,
     JobPostCertificationsModule,
+    CandidateCertificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

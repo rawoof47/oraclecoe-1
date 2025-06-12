@@ -1,11 +1,11 @@
 import { IsUUID, IsArray, ArrayNotEmpty, IsString } from 'class-validator';
 
-export class CreateCandidateSkillsBulkDto {
+export class CreateCandidateCertificationsBulkDto {
   @IsUUID()
   user_id: string;
 
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })
-  skill_ids: string[];
+  certification_ids: string[];
 }

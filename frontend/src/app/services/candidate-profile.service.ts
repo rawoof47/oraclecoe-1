@@ -8,6 +8,8 @@ import { Observable } from 'rxjs';
 export class CandidateProfileService {
   private baseUrl = 'http://localhost:3000/candidate-profiles';
   private skillUrl = 'http://localhost:3000/skills';
+  private certificationUrl = 'http://localhost:3000/certifications';
+  private userUrl = 'http://localhost:3000/users';
 
   constructor(private http: HttpClient) {}
 
@@ -28,9 +30,43 @@ export class CandidateProfileService {
   }
 
   /**
-   * Get all available skills (not used for category-wise selection, but kept optionally)
+   * Get all available skills
    */
   getAllSkills(): Observable<any[]> {
     return this.http.get<any[]>(this.skillUrl);
   }
+
+  /**
+   * Get certifications by category ID
+   * Example: /certifications/by-category/xyz
+   */
+  getCertificationsByCategory(categoryId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.certificationUrl}/by-category/${categoryId}`);
+  }
+
+  /**
+   * Update user's name
+   * Sends PATCH to /users/:id with { first_name, last_name, middle_name }
+   */
+  updateUserName(userId: string, firstName: string, lastName: string, middleName?: string): Observable<any> {
+  // Change to PUT request with correct endpoint
+  return this.http.put(`${this.userUrl}/update-name/${userId}`, {
+    first_name: firstName,
+    last_name: lastName,
+    middle_name: middleName || ''
+  });
+}
+
+  saveCandidateSkills(userId: string, skillIds: string[]) {
+  return this.http.post('/api/candidate_skills/bulk-replace', {
+    user_id: userId,
+    skill_ids: skillIds
+  });
+}
+saveCandidateCertifications(userId: string, certificationIds: string[]): Observable<any> {
+  return this.http.post('/api/candidate-certifications/bulk-replace', {
+    user_id: userId,
+    certification_ids: certificationIds
+  });
+}
 }

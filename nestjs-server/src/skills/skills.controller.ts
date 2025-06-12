@@ -36,4 +36,6 @@ export class SkillsController {
   remove(@Param('id') id: string) {
     return this.skillsService.remove(id);
   }
+
+  
 }

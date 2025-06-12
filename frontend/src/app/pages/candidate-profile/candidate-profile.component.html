@@ -1,114 +1,151 @@
-<form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="profile-form">
+<app-navbar></app-navbar>
 
-  <!-- About Me -->
-  <div class="form-group">
-    <label for="about_me">About Me</label>
-    <textarea id="about_me" formControlName="about_me"></textarea>
-  </div>
+<main class="candidate-profile">
+  <header class="candidate-profile__header">
+    <h1>Candidate Profile</h1>
+    <p>Complete your profile to increase visibility to employers</p>
+  </header>
 
-  <!-- Professional Summary -->
-  <div class="form-group">
-    <label for="professional_summary">Professional Summary</label>
-    <textarea id="professional_summary" formControlName="professional_summary"></textarea>
-  </div>
+  <form class="profile-form" [formGroup]="profileForm" (ngSubmit)="onSubmit()">
 
-  <!-- Social Links -->
-  <div class="form-group">
-    <label for="social_links">Social Links</label>
-    <textarea id="social_links" formControlName="social_links" placeholder="Comma-separated URLs"></textarea>
-  </div>
+    <!-- Personal Information Section -->
+    <section class="form-section">
+      <h2 class="form-section__title">Personal Information</h2>
+      
+      <div class="name-group">
+        <div class="form-group">
+          <label for="firstName" class="form-group__label form-group__label--required">First Name</label>
+          <input id="firstName" type="text" formControlName="firstName" maxlength="50" required />
+        </div>
+        
+        <div class="form-group">
+          <label for="middleName" class="form-group__label">Middle Name</label>
+          <input id="middleName" type="text" formControlName="middleName" maxlength="50" />
+        </div>
+        
+        <div class="form-group">
+          <label for="lastName" class="form-group__label form-group__label--required">Last Name</label>
+          <input id="lastName" type="text" formControlName="lastName" maxlength="50" required />
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="about_me" class="form-group__label">About Me</label>
+        <textarea id="about_me" formControlName="about_me" placeholder="Brief personal introduction"></textarea>
+      </div>
+    </section>
+    
+    <!-- Professional Information Section -->
+    <section class="form-section">
+      <h2 class="form-section__title">Professional Information</h2>
+      
+      <div class="form-group">
+        <label for="professional_summary" class="form-group__label">Professional Summary</label>
+        <textarea id="professional_summary" formControlName="professional_summary" placeholder="Career highlights and expertise"></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label for="social_links" class="form-group__label">Social Links</label>
+        <textarea id="social_links" formControlName="social_links" placeholder="Comma-separated URLs (LinkedIn, GitHub, etc.)"></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label for="resume_link" class="form-group__label">Resume Link</label>
+        <input id="resume_link" type="url" formControlName="resume_link" placeholder="https://example.com/resume.pdf" />
+      </div>
+      
+      <div class="form-group">
+        <label for="education" class="form-group__label">Education</label>
+        <textarea id="education" formControlName="education" placeholder="Degrees, institutions, and years"></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label for="experience_years" class="form-group__label">Experience (Years)</label>
+        <input id="experience_years" type="number" formControlName="experience_years" min="0" max="50" />
+      </div>
+      
+      <div class="form-group">
+        <label for="notice_period" class="form-group__label">Notice Period</label>
+        <select 
+          id="notice_period" 
+          formControlName="notice_period" 
+          class="form-control"
+        >
+          <option value="">Select Notice Period</option>
+          <option value="Immediate">Immediate</option>
+          <option value="< 1 Month">&lt; 1 Month</option>
+          <option value="1 Month">1 Month</option>
+          <option value="2 Months">2 Months</option>
+          <option value="3 Months">3 Months</option>
+        </select>
+      </div>
+    </section>
+    
+    <!-- Skills & Certifications Section -->
+    <section class="form-section">
+      <h2 class="form-section__title">Skills & Certifications</h2>
+      
+      <div class="form-group">
+        <label class="form-group__label">Skills</label>
+        <div class="dropdown" #skillsDropdown>
+          <div class="dropdown__header" (click)="toggleSkillsDropdown()">
+            <span>{{ getSkillsDropdownLabel() }}</span>
+            <span class="arrow">&#9662;</span>
+          </div>
 
-  <!-- Resume Link -->
-  <div class="form-group">
-    <label for="resume_link">Resume Link</label>
-    <input id="resume_link" type="url" formControlName="resume_link" />
-  </div>
+          <div class="dropdown__list" *ngIf="showSkillsDropdown">
+            <div *ngFor="let group of groupedSkills" class="dropdown__group">
+              <div class="dropdown__group-title">{{ group.categoryName }}</div>
+              <div *ngFor="let skill of group.items" class="dropdown__item">
+                <input
+                  type="checkbox"
+                  [checked]="skill.selected"
+                  (change)="onSkillChange(skill)"
+                  [id]="'skill-' + skill.id"
+                />
+                <label [for]="'skill-' + skill.id">
+                  {{ skill.name || 'Unnamed Skill' }}
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-group__label">Certifications</label>
+        <div class="dropdown" #certsDropdown>
+          <div class="dropdown__header" (click)="toggleCertsDropdown()">
+            <span>{{ getCertsDropdownLabel() }}</span>
+            <span class="arrow">&#9662;</span>
+          </div>
 
-  <!-- Education -->
-  <div class="form-group">
-    <label for="education">Education</label>
-    <textarea id="education" formControlName="education"></textarea>
-  </div>
+          <div class="dropdown__list" *ngIf="showCertsDropdown">
+            <div *ngFor="let group of groupedCertifications" class="dropdown__group">
+              <div class="dropdown__group-title">{{ group.categoryName }}</div>
+              <div *ngFor="let cert of group.items" class="dropdown__item">
+                <input
+                  type="checkbox"
+                  [checked]="cert.selected"
+                  (change)="onCertChange(cert)"
+                  [id]="'cert-' + cert.id"
+                />
+                <label [for]="'cert-' + cert.id">
+                  {{ cert.name || 'Unnamed Certification' }}
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button type="submit" [disabled]="isSubmitting">Save Profile</button>
+    </div>
+  </form>
+</main>
 
-  <!-- Experience Years -->
-  <div class="form-group">
-    <label for="experience_years">Experience (Years)</label>
-    <input id="experience_years" type="number" formControlName="experience_years" min="0" max="50" />
-  </div>
-
-  <!-- Notice Period -->
-  <div class="form-group">
-    <label for="notice_period">Notice Period</label>
-    <input id="notice_period" type="text" formControlName="notice_period" />
-  </div>
-
-  <!-- Functional Skills -->
-  <div class="form-group">
-    <label class="form-label">Functional Skills:</label>
-    <ng-select
-      [items]="functionalSkills"
-      bindLabel="name"
-      bindValue="id"
-      [multiple]="true"
-      [searchable]="true"
-      [closeOnSelect]="false"
-      formControlName="functionalSkills"
-      placeholder="Select Functional Skills"
-      class="form-control ng-select-matching"
-    ></ng-select>
-  </div>
-
-  <!-- Technical Skills -->
-  <div class="form-group">
-    <label class="form-label">Technical Skills:</label>
-    <ng-select
-      [items]="technicalSkills"
-      bindLabel="name"
-      bindValue="id"
-      [multiple]="true"
-      [searchable]="true"
-      [closeOnSelect]="false"
-      formControlName="technicalSkills"
-      placeholder="Select Technical Skills"
-      class="form-control ng-select-matching"
-    ></ng-select>
-  </div>
-
-  <!-- Oracle Middleware Skills -->
-  <div class="form-group">
-    <label class="form-label">Oracle Middleware & Database Skills:</label>
-    <ng-select
-      [items]="oracleMiddlewareSkills"
-      bindLabel="name"
-      bindValue="id"
-      [multiple]="true"
-      [searchable]="true"
-      [closeOnSelect]="false"
-      formControlName="oracleMiddlewareSkills"
-      placeholder="Select Middleware Skills"
-      class="form-control ng-select-matching"
-    ></ng-select>
-  </div>
-
-  <!-- Reporting Skills -->
-  <div class="form-group">
-    <label class="form-label">Analytics & Reporting Skills:</label>
-    <ng-select
-      [items]="reportingSkills"
-      bindLabel="name"
-      bindValue="id"
-      [multiple]="true"
-      [searchable]="true"
-      [closeOnSelect]="false"
-      formControlName="reportingSkills"
-      placeholder="Select Reporting Skills"
-      class="form-control ng-select-matching"
-    ></ng-select>
-  </div>
-
-  <!-- Submit Button -->
-  <div class="form-actions">
-    <button type="submit" [disabled]="isSubmitting">Save Profile</button>
-  </div>
-
-</form>
+<app-footer></app-footer>
+<app-back-to-top></app-back-to-top>
