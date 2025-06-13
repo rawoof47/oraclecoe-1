@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { AuthStateService } from '../services/auth-state.service'; // Adjust path if needed
 
 @Injectable({
   providedIn: 'root'
@@ -12,14 +13,17 @@ export class CandidateProfileService {
   private certificationUrl = `${this.backendBaseUrl}/certifications`;
   private userUrl = `${this.backendBaseUrl}/users`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authState: AuthStateService) {}
 
   /**
    * Save candidate profile
+   * Payload includes details like about_me, summary, education, skill_ids, etc.
    */
   saveCandidateProfile(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}`, data);
-  }
+  // Change endpoint to /upsert
+  return this.http.post(`${this.baseUrl}/upsert`, data);
+}
+
 
   /**
    * Get skills by category ID

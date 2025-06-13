@@ -172,21 +172,19 @@ export class CandidateProfilesService {
 
   // ✅ Reusable method to upsert by updated_by
   async updateProfile(data: UpdateCandidateProfileDto) {
-  let profile = await this.candidateProfileRepository.findOne({
-    where: { user_id: data.updated_by },
-  });
-
-  if (!profile) {
-    // Create new profile if none exists
-    profile = this.candidateProfileRepository.create({
-      user_id: data.updated_by,
-      ...data,
+    let profile = await this.candidateProfileRepository.findOne({
+      where: { created_by: data.updated_by },
     });
-  } else {
-    // Update existing profile
-    profile = this.candidateProfileRepository.merge(profile, data);
-  }
 
-  return await this.candidateProfileRepository.save(profile);
-}
+    if (!profile) {
+      profile = this.candidateProfileRepository.create({
+        created_by: data.updated_by,
+        ...data,
+      });
+    } else {
+      profile = this.candidateProfileRepository.merge(profile, data);
+    }
+
+    return await this.candidateProfileRepository.save(profile);
+  }
 }

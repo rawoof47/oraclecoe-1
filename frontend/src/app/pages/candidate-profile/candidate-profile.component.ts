@@ -113,10 +113,9 @@ export class CandidateProfileComponent implements OnInit {
         this.saveSkillsAndCerts().then(() => {
           // Now save the rest of the profile data
           const profileData = {
-  ...rest,
-  user_id: this.userId, // ✅ Add user_id
-  updated_by: this.userId,
-};
+          ...rest,
+          
+        };
           // Remove skills and certs from profile data
           delete profileData.skills;
           delete profileData.certifications;
