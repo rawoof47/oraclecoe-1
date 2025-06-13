@@ -6,16 +6,16 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class CandidateProfileService {
-  private baseUrl = 'http://localhost:3000/candidate-profiles';
-  private skillUrl = 'http://localhost:3000/skills';
-  private certificationUrl = 'http://localhost:3000/certifications';
-  private userUrl = 'http://localhost:3000/users';
+  private backendBaseUrl = 'http://localhost:3000';
+  private baseUrl = `${this.backendBaseUrl}/candidate-profiles`;
+  private skillUrl = `${this.backendBaseUrl}/skills`;
+  private certificationUrl = `${this.backendBaseUrl}/certifications`;
+  private userUrl = `${this.backendBaseUrl}/users`;
 
   constructor(private http: HttpClient) {}
 
   /**
    * Save candidate profile
-   * Payload includes details like about_me, summary, education, skill_ids, etc.
    */
   saveCandidateProfile(data: any): Observable<any> {
     return this.http.post(`${this.baseUrl}`, data);
@@ -23,14 +23,13 @@ export class CandidateProfileService {
 
   /**
    * Get skills by category ID
-   * Example: /skills/1 returns all functional skills
    */
   getSkillsByCategory(categoryId: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.skillUrl}/${categoryId}`);
   }
 
   /**
-   * Get all available skills
+   * Get all skills
    */
   getAllSkills(): Observable<any[]> {
     return this.http.get<any[]>(this.skillUrl);
@@ -38,7 +37,6 @@ export class CandidateProfileService {
 
   /**
    * Get certifications by category ID
-   * Example: /certifications/by-category/xyz
    */
   getCertificationsByCategory(categoryId: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.certificationUrl}/by-category/${categoryId}`);
@@ -46,27 +44,33 @@ export class CandidateProfileService {
 
   /**
    * Update user's name
-   * Sends PATCH to /users/:id with { first_name, last_name, middle_name }
    */
   updateUserName(userId: string, firstName: string, lastName: string, middleName?: string): Observable<any> {
-  // Change to PUT request with correct endpoint
-  return this.http.put(`${this.userUrl}/update-name/${userId}`, {
-    first_name: firstName,
-    last_name: lastName,
-    middle_name: middleName || ''
-  });
-}
+    return this.http.put(`${this.userUrl}/update-name/${userId}`, {
+      first_name: firstName,
+      last_name: lastName,
+      middle_name: middleName || ''
+    });
+  }
 
-  saveCandidateSkills(userId: string, skillIds: string[]) {
-  return this.http.post('/api/candidate_skills/bulk-replace', {
-    user_id: userId,
-    skill_ids: skillIds
-  });
-}
+  /**
+   * Save candidate skills (bulk replace)
+   */
+  saveCandidateSkills(userId: string, skillIds: string[]): Observable<any> {
+    return this.http.post(`${this.backendBaseUrl}/candidate_skills/bulk-replace`, {
+      user_id: userId,
+      skill_ids: skillIds
+    });
+  }
+
+  /**
+   * Save candidate certifications (bulk replace)
+   */
+  // candidate-profile.service.ts
 saveCandidateCertifications(userId: string, certificationIds: string[]): Observable<any> {
-  return this.http.post('/api/candidate-certifications/bulk-replace', {
-    user_id: userId,
-    certification_ids: certificationIds
-  });
+  return this.http.post(
+    `${this.backendBaseUrl}/candidate_certifications/bulk-replace`, // FIXED
+    { user_id: userId, certification_ids: certificationIds }
+  );
 }
 }

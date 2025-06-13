@@ -7,5 +7,5 @@ export class CreateCandidateCertificationsBulkDto {
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })
-  certification_ids: string[];
+  certification_ids: string[]; // FIXED (plural)
 }

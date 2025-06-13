@@ -3,32 +3,23 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { CandidateCertificationsService } from './candidate_certifications.service';
+import { CreateCandidateCertificationsBulkDto } from './dtos/create-candidate_certification.dto';
 
-import { CandidateCertificationsService } from '../candidate_certifications/candidate_certifications.service';
-import { CreateCandidateCertificationDto } from '../dto/create-candidate_certification.dto';
-import { UpdateCandidateCertificationDto } from '../dto/update-candidate_certification.dto';
-import { CreateCandidateCertificationsBulkDto } from '../candidate_certifications/dtos/create-candidate_certification.dto';
-
-@Controller('candidate-certifications')
+@Controller('candidate_certifications')
 export class CandidateCertificationsController {
   constructor(
     private readonly candidateCertificationsService: CandidateCertificationsService,
   ) {}
 
   @Post()
-  create(
-    @Body()
-    createCandidateCertificationDto: CreateCandidateCertificationDto,
-  ) {
-    return this.candidateCertificationsService.create(
-      createCandidateCertificationDto,
-    );
+  create(@Body() dto: CreateCandidateCertificationsBulkDto) {
+    return this.candidateCertificationsService.create(dto);
   }
 
   @Get()
@@ -36,36 +27,22 @@ export class CandidateCertificationsController {
     return this.candidateCertificationsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.candidateCertificationsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body()
-    updateCandidateCertificationDto: UpdateCandidateCertificationDto,
-  ) {
-    return this.candidateCertificationsService.update(
-      +id,
-      updateCandidateCertificationDto,
-    );
+  @Get('user/:user_id')
+  findByUser(@Param('user_id') userId: string) {
+    return this.candidateCertificationsService.findByUserId(userId);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.candidateCertificationsService.remove(+id);
+    return this.candidateCertificationsService.remove(id);
   }
 
   @Post('bulk-replace')
-  @UsePipes(new ValidationPipe())
-  bulkReplaceCertifications(
-    @Body() dto: CreateCandidateCertificationsBulkDto,
-  ) {
+  @UsePipes(new ValidationPipe({ transform: true }))
+  bulkReplace(@Body() dto: CreateCandidateCertificationsBulkDto) {
     return this.candidateCertificationsService.replaceCertifications(
       dto.user_id,
-      dto.certification_ids,
+      dto.certification_ids
     );
   }
 }

@@ -15,6 +15,7 @@ import {
 } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { lastValueFrom } from 'rxjs'; // ✅ Added
 
 import { CandidateProfileService } from '../../services/candidate-profile.service';
 import { AuthStateService } from '../../services/auth-state.service';
@@ -108,21 +109,33 @@ export class CandidateProfileComponent implements OnInit {
 
     this.profileService.updateUserName(this.userId, firstName, lastName, middleName).subscribe({
       next: () => {
-        const profileData = {
-          ...rest,
-          updated_by: this.userId,
-        };
+        // Save skills and certifications FIRST
+        this.saveSkillsAndCerts().then(() => {
+          // Now save the rest of the profile data
+          const profileData = {
+  ...rest,
+  user_id: this.userId, // ✅ Add user_id
+  updated_by: this.userId,
+};
+          // Remove skills and certs from profile data
+          delete profileData.skills;
+          delete profileData.certifications;
 
-        this.profileService.saveCandidateProfile(profileData).subscribe({
-          next: () => {
-            this.isSubmitting = false;
-            this.showSnackBar('Profile saved successfully!', 'snackbar-success');
-          },
-          error: (error) => {
-            this.isSubmitting = false;
-            console.error('Profile save error:', error);
-            this.showSnackBar('Failed to save profile', 'snackbar-error');
-          }
+          this.profileService.saveCandidateProfile(profileData).subscribe({
+            next: () => {
+              this.isSubmitting = false;
+              this.showSnackBar('Profile saved successfully!', 'snackbar-success');
+            },
+            error: (error) => {
+              this.isSubmitting = false;
+              console.error('Profile save error:', error);
+              this.showSnackBar('Failed to save profile', 'snackbar-error');
+            }
+          });
+        }).catch(error => {
+          this.isSubmitting = false;
+          console.error('Skills/certs save error:', error);
+          this.showSnackBar('Failed to save skills or certifications', 'snackbar-error');
         });
       },
       error: (error) => {
@@ -131,6 +144,19 @@ export class CandidateProfileComponent implements OnInit {
         this.showSnackBar('Failed to update name', 'snackbar-error');
       }
     });
+  }
+
+  private async saveSkillsAndCerts(): Promise<void> {
+    const skillIds = this.selectedSkills.map(skill => skill.id);
+    const certIds = this.selectedCertifications.map(cert => cert.id);
+
+    await lastValueFrom(
+      this.profileService.saveCandidateSkills(this.userId!, skillIds)
+    );
+
+    await lastValueFrom(
+      this.profileService.saveCandidateCertifications(this.userId!, certIds)
+    );
   }
 
   fetchSkillsAndCertifications(): void {
