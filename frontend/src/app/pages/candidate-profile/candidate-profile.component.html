@@ -28,7 +28,16 @@
           <input id="lastName" type="text" formControlName="lastName" maxlength="50" required />
         </div>
       </div>
-      
+      <!-- gender  -->
+      <div class="form-group">
+    <label for="gender" class="form-group__label">Gender</label>
+    <select id="gender" formControlName="gender" class="form-control">
+      <option value="">Select Gender</option>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+    </select>
+  </div>
+  <!-- gender  -->
       <div class="form-group">
         <label for="about_me" class="form-group__label">About Me</label>
         <textarea id="about_me" formControlName="about_me" placeholder="Brief personal introduction"></textarea>

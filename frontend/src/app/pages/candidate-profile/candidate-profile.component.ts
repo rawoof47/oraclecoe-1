@@ -78,9 +78,10 @@ export class CandidateProfileComponent implements OnInit {
 
   initializeForm(): void {
     this.profileForm = this.fb.group({
-      firstName: ['', [Validators.required, Validators.maxLength(10)]],
-      middleName: ['', [Validators.maxLength(10)]],
-      lastName: ['', [Validators.required, Validators.maxLength(10)]],
+      firstName: ['', [Validators.required, Validators.maxLength(50)]],  
+    middleName: ['', [Validators.maxLength(50)]],                      
+    lastName: ['', [Validators.required, Validators.maxLength(50)]],
+    gender: [''],   
       about_me: [''],
       professional_summary: [''],
       social_links: [''],
@@ -114,6 +115,7 @@ export class CandidateProfileComponent implements OnInit {
           // Now save the rest of the profile data
           const profileData = {
           ...rest,
+          gender: this.profileForm.value.gender,
           
         };
           // Remove skills and certs from profile data

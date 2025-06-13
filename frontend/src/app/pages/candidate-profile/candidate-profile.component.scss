@@ -568,3 +568,12 @@ body {
 .mb-sm {
   margin-bottom: $spacing-sm;
 }
+// Add this to your .form-group rules
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23546e7a'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right $spacing-md center;
+  background-size: 16px;
+  padding-right: $spacing-xl;
+}

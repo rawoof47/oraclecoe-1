@@ -39,6 +39,11 @@ export class CreateCandidateProfileDto {
   @IsOptional()
   notice_period?: string;
 
+  // ✅ Added gender field
+  @IsString()
+  @IsOptional()
+  gender?: string;
+
   // ✅ Optional metadata fields (will be set in service using userId)
   @IsUUID()
   @IsOptional()
