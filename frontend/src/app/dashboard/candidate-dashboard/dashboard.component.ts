@@ -14,11 +14,6 @@ import { NgClass, NgIf } from '@angular/common';
 })
 export class DashboardComponent {
 
-    // Tabs
-    currentTab = 'tab1';
-    switchTab(event: MouseEvent, tab: string) {
-        event.preventDefault();
-        this.currentTab = tab;
-    }
+    
 
 }
