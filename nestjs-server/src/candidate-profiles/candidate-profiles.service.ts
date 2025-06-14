@@ -187,4 +187,24 @@ export class CandidateProfilesService {
 
     return await this.candidateProfileRepository.save(profile);
   }
+  // Add this method to the service
+async findByUserId(userId: string): Promise<CandidateProfile> {
+  console.log(`🔍 [FIND BY USER ID] Fetching profile for user: ${userId}`);
+  try {
+    const profile = await this.candidateProfileRepository.findOne({ 
+      where: { user_id: userId },
+    });
+
+    if (!profile) {
+      console.warn(`⚠️ Profile for user ID ${userId} not found.`);
+      throw new NotFoundException('Candidate profile not found for this user.');
+    }
+
+    console.log('✅ Found profile by user ID:', profile);
+    return profile;
+  } catch (error) {
+    console.error(`❌ Error fetching profile for user ${userId}:`, error);
+    throw new InternalServerErrorException('Failed to fetch candidate profile.');
+  }
+}
 }

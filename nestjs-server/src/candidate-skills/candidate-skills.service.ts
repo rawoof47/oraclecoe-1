@@ -72,4 +72,11 @@ export class CandidateSkillsService {
       await queryRunner.release();
     }
   }
+  async findSkillsByUserId(user_id: string): Promise<string[]> {
+  const candidateSkills = await this.candidateSkillRepo.find({
+    where: { user_id },
+    relations: ['skill'],
+  });
+  return candidateSkills.map(cs => cs.skill.name);
+}
 }
