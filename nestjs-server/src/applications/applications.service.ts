@@ -217,7 +217,7 @@ export class ApplicationsService {
         'app.withdrawn AS withdrawn',
         'app.withdrawal_reason AS withdrawal_reason',
         'job.job_title AS job_title',
-        'user.full_name AS candidate_name',
+        'user.first_name AS candidate_name',
         'user.email AS candidate_email'
       ])
       .getRawMany();
