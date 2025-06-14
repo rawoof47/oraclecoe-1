@@ -15,7 +15,8 @@ import {
 } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { lastValueFrom } from 'rxjs'; // ✅ Added
+import { lastValueFrom } from 'rxjs';
+import { Router } from '@angular/router'; // Added Router import
 
 import { CandidateProfileService } from '../../services/candidate-profile.service';
 import { AuthStateService } from '../../services/auth-state.service';
@@ -26,8 +27,6 @@ import { CandidateProfile } from '../../auth/models/candidate-profile.model';
 import {
   Certification,
   Skill,
-  SKILL_CATEGORIES,
-  CERT_CATEGORIES,
   loadSkillsAndCertifications,
   toggleSkill,
   toggleCertification,
@@ -55,6 +54,7 @@ export class CandidateProfileComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
   private profileService = inject(CandidateProfileService);
   private authState = inject(AuthStateService);
+  private router = inject(Router); // Injected Router
 
   profileForm!: FormGroup;
   isSubmitting = false;
@@ -66,6 +66,8 @@ export class CandidateProfileComponent implements OnInit {
   selectedCertifications: Certification[] = [];
   showSkillsDropdown = false;
   showCertsDropdown = false;
+  profileSkillIds: string[] = [];
+  profileCertificationIds: string[] = [];
 
   @ViewChild('skillsDropdown') skillsDropdown!: ElementRef;
   @ViewChild('certsDropdown') certsDropdown!: ElementRef;
@@ -73,15 +75,19 @@ export class CandidateProfileComponent implements OnInit {
   ngOnInit(): void {
     this.userId = this.authState.getCurrentUserId();
     this.initializeForm();
+    this.loadUserData();
+    this.loadCandidateProfile();
     this.fetchSkillsAndCertifications();
   }
 
   initializeForm(): void {
     this.profileForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.maxLength(50)]],  
-    middleName: ['', [Validators.maxLength(50)]],                      
-    lastName: ['', [Validators.required, Validators.maxLength(50)]],
-    gender: [''],   
+      middleName: ['', [Validators.maxLength(50)]],                      
+      lastName: ['', [Validators.required, Validators.maxLength(50)]],
+      email: ['', [Validators.required, Validators.email, Validators.maxLength(150)]],
+      mobileNumber: ['', [Validators.maxLength(20)]],
+      gender: [''],   
       about_me: [''],
       professional_summary: [''],
       social_links: [''],
@@ -91,6 +97,50 @@ export class CandidateProfileComponent implements OnInit {
       notice_period: [''],
       skills: [[]],
       certifications: [[]],
+    });
+  }
+
+  private loadUserData(): void {
+    if (!this.userId) return;
+    
+    this.profileService.getUser(this.userId).subscribe({
+      next: (user) => {
+        this.profileForm.patchValue({
+          firstName: user.first_name,
+          middleName: user.middle_name || '',
+          lastName: user.last_name,
+          email: user.email,
+          mobileNumber: user.mobile_number || ''
+        });
+      },
+      error: (error) => {
+        console.error('Failed to load user data', error);
+      }
+    });
+  }
+
+  private loadCandidateProfile(): void {
+    if (!this.userId) return;
+    
+    this.profileService.getMyProfile().subscribe({
+      next: (profile) => {
+        this.profileForm.patchValue({
+          gender: profile.gender || '',
+          about_me: profile.about_me || '',
+          professional_summary: profile.professional_summary || '',
+          social_links: profile.social_links || '',
+          resume_link: profile.resume_link || '',
+          education: profile.education || '',
+          experience_years: profile.experience_years || null,
+          notice_period: profile.notice_period || '',
+        });
+
+        this.profileSkillIds = profile.skill_ids || [];
+        this.profileCertificationIds = profile.certification_ids || [];
+      },
+      error: (error) => {
+        console.error('Failed to load candidate profile', error);
+      }
     });
   }
 
@@ -106,43 +156,56 @@ export class CandidateProfileComponent implements OnInit {
     }
 
     this.isSubmitting = true;
-    const { firstName, middleName, lastName, ...rest } = this.profileForm.value;
+    const { firstName, middleName, lastName, email, mobileNumber, ...rest } = this.profileForm.value;
 
-    this.profileService.updateUserName(this.userId, firstName, lastName, middleName).subscribe({
+    this.profileService.updateUserContactInfo(this.userId, email, mobileNumber).subscribe({
       next: () => {
-        // Save skills and certifications FIRST
-        this.saveSkillsAndCerts().then(() => {
-          // Now save the rest of the profile data
-          const profileData = {
-          ...rest,
-          gender: this.profileForm.value.gender,
-          
-        };
-          // Remove skills and certs from profile data
-          delete profileData.skills;
-          delete profileData.certifications;
+        this.profileService.updateUserName(this.userId!, firstName, lastName, middleName).subscribe({
+          next: () => {
+            this.saveSkillsAndCerts().then(() => {
+              const profileData = {
+                ...rest,
+                gender: this.profileForm.value.gender,
+              };
+              delete profileData.skills;
+              delete profileData.certifications;
 
-          this.profileService.saveCandidateProfile(profileData).subscribe({
-            next: () => {
+              this.profileService.saveCandidateProfile(profileData).subscribe({
+                next: () => {
+                  this.isSubmitting = false;
+                  this.showSnackBar('Profile saved successfully!', 'snackbar-success');
+                  // Added redirection to dashboard
+                  this.router.navigate(['/dashboard']);
+                },
+                error: (error) => {
+                  this.isSubmitting = false;
+                  console.error('Profile save error:', error);
+                  this.showSnackBar('Failed to save profile', 'snackbar-error');
+                }
+              });
+            }).catch(error => {
               this.isSubmitting = false;
-              this.showSnackBar('Profile saved successfully!', 'snackbar-success');
-            },
-            error: (error) => {
-              this.isSubmitting = false;
-              console.error('Profile save error:', error);
-              this.showSnackBar('Failed to save profile', 'snackbar-error');
-            }
-          });
-        }).catch(error => {
-          this.isSubmitting = false;
-          console.error('Skills/certs save error:', error);
-          this.showSnackBar('Failed to save skills or certifications', 'snackbar-error');
+              console.error('Skills/certs save error:', error);
+              this.showSnackBar('Failed to save skills or certifications', 'snackbar-error');
+            });
+          },
+          error: (error) => {
+            this.isSubmitting = false;
+            console.error('Name update error:', error);
+            this.showSnackBar('Failed to update name', 'snackbar-error');
+          }
         });
       },
       error: (error) => {
         this.isSubmitting = false;
-        console.error('Name update error:', error);
-        this.showSnackBar('Failed to update name', 'snackbar-error');
+        console.error('Contact info update error:', error);
+        
+        let errorMsg = 'Failed to update contact information';
+        if (error.status === 409) {
+          errorMsg = 'Email already exists';
+        }
+        
+        this.showSnackBar(errorMsg, 'snackbar-error');
       }
     });
   }
@@ -166,11 +229,32 @@ export class CandidateProfileComponent implements OnInit {
       (skills, certs) => {
         this.groupedSkills = skills;
         this.groupedCertifications = certs;
+        this.setInitialSelections();
       },
       () => {
         this.showSnackBar('Failed to load skills or certifications.', 'snackbar-error');
       }
     );
+  }
+
+  private setInitialSelections(): void {
+    this.groupedSkills.forEach(group => {
+      group.items.forEach((skill: Skill) => {
+        if (this.profileSkillIds.includes(skill.id)) {
+          this.selectedSkills = toggleSkill(skill, this.selectedSkills);
+        }
+      });
+    });
+
+    this.groupedCertifications.forEach(group => {
+      group.items.forEach((cert: Certification) => {
+        if (this.profileCertificationIds.includes(cert.id)) {
+          this.selectedCertifications = toggleCertification(cert, this.selectedCertifications);
+        }
+      });
+    });
+
+    this.updateFormSelections();
   }
 
   toggleSkillsDropdown(): void {

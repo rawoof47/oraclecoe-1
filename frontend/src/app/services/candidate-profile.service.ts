@@ -95,4 +95,19 @@ export class CandidateProfileService {
       map(certs => certs.map(c => c.certification.certification_name))
     );
   }
+
+  updateUserContactInfo(
+  userId: string, 
+  email: string, 
+  mobileNumber?: string
+): Observable<any> {
+  return this.http.put(`${this.userUrl}/${userId}`, {
+    email: email,
+    mobile_number: mobileNumber
+  });
+}
+// Add to CandidateProfileService
+getUser(userId: string): Observable<any> {
+  return this.http.get(`${this.userUrl}/${userId}`);
+}
 }
