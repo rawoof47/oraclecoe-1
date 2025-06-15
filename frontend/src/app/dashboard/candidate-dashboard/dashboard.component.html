@@ -1,99 +1,104 @@
-<app-navbar />
+<app-navbar /> 
+
 <app-page-banner
   [pageTitle]="'Dashboard'"
   [backgroundImage]="'img/page-title-bg.jpg'"
 />
 
-<!-- Profile Section -->
-<section class="dashboard-section">
-  <div class="container">
-    <div class="dashboard-content">
-      <div class="profile-card">
-        <!-- Loading State -->
-        <div *ngIf="isLoading" class="loading-section">
-          <div class="spinner"></div>
-          <p>Loading profile data...</p>
-        </div>
+<!-- Sidebar + Main Content Layout -->
+<div class="dashboard-layout container">
+  <!-- Sidebar -->
+  <app-candidate-sidebar></app-candidate-sidebar>
 
-        <!-- Error State -->
-        <div *ngIf="error && !isLoading" class="error-section">
-          <i class="icon-error"></i>
-          <p>{{ error }}</p>
-          <button class="btn-retry" (click)="fetchCandidateProfile()">Retry</button>
-        </div>
-
-        <!-- Profile Data -->
-        <div *ngIf="profile && !isLoading">
-          <div class="profile-section">
-            <h3>About Me</h3>
-            <p>{{ profile.about_me || 'No information available' }}</p>
+  <!-- Main Dashboard Content -->
+  <div class="dashboard-main">
+    <section class="dashboard-section">
+      <div class="dashboard-content">
+        <div class="profile-card">
+          <!-- Loading State -->
+          <div *ngIf="isLoading" class="loading-section">
+            <div class="spinner"></div>
+            <p>Loading profile data...</p>
           </div>
 
-          <div class="profile-section">
-            <h3>Professional Summary</h3>
-            <p>{{ profile.professional_summary || 'No information available' }}</p>
+          <!-- Error State -->
+          <div *ngIf="error && !isLoading" class="error-section">
+            <i class="icon-error"></i>
+            <p>{{ error }}</p>
+            <button class="btn-retry" (click)="fetchCandidateProfile()">Retry</button>
           </div>
 
-          <div class="profile-section">
-            <h3>Education</h3>
-            <p>{{ profile.education || 'No information available' }}</p>
-          </div>
-
-          <div class="stats-grid">
-            <div class="stat-card">
-              <h4>Experience</h4>
-              <p>{{ profile.experience_years ?? 0 }} years</p>
+          <!-- Profile Data -->
+          <div *ngIf="profile && !isLoading">
+            <div class="profile-section">
+              <h3>About Me</h3>
+              <p>{{ profile.about_me || 'No information available' }}</p>
             </div>
 
-            <!-- After Education section -->
-<div class="profile-section" *ngIf="profile?.skills?.length">
-  <h3>Skills</h3>
-  <div class="skills-container">
-    <span *ngFor="let skill of profile.skills" class="skill-tag">
-      {{ skill }}
-    </span>
-  </div>
-</div>
-
-<!-- section -->
-<div class="profile-section" *ngIf="profile?.certifications?.length">
-  <h3>Certifications</h3>
-  <div class="certifications-container">
-    <div *ngFor="let cert of profile.certifications" class="certification-item">
-      <i class="icon-certificate"></i>
-      {{ cert }}
-    </div>
-  </div>
-</div>
-
-            <div class="stat-card">
-              <h4>Notice Period</h4>
-              <p>{{ profile.notice_period || 'Not specified' }}</p>
+            <div class="profile-section">
+              <h3>Professional Summary</h3>
+              <p>{{ profile.professional_summary || 'No information available' }}</p>
             </div>
-          </div>
 
-<div *ngIf="profile.social_links" class="profile-section">
-  <h3>Social Links</h3>
-  <div class="social-links">
-    <a *ngFor="let link of parseLinks(profile.social_links)" 
-       [href]="link" target="_blank" class="social-link">
-      {{ link }}
-    </a>
-  </div>
-</div>
+            <div class="profile-section">
+              <h3>Education</h3>
+              <p>{{ profile.education || 'No information available' }}</p>
+            </div>
 
-          <div *ngIf="profile.resume_link" class="resume-section">
-            <h3>Resume</h3>
-            <a [href]="profile.resume_link" target="_blank" class="resume-link">
-              View Resume
-              <i class="icon-download"></i>
-            </a>
+            <div class="stats-grid">
+              <div class="stat-card">
+                <h4>Experience</h4>
+                <p>{{ profile.experience_years ?? 0 }} years</p>
+              </div>
+
+              <div class="stat-card">
+                <h4>Notice Period</h4>
+                <p>{{ profile.notice_period || 'Not specified' }}</p>
+              </div>
+            </div>
+
+            <div class="profile-section" *ngIf="profile?.skills?.length">
+              <h3>Skills</h3>
+              <div class="skills-container">
+                <span *ngFor="let skill of profile.skills" class="skill-tag">
+                  {{ skill }}
+                </span>
+              </div>
+            </div>
+
+            <div class="profile-section" *ngIf="profile?.certifications?.length">
+              <h3>Certifications</h3>
+              <div class="certifications-container">
+                <div *ngFor="let cert of profile.certifications" class="certification-item">
+                  <i class="icon-certificate"></i>
+                  {{ cert }}
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="profile.social_links" class="profile-section">
+              <h3>Social Links</h3>
+              <div class="social-links">
+                <a *ngFor="let link of parseLinks(profile.social_links)" 
+                   [href]="link" target="_blank" class="social-link">
+                  {{ link }}
+                </a>
+              </div>
+            </div>
+
+            <div *ngIf="profile.resume_link" class="resume-section">
+              <h3>Resume</h3>
+              <a [href]="profile.resume_link" target="_blank" class="resume-link">
+                View Resume
+                <i class="icon-download"></i>
+              </a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   </div>
-</section>
+</div>
 
 <app-footer />
 <app-back-to-top />

@@ -5,15 +5,18 @@ import { NavbarComponent } from '../../common/navbar/navbar.component';
 import { PageBannerComponent } from '../../common/page-banner/page-banner.component';
 import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
+import { CandidateSidebarComponent } from '../../common/candidate-sidebar/candidate-sidebar.component';
 import { CandidateProfileService } from '../../services/candidate-profile.service';
 import { forkJoin } from 'rxjs';
 import { AuthStateService } from '../../services/auth-state.service';
+
 export interface CandidateCertification {
   certification: {
     certification_name: string;
     description: string;
   };
 }
+
 export interface CandidateProfile {
   about_me: string;
   professional_summary: string;
@@ -23,7 +26,7 @@ export interface CandidateProfile {
   resume_link: string;
   education: string;
   skills?: string[];
-certifications?: { certification_name: string }[]; // ✅ Simplified structure
+  certifications?: { certification_name: string }[];
 }
 
 @Component({
@@ -37,7 +40,8 @@ certifications?: { certification_name: string }[]; // ✅ Simplified structure
     NavbarComponent,
     PageBannerComponent,
     FooterComponent,
-    BackToTopComponent
+    BackToTopComponent,
+    CandidateSidebarComponent // ✅ Include sidebar component
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
@@ -58,7 +62,7 @@ export class DashboardComponent implements OnInit {
 
   fetchCandidateProfile(): void {
     this.isLoading = true;
-    const userId = this.authState.getCurrentUserId(); // ✅ Use getCurrentUserId
+    const userId = this.authState.getCurrentUserId();
 
     if (!userId) {
       this.error = 'User not authenticated';
@@ -69,13 +73,13 @@ export class DashboardComponent implements OnInit {
     forkJoin({
       profile: this.profileService.getMyProfile(),
       skills: this.profileService.getCandidateSkills(userId),
-      certifications: this.profileService.getCandidateCertifications(userId) // ✅ New call
+      certifications: this.profileService.getCandidateCertifications(userId)
     }).subscribe({
       next: (response) => {
         this.profile = {
           ...response.profile,
           skills: response.skills,
-          certifications: response.certifications // ✅ Assign certifications
+          certifications: response.certifications
         };
         this.isLoading = false;
       },
