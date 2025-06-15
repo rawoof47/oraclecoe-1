@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthStateService } from '../services/auth-state.service'; // Adjust path if needed
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -54,8 +55,14 @@ export class CandidateProfileService {
       first_name: firstName,
       last_name: lastName,
       middle_name: middleName || ''
-    });
+    }).pipe(
+      tap(() => {
+        // Update stored name after successful API call
+        this.authState.updateStoredUserName(firstName, lastName);
+      })
+    );
   }
+
 
   /**
    * Save candidate skills (bulk replace)
