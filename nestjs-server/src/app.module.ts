@@ -32,19 +32,6 @@ import { JobsModule } from './jobs/jobs.module';
 import { SkillsModule } from './skills/skills.module';
 import { CertificationsModule } from './certifications/certifications.module';
 import { JobPostCertificationsModule } from './job-post-certification/job-post-certifications.module';
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { TrainingModule } from './training/training.module';
-=======
-import { CandidateCertificationsModule } from './candidate_certifications/candidate_certifications.module';
-<<<<<<< HEAD
->>>>>>> 729a3cd (feat:(profile page))
-=======
-import { RecruiterProfilesModule } from './recruiter-profiles/recruiter-profiles.module';
->>>>>>> 0a2e8a4 (recruiter-profile)
-=======
-import { TrainingModule } from './training/training.module';
->>>>>>> 409f254 (Recovered recruiter-profile component and related files)
 
 @Module({
   imports: [
@@ -96,19 +83,6 @@ import { TrainingModule } from './training/training.module';
     SkillsModule,
     CertificationsModule,
     JobPostCertificationsModule,
-<<<<<<< HEAD
-<<<<<<< HEAD
-    TrainingModule,
-=======
-    CandidateCertificationsModule,
-<<<<<<< HEAD
->>>>>>> 729a3cd (feat:(profile page))
-=======
-    RecruiterProfilesModule,
->>>>>>> 0a2e8a4 (recruiter-profile)
-=======
-    TrainingModule,
->>>>>>> 409f254 (Recovered recruiter-profile component and related files)
   ],
   controllers: [AppController],
   providers: [AppService],
