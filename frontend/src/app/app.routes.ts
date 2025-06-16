@@ -137,3 +137,5 @@ export const routes: Routes = [
   // Catch-all route
   { path: '**', component: ErrorPageComponent }
 ];
+
+console.log('✅ Loaded app.routes.ts');

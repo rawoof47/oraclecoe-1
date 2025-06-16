@@ -11,6 +11,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { SkillFiltersComponent } from './filters/skills-filter/skills-filter.component';
 import { AuthStateService } from '../../services/auth-state.service';
 import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.pipe';
+import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-jobs',
   standalone: true,
@@ -31,7 +32,7 @@ import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.p
 })
 export class JobsComponent implements OnInit {
   @ViewChild(SkillFiltersComponent) skillsFilter!: SkillFiltersComponent;
-
+  baseURL: string = environment.apiBaseUrl
   jobs: any[] = [];
   allJobs: any[] = [];
   jobCount = 0;
@@ -86,7 +87,7 @@ export class JobsComponent implements OnInit {
   }
 
   fetchJobs(): void {
-    this.http.get<any[]>('http://localhost:3000/jobs').subscribe({
+    this.http.get<any[]>(this.baseURL + '/jobs').subscribe({
       next: (data) => {
         this.allJobs = data;
         this.jobs = data;
@@ -113,7 +114,7 @@ export class JobsComponent implements OnInit {
       };
 
       this.http.post<{ applied: boolean }>(
-        'http://localhost:3000/applications/check-by-user-and-job',
+        this.baseURL + '/applications/check-by-user-and-job',
         payload
       ).subscribe({
         next: (res) => {
@@ -139,7 +140,7 @@ export class JobsComponent implements OnInit {
       job_id: jobId
     };
 
-    this.http.post('http://localhost:3000/applications/by-user', payload).subscribe({
+    this.http.post(this.baseURL + '/applications/by-user', payload).subscribe({
       next: () => {
         this.appliedStatus[jobId] = true;
         alert('✅ Application submitted successfully!');

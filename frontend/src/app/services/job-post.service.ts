@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { JobPost } from '../auth/models/job-post.model';
 import { Application } from '../auth/models/application.model'; // ✅ Correct import
-
+import { environment } from '../../environments/environment';
 export interface JobPostResponse {
   message: string;
   data: JobPost;
@@ -18,13 +18,13 @@ export interface JobPostListResponse {
   providedIn: 'root'
 })
 export class JobPostService {
-  private baseUrl = 'http://localhost:3000/job-posts';
-  private skillUrl = 'http://localhost:3000/skills';
-  private jobPostSkillsUrl = 'http://localhost:3000/job-post-skills';
-  private certificationsUrl = 'http://localhost:3000/certifications';
-  private jobPostCertificationsUrl = 'http://localhost:3000/job-post-certifications';
-  private applicationUrl = 'http://localhost:3000/applications';
-  private candidateProfilesUrl = 'http://localhost:3000/candidate-profiles';
+  private baseUrl = environment.apiBaseUrl + '/job-posts';
+  private skillUrl = environment.apiBaseUrl + '/skills';
+  private jobPostSkillsUrl = environment.apiBaseUrl + '/job-post-skills';
+  private certificationsUrl = environment.apiBaseUrl + '/certifications';
+  private jobPostCertificationsUrl = environment.apiBaseUrl + '/job-post-certifications';
+  private applicationUrl = environment.apiBaseUrl + '/applications';
+  private candidateProfilesUrl = environment.apiBaseUrl + '/candidate-profiles';
 
   constructor(private http: HttpClient) {}
 
