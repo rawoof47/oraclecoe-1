@@ -36,6 +36,7 @@ import { PostedJobsComponent } from './pages/posted-jobs/posted-jobs.component';
 // Guards
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
+import { RecruiterProfileComponent } from './pages/recruiter-profile/recruiter-profile.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/index-2', pathMatch: 'full' },
@@ -61,6 +62,7 @@ export const routes: Routes = [
   { path: 'coming-soon', component: ComingSoonComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'terms-conditions', component: TermsConditionsComponent },
+  
 
   // 🔒 Candidate Routes
   {
@@ -130,6 +132,12 @@ export const routes: Routes = [
     component: PostedJobsComponent,
     canActivate: [authGuard, roleGuard('recruiter')]
   },
+  {
+    path: 'recruiter-profile',
+    component: RecruiterProfileComponent,
+    canActivate: [authGuard, roleGuard('recruiter')]
+  },
+
 
   { path: 'admin/login', component: AdminLoginComponent },
   { path: 'admin-dashboard', component: AdminDashboardComponent },
