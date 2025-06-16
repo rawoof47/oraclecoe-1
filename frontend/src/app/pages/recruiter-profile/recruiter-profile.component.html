@@ -1,0 +1,78 @@
+<app-navbar></app-navbar>
+
+<div class="dashboard-area ptb-100">
+  <div class="container">
+    <div class="profile-content no-sidebar">
+      <form [formGroup]="recruiterForm" (ngSubmit)="onSubmit()" class="form-layout">
+
+        <!-- Company Info -->
+        <div class="profile-content-inner">
+          <h2 class="section-title">Company Information</h2>
+
+          <div class="form-row">
+            <label>Company Name:</label>
+            <input type="text" formControlName="companyName" />
+          </div>
+
+          <div class="form-row">
+            <label>Industry:</label>
+            <input type="text" formControlName="industry" />
+          </div>
+
+          <div class="form-row">
+            <label>Company Size:</label>
+            <input type="text" formControlName="companySize" />
+          </div>
+
+          <div class="form-row">
+            <label>Website:</label>
+            <input type="text" formControlName="website" />
+          </div>
+
+          <div class="form-row align-top">
+            <label>Company Description:</label>
+            <textarea rows="4" formControlName="companyDescription"></textarea>
+          </div>
+        </div>
+
+        <!-- Recruiter Profile -->
+        <div class="profile-content-inner">
+          <h2 class="section-title">Recruiter Profile</h2>
+
+          <div class="form-row">
+            <label>First Name:</label>
+            <input type="text" formControlName="firstName" />
+          </div>
+
+          <div class="form-row">
+            <label>Middle Name:</label>
+            <input type="text" formControlName="middleName" />
+          </div>
+
+          <div class="form-row">
+            <label>Last Name:</label>
+            <input type="text" formControlName="lastName" />
+          </div>
+
+          <div class="form-row">
+            <label>Email:</label>
+            <input type="email" formControlName="email" />
+          </div>
+
+          <div class="form-row">
+            <label>Position:</label>
+            <input type="text" formControlName="position" />
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="button-wrapper">
+          <button type="submit">Save Profile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>
+<app-back-to-top></app-back-to-top>

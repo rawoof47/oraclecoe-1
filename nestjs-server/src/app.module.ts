@@ -36,7 +36,11 @@ import { JobPostCertificationsModule } from './job-post-certification/job-post-c
 import { TrainingModule } from './training/training.module';
 =======
 import { CandidateCertificationsModule } from './candidate_certifications/candidate_certifications.module';
+<<<<<<< HEAD
 >>>>>>> 729a3cd (feat:(profile page))
+=======
+import { RecruiterProfilesModule } from './recruiter-profiles/recruiter-profiles.module';
+>>>>>>> 0a2e8a4 (recruiter-profile)
 
 @Module({
   imports: [
@@ -92,7 +96,11 @@ import { CandidateCertificationsModule } from './candidate_certifications/candid
     TrainingModule,
 =======
     CandidateCertificationsModule,
+<<<<<<< HEAD
 >>>>>>> 729a3cd (feat:(profile page))
+=======
+    RecruiterProfilesModule,
+>>>>>>> 0a2e8a4 (recruiter-profile)
   ],
   controllers: [AppController],
   providers: [AppService],
