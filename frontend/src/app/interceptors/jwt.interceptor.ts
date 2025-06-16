@@ -13,7 +13,7 @@ export class JwtInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    const token = localStorage.getItem('access_token'); // ✅ Fix here
+    const token = localStorage.getItem('accessToken');
 
     if (token && typeof token === 'string') {
       const clonedRequest = req.clone({
@@ -21,7 +21,6 @@ export class JwtInterceptor implements HttpInterceptor {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log('🔐 Attaching token:', token); // ✅ Debug
       return next.handle(clonedRequest);
     }
 

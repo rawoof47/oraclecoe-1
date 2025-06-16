@@ -37,11 +37,16 @@ import { PostedJobsComponent } from './pages/posted-jobs/posted-jobs.component';
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { TrainingsComponent } from './pages/trainings/trainings.component';
 import { CourseDetailsComponent } from './pages/course-details/course-details.component';
 =======
 import { RecruiterProfileComponent } from './pages/recruiter-profile/recruiter-profile.component';
 >>>>>>> 0a2e8a4 (recruiter-profile)
+=======
+import { TrainingsComponent } from './pages/trainings/trainings.component';
+import { CourseDetailsComponent } from './pages/course-details/course-details.component';
+>>>>>>> 409f254 (Recovered recruiter-profile component and related files)
 
 export const routes: Routes = [
   { path: '', redirectTo: '/index-2', pathMatch: 'full' },
@@ -67,7 +72,6 @@ export const routes: Routes = [
   { path: 'coming-soon', component: ComingSoonComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'terms-conditions', component: TermsConditionsComponent },
-  
 
   // 🔒 Candidate Routes
   {
@@ -132,12 +136,6 @@ export const routes: Routes = [
     component: PostedJobsComponent,
     canActivate: [authGuard, roleGuard('recruiter')]
   },
-  {
-    path: 'recruiter-profile',
-    component: RecruiterProfileComponent,
-    canActivate: [authGuard, roleGuard('recruiter')]
-  },
-
 
   { path: 'admin/login', component: AdminLoginComponent },
   { path: 'admin-dashboard', component: AdminDashboardComponent },

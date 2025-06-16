@@ -12,7 +12,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar'; // 👈 add thi
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // ✅ JWT Interceptor
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
-  const token = localStorage.getItem('access_token');
+  const token = localStorage.getItem('accessToken');
   if (token) {
     req = req.clone({
       setHeaders: {

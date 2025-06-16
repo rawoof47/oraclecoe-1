@@ -31,6 +31,4 @@ export class CertificationsController {
   findByIds(@Body() body: { ids: string[] }) {
     return this.certificationsService.findByIds(body.ids);
   }
-
-  
 }

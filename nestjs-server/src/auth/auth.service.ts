@@ -6,7 +6,6 @@ import { Role } from '../roles/entities/role.entity';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
-import { ConfigService } from '@nestjs/config'; // ✅ Import ConfigService
 
 @Injectable()
 export class AuthService {
@@ -16,7 +15,6 @@ export class AuthService {
     @InjectRepository(Role)
     private rolesRepository: Repository<Role>,
     private jwtService: JwtService,
-    private configService: ConfigService, // ✅ Inject ConfigService
   ) {}
 
   async login(loginDto: LoginDto) {
@@ -26,7 +24,7 @@ export class AuthService {
 
     const user = await this.usersRepository.findOne({
       where: { email },
-      relations: [],
+      relations: [], // no direct relation, so we’ll manually fetch the role
     });
 
     console.log('🔍 Found user:', user);
@@ -44,6 +42,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    // Fetch role name using role_id
     const role = await this.rolesRepository.findOne({
       where: { id: user.role_id },
     });
@@ -56,16 +55,16 @@ export class AuthService {
     const payload = {
       sub: user.id,
       email: user.email,
-      role: role.role_name,
+      role: role.role_name, // ✅ use actual role name
     };
 
     const accessToken = this.jwtService.sign(payload, {
-      secret: this.configService.get<string>('JWT_SECRET'), // ✅ Consistent usage
+      secret: process.env.JWT_SECRET,
       expiresIn: '15m',
     });
 
     const refreshToken = this.jwtService.sign(payload, {
-      secret: this.configService.get<string>('JWT_REFRESH_SECRET'), // ✅ Consistent usage
+      secret: process.env.JWT_REFRESH_SECRET,
       expiresIn: '7d',
     });
 
@@ -73,7 +72,7 @@ export class AuthService {
       token: accessToken,
       refreshToken,
       uuid: user.id,
-      role: role.role_name,
+      role: role.role_name, // ✅ return actual role name
     };
   }
 
@@ -85,7 +84,7 @@ export class AuthService {
     };
 
     const accessToken = this.jwtService.sign(payload, {
-      secret: this.configService.get<string>('JWT_SECRET'), // ✅ Consistent usage
+      secret: process.env.JWT_SECRET,
       expiresIn: '15m',
     });
 

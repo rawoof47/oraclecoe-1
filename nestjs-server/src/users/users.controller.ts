@@ -15,7 +15,7 @@ export class UserController {
 
   @Get()
   findAll(): Promise<User[]> {
-    return this.userService.findAll();
+    return this.userService.findAll(); //added  changes 
   }
 
   @Get(':id')
@@ -31,18 +31,5 @@ export class UserController {
   @Delete(':id')
   remove(@Param('id') id: string): Promise<void> {
     return this.userService.remove(id);
-  }
-
-  @Put('update-name/:id')
-  async updateName(
-    @Param('id') id: string,
-    @Body() updateNameDto: {
-      first_name: string;
-      last_name: string;
-      middle_name?: string;
-    },
-  ): Promise<User> {
-    const { first_name, last_name, middle_name } = updateNameDto;
-    return this.userService.updateName(id, first_name, last_name, middle_name);
   }
 }

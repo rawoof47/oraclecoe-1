@@ -32,6 +32,7 @@ export class RegisterComponent {
     private snackBar: MatSnackBar
   ) {
     this.registerForm = this.fb.group({
+      full_name: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       mobile_number: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       role: ['Candidate', [Validators.required]],
@@ -64,6 +65,7 @@ export class RegisterComponent {
     }
 
     const request: RegisterRequest = {
+      full_name: this.f['full_name'].value,
       email: this.f['email'].value,
       mobile_number: this.f['mobile_number'].value,
       role_id: this.roleMap[this.f['role'].value],

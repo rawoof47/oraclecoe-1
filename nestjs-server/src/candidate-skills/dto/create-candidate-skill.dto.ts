@@ -1,11 +1,29 @@
-import { IsUUID, IsArray, ArrayNotEmpty, IsString } from 'class-validator';
+import { IsUUID, IsOptional, IsString, IsNumber } from 'class-validator';
 
-export class CreateCandidateSkillsBulkDto {
+export class CreateCandidateSkillDto {
   @IsUUID()
-  user_id: string;
+  candidate_id: string;
 
-  @IsArray()
-  @ArrayNotEmpty()
-  @IsString({ each: true })
-  skill_ids: string[];
+  @IsUUID()
+  module_id: string;
+
+  @IsString()
+  @IsOptional()
+  proficiency?: string;
+
+  @IsNumber()
+  @IsOptional()
+  years_experience?: number;
+
+  @IsUUID()
+  @IsOptional()
+  verification_status_id?: string;
+
+  @IsUUID()
+  @IsOptional()
+  created_by?: string;
+
+  @IsUUID()
+  @IsOptional()
+  updated_by?: string;
 }

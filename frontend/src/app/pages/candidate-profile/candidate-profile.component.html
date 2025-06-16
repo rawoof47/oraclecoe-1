@@ -1,11 +1,15 @@
-<app-navbar></app-navbar>
+<form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="profile-form">
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 409f254 (Recovered recruiter-profile component and related files)
   <!-- About Me & Professional Summary side by side -->
   <div class="form-row">
     <div class="form-group col-6">
       <label for="about_me">About Me</label>
       <textarea id="about_me" formControlName="about_me" placeholder="Tell us about yourself"></textarea>
+<<<<<<< HEAD
     </div>
 
     <div class="form-group col-6">
@@ -300,10 +304,161 @@
     <!-- Form Actions -->
     <div class="form-actions">
       <button type="submit" [disabled]="isSubmitting">Save Profile</button>
+=======
+>>>>>>> 409f254 (Recovered recruiter-profile component and related files)
     </div>
-  </form>
-</main>
 
+<<<<<<< HEAD
 <app-footer></app-footer>
 <app-back-to-top></app-back-to-top>
 >>>>>>> 729a3cd (feat:(profile page))
+=======
+    <div class="form-group col-6">
+      <label for="professional_summary">Professional Summary</label>
+      <textarea id="professional_summary" formControlName="professional_summary" placeholder="Summarize your professional profile"></textarea>
+    </div>
+  </div>
+
+  <!-- Social Links & Resume Link -->
+  <div class="form-row">
+    <div class="form-group col-6">
+      <label for="social_links">Social Links</label>
+      <textarea id="social_links" formControlName="social_links" placeholder="Comma-separated URLs"></textarea>
+    </div>
+
+    <div class="form-group col-6">
+      <label for="resume_link">Resume Link</label>
+      <input id="resume_link" type="url" formControlName="resume_link" placeholder="https://yourresume.link" />
+    </div>
+  </div>
+
+  <!-- Education -->
+  <div class="form-group">
+    <label for="education">Education</label>
+    <textarea id="education" formControlName="education" placeholder="Your education details"></textarea>
+  </div>
+
+  <!-- Experience Years & Notice Period side by side -->
+  <div class="form-row">
+    <div class="form-group col-3">
+      <label for="experience_years">Experience (Years)</label>
+      <input id="experience_years" type="number" formControlName="experience_years" min="0" max="50" placeholder="e.g. 5" />
+    </div>
+
+    <div class="form-group col-3">
+      <label for="notice_period">Notice Period</label>
+      <input id="notice_period" type="text" formControlName="notice_period" placeholder="e.g. 1 month" />
+    </div>
+  </div>
+
+  <!-- Skills Section -->
+  <div class="form-group">
+    <label>Skills:</label>
+    <div class="multi-select-row">
+      <ng-select
+        [items]="functionalSkills"
+        bindLabel="name"
+        bindValue="id"
+        [multiple]="true"
+        [searchable]="true"
+        [closeOnSelect]="false"
+        formControlName="functionalSkills"
+        placeholder="Functional Skills"
+      ></ng-select>
+
+      <ng-select
+        [items]="technicalSkills"
+        bindLabel="name"
+        bindValue="id"
+        [multiple]="true"
+        [searchable]="true"
+        [closeOnSelect]="false"
+        formControlName="technicalSkills"
+        placeholder="Technical Skills"
+      ></ng-select>
+
+      <ng-select
+        [items]="oracleMiddlewareSkills"
+        bindLabel="name"
+        bindValue="id"
+        [multiple]="true"
+        [searchable]="true"
+        [closeOnSelect]="false"
+        formControlName="oracleMiddlewareSkills"
+        placeholder="Middleware & DB Skills"
+      ></ng-select>
+
+      <ng-select
+        [items]="reportingSkills"
+        bindLabel="name"
+        bindValue="id"
+        [multiple]="true"
+        [searchable]="true"
+        [closeOnSelect]="false"
+        formControlName="reportingSkills"
+        placeholder="Reporting Skills"
+      ></ng-select>
+    </div>
+  </div>
+
+  <!-- Certifications Section -->
+  <div class="form-group">
+    <label>Certifications:</label>
+    <div class="multi-select-row">
+      <ng-select
+        *ngIf="financialCertifications.length > 0"
+        [items]="financialCertifications"
+        bindLabel="certification_name"
+        bindValue="id"
+        [multiple]="true"
+        [searchable]="true"
+        [closeOnSelect]="false"
+        formControlName="financialCertifications"
+        placeholder="Financial"
+      ></ng-select>
+
+      <ng-select
+        *ngIf="hcmCertifications.length > 0"
+        [items]="hcmCertifications"
+        bindLabel="certification_name"
+        bindValue="id"
+        [multiple]="true"
+        [searchable]="true"
+        [closeOnSelect]="false"
+        formControlName="hcmCertifications"
+        placeholder="HCM"
+      ></ng-select>
+
+      <ng-select
+        *ngIf="scmCertifications.length > 0"
+        [items]="scmCertifications"
+        bindLabel="certification_name"
+        bindValue="id"
+        [multiple]="true"
+        [searchable]="true"
+        [closeOnSelect]="false"
+        formControlName="scmCertifications"
+        placeholder="SCM"
+      ></ng-select>
+
+      <ng-select
+        *ngIf="cxCertifications.length > 0"
+        [items]="cxCertifications"
+        bindLabel="certification_name"
+        bindValue="id"
+        [multiple]="true"
+        [searchable]="true"
+        [closeOnSelect]="false"
+        formControlName="cxCertifications"
+        placeholder="CX"
+      ></ng-select>
+    </div>
+  </div>
+
+  <!-- Submit Button -->
+  <div class="form-actions">
+    <button type="submit" [disabled]="isSubmitting">Save Profile</button>
+  </div>
+
+</form>
+>>>>>>> 409f254 (Recovered recruiter-profile component and related files)

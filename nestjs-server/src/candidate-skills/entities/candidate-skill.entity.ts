@@ -1,14 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
-import { User } from '../../users/entities/user.entity';
-import { Skill } from '../../skills/entities/skill.entity';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity('candidate_skills')
 export class CandidateSkill {
@@ -16,23 +6,29 @@ export class CandidateSkill {
   id: string;
 
   @Column({ type: 'char', length: 36 })
-  user_id: string;
+  candidate_id: string;
 
   @Column({ type: 'char', length: 36 })
-  skill_id: string;
+  module_id: string;
 
-  @CreateDateColumn({ type: 'datetime' })
+  @Column({ type: 'char', length: 36, nullable: true })
+  verification_status_id: string | null;
+
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  proficiency: string | null;
+
+  @Column({ type: 'decimal', precision: 3, scale: 1, nullable: true })
+  years_experience: number | null;
+
+  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
 
-  @UpdateDateColumn({ type: 'datetime' })
+  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   updated_at: Date;
 
-  // Optional relationships
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'user_id' })
-  user: User;
+  @Column({ type: 'char', length: 36, nullable: true })
+  created_by: string | null;
 
-  @ManyToOne(() => Skill)
-  @JoinColumn({ name: 'skill_id' })
-  skill: Skill;
+  @Column({ type: 'char', length: 36, nullable: true })
+  updated_by: string | null;
 }
