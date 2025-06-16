@@ -32,6 +32,7 @@ import { AppliedJobsComponent } from './pages/applied-jobs/applied-jobs.componen
 import { JobApplicantsComponent } from './pages/job-applicants/job-applicants.component';
 import { RecruiterDashboardComponent } from './dashboard/recruiter-dashboard/recruiter-dashboard.component';
 import { PostedJobsComponent } from './pages/posted-jobs/posted-jobs.component'; // ✅ NEW
+import { RecruiterProfileComponent } from './pages/recruiter-profile/recruiter-profile.component';
 
 // Guards
 import { authGuard } from './guards/auth.guard';
@@ -130,6 +131,12 @@ export const routes: Routes = [
     component: PostedJobsComponent,
     canActivate: [authGuard, roleGuard('recruiter')]
   },
+  {
+  path: 'recruiter-profile',
+  component: RecruiterProfileComponent,
+  canActivate: [authGuard, roleGuard('recruiter')]
+},
+
 
   { path: 'admin/login', component: AdminLoginComponent },
   { path: 'admin-dashboard', component: AdminDashboardComponent },
