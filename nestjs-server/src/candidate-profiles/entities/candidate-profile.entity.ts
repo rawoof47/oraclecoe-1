@@ -14,6 +14,10 @@ export class CandidateProfile {
   @Column({ type: 'char', length: 36 })
   user_id: string;
 
+  // ✅ Added gender field
+  @Column({ type: 'varchar', length: 10, nullable: true })
+  gender: string;
+
   @Column({ type: 'text', nullable: true })
   about_me: string;
 

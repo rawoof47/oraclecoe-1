@@ -1,27 +1,4 @@
-import { IsString, IsUUID, IsOptional, IsNumber } from 'class-validator';
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateCandidateSkillsBulkDto  } from './create-candidate-skill.dto';
 
-export class UpdateCandidateSkillDto {
-  @IsOptional()
-  @IsUUID()
-  candidate_id?: string;
-
-  @IsOptional()
-  @IsUUID()
-  module_id?: string;
-
-  @IsOptional()
-  @IsUUID()
-  verification_status_id?: string;
-
-  @IsOptional()
-  @IsString()
-  proficiency?: string;
-
-  @IsOptional()
-  @IsNumber({ maxDecimalPlaces: 1 })
-  years_experience?: number;
-
-  @IsOptional()
-  @IsUUID()
-  updated_by?: string;
-}
+export class UpdateCandidateSkillDto extends PartialType(CreateCandidateSkillsBulkDto ) {}

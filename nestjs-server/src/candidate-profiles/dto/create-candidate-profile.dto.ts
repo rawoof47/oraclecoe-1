@@ -39,7 +39,12 @@ export class CreateCandidateProfileDto {
   @IsOptional()
   notice_period?: string;
 
-  // ✅ Optional fields, set from the backend using JWT user ID
+  // ✅ Added gender field
+  @IsString()
+  @IsOptional()
+  gender?: string;
+
+  // ✅ Optional metadata fields (will be set in service using userId)
   @IsUUID()
   @IsOptional()
   created_by?: string;

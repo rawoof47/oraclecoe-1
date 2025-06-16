@@ -5,6 +5,8 @@ interface User {
   id: string;
   role: string;
   email?: string;
+  first_name?: string;   // Make optional
+  last_name?: string;    // Make optional
 }
 
 @Injectable({
@@ -87,5 +89,21 @@ export class AuthStateService {
   getCurrentUserRole(): string | null {
     const user = this.getCurrentUser();
     return user ? user.role : null;
+  }
+
+  getAccessToken(): string | null {
+    if (!this.isBrowser) return null;
+    return localStorage.getItem('access_token');
+  }
+
+  // ✅ Integrated updateStoredUserName method
+  updateStoredUserName(firstName: string, lastName: string, email?: string): void {
+    const user = this.getCurrentUser();
+    if (user) {
+      user.first_name = firstName;
+      user.last_name = lastName;
+      if (email) user.email = email;
+      localStorage.setItem('user', JSON.stringify(user));
+    }
   }
 }

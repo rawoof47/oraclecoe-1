@@ -473,3 +473,64 @@
 
 /* Max width 991px */
 @media only screen and (max-width: 991px) {}
+// single-resume.component.scss
+// ... existing styles ...
+
+.details-item {
+  // ... other styles ...
+  
+  .btn-primary {
+    background-color: var(--pink-color);
+    border-color: var(--pink-color);
+    
+    &:hover {
+      background-color: #d43f5c; // Fixed darker shade
+      // OR: background-color: var(--darker-pink); // If you have a CSS variable
+    }
+  }
+}
+// Add to single-resume.component.scss
+.details-item {
+  // ... existing styles ...
+  
+  .skills {
+    .skills-wrap {
+      margin-top: 15px;
+      
+      .skill-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        
+        .skill-tag {
+          background-color: #f0f7ff;
+          color: var(--blue-color);
+          padding: 6px 15px;
+          border-radius: 20px;
+          font-size: 14px;
+          border: 1px solid #d0e3ff;
+        }
+      }
+    }
+  }
+  
+  .certification-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    
+    li {
+      position: relative;
+      padding-left: 25px;
+      margin-bottom: 10px;
+      
+      &:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: var(--pink-color);
+        font-weight: bold;
+      }
+    }
+  }
+}

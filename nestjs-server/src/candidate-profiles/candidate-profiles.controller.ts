@@ -48,6 +48,20 @@ export class CandidateProfilesController {
     return result;
   }
 
+  // ✅ NEW: Simple upsert using updated_by
+  @Post('upsert')
+  async saveProfile(
+    @Body() profileData: UpdateCandidateProfileDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    console.log('[POST] /candidate-profiles/upsert');
+    const userId = req.user.sub;
+    profileData.updated_by = userId;
+    const result = await this.candidateProfilesService.updateProfile(profileData);
+    console.log('Upsert Result:', result);
+    return result;
+  }
+
   // 🔍 Get all candidate profiles
   @Get()
   async findAll(): Promise<any> {
@@ -95,4 +109,13 @@ export class CandidateProfilesController {
     console.log('Profile Deleted:', result);
     return result;
   }
+  // Add this new endpoint to the controller
+@Get('by-user/me')
+async getMyProfile(@Req() req: AuthenticatedRequest) {
+  const userId = req.user.sub;
+  console.log(`[GET] /candidate-profiles/by-user/me for user ${userId}`);
+  const result = await this.candidateProfilesService.findByUserId(userId);
+  console.log('Profile Found:', result);
+  return result;
+}
 }

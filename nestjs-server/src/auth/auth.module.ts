@@ -7,14 +7,23 @@ import { JwtStrategy } from './jwt/jwt.strategy';
 import { JwtRefreshStrategy } from './jwt/jwt-refresh.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
-import { RolesModule } from '../roles/roles.module'; // ✅ Import RolesModule
+import { RolesModule } from '../roles/roles.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
-    RolesModule, // ✅ Import to inject RoleRepository from roles.module.ts
+    RolesModule,
     PassportModule,
-    JwtModule.register({}),
+    ConfigModule, // ✅ Make sure ConfigModule is available
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '1h' },
+      }),
+    }),
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, JwtRefreshStrategy],

@@ -4,10 +4,10 @@ import { RouterModule } from '@angular/router';
 import { of, catchError, map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-
+import { PageBannerComponent } from '../../common/page-banner/page-banner.component';
+import { CandidateSidebarComponent } from '../../common/candidate-sidebar/candidate-sidebar.component';
 import { NavbarComponent } from '../../common/navbar/navbar.component';
 import { FooterComponent } from '../../common/footer/footer.component';
-import { PageBannerComponent } from '../../common/page-banner/page-banner.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
 
 import { JobPostService } from '../../services/job-post.service';
@@ -40,6 +40,7 @@ export interface AppliedJobPost extends JobPost {
     FooterComponent,
     PageBannerComponent,
     BackToTopComponent,
+    CandidateSidebarComponent
   ],
   templateUrl: './applied-jobs.component.html',
   styleUrls: ['./applied-jobs.component.scss']

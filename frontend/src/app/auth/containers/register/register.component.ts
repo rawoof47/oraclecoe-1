@@ -1,16 +1,18 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { RouterModule, Router } from '@angular/router'; // ✅ Added RouterModule here
+import { RouterModule, Router } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { AuthService } from '../../../services/auth.service';
+import { AuthStateService } from '../../../services/auth-state.service'; // ✅ New import
 import { RegisterRequest } from '../../models/register-request.model';
+import { LoginRequest } from '../../models/login-request.model'; // ✅ New import
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatSnackBarModule, RouterModule], // ✅ Include RouterModule
+  imports: [CommonModule, ReactiveFormsModule, MatSnackBarModule, RouterModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
@@ -24,15 +26,14 @@ export class RegisterComponent {
   };
   private readonly defaultStatusId = '17d2f849-3a1a-11f0-8520-ac1f6bbcd360';
 
-
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private authStateService: AuthStateService, // ✅ Injected service
     private router: Router,
     private snackBar: MatSnackBar
   ) {
     this.registerForm = this.fb.group({
-      full_name: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       mobile_number: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
       role: ['Candidate', [Validators.required]],
@@ -65,7 +66,6 @@ export class RegisterComponent {
     }
 
     const request: RegisterRequest = {
-      full_name: this.f['full_name'].value,
       email: this.f['email'].value,
       mobile_number: this.f['mobile_number'].value,
       role_id: this.roleMap[this.f['role'].value],
@@ -75,13 +75,52 @@ export class RegisterComponent {
 
     this.authService.register(request).subscribe({
       next: () => {
-        this.snackBar.open('Registration successful! Please log in.', 'Close', {
-          duration: 3000,
-          panelClass: ['snack-success', 'custom-snackbar'],
-          verticalPosition: 'top',
-          horizontalPosition: 'right'
-        });
-        this.router.navigate(['/login']);
+        const role = this.f['role'].value;
+        const email = this.f['email'].value;
+        const password = this.f['password'].value;
+
+        if (role === 'Candidate') {
+          const loginReq: LoginRequest = { email, password };
+
+          this.authService.login(loginReq).subscribe({
+            next: (loginRes) => {
+              this.authStateService.setAuthState(
+                loginRes.token,
+                {
+                  id: loginRes.uuid,
+                  role: loginRes.role,
+                  email: email
+                }
+              );
+
+              this.snackBar.open('Registration successful! Redirecting to your profile...', 'Close', {
+                duration: 3000,
+                panelClass: ['snack-success'],
+                verticalPosition: 'top',
+                horizontalPosition: 'right'
+              });
+
+              this.router.navigate(['/candidate-profile']);
+            },
+            error: () => {
+              this.snackBar.open('Registration successful! Please log in.', 'Close', {
+                duration: 3000,
+                panelClass: ['snack-success'],
+                verticalPosition: 'top',
+                horizontalPosition: 'right'
+              });
+              this.router.navigate(['/login']);
+            }
+          });
+        } else {
+          this.snackBar.open('Registration successful! Please log in.', 'Close', {
+            duration: 3000,
+            panelClass: ['snack-success'],
+            verticalPosition: 'top',
+            horizontalPosition: 'right'
+          });
+          this.router.navigate(['/login']);
+        }
       },
       error: (err) => {
         const msg = err?.error?.message?.toLowerCase() || '';

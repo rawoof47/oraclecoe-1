@@ -54,7 +54,9 @@ export class AdminLoginComponent {
         const user = {
           id: response.uuid,
           role: response.role,
-          email: response.email || ''
+          email: response.email || '',
+          first_name: 'Admin',   // ✅ Added default first name
+          last_name: 'User'      // ✅ Added default last name
         };
 
         if (!token || !user.id || !user.role) {
