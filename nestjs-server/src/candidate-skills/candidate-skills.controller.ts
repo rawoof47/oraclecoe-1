@@ -45,4 +45,9 @@ export class CandidateSkillsController {
       dto.skill_ids,
     );
   }
+  // candidate-skills.controller.ts
+@Get('skills/:user_id')
+async getSkillsByUser(@Param('user_id') userId: string) {
+  return this.candidateSkillsService.findSkillsByUserId(userId);
+}
 }

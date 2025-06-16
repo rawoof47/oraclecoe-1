@@ -206,3 +206,25 @@
     top: -3px; /* Slightly less adjustment for mobile */
   }
 }
+/* Add this to the end of your navbar.component.scss */
+
+/* Fix for login/register icon alignment */
+.navbar-nav .nav-item.dropdown .nav-link {
+  display: flex;
+  align-items: center;
+  
+  mat-icon {
+    vertical-align: middle;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .navbar-nav .nav-item.dropdown .nav-link {
+    height: auto;
+    padding: 10px 15px;
+  }
+}

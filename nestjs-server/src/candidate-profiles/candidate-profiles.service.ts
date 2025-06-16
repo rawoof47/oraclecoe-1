@@ -170,21 +170,54 @@ export class CandidateProfilesService {
     }
   }
 
-  // ✅ Reusable method to upsert by updated_by
+  // ✅ Replaced: Reusable method to upsert by updated_by
   async updateProfile(data: UpdateCandidateProfileDto) {
+    const userId = data.updated_by;
     let profile = await this.candidateProfileRepository.findOne({
-      where: { created_by: data.updated_by },
+      where: { user_id: userId }, // Changed to user_id
     });
 
     if (!profile) {
+      // New profile - set required fields
+      const status = await this.statusRepository.findOne({
+        where: { status_name: 'Profile Submitted' },
+      });
+
+      if (!status) {
+        throw new NotFoundException('Default status "Profile Submitted" not found.');
+      }
+
       profile = this.candidateProfileRepository.create({
-        created_by: data.updated_by,
         ...data,
+        user_id: userId, // Required field
+        created_by: userId,
+        status_id: status.id, // Required for new profiles
       });
     } else {
       profile = this.candidateProfileRepository.merge(profile, data);
     }
 
     return await this.candidateProfileRepository.save(profile);
+  }
+
+  // Add this method to the service
+  async findByUserId(userId: string): Promise<CandidateProfile> {
+    console.log(`🔍 [FIND BY USER ID] Fetching profile for user: ${userId}`);
+    try {
+      const profile = await this.candidateProfileRepository.findOne({ 
+        where: { user_id: userId },
+      });
+
+      if (!profile) {
+        console.warn(`⚠️ Profile for user ID ${userId} not found.`);
+        throw new NotFoundException('Candidate profile not found for this user.');
+      }
+
+      console.log('✅ Found profile by user ID:', profile);
+      return profile;
+    } catch (error) {
+      console.error(`❌ Error fetching profile for user ${userId}:`, error);
+      throw new InternalServerErrorException('Failed to fetch candidate profile.');
+    }
   }
 }

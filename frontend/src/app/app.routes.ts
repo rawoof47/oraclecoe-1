@@ -93,6 +93,11 @@ export const routes: Routes = [
     component: AppliedJobsComponent,
     canActivate: [authGuard, roleGuard('candidate')]
   },
+  {
+    path: 'single-resume',
+    component: SingleResumeComponent,
+    canActivate: [authGuard, roleGuard('candidate')]
+  },
 
   // 🔒 Recruiter Routes
   {
@@ -103,7 +108,7 @@ export const routes: Routes = [
   {
     path: 'single-resume',
     component: SingleResumeComponent,
-    canActivate: [authGuard, roleGuard('recruiter')]
+    canActivate: [authGuard, roleGuard('candidate')]
   },
   {
     path: 'job-applicants/:jobId',

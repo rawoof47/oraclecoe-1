@@ -1,173 +1,104 @@
-<app-navbar />
+<app-navbar /> 
 
 <app-page-banner
   [pageTitle]="'Dashboard'"
   [backgroundImage]="'img/page-title-bg.jpg'"
 />
 
-<!-- Dashboard -->
-<div class="dashboard-area ptb-100">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-4 col-md-12">
-        <div class="profile-item">
-          <img src="img/dashboard1.jpg" alt="Dashboard">
-          <h2>Tom Henry</h2>
-          <span>Web Developer</span>
-        </div>
-        <div class="nav flex-column nav-pills">
-          <a
-            class="nav-link"
-            (click)="switchTab($event, 'tab1')"
-            [ngClass]="{ 'active': currentTab === 'tab1' }"
-          >
-            <i class="bx bx-user"></i> My Profile
-          </a>
-          <a class="nav-link" [routerLink]="['/applied-jobs']" routerLinkActive="active">
-            <div class="profile-list">
-              <i class="bx bxs-inbox"></i>
-              Applied Jobs
+<!-- Sidebar + Main Content Layout -->
+<div class="dashboard-layout container">
+  <!-- Sidebar -->
+  <app-candidate-sidebar></app-candidate-sidebar>
+
+  <!-- Main Dashboard Content -->
+  <div class="dashboard-main">
+    <section class="dashboard-section">
+      <div class="dashboard-content">
+        <div class="profile-card">
+          <!-- Loading State -->
+          <div *ngIf="isLoading" class="loading-section">
+            <div class="spinner"></div>
+            <p>Loading profile data...</p>
+          </div>
+
+          <!-- Error State -->
+          <div *ngIf="error && !isLoading" class="error-section">
+            <i class="icon-error"></i>
+            <p>{{ error }}</p>
+            <button class="btn-retry" (click)="fetchCandidateProfile()">Retry</button>
+          </div>
+
+          <!-- Profile Data -->
+          <div *ngIf="profile && !isLoading">
+            <div class="profile-section">
+              <h3>About Me</h3>
+              <p>{{ profile.about_me || 'No information available' }}</p>
             </div>
-          </a>
-          <a routerLink="/single-resume">
-            <div class="profile-list"><i class="bx bx-note"></i> My Resume</div>
-          </a>
-          <a routerLink="/login">
-            <div class="profile-list"><i class="bx bx-log-out"></i> Logout</div>
-          </a>
-        </div>
-      </div>
 
-      <div class="col-lg-8 col-md-12">
-        <div class="tab-content">
-          <!-- My Profile Tab Only -->
-          <div class="tab-pane fade show active" id="tab1" *ngIf="currentTab === 'tab1'">
-            <div class="profile-content">
-              <form>
-                <div class="profile-content-inner">
-                  <h2>Basic Info</h2>
-                  <div class="row">
-                    <div class="col-lg-6 col-md-12">
-                      <div class="form-group">
-                        <label>Your Name:</label>
-                        <input type="text" class="form-control" placeholder="Tom Henry">
-                      </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                      <div class="form-group">
-                        <label>Your Email:</label>
-                        <input type="email" class="form-control" placeholder="hello&#64;alzo.com">
-                      </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                      <div class="form-group">
-                        <label>Phone:</label>
-                        <input type="text" class="form-control" placeholder="+123 - 456 - 789">
-                      </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                      <div class="form-group">
-                        <label>Date Of Birth:</label>
-                        <input type="text" class="form-control" placeholder="01/01/1995">
-                      </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                      <div class="form-group">
-                        <label>Job Title:</label>
-                        <input type="text" class="form-control" placeholder="Web Developer">
-                      </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                      <div class="form-group">
-                        <label>Position:</label>
-                        <input type="text" class="form-control" placeholder="Team Leader">
-                      </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                      <div class="form-group">
-                        <label>Salary:</label>
-                        <input type="text" class="form-control" placeholder="$1500/per month">
-                      </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                      <div class="form-group">
-                        <label>Cover Picture</label>
-                        <input type="file">
-                      </div>
-                    </div>
-                  </div>
+            <div class="profile-section">
+              <h3>Professional Summary</h3>
+              <p>{{ profile.professional_summary || 'No information available' }}</p>
+            </div>
+
+            <div class="profile-section">
+              <h3>Education</h3>
+              <p>{{ profile.education || 'No information available' }}</p>
+            </div>
+
+            <div class="stats-grid">
+              <div class="stat-card">
+                <h4>Experience</h4>
+                <p>{{ profile.experience_years ?? 0 }} years</p>
+              </div>
+
+              <div class="stat-card">
+                <h4>Notice Period</h4>
+                <p>{{ profile.notice_period || 'Not specified' }}</p>
+              </div>
+            </div>
+
+            <div class="profile-section" *ngIf="profile?.skills?.length">
+              <h3>Skills</h3>
+              <div class="skills-container">
+                <span *ngFor="let skill of profile.skills" class="skill-tag">
+                  {{ skill }}
+                </span>
+              </div>
+            </div>
+
+            <div class="profile-section" *ngIf="profile?.certifications?.length">
+              <h3>Certifications</h3>
+              <div class="certifications-container">
+                <div *ngFor="let cert of profile.certifications" class="certification-item">
+                  <i class="icon-certificate"></i>
+                  {{ cert }}
                 </div>
+              </div>
+            </div>
 
-                <div class="profile-content-inner">
-                  <h2>Education</h2>
-                  <div class="row">
-                    <div class="col-lg-6 col-md-12">
-                      <div class="form-group">
-                        <label>Title:</label>
-                        <input type="text" class="form-control" placeholder="Under Graduate">
-                      </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                      <div class="form-group">
-                        <label>Degree:</label>
-                        <input type="text" class="form-control" placeholder="BSC in Computer Science">
-                      </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                      <div class="form-group">
-                        <label>Institute:</label>
-                        <input type="text" class="form-control" placeholder="Alzo University & Technology, UK">
-                      </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                      <div class="form-group">
-                        <label>Year:</label>
-                        <input type="text" class="form-control" placeholder="2015 - 2024">
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            <div *ngIf="profile.social_links" class="profile-section">
+              <h3>Social Links</h3>
+              <div class="social-links">
+                <a *ngFor="let link of parseLinks(profile.social_links)" 
+                   [href]="link" target="_blank" class="social-link">
+                  {{ link }}
+                </a>
+              </div>
+            </div>
 
-                <div class="profile-content-inner">
-                  <h2>Social Links</h2>
-                  <div class="row">
-                    <div class="col-lg-6 col-md-12">
-                      <div class="form-group">
-                        <label>Facebook:</label>
-                        <input type="text" class="form-control" placeholder="https://www.facebook.com">
-                      </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                      <div class="form-group">
-                        <label>Twitter:</label>
-                        <input type="text" class="form-control" placeholder="https://www.twitter.com">
-                      </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                      <div class="form-group">
-                        <label>Instagram:</label>
-                        <input type="text" class="form-control" placeholder="https://www.instagram.com">
-                      </div>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                      <div class="form-group">
-                        <label>Linkedin:</label>
-                        <input type="text" class="form-control" placeholder="https://www.linkedin.com">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <button type="submit" class="btn dashboard-btn">Save Your Information</button>
-              </form>
+            <div *ngIf="profile.resume_link" class="resume-section">
+              <h3>Resume</h3>
+              <a [href]="profile.resume_link" target="_blank" class="resume-link">
+                View Resume
+                <i class="icon-download"></i>
+              </a>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   </div>
 </div>
 
 <app-footer />
-
 <app-back-to-top />

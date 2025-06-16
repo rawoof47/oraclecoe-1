@@ -109,4 +109,13 @@ export class CandidateProfilesController {
     console.log('Profile Deleted:', result);
     return result;
   }
+  // Add this new endpoint to the controller
+@Get('by-user/me')
+async getMyProfile(@Req() req: AuthenticatedRequest) {
+  const userId = req.user.sub;
+  console.log(`[GET] /candidate-profiles/by-user/me for user ${userId}`);
+  const result = await this.candidateProfilesService.findByUserId(userId);
+  console.log('Profile Found:', result);
+  return result;
+}
 }

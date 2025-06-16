@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { CandidateProfileService } from '../../../services/candidate-profile.service'; // ✅ New import
 
 import { AuthService } from '../../../services/auth.service';
 import { AuthStateService } from '../../../services/auth-state.service';
@@ -24,7 +25,8 @@ export class LoginComponent {
     private authService: AuthService,
     private authStateService: AuthStateService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private candidateProfileService: CandidateProfileService // ✅ New dependency
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -49,11 +51,11 @@ export class LoginComponent {
         this.isSubmitting = false;
         console.log('✅ Login response:', res);
         const token = res.token;
-       const user = {
-  id: res.uuid,
-  role: res.role,
-  email: (res as { email?: string }).email
-};
+        const user = {
+          id: res.uuid,
+          role: res.role,
+          email: (res as { email?: string }).email
+        };
 
         if (!token || !user.id || !user.role) {
           this.showSnackBar('Invalid response from server.', 'snack-error');
@@ -61,22 +63,38 @@ export class LoginComponent {
           return;
         }
 
-        this.authStateService.setAuthState(token, user);
+        // ✅ Fetch full user details and set complete auth state
+        this.candidateProfileService.getUser(user.id).subscribe({
+          next: (userDetails) => {
+            const fullUser = {
+              id: user.id,
+              role: user.role,
+              email: userDetails.email,
+              first_name: userDetails.first_name,
+              last_name: userDetails.last_name
+            };
+            this.authStateService.setAuthState(token, fullUser);
 
-        if (user.role === role) {
-          this.showSnackBar('Login successful!', 'snack-success');
-          if (user.role === 'candidate') {
-            this.router.navigate(['/jobs']);
-          } else if (user.role === 'recruiter') {
-            this.router.navigate(['/recruiter-dashboard']);
-          } else {
-            this.showSnackBar('Unsupported role.', 'snack-error');
-            console.warn('⚠️ Role not handled:', user.role);
+            if (user.role === role) {
+              this.showSnackBar('Login successful!', 'snack-success');
+              if (user.role === 'candidate') {
+                this.router.navigate(['/jobs']);
+              } else if (user.role === 'recruiter') {
+                this.router.navigate(['/recruiter-dashboard']);
+              } else {
+                this.showSnackBar('Unsupported role.', 'snack-error');
+                console.warn('⚠️ Role not handled:', user.role);
+              }
+            } else {
+              this.showSnackBar(`You are not registered as a ${role}.`, 'snack-error');
+              console.warn('⚠️ Role mismatch:', { selectedRole: role, returnedRole: user.role });
+            }
+          },
+          error: (fetchError) => {
+            this.showSnackBar('Failed to fetch user details.', 'snack-error');
+            console.error('❌ Error fetching user details:', fetchError);
           }
-        } else {
-          this.showSnackBar(`You are not registered as a ${role}.`, 'snack-error');
-          console.warn('⚠️ Role mismatch:', { selectedRole: role, returnedRole: user.role });
-        }
+        });
       },
       error: (err) => {
         this.isSubmitting = false;

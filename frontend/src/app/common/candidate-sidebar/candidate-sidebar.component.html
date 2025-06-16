@@ -1,0 +1,25 @@
+<div class="sidebar-container">
+  <div class="profile-item">
+    <img [src]="profileImage" alt="Profile"> <!-- Updated -->
+<h2>{{ firstName }}</h2> <!-- Updated to use firstName -->    
+  </div>
+  
+  <div class="nav-pills">
+    <!-- candidate-sidebar.component.html -->
+<a class="nav-link" routerLink="/dashboard" routerLinkActive="active">
+  <i class="bx bx-user"></i> My Profile
+</a>
+    <a class="nav-link" routerLink="/applied-jobs" routerLinkActive="active">
+      <i class="bx bxs-inbox"></i> Applied Jobs
+    </a>
+    <a class="nav-link" routerLink="/single-resume" routerLinkActive="active">
+      <i class="bx bx-note"></i> My Resume
+    </a>
+     <a class="nav-link" routerLink="/candidate-profile" routerLinkActive="active">
+      <i class="bx bx-edit"></i> Edit Profile
+    </a>
+    <a class="nav-link" routerLink="/login">
+      <i class="bx bx-log-out"></i> Logout
+    </a>
+  </div>
+</div>
