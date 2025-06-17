@@ -5,6 +5,7 @@ import { NavbarComponent } from '../../common/navbar/navbar.component';
 import { PageBannerComponent } from '../../common/page-banner/page-banner.component';
 import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
+import { RecruiterSidebarComponent  } from '../../common/recruiter-sidebar/recruiter-sidebar.component';
 
 @Component({
   selector: 'app-recruiter-dashboard',
@@ -14,7 +15,8 @@ import { BackToTopComponent } from '../../common/back-to-top/back-to-top.compone
     NavbarComponent, 
     PageBannerComponent, 
     FooterComponent, 
-    BackToTopComponent
+    BackToTopComponent,
+    RecruiterSidebarComponent
   ],
   templateUrl: './recruiter-dashboard.component.html',
   styleUrls: ['./recruiter-dashboard.component.scss']

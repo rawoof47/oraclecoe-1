@@ -3,44 +3,10 @@
 <div class="dashboard-area ptb-100">
   <div class="container">
     <div class="row">
-      <!-- Sidebar -->
+      
+      <!-- Sidebar Component -->
       <div class="col-lg-4 col-md-12">
-        <div class="profile-item">
-          <!-- Updated profile image -->
-          <img
-            src="img/ChatGPT Image Jun 8, 2025, 02_58_52 PM.png"
-            alt="Recruiter Headshot"
-          />
-          <h2>Sarah Johnson</h2>
-          <span>Talent Acquisition Manager</span>
-        </div>
-        <div class="nav flex-column nav-pills">
-          <a
-            class="nav-link"
-            routerLink="/recruiter-dashboard"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-          >
-            <i class="bx bx-user"></i> My Profile
-          </a>
-          <a class="nav-link" routerLink="/post-a-job" routerLinkActive="active">
-            <i class="bx bx-plus"></i> Post a New Job
-          </a>
-          <a
-            class="nav-link"
-            routerLink="/recruiter/posted-jobs"
-            routerLinkActive="active"
-          >
-            <i class="bx bx-list-ul"></i> Posted Jobs
-          </a>
-          <a
-            class="nav-link"
-            routerLink="/job-applicants"
-            routerLinkActive="active"
-          >
-            <i class="bx bx-file"></i> Applications
-          </a>
-        </div>
+        <app-recruiter-sidebar></app-recruiter-sidebar>
       </div>
 
       <!-- Main Content -->

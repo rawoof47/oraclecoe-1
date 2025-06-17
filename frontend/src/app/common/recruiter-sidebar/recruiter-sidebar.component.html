@@ -1,0 +1,47 @@
+<div class="sidebar-container">
+  <div class="profile-item">
+    <img
+      src="img/ChatGPT Image Jun 8, 2025, 02_58_52 PM.png"
+      alt="Recruiter Headshot"
+    />
+     <h2>{{ firstName }}</h2> <!-- Dynamic first name -->
+    <span>{{ position }}</span> <!-- Updated to use position -->
+  </div>
+  <div class="nav flex-column nav-pills">
+    <a
+      class="nav-link"
+      routerLink="/recruiter-dashboard"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i class="bx bx-user"></i> My Profile
+    </a>
+
+<!--  Edit Profile button  -->
+    <a 
+      class="nav-link edit-profile-link" 
+      routerLink="/recruiter-profile" 
+      routerLinkActive="active"
+    >
+      <i class="bx bx-edit"></i> Edit Profile
+    </a>
+
+    <a class="nav-link" routerLink="/post-a-job" routerLinkActive="active">
+      <i class="bx bx-plus"></i> Post a New Job
+    </a>
+    <a
+      class="nav-link"
+      routerLink="/recruiter/posted-jobs"
+      routerLinkActive="active"
+    >
+      <i class="bx bx-list-ul"></i> Posted Jobs
+    </a>
+    <a
+      class="nav-link"
+      routerLink="/job-applicants"
+      routerLinkActive="active"
+    >
+      <i class="bx bx-file"></i> Applications
+    </a>
+  </div>
+</div>
