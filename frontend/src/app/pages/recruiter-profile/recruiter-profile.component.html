@@ -61,9 +61,15 @@
         </div>
 
         <!-- Submit -->
-        <div class="button-wrapper">
-          <button type="submit">Save Profile</button>
-        </div>
+        <!-- recruiter-profile.component.html -->
+<div class="button-wrapper">
+  <button type="submit" [disabled]="isLoading">
+    <span *ngIf="!isLoading">Save Profile</span>
+    <span *ngIf="isLoading">
+      <i class="spinner"></i> Saving...
+    </span>
+  </button>
+</div>
       </form>
     </div>
   </div>
