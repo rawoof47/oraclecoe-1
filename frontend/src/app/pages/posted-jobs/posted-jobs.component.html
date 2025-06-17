@@ -84,9 +84,11 @@
 
                     <mat-card-actions class="card-actions d-flex flex-wrap gap-2 justify-content-end">
                       <!-- View Applicants Button -->
-                      <button mat-stroked-button color="primary" [routerLink]="['/job-applicants', job.id]">
-                        View Applicants
-                      </button>
+                      <button mat-stroked-button color="primary" 
+        [routerLink]="['/job-applicants', job.id]"
+        [state]="{ jobTitle: job.job_title }">
+  View Applicants
+</button>
                       <!-- Edit Button -->
                       <button mat-stroked-button [routerLink]="['/edit-job', job.id]">
                         Edit

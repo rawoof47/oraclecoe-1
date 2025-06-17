@@ -1,7 +1,6 @@
-
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { JobPostService } from '../../services/job-post.service';
 import { AuthService } from '../../services/auth.service';
 import { Applicant } from '../../auth/models/applicant.model';
@@ -31,13 +30,16 @@ export class JobApplicantsComponent implements OnInit {
   isLoading = true;
   errorMessage: string | null = null;
   jobId: string | null = null;
-  
+
+  // ✅ New title support
+  pageTitle = 'Job Applicants';
+  specificJobTitle: string | null = null;
+
   // Snackbar properties
   showSnackbar = false;
   snackbarMessage = '';
   snackbarType: 'success' | 'error' = 'success';
 
-  // ✅ For Modal
   selectedApplicant: any = null;
 
   statusMap: Record<string, string> = {
@@ -50,14 +52,23 @@ export class JobApplicantsComponent implements OnInit {
   constructor(
     private jobPostService: JobPostService,
     private authService: AuthService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router // ✅ Added Router
   ) {}
 
   async ngOnInit() {
     console.log('[Init] Component initializing...');
     this.route.params.subscribe(async (params) => {
       this.jobId = params['jobId'] || null;
+
+      // ✅ Get jobTitle if passed via navigation state
+      const navigation = this.router.getCurrentNavigation();
+      if (navigation?.extras.state?.['jobTitle']) {
+        this.specificJobTitle = navigation.extras.state['jobTitle'];
+      }
+
       await this.loadApplicants();
+      this.updatePageTitle();
     });
   }
 
@@ -95,6 +106,13 @@ export class JobApplicantsComponent implements OnInit {
         email: app.candidate_email,
         withdrawalReason: app.withdrawal_reason || null
       }));
+
+      // ✅ If we still don’t have jobTitle, get it from first applicant
+      if (this.jobId && !this.specificJobTitle && this.applicants.length > 0) {
+        this.specificJobTitle = this.applicants[0].job_title;
+        this.updatePageTitle();
+      }
+
     } catch (error) {
       console.error('[Error] Failed to load applicants:', error);
       this.errorMessage = 'Failed to load applicants. Please try again later.';
@@ -118,12 +136,11 @@ export class JobApplicantsComponent implements OnInit {
           if (applicant) {
             applicant.status = this.mapStatus(newStatusId, false);
             applicant.status_id = newStatusId;
-            
-            // Show snackbar based on action
-            const message = newStatusId === 'e8d0da93-452c-11f0-8520-ac1f6bbcd360' 
-              ? 'Applicant shortlisted successfully' 
+
+            const message = newStatusId === 'e8d0da93-452c-11f0-8520-ac1f6bbcd360'
+              ? 'Applicant shortlisted successfully'
               : 'Applicant rejected successfully';
-              
+
             this.showSnackbarMessage(message, 'success');
           }
         },
@@ -134,24 +151,31 @@ export class JobApplicantsComponent implements OnInit {
       });
   }
 
-  // ✅ Open Withdrawal Reason Modal
   viewWithdrawalReason(applicant: any) {
     this.selectedApplicant = applicant;
   }
 
-  // ✅ Close Modal
   closeReasonModal() {
     this.selectedApplicant = null;
   }
-  
-  // Show snackbar message
+
   showSnackbarMessage(message: string, type: 'success' | 'error') {
     this.snackbarMessage = message;
     this.snackbarType = type;
     this.showSnackbar = true;
-    
+
     setTimeout(() => {
       this.showSnackbar = false;
     }, 3000);
+  }
+
+  updatePageTitle() {
+    if (this.specificJobTitle) {
+      this.pageTitle = `Applications for "${this.specificJobTitle}"`;
+    } else if (this.jobId) {
+      this.pageTitle = `Job #${this.jobId} Applicants`;
+    } else {
+      this.pageTitle = 'All Applications ';
+    }
   }
 }
