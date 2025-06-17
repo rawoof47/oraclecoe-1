@@ -10,6 +10,7 @@ import { InitialsPipe } from '../../shared/pipes/initials.pipe';
 import { NavbarComponent } from '../../common/navbar/navbar.component';
 import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
+import { RecruiterSidebarComponent  } from '../../common/recruiter-sidebar/recruiter-sidebar.component';
 
 @Component({
   standalone: true,
@@ -21,7 +22,8 @@ import { BackToTopComponent } from '../../common/back-to-top/back-to-top.compone
     InitialsPipe,
     NavbarComponent,
     FooterComponent,
-    BackToTopComponent
+    BackToTopComponent,
+    RecruiterSidebarComponent,
   ]
 })
 export class JobApplicantsComponent implements OnInit {
