@@ -1,48 +1,44 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Body,
+  NotFoundException,
+} from '@nestjs/common';
 import { UserService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import { UpdateEmailDto } from './dto/update-email.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @Controller('users')
-export class UserController {
+export class UsersController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.userService.create(createUserDto);
-  }
-
-  @Get()
-  findAll(): Promise<User[]> {
-    return this.userService.findAll();
-  }
-
+  // ✅ Get a user by ID
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<User> {
-    return this.userService.findOne(id);
+  async getUserById(@Param('id') id: string) {
+    const user = await this.userService.findOne(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
   }
 
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<User> {
-    return this.userService.update(id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string): Promise<void> {
-    return this.userService.remove(id);
-  }
-
-  @Put('update-name/:id')
-  async updateName(
+  // ✅ Update user email
+  @Patch(':id/email')
+  async updateEmail(
     @Param('id') id: string,
-    @Body() updateNameDto: {
-      first_name: string;
-      last_name: string;
-      middle_name?: string;
-    },
-  ): Promise<User> {
-    const { first_name, last_name, middle_name } = updateNameDto;
-    return this.userService.updateName(id, first_name, last_name, middle_name);
+    @Body() updateEmailDto: UpdateEmailDto,
+  ) {
+    return this.userService.updateEmail(id, updateEmailDto.email);
+  }
+
+  // ✅ Update user password
+  @Patch(':id/password')
+  async updatePassword(
+    @Param('id') id: string,
+    @Body() updatePasswordDto: UpdatePasswordDto,
+  ) {
+    return this.userService.updatePassword(id, updatePasswordDto.password);
   }
 }

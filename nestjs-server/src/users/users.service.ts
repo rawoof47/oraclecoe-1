@@ -19,7 +19,7 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  // ✅ Create a new user with hashed password and check for existing email
+  //  Create a new user with hashed password
   async create(createUserDto: CreateUserDto): Promise<User> {
     const { password_hash, email, ...rest } = createUserDto;
 
@@ -27,14 +27,13 @@ export class UserService {
       throw new BadRequestException('Password is required');
     }
 
-    // ✅ Check for duplicate email
     const existingUser = await this.userRepository.findOne({ where: { email } });
     if (existingUser) {
       throw new ConflictException('Email already exists');
     }
 
     try {
-      const hashedPassword = await bcrypt.hash(password_hash, 10); // Salt rounds = 10
+      const hashedPassword = await bcrypt.hash(password_hash, 10);
       const user = this.userRepository.create({
         ...rest,
         email,
@@ -48,12 +47,12 @@ export class UserService {
     }
   }
 
-  // Find all users
+  //  Get all users
   async findAll(): Promise<User[]> {
     return this.userRepository.find();
   }
 
-  // Find a user by ID
+  //  Get one user
   async findOne(id: string): Promise<User> {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
@@ -62,7 +61,7 @@ export class UserService {
     return user;
   }
 
-  // Update an existing user
+  //  Update user data
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const result = await this.userRepository.update(id, updateUserDto);
     if (result.affected === 0) {
@@ -70,7 +69,6 @@ export class UserService {
     }
 
     const updatedUser = await this.userRepository.findOne({ where: { id } });
-
     if (!updatedUser) {
       throw new NotFoundException('User not found after update');
     }
@@ -78,7 +76,7 @@ export class UserService {
     return updatedUser;
   }
 
-  // Remove a user
+  //  Delete user
   async remove(id: string): Promise<void> {
     const result = await this.userRepository.delete(id);
     if (result.affected === 0) {
@@ -86,24 +84,42 @@ export class UserService {
     }
   }
 
-  // ✅ Update only the name fields
+  //  Update only name fields
   async updateName(
     id: string,
     first_name: string,
     last_name: string,
     middle_name?: string,
   ): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id } });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
+    const user = await this.findOne(id);
     user.first_name = first_name;
     user.last_name = last_name;
-
-    // Explicitly update middle name only if it's provided
-    user.middle_name = (middle_name === undefined) ? user.middle_name : middle_name;
-
+    user.middle_name = middle_name !== undefined ? middle_name : user.middle_name;
     return await this.userRepository.save(user);
+  }
+
+  //  Update email (with conflict check)
+  async updateEmail(id: string, email: string): Promise<User> {
+    const existing = await this.userRepository.findOne({ where: { email } });
+    if (existing && existing.id !== id) {
+      throw new ConflictException('Email is already in use');
+    }
+
+    const user = await this.findOne(id);
+    user.email = email;
+    return await this.userRepository.save(user);
+  }
+
+  //  Update password (hashed)
+  async updatePassword(id: string, password: string): Promise<User> {
+    const user = await this.findOne(id);
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password_hash = hashedPassword;
+    return await this.userRepository.save(user);
+  }
+
+  //  Get a user by ID (alias to findOne, for controller usage)
+  async getUserById(id: string): Promise<User> {
+    return this.findOne(id);
   }
 }

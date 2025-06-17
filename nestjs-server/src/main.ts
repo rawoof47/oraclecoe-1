@@ -7,8 +7,8 @@ import { Observable } from 'rxjs';
 class LoggingInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const req = context.switchToHttp().getRequest();
-    console.log('🔍 Incoming Request:', req.method, req.url);
-    console.log('📋 Headers:', req.headers);
+    console.log(' Incoming Request:', req.method, req.url);
+    console.log(' Headers:', req.headers);
     return next.handle();
   }
 }
@@ -16,17 +16,17 @@ class LoggingInterceptor implements NestInterceptor {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // ✅ Enable CORS to allow Angular frontend to communicate with this backend
+  // Enable CORS for frontend communication
   app.enableCors({
     origin: 'http://localhost:4200',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
 
-  // ✅ Attach global interceptor to log incoming requests
+  // Global request logging
   app.useGlobalInterceptors(new LoggingInterceptor());
 
-  // ✅ Set up Swagger
+  // Swagger documentation setup
   const config = new DocumentBuilder()
     .setTitle('Your API Title')
     .setDescription('API description')
@@ -36,6 +36,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
+  // Start the server
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

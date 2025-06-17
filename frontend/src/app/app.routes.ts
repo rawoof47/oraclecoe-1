@@ -32,6 +32,8 @@ import { AppliedJobsComponent } from './pages/applied-jobs/applied-jobs.componen
 import { JobApplicantsComponent } from './pages/job-applicants/job-applicants.component';
 import { RecruiterDashboardComponent } from './dashboard/recruiter-dashboard/recruiter-dashboard.component';
 import { PostedJobsComponent } from './pages/posted-jobs/posted-jobs.component'; // ✅ NEW
+import { SettingsComponent } from './pages/settings/settings.component';
+
 
 // Guards
 import { authGuard } from './guards/auth.guard';
@@ -89,15 +91,39 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard('candidate')]
   },
   {
+  path: 'settings',
+  component: SettingsComponent,
+  canActivate: [authGuard, roleGuard('candidate')]
+},
+
+  {
     path: 'applied-jobs',
     component: AppliedJobsComponent,
     canActivate: [authGuard, roleGuard('candidate')]
   },
+   { path: 'settings', component: SettingsComponent },
   {
     path: 'single-resume',
     component: SingleResumeComponent,
     canActivate: [authGuard, roleGuard('candidate')]
   },
+  //updates
+  {
+  path: 'settings/update-password',
+  loadComponent: () =>
+    import('./components/update-password/update-password.component').then(
+      (m) => m.UpdatePasswordComponent
+    ),
+},
+{
+  path: 'settings/update-email',
+  loadComponent: () =>
+    import('./components/edit-email/edit-email.component').then(
+      (m) => m.EditEmailComponent
+    ),
+},
+
+
 
   // 🔒 Recruiter Routes
   {
