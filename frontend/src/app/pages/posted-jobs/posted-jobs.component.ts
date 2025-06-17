@@ -20,6 +20,7 @@ import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
 import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.pipe';
+import { RecruiterSidebarComponent  } from '../../common/recruiter-sidebar/recruiter-sidebar.component';
 
 @Component({
   selector: 'app-posted-jobs',
@@ -36,7 +37,8 @@ import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.p
     PageBannerComponent,
     FooterComponent,
     BackToTopComponent,
-    CompensationFormatPipe
+    CompensationFormatPipe,
+    RecruiterSidebarComponent,
   ],
   templateUrl: './posted-jobs.component.html',
   styleUrls: ['./posted-jobs.component.scss'],

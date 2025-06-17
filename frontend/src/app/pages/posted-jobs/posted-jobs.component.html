@@ -4,49 +4,14 @@
   <div class="container">
     <div class="row">
       
-      <!-- Sidebar (Recruiter Info) -->
-      <div class="col-lg-4 col-md-12">
-        <div class="profile-item text-center mb-4">
-          <img
-            src="img/ChatGPT Image Jun 8, 2025, 02_58_52 PM.png"
-            alt="Recruiter Headshot"
-            class="img-fluid rounded-circle mb-3"
-            style="max-width: 150px;"
-          />
-          <h2 class="mb-1">Sarah Johnson</h2>
-          <span class="text-muted">Talent Acquisition Manager</span>
-        </div>
-        <div class="nav flex-column nav-pills">
-          <a
-            class="nav-link"
-            routerLink="/recruiter-dashboard"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-          >
-            <i class="bx bx-user"></i> My Profile
-          </a>
-          <a class="nav-link" routerLink="/post-a-job" routerLinkActive="active">
-            <i class="bx bx-plus"></i> Post a New Job
-          </a>
-          <a
-            class="nav-link active"
-            routerLink="/recruiter/posted-jobs"
-            routerLinkActive="active"
-          >
-            <i class="bx bx-list-ul"></i> Posted Jobs
-          </a>
-          <a
-            class="nav-link"
-            routerLink="/job-applicants"
-            routerLinkActive="active"
-          >
-            <i class="bx bx-file"></i> Applications
-          </a>
-        </div>
-      </div>
+    <div class="row">
+  <!-- Sidebar (Left Side) -->
+  <div class="col-lg-4 col-md-12 order-lg-1 order-md-1 order-2">
+    <app-recruiter-sidebar></app-recruiter-sidebar>
+  </div>
 
-      <!-- Main Content -->
-      <div class="col-lg-8 col-md-12">
+  <!-- Main Content (Right Side) -->
+  <div class="col-lg-8 col-md-12 order-lg-2 order-md-2 order-1">
         <div class="profile-content">
           <div class="jobs-content">
 
