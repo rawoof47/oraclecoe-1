@@ -24,6 +24,8 @@ import { NavbarComponent } from '../../common/navbar/navbar.component';
 import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
 import { CandidateProfile } from '../../auth/models/candidate-profile.model';
+import { CandidateSidebarComponent } from '../../common/candidate-sidebar/candidate-sidebar.component';
+
 import {
   Certification,
   Skill,
@@ -44,7 +46,7 @@ import {
     NgSelectModule,
     BackToTopComponent,
     FooterComponent,
-    NavbarComponent,
+    NavbarComponent,CandidateSidebarComponent,
   ],
   templateUrl: './candidate-profile.component.html',
   styleUrls: ['./candidate-profile.component.scss'],

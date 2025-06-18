@@ -6,8 +6,8 @@
 
 .dropdown {
   position: relative;
-  min-width: 250px;
-  max-width: 300px;
+  // min-width: 250px;
+  // max-width: 300px;
 }
 
 .dropdown-header {
@@ -33,7 +33,9 @@
 }
 
 .arrow {
-  font-size: 12px;
+    font-size: 18px;
+    position: absolute;
+    right: 15px;
 }
 
 .dropdown-list {

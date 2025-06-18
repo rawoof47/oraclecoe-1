@@ -1,14 +1,26 @@
 <!-- single-resume.component.html -->
 <app-navbar />
 
-<app-page-banner
+<!-- <app-page-banner
   [pageTitle]="'My Resume'"
   [backgroundImage]="'img/page-title-bg.jpg'"
-/>
+/> -->
 
-<!-- Single Resume -->
-<div class="person-details-area resume-area ptb-100">
-  <div class="container">
+
+<div class="dashboard-layout container">
+  <!-- Sidebar -->
+  <app-candidate-sidebar></app-candidate-sidebar>
+
+  <!-- Main Dashboard Content -->
+  <div class="dashboard-main">
+    <section class="dashboard-section">
+      <div class="dashboard-content">
+          <div class="profile-card"> 
+                  <div class="dashboard-area">
+      <div class="container">
+          <div class="row">
+            <!-- Single Resume -->
+
     <!-- Loading State -->
     <div *ngIf="isLoading" class="text-center py-5">
       <div class="spinner-border text-primary" role="status">
@@ -23,78 +35,86 @@
     </div>
 
     <!-- Profile Data -->
-    <div *ngIf="!isLoading && !errorMessage && candidateProfile && user" class="row">
-      <div class="col-lg-4 col-md-12">
-        <div class="widget-area">
-          <!-- Profile Box -->
-          <div class="resume-profile">
-            <img src="img/dashboard1.jpg" alt="Profile" />
-            <h2>
+    <div *ngIf="!isLoading && !errorMessage && candidateProfile && user" class="row ">
+          <div class="col-md-12">
+            <h4 class="blColor">
               {{ user.first_name }}
               {{ user.middle_name ? user.middle_name + ' ' : '' }}
               {{ user.last_name }}
-            </h2>
+            </h4>
           </div>
-
+          <div  class="col-md-5 pt-30">
+            <h6 class="bColor">Email:</h6> <span>{{ user.email }}</span>
+          </div>
+          <div  class="col-md-2 pt-30" *ngIf="candidateProfile.experience_years">
+                <h6 class="bColor">Experience:</h6>
+                <span>{{ candidateProfile.experience_years }} years</span>
+          </div>
+           <div class="col-md-2 pt-30" *ngIf="candidateProfile.gender">
+                <h6 class="bColor">Gender:</h6>
+                <span>{{ candidateProfile.gender }}</span>
+           </div>
+           <div class="col-md-3 pt-30" *ngIf="candidateProfile.notice_period">
+                <h6 class="bColor">Notice Period:</h6>
+                <span>{{ candidateProfile.notice_period }}</span>
+           </div>
           <!-- Overview Section -->
-          <div class="information widget-item">
+          <!-- <div class="information widget-item">
             <h3>Overview</h3>
-            <ul>
+            <ul> -->
               <!-- Email -->
-              <li>
+              <!-- <li>
                 <img src="img/job-details-icon.png" alt="Email" />
                 <h4>Email:</h4>
                 <span>{{ user.email }}</span>
-              </li>
+              </li> -->
 
               <!-- Experience -->
-              <li *ngIf="candidateProfile.experience_years">
+              <!-- <li *ngIf="candidateProfile.experience_years">
                 <img src="img/job-details-icon.png" alt="Experience" />
                 <h4>Experience:</h4>
                 <span>{{ candidateProfile.experience_years }} years</span>
-              </li>
+              </li> -->
 
               <!-- Gender -->
-              <li *ngIf="candidateProfile.gender">
+              <!-- <li *ngIf="candidateProfile.gender">
                 <img src="img/job-details-icon.png" alt="Gender" />
                 <h4>Gender:</h4>
                 <span>{{ candidateProfile.gender }}</span>
-              </li>
+              </li> -->
 
               <!-- Notice Period -->
-              <li *ngIf="candidateProfile.notice_period">
+              <!-- <li *ngIf="candidateProfile.notice_period">
                 <img src="img/job-details-icon.png" alt="Notice Period" />
                 <h4>Notice Period:</h4>
                 <span>{{ candidateProfile.notice_period }}</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
+              </li> -->
+            <!-- </ul>
+          </div> -->
 
-      <div class="col-lg-8 col-md-12">
+      <div class="col-lg-12 col-md-12">
         <div class="details-item">
           <!-- About Me -->
-          <div class="profile bottom-item" *ngIf="candidateProfile.about_me">
-            <h3>About Me</h3>
+          <div class="profile bottom-item pt-30" *ngIf="candidateProfile.about_me">
+            <h5>About Me</h5>
             <p>{{ candidateProfile.about_me }}</p>
           </div>
 
           <!-- Professional Summary -->
           <div class="profile bottom-item" *ngIf="candidateProfile.professional_summary">
-            <h3>Professional Summary</h3>
+            <h5>Professional Summary</h5>
             <p>{{ candidateProfile.professional_summary }}</p>
           </div>
 
           <!-- Education -->
           <div class="profile bottom-item" *ngIf="candidateProfile.education">
-            <h3>Education</h3>
+            <h5>Education</h5>
             <p>{{ candidateProfile.education }}</p>
           </div>
 
           <!-- Skills Section -->
           <div class="skills bottom-item" *ngIf="skills.length > 0">
-            <h3>Skills</h3>
+            <h5>Skills</h5>
             <div class="skills-wrap">
               <div class="skill-tags">
                 <span *ngFor="let skill of skills" class="skill-tag">
@@ -105,8 +125,8 @@
           </div>
 
           <!-- Certifications Section -->
-          <div class="profile bottom-item" *ngIf="certifications.length > 0">
-            <h3>Certifications</h3>
+          <div class="profile bottom-item pt-30" *ngIf="certifications.length > 0">
+            <h5>Certifications</h5>
             <ul class="certification-list">
               <li *ngFor="let cert of certifications">
                 {{ cert }}
@@ -117,20 +137,19 @@
           
 
           <!-- Social Links -->
-          <div class="profile bottom-item" *ngIf="candidateProfile.social_links">
-            <h3>Social Links</h3>
+          <div class="profile bottom-item pt-30" *ngIf="candidateProfile.social_links">
+            <h5>Social Links</h5>
             <div [innerHTML]="candidateProfile.social_links | linkify"></div>
           </div>
 
           <!-- Resume Download -->
-          <div class="profile bottom-item" *ngIf="candidateProfile.resume_link">
-            <h3>Resume</h3>
+          <div class="profile bottom-item pt-30" *ngIf="candidateProfile.resume_link">
             <a
               [href]="candidateProfile.resume_link"
               target="_blank"
               class="btn btn-primary"
             >
-              Download Resume
+            <i class="fa-solid fa-download"></i>  Download Resume
             </a>
           </div>
         </div>
@@ -142,8 +161,15 @@
       <h3>No Profile Found</h3>
       <p>Please create your candidate profile to view it here.</p>
     </div>
+          </div>
+        </div>
+    </div>
+          </div>
+      </div>
+    </section>
   </div>
 </div>
+
 
 <app-footer />
 <app-back-to-top />

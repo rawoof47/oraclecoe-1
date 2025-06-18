@@ -137,12 +137,12 @@
 @media (max-width: 991.98px) {
   .navbar-nav {
     flex-direction: column;
-    padding: 15px 0;
+    padding: 0px 0;
   }
 
   .navbar-nav .nav-item {
     margin-right: 0;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
   }
 
   .navbar {
@@ -202,8 +202,8 @@
 /* Optional: Adjust for mobile view */
 @media (max-width: 991.98px) {
   .logo-lg {
-    max-height: 36px;
-    top: -3px; /* Slightly less adjustment for mobile */
+    max-height: 110px;
+    top: -10px; /* Slightly less adjustment for mobile */
   }
 }
 /* Add this to the end of your navbar.component.scss */
@@ -225,6 +225,31 @@
 @media (max-width: 991.98px) {
   .navbar-nav .nav-item.dropdown .nav-link {
     height: auto;
-    padding: 10px 15px;
+    padding: 15px 15px;
   }
+}
+
+/* Mobile menu custom styles */
+.mobileToggle{
+  margin-top: 8px;
+  position: relative;
+    left: 40px;
+}
+.mobile-menu {
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  position: absolute;
+    right: 30px;
+    top: 54px;
+}
+
+.mobile-menu .nav-link {
+  transition: background-color 0.3s ease, color 0.3s ease;
+  padding: 10px 15px;
+  border-radius: 8px;
+}
+
+.mobile-menu .nav-link:hover {
+  background-color: #0d6efd; /* Bootstrap primary color */
+  color: white;
 }

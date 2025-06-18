@@ -1,126 +1,18 @@
-<!-- Uniform text color and improved login form styling -->
-<style>
-  .user-form-area,
-  .user-form-area .form-control,
-  .user-form-area .form-control::placeholder,
-  .user-form-area .form-check-label,
-  .user-form-area label,
-  .user-form-area .btn,
-  .user-form-area .end ul li a {
-    color: #000 !important;
-  }
-
-  .user-form-area .form-control::placeholder {
-    opacity: 1 !important;
-  }
-
-  .user-form-area .form-group {
-    margin-bottom: 1.5rem;
-  }
-
-  .user-form-area .form-control {
-    width: 100%;
-    padding: 0.875rem 1.25rem;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
-    background-color: #fff;
-  }
-
-  .user-form-area .form-control.d-flex {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.75rem 1.25rem;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
-
-  .user-form-area .form-check {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .user-form-area .form-check-input {
-    width: 18px;
-    height: 18px;
-  }
-
-  .user-form-area .btn {
-    width: 100%;
-    padding: 1rem;
-    font-size: 1.1rem;
-    background-color: #007bff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    color: #fff !important;
-  }
-
-  .user-form-area .btn:hover {
-    background-color: #0056b3;
-  }
-
-  .user-form-area .switch-link {
-    margin-top: 1rem;
-    text-align: center;
-    font-size: 0.95rem;
-  }
-
-  .user-form-area .switch-link a {
-    color: #007bff;
-    text-decoration: none;
-    font-weight: 500;
-  }
-
-  .user-form-area .switch-link a:hover {
-    text-decoration: underline;
-  }
-
-  .user-form-area .end ul {
-    padding: 0;
-    margin-top: 30px;
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    list-style: none;
-  }
-
-  .user-form-area .end ul li a {
-    font-size: 18px;
-    transition: color 0.3s ease;
-  }
-
-  .user-form-area .end ul li a:hover {
-    color: #0056b3 !important;
-  }
-
-  .user-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-  }
-</style>
-
 <!-- Login Page HTML -->
 <div class="user-form-area">
   <div class="d-table">
     <div class="d-table-cell">
-      <div class="container-fluid p-0">
-        <div class="row m-0 align-items-center">
-          <div class="col-lg-7 col-md-7">
+      <div class="container-fluid">
+        <div class="row align-items-center">
+          <div class="col-lg-7 col-md-7 d-md-block">
             <div class="user-img" style="background-image: url(img/resgister-bg.jpg);">
-              <img src="img/resgister-bg.jpg" alt="User">
+              <!-- <img src="img/footer-logo.png" alt="OraXINNO" width="100" style="text-align: center;"> -->
             </div>
-          </div>
-          <div class="col-lg-5 col-md-5">
+          </div> 
+          <div class="col-lg-5 col-md-5 col-12">
             <div class="user-content">
               <div class="top">
-                <h2 class="mb-4">Login</h2>
+                <h2 class="mb-4">Login</h2> 
            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
   <div class="form-group mb-3">
     <input type="email" class="form-control" formControlName="email" placeholder="Email">
@@ -147,7 +39,7 @@
   <button type="submit" class="btn btn-primary">Login Here</button>
 </form>
 
-                <div class="switch-link">
+                <div class="switch-link mt-3">
                   Don't have an account? <a href="/register">Sign up</a>
                 </div>
               </div>

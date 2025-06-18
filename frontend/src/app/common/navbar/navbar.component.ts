@@ -58,10 +58,14 @@ export class NavbarComponent {
       0;
     this.isSticky = scrollPosition >= 50;
   }
-
+  
+  isNavbarOpen = false;
   navbarToggleClass() {
-    this.navbarToggleClassApplied = !this.navbarToggleClassApplied;
+    // this.navbarToggleClassApplied = !this.navbarToggleClassApplied;
+      this.isNavbarOpen = !this.isNavbarOpen;
   }
+
+
 
   logout() {
     this.authStateService.clearAuthState();

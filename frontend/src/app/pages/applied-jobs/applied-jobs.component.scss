@@ -11,6 +11,19 @@ $success-accent: #2ecc71;
 $text-muted: #6b7280;
 $card-gradient: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
 
+$primary-gradient: linear-gradient(135deg, #4361ee 0%, #4cc9f0 100%);
+$secondary-gradient: linear-gradient(135deg, #f6f9fc 0%, #edf2f9 100%);
+$card-gradient: linear-gradient(to bottom, #ffffff 0%, #f8fbff 100%);
+$stat-gradient: linear-gradient(135deg, #f6f9ff 0%, #edf3ff 100%);
+$accent-color: #4361ee;
+$accent-secondary: #ff4081;
+$text-primary: #1a2b5f;
+$text-secondary: #4a658a;
+$border-light: rgba(214, 228, 255, 0.6);
+$hover-easing: cubic-bezier(0.23, 1, 0.32, 1);
+$shadow-primary: 0 15px 40px rgba(0, 45, 150, 0.1), 0 5px 15px rgba(0, 0, 0, 0.03);
+$glass-effect: rgba(255, 255, 255, 0.65); 
+
 // ==========================
 // Typography Enhancements
 // ==========================
@@ -40,7 +53,7 @@ $card-gradient: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
 // ==========================
 .card {
   background: $card-gradient;
-  border: 1px solid rgba($border-color, 0.8);
+  border: 1px solid rgba($border-color, 0.8) !important;
   border-left: 4px solid $primary-accent;
   border-radius: 12px;
   padding: 1.75rem;
@@ -160,7 +173,7 @@ $card-gradient: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
     font-weight: 500;
     transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
     letter-spacing: 0.25px;
-    border: none !important;
+    // border: none !important;
     position: relative;
     overflow: hidden;
     
@@ -593,13 +606,16 @@ button:focus {
   transform: translate(-50%, -50%);
   z-index: 10;
 }
-/* Add to applied-jobs.component.scss */
+/* Add to applied-jobs.component.scss */  
+
+/* new styles 17/6/25 - UI */
+
 .dashboard-layout {
   display: flex;
   gap: 30px;
   padding: 30px 0;
+  margin-top: 60px;
 }
-
 .dashboard-main {
   flex: 1;
   width: calc(100% - 300px); /* Adjust based on sidebar width */
@@ -613,4 +629,98 @@ button:focus {
   .dashboard-main {
     width: 100%;
   }
+}
+
+.dashboard-section {
+  background: linear-gradient(135deg, $glass-effect 0%, $glass-effect 100%);
+  backdrop-filter: blur(12px);
+  border-radius: 24px;
+  box-shadow: $shadow-primary;
+  padding: 25px;
+  margin-bottom: 35px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s $hover-easing;
+  will-change: transform, box-shadow;
+  
+  &:hover {
+    // transform: translateY(-8px);
+    box-shadow: 
+      0 25px 50px rgba(0, 80, 255, 0.15),
+      0 10px 20px rgba(0, 0, 0, 0.05),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+  }
+  
+  // Accent top border with animation
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: $primary-gradient;
+    z-index: 2;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.6s $hover-easing;
+  }
+  
+  &:hover::before {
+    transform: scaleX(1);
+  }
+  
+  // Floating orb effect
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -70px;
+    right: -70px;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(67, 97, 238, 0.15) 0%, transparent 70%);
+    z-index: -1;
+    transition: transform 0.8s $hover-easing;
+    animation: floatOrb 8s infinite ease-in-out;
+  }
+  
+  @media (max-width: 1199px) {
+    padding: 35px;
+  }
+  
+  @media (max-width: 991px) {
+    padding: 30px;
+  }
+  
+  @media (max-width: 767px) {
+    padding: 25px 20px;
+    border-radius: 20px;
+  }
+}
+.profileFilter{
+  height: 50px;
+  // border: 1px dashed #a3999a;
+  // padding-left: 15px;
+  transition: var(--transition);
+  font-size: 14px;
+  display: block;
+  width: 100%;
+  line-height: 50px;
+  margin-bottom: 30px;
+}
+.header-label h4{
+  font-size: 1.75rem;
+    font-weight: 600;
+    color: #002171;
+    margin: 0 0 8px 0;
+    letter-spacing: -0.25px;
+    padding-left: 10px;
+}
+.btn.viewBtn{
+  border: 1px dashed #a3999a;
+}
+.btn.viewBtn:hover{
+  background-color: #1c1150;
+  color: #fff;
 }
