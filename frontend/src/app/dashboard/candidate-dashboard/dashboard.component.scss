@@ -16,13 +16,14 @@ $glass-effect: rgba(255, 255, 255, 0.65);
 .dashboard-layout {
   display: flex;
   gap: 30px;
-  padding: 80px 0;
+  padding:30px 100px;
   background: $secondary-gradient;
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  // font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
   min-height: 100vh;
   position: relative;
   overflow: hidden;
-  
+  margin-top: 60px;
+
   // Floating particles background
   &::before {
     content: '';
@@ -77,7 +78,7 @@ $glass-effect: rgba(255, 255, 255, 0.65);
   will-change: transform, box-shadow;
   
   &:hover {
-    transform: translateY(-8px);
+    // transform: translateY(-8px);
     box-shadow: 
       0 25px 50px rgba(0, 80, 255, 0.15),
       0 10px 20px rgba(0, 0, 0, 0.05),
@@ -251,16 +252,16 @@ $glass-effect: rgba(255, 255, 255, 0.65);
 
 // Profile section with animated underline
 .profile-section, .resume-section {
-  margin-bottom: 30px;
-  padding-bottom: 30px;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
   border-bottom: 1px solid rgba(224, 231, 255, 0.6);
   position: relative;
   z-index: 3;
 
   h3 {
-    font-size: 26px;
+    font-size: 22px;
     font-weight: 700;
-    margin-bottom: 25px;
+    margin-bottom: 15px;
     color: $text-primary;
     position: relative;
     padding-bottom: 15px;
@@ -313,9 +314,9 @@ $glass-effect: rgba(255, 255, 255, 0.65);
   
   p {
     line-height: 1.75;
-    color: $text-secondary;
-    font-size: 17px;
-    max-width: 90ch;
+    // color: $text-secondary;Add commentMore actions
+    font-size: 15px;
+    // max-width: 90ch;
   }
 }
 
@@ -337,7 +338,7 @@ $glass-effect: rgba(255, 255, 255, 0.65);
 .stat-card {
   background: $stat-gradient;
   border-radius: 20px;
-  padding: 35px 20px;
+  padding: 20px 20px;
   text-align: center;
   transition: all 0.4s $hover-easing;
   border: 1px solid rgba(67, 97, 238, 0.1);
@@ -365,6 +366,9 @@ $glass-effect: rgba(255, 255, 255, 0.65);
       width: 60px;
     }
   }
+  p{
+      font-size: 20px;
+    }
   
   // Background decoration
   .stats-bg {
@@ -467,8 +471,8 @@ $glass-effect: rgba(255, 255, 255, 0.65);
   color: $accent-color;
   padding: 8px 22px 8px 28px;
   border-radius: 50px;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   border: 1px solid rgba(214, 228, 255, 0.4);
   transition: all 0.3s ease;
   overflow: hidden;
@@ -526,7 +530,7 @@ $glass-effect: rgba(255, 255, 255, 0.65);
   display: flex;
   align-items: center;
   gap: 15px;
-  font-size: 17px;
+  font-size: 15px;
   color: $text-secondary;
   padding: 18px 25px;
   background: rgba(67, 97, 238, 0.05);
@@ -612,8 +616,8 @@ $glass-effect: rgba(255, 255, 255, 0.65);
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  font-weight: 600;
-  font-size: 17px;
+  font-weight: 500;
+  font-size: 15px;
   transition: all 0.4s $hover-easing;
   padding: 12px 24px;
   background: rgba(67, 97, 238, 0.08);

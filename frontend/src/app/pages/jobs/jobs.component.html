@@ -45,16 +45,16 @@
                 </div>    
                 <div class="col-sm-6 col-lg-3 col-md-3">
                   <!-- Employment Type Dropdown -->
-                    <div class="form-group">
-                      <ng-select [items]="employmentTypeOptions"
+<div class="form-group custom-select">
+                        <ng-select [items]="employmentTypeOptions"
                         [(ngModel)]="selectedEmploymentTypes" [multiple]="true"
                         [closeOnSelect]="false" [searchable]="false"
                         [clearable]="false" bindLabel="."
-                        placeholder="Select employment types" class="employment-type-dropdown" (change)="onEmploymentTypeChange()">
-                        <ng-template ng-multi-label-tmp>
+ placeholder="Select employment types" class="employment-type-dropdown custom-select" (change)="onEmploymentTypeChange()">                        <ng-template ng-multi-label-tmp>
                           <span class="selected-count">
                             {{ selectedEmploymentTypes.length }} of {{ employmentTypeOptions.length }} selected
                           </span>
+                          <span class="arrow">&#9662;</span>
                         </ng-template>
 
                         <ng-template ng-dropdown-header-tmp>
@@ -69,14 +69,14 @@
                           <div class="checkbox-option" (click)="$event.preventDefault(); toggleSelectAll(item)">
                             <input type="checkbox" [checked]="selectedEmploymentTypes.includes(item)"
                               class="custom-checkbox"/>
-                            <label class="customCheckBoxLabel">{{ item }}</label>
+                            <label class="customCheckBoxLabel">&nbsp; {{ item }}</label>
                           </div>
                         </ng-template>
                       </ng-select>
                     </div>
                 </div>
                 <div class="col-sm-6 col-lg-3 col-md-3">
-                   <div class="form-group">
+                   <div class="form-group custom-select ">
                         <!-- Work Mode Dropdown -->
                         <select [(ngModel)]="selectedWorkMode"
                           (change)="onWorkModeChange()">
@@ -86,7 +86,7 @@
                     </div>
                 </div>
                 <div class="col-sm-6 col-lg-3 col-md-3">
-                  <div class="form-group">
+                  <div class="form-group custom-select ">
                       <select [(ngModel)]="selectedNoticePeriod" (change)="onNoticePeriodChange()">
                           <option value="">Select Notice Periods</option>
                           <option *ngFor="let period of noticePeriodOptions" [value]="period">
@@ -126,21 +126,20 @@
                 <li class="list-inline-item mr-3"><i class="flaticon-send mr-1"></i>{{ job.location || 'Not specified' }}</li>
                 <li class="list-inline-item">{{ formatPostedDate(job.created_at) }}</li>
               </ul>
-              <p class="job-description mb-3">{{ job.job_description || 'No description provided.' }}</p>
-
+<div class="job-description mb-3">{{ job.job_description || 'No description provided.' }}</div>
               <div class="job-extra-info mb-3 d-flex flex-wrap text-secondary small">
-                <span class="mr-3"><strong>Experience:</strong>{{ job.experience_min || '0' }} - {{ job.experience_max || 'N/A' }} years</span>
-                <span class="mr-3"><strong>Compensation:</strong>{{ job.compensation_range | compensationFormat }}</span>
-                <span class="mr-3"><strong>Notice Period:</strong>{{ job.notice_period || 'N/A' }}</span>
+                <span class="mr-3"><strong>Experience :</strong> {{ job.experience_min || '0' }} - {{ job.experience_max || 'N/A' }} years</span>Add commentMore actions
+                <span class="mr-3"><strong>Compensation :</strong> {{ job.compensation_range | compensationFormat }}</span>
+                <span class="mr-3"><strong>Notice Period :</strong> {{ job.notice_period || 'N/A' }}</span>
                 <span class="mr-3">
-                  <strong>Deadline:</strong>
+                   <strong>Deadline :</strong> 
                   {{
                     job.application_deadline
                       ? (job.application_deadline | date: 'mediumDate')
                       : 'N/A'
                   }}
                 </span>
-                <span><strong>Work Mode:</strong>{{ job.work_mode || 'Not specified' }}</span>
+                <span><strong>Work Mode :</strong> {{ job.work_mode || 'Not specified' }}</span>
               </div>
 
               <div class="job-tags d-flex flex-wrap">

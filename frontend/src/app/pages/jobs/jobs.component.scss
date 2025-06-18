@@ -80,13 +80,23 @@ $badge-text-color: #fff;
         }
       }
 
-      p.job-description {
-        margin-bottom: 1.25rem;
-        font-size: 0.8rem;
-        line-height: 1.5;
-        color: $text-color;
-        min-height: 60px;
-      }
+       // p.job-description {Add commentMore actions
+      //   margin-bottom: 1.25rem;
+      //   font-size: 0.8rem;
+      //   line-height: 1.5;
+      //   color: $text-color;
+      //   min-height: 60px;
+      // }
+      .job-description {
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* Approx. 200 words depending on line length */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.5;
+            height: 3em; /* 12 lines * 1.5 line height */
+        }
+
 
       .job-extra-info {
         display: flex;
@@ -144,7 +154,32 @@ $badge-text-color: #fff;
     color: $secondary-color;
   }
 }
+ .arrow {
+            font-size: 18px;
+            position: absolute;
+            right: 15px;
+        }
+        .custom-select {
+    position: relative;
+    display: inline-block;
+    width: 100%; /* Adjust as needed */
+}
 
+.custom-select select {
+    appearance: none; /* Remove native dropdown icon */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: white url('data:image/svg+xml;utf8,<svg fill="black" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 1rem center;
+    background-size: 16px;
+    padding: 0px 10px; /* Right padding for the icon space */
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.custom-select select:focus {
+    outline: none;
+    border-color: #4a90e2;
+}
 // Search bar and heading
 .search-bar-section {
       width:100%;
@@ -422,8 +457,7 @@ $badge-text-color: #fff;
 
 .job-filter-area {
     .form-group {
-        margin-bottom: 30px;
-
+margin-bottom: 0px;
         .form-control {
             height: 50px;
             border: 1px dashed var(--pink-color);
@@ -446,6 +480,7 @@ $badge-text-color: #fff;
             width: 100%;
             line-height: 50px;
             margin-bottom: 30px;
+             color:#5f5656;
 
             .list {
                 width: 100%;

@@ -10,7 +10,7 @@ import { AuthStateService } from '../../services/auth-state.service';
 import { forkJoin } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LinkifyPipe } from '../../shared/pipes/linkify.pipe';
-
+import { CandidateSidebarComponent } from '../../common/candidate-sidebar/candidate-sidebar.component';
 @Component({
   selector: 'app-single-resume',
   standalone: true,
@@ -20,7 +20,7 @@ import { LinkifyPipe } from '../../shared/pipes/linkify.pipe';
     PageBannerComponent,
     FooterComponent,
     BackToTopComponent,
-    LinkifyPipe
+    LinkifyPipe,CandidateSidebarComponent
   ],
   templateUrl: './single-resume.component.html',
   styleUrls: ['./single-resume.component.scss']

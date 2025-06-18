@@ -51,13 +51,15 @@
   </div>
 
   <!-- Job Details Section -->
-  <div class="job-details-area ptb-100">
+  <div class="job-details-area ptb-50">
     <div class="container">
       <div class="row">
+        
         <!-- Main Content -->
         <div class="col-lg-8 col-md-12">
           <div class="details-item">
             <div class="details-inner" *ngIf="jobPost.job_description">
+              <br/>
               <h3>Job Description:</h3>
               <p>{{ jobPost.job_description }}</p>
             </div>
@@ -103,57 +105,63 @@
             </div>
           </div>
         </div>
+        
 
         <!-- Sidebar Info -->
         <div class="col-lg-4 col-md-12">
+          <br/>
           <div class="widget-area">
             <div class="information widget-item">
+              
               <h3>Job Information</h3>
-              <ul>
+             <ul class="job-details-list">
                 <li *ngIf="jobPost.location">
-                  <img src="img/job-details-icon.png" alt="Location" />
+                  <!-- <img src="img/job-details-icon.png" alt="Location" /> -->
+                  <i class="fas fa-map-marker-alt" alt="Location"></i>
                   <h4>Location</h4>
                   <span>{{ jobPost.location }}</span>
                 </li>
 
                 <li *ngIf="jobPost.certifications_required">
-                  <img src="img/job-details-icon.png" alt="Certification" />
+                  <i class="fa-solid fa-diploma" alt="Certification" ></i>
                   <h4>Certifications</h4>
                   <span>{{ jobPost.certifications_required }}</span>
                 </li>
 
                 <li *ngIf="jobPost.experience_min !== undefined && jobPost.experience_max !== undefined">
-                  <img src="img/job-details-icon.png" alt="Experience" />
+                  <i class="fas fa-award" alt="Experience"></i>
                   <h4>Experience</h4>
                   <span>{{ jobPost.experience_min }} - {{ jobPost.experience_max }} years</span>
                 </li>
 
                 <li *ngIf="jobPost.employment_type">
-                  <img src="img/job-details-icon.png" alt="Employment Type" />
+                    <!-- <img src="img/job-details-icon.png" alt="Employment Type" /> -->
+                  <i class="fas fa-industry" alt="Employment Type"></i>
                   <h4>Employment Type</h4>
                   <span>{{ jobPost.employment_type }}</span>
                 </li>
 
                 <li *ngIf="jobPost.compensation_range">
-                  <img src="img/job-details-icon.png" alt="Compensation" />
+                  <!-- <img src="img/job-details-icon.png" alt="Employment Type" /> -->
+                  <i class="fa-solid fa-wallet" alt="Compensation" ></i>
                   <h4>Compensation Range</h4>
                   <span>{{ jobPost.compensation_range | compensationFormat }}</span>
                 </li>
 
                 <li *ngIf="jobPost.notice_period">
-                  <img src="img/job-details-icon.png" alt="Notice Period" />
+                  <i class="fa-solid fa-business-time" alt="Notice Period"></i>
                   <h4>Notice Period</h4>
                   <span>{{ jobPost.notice_period }}</span>
                 </li>
 
                 <li *ngIf="jobPost.work_mode">
-                  <img src="img/job-details-icon.png" alt="Work Mode" />
+                  <i class="fa-solid fa-hourglass-start" alt="Work Mode"></i>
                   <h4>Work Mode</h4>
                   <span>{{ jobPost.work_mode }}</span>
                 </li>
 
                 <li *ngIf="jobPost.application_deadline">
-                  <img src="img/job-details-icon.png" alt="Deadline" />
+                  <i class="fa-solid fa-timeline" alt="Deadline"></i>
                   <h4>Deadline</h4>
                   <span>{{ jobPost.application_deadline | date: 'mediumDate' }}</span>
                 </li>
