@@ -22,6 +22,11 @@
             <li class="nav-item"><a routerLink="/employers" class="nav-link" routerLinkActive="active">Companies</a></li>
             <li class="nav-item"><a routerLink="/about" class="nav-link" routerLinkActive="active">About</a></li>
             <li class="nav-item"><a routerLink="/contact" class="nav-link" routerLinkActive="active">Contact</a></li>
+ <!-- Role-based Menu Item -->
+ <ng-container *ngIf="userRole$ | async as role">
+  <li class="nav-item" *ngIf="(userRole$ | async) === 'candidate' || (userRole$ | async) === 'recruiter'">
+</ng-container>
+          
           </ul>
         </div>
 

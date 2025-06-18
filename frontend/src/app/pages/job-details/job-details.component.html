@@ -26,12 +26,20 @@
             </div>
             <div class="col-lg-4 col-md-12">
               <div class="right">
-                <!-- Apply Button -->
-                <button class="cmn-btn"
-                        [disabled]="hasApplied"
-                        (click)="applyToJob()">
-                  {{ hasApplied ? 'Already Applied' : (userId ? 'Apply Now' : 'Login to Apply') }}
-                </button>
+                <!-- Apply Button only visible to candidate -->
+                <button 
+                class="cmn-btn"
+                *ngIf="(userRole$ | async) === 'candidate'"  
+                (click)="applyToJob()">
+                
+                {{ hasApplied 
+                    ? 'Already Applied' 
+                    : (userId 
+                          ? 'Apply Now' 
+                          : 'Login to Apply') 
+                }}
+              </button>
+              
                 <div *ngIf="applyStatusMessage" class="text-muted mt-2">
                   {{ applyStatusMessage }}
                 </div>

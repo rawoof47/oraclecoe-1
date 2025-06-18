@@ -150,7 +150,13 @@
             </a>
 <div class="applyBtn">
   <!-- Show different buttons based on state -->
-  <button *ngIf="!appliedStatus[job.id] && currentUserId"  class="btn btn-success btn-sm" (click)="applyToJob(job.id)">Apply</button>
+  <button 
+  *ngIf="(userRole$ | async) === 'candidate' && !appliedStatus[job.id] && currentUserId" 
+  class="btn btn-success btn-sm" 
+  (click)="applyToJob(job.id)">
+  Apply
+</button>
+
   <button *ngIf="appliedStatus[job.id]" class="btn btn-secondary btn-sm"  disabled> Already Applied </button> 
   <button *ngIf="!currentUserId" class="btn btn-outline-primary btn-sm" (click)="redirectToLogin()"> Login to Apply </button>
 </div>

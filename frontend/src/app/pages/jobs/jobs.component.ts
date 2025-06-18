@@ -11,6 +11,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { SkillFiltersComponent } from './filters/skills-filter/skills-filter.component';
 import { AuthStateService } from '../../services/auth-state.service';
 import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.pipe';
+import { Observable } from 'rxjs';
 @Component({
   selector: 'app-jobs',
   standalone: true,
@@ -37,6 +38,7 @@ export class JobsComponent implements OnInit {
   jobCount = 0;
   loading = true;
   error: string | null = null;
+  userRole$!: Observable<string | null>;  // 👈 Add this line
 
   workModeOptions: string[] = ['Remote', 'On-site', 'Hybrid'];
   selectedWorkMode: string = '';
@@ -78,6 +80,7 @@ export class JobsComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUserId = this.authState.getCurrentUserId(); // ✅ Get current user ID
+    this.userRole$ = this.authState.userRole$; // ✅ ADD THIS LINE
     this.fetchJobs();
   }
 
