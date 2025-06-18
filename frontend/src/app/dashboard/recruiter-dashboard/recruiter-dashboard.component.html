@@ -26,6 +26,38 @@
               <button class="btn btn-sm btn-outline-danger ms-3" (click)="fetchProfileData()">Retry</button>
             </div>
 
+            
+<!-- Stats (Static Section) -->
+            <div *ngIf="profileData" class="profile-content-inner">
+              <h2>Recruitment Stats</h2>
+              <div class="row stats-row">
+                <div class="col-lg-3 col-md-6 col-6">
+                  <div class="stats-box">
+                    <h3>24</h3>
+                    <p>Active Jobs</p>
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-6">
+                  <div class="stats-box">
+                    <h3>142</h3>
+                    <p>Applications</p>
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-6">
+                  <div class="stats-box">
+                    <h3>38</h3>
+                    <p>Interviews</p>
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-6">
+                  <div class="stats-box">
+                    <h3>12</h3>
+                    <p>Hired</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br/>
             <!-- Company Info -->
             <div *ngIf="profileData" class="profile-content-inner">
               <h2>Company Information</h2>
@@ -78,7 +110,7 @@
                   <div class="form-group">
                     <label>Company Description:</label>
                     <textarea class="form-control" rows="4" readonly>
-                      {{ profileData.company_description || 'No description available' }}
+{{ profileData.company_description || 'No description available' }}
                     </textarea>
                   </div>
                 </div>
@@ -87,7 +119,6 @@
 
             <!-- Recruiter Profile -->
             <div *ngIf="profileData" class="profile-content-inner">
-              <h2>Recruiter Profile</h2>
               <div class="row">
                 <div class="col-lg-6 col-md-12">
                   <div class="form-group">
@@ -103,36 +134,7 @@
               </div>
             </div>
 
-            <!-- Stats (Remains static as per original design) -->
-            <div *ngIf="profileData" class="profile-content-inner">
-              <h2>Recruitment Stats</h2>
-              <div class="row stats-row">
-                <div class="col-lg-3 col-md-6 col-6">
-                  <div class="stats-box">
-                    <h3>24</h3>
-                    <p>Active Jobs</p>
-                  </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-6">
-                  <div class="stats-box">
-                    <h3>142</h3>
-                    <p>Applications</p>
-                  </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-6">
-                  <div class="stats-box">
-                    <h3>38</h3>
-                    <p>Interviews</p>
-                  </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-6">
-                  <div class="stats-box">
-                    <h3>12</h3>
-                    <p>Hired</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            
           </form>
         </div>
       </div>
