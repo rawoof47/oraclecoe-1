@@ -579,8 +579,8 @@ body {
 }
 
 .ng-dropdown-panel .ng-option:hover {
-  background-color: #f0f9ff !important; /* Customize to your preferred color */
-  color: #000 !important;
+  background-color: #00458f !important;
+    color: #fff !important;
 }
 
 .jobPost .mdc-tab{
@@ -606,7 +606,7 @@ body {
                 padding-left: 15px;
               }
               .custom-checkbox .customCheckBoxLabel{
-                padding-left:10px;
+                padding: 0px 15px;
               }
               .dropdown-item .mat-icon{
                     position: relative;
