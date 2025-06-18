@@ -12,6 +12,8 @@ import { SkillFiltersComponent } from './filters/skills-filter/skills-filter.com
 import { AuthStateService } from '../../services/auth-state.service';
 import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.pipe';
 import { Observable } from 'rxjs';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
 @Component({
   selector: 'app-jobs',
   standalone: true,
@@ -26,6 +28,7 @@ import { Observable } from 'rxjs';
     NgSelectModule,
     CompensationFormatPipe,
     SkillFiltersComponent,
+    MatSnackBarModule,
   ],
   templateUrl: './jobs.component.html',
   styleUrls: ['./jobs.component.scss']
@@ -38,7 +41,7 @@ export class JobsComponent implements OnInit {
   jobCount = 0;
   loading = true;
   error: string | null = null;
-  userRole$!: Observable<string | null>;  // 👈 Add this line
+  userRole$!: Observable<string | null>;
 
   workModeOptions: string[] = ['Remote', 'On-site', 'Hybrid'];
   selectedWorkMode: string = '';
@@ -64,8 +67,7 @@ export class JobsComponent implements OnInit {
   searchKeyword: string = '';
   searchLocation: string = '';
 
-  currentUserId: string | null = null; // ✅ Replaced hardcoded user ID
-
+  currentUserId: string | null = null;
   selectedSkillIds: string[] = [];
   selectedCertIds: string[] = [];
   filteredJobIdsFromSkills: string[] = [];
@@ -74,13 +76,14 @@ export class JobsComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private authState: AuthStateService, // ✅ Inject auth service
-    private router: Router
+    private authState: AuthStateService,
+    private router: Router,
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit(): void {
-    this.currentUserId = this.authState.getCurrentUserId(); // ✅ Get current user ID
-    this.userRole$ = this.authState.userRole$; // ✅ ADD THIS LINE
+    this.currentUserId = this.authState.getCurrentUserId();
+    this.userRole$ = this.authState.userRole$;
     this.fetchJobs();
   }
 
@@ -97,17 +100,16 @@ export class JobsComponent implements OnInit {
         this.loading = false;
         this.checkAppliedStatuses();
       },
-      error: (err) => {
-        console.error('Error fetching jobs:', err);
+      error: () => {
         this.error = 'Failed to load job data.';
-        alert('❌ Error loading job listings.');
+        this.showSnackBar('❌ Error loading job listings.', 'error');
         this.loading = false;
       }
     });
   }
 
   checkAppliedStatuses(): void {
-    if (!this.currentUserId) return; // ✅ Skip if not logged in
+    if (!this.currentUserId) return;
 
     this.jobs.forEach(job => {
       const payload = {
@@ -122,8 +124,7 @@ export class JobsComponent implements OnInit {
         next: (res) => {
           this.appliedStatus[job.id] = res.applied;
         },
-        error: (err) => {
-          console.error(`Error checking status for job ${job.id}:`, err);
+        error: () => {
           this.appliedStatus[job.id] = false;
         }
       });
@@ -132,7 +133,7 @@ export class JobsComponent implements OnInit {
 
   applyToJob(jobId: string): void {
     if (!this.currentUserId) {
-      alert('Please log in to apply for jobs');
+      this.showSnackBar('Please log in to apply for jobs', 'error');
       this.redirectToLogin();
       return;
     }
@@ -145,18 +146,29 @@ export class JobsComponent implements OnInit {
     this.http.post('http://localhost:3000/applications/by-user', payload).subscribe({
       next: () => {
         this.appliedStatus[jobId] = true;
-        alert('✅ Application submitted successfully!');
+        this.snackBar.open('✅ Application submitted successfully!', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'right',  // 👈 top-right
+          verticalPosition: 'top'
+        });
       },
       error: (error) => {
         if (error.status === 409) {
           this.appliedStatus[jobId] = true;
-          alert('⚠️ You have already applied for this job.');
+          this.showSnackBar('⚠️ You have already applied for this job.', 'warning');
         } else if (error.status === 404) {
-          alert('❌ Candidate profile not found for current user.');
+          this.showSnackBar('❌ Candidate profile not found for current user.', 'error');
         } else {
-          alert('❌ Failed to submit application.');
+          this.showSnackBar('❌ Failed to submit application.', 'error');
         }
       }
+    });
+  }
+
+  showSnackBar(message: string, type: 'success' | 'warning' | 'error' = 'success'): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      panelClass: [`snackbar-${type}`]
     });
   }
 

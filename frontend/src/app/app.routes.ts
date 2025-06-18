@@ -62,6 +62,8 @@ export const routes: Routes = [
   { path: 'coming-soon', component: ComingSoonComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'terms-conditions', component: TermsConditionsComponent },
+  {
+    path: 'jobs', component: JobsComponent},
   
 
   // 🔒 Candidate Routes
@@ -70,11 +72,7 @@ export const routes: Routes = [
     component: DashboardComponent,
     canActivate: [authGuard, roleGuard(['candidate'])]
   },
-  {
-    path: 'jobs',
-    component: JobsComponent,
-    canActivate: [authGuard, roleGuard(['candidate', 'recruiter'])]
-  },
+  
   {
     path: 'favourite-jobs',
     component: FavouriteJobsComponent,

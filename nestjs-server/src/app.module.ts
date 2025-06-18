@@ -35,6 +35,7 @@ import { JobPostCertificationsModule } from './job-post-certification/job-post-c
 import { CandidateCertificationsModule } from './candidate_certifications/candidate_certifications.module';
 import { RecruiterProfilesModule } from './recruiter-profiles/recruiter-profiles.module';
 
+
 @Module({
   imports: [
     // ✅ Global .env configuration
