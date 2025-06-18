@@ -5,9 +5,9 @@ import { RouterModule, Router } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { AuthService } from '../../../services/auth.service';
-import { AuthStateService } from '../../../services/auth-state.service'; // ✅ New import
+import { AuthStateService } from '../../../services/auth-state.service';
 import { RegisterRequest } from '../../models/register-request.model';
-import { LoginRequest } from '../../models/login-request.model'; // ✅ New import
+import { LoginRequest } from '../../models/login-request.model';
 
 @Component({
   selector: 'app-register',
@@ -29,7 +29,7 @@ export class RegisterComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private authStateService: AuthStateService, // ✅ Injected service
+    private authStateService: AuthStateService,
     private router: Router,
     private snackBar: MatSnackBar
   ) {
@@ -79,48 +79,43 @@ export class RegisterComponent {
         const email = this.f['email'].value;
         const password = this.f['password'].value;
 
-        if (role === 'Candidate') {
-          const loginReq: LoginRequest = { email, password };
+        // Auto-login for both Candidate and Recruiter
+        const loginReq: LoginRequest = { email, password };
 
-          this.authService.login(loginReq).subscribe({
-            next: (loginRes) => {
-              this.authStateService.setAuthState(
-                loginRes.token,
-                {
-                  id: loginRes.uuid,
-                  role: loginRes.role,
-                  email: email
-                }
-              );
+        this.authService.login(loginReq).subscribe({
+          next: (loginRes) => {
+            this.authStateService.setAuthState(
+              loginRes.token,
+              {
+                id: loginRes.uuid,
+                role: loginRes.role,
+                email: email
+              }
+            );
 
-              this.snackBar.open('Registration successful! Redirecting to your profile...', 'Close', {
-                duration: 3000,
-                panelClass: ['snack-success'],
-                verticalPosition: 'top',
-                horizontalPosition: 'right'
-              });
+            const redirectPath = role === 'Candidate'
+              ? '/candidate-profile'
+              : '/recruiter-profile';
 
-              this.router.navigate(['/candidate-profile']);
-            },
-            error: () => {
-              this.snackBar.open('Registration successful! Please log in.', 'Close', {
-                duration: 3000,
-                panelClass: ['snack-success'],
-                verticalPosition: 'top',
-                horizontalPosition: 'right'
-              });
-              this.router.navigate(['/login']);
-            }
-          });
-        } else {
-          this.snackBar.open('Registration successful! Please log in.', 'Close', {
-            duration: 3000,
-            panelClass: ['snack-success'],
-            verticalPosition: 'top',
-            horizontalPosition: 'right'
-          });
-          this.router.navigate(['/login']);
-        }
+            this.snackBar.open('Registration successful! Redirecting to your profile...', 'Close', {
+              duration: 3000,
+              panelClass: ['snack-success'],
+              verticalPosition: 'top',
+              horizontalPosition: 'right'
+            });
+
+            this.router.navigate([redirectPath]);
+          },
+          error: () => {
+            this.snackBar.open('Registration successful! Please log in manually.', 'Close', {
+              duration: 3000,
+              panelClass: ['snack-success'],
+              verticalPosition: 'top',
+              horizontalPosition: 'right'
+            });
+            this.router.navigate(['/login']);
+          }
+        });
       },
       error: (err) => {
         const msg = err?.error?.message?.toLowerCase() || '';
