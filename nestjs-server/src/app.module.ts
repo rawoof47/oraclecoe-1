@@ -33,21 +33,14 @@ import { SkillsModule } from './skills/skills.module';
 import { CertificationsModule } from './certifications/certifications.module';
 import { JobPostCertificationsModule } from './job-post-certification/job-post-certifications.module';
 import { CandidateCertificationsModule } from './candidate_certifications/candidate_certifications.module';
-<<<<<<< HEAD
 import { RecruiterProfilesModule } from './recruiter-profiles/recruiter-profiles.module';
-
-=======
-import { RecruiterProfileModule } from './recruiter-profile/recruiter-profile.module';
->>>>>>> 7be5bb022177a14e6542ada53a1403fe85feae39
 
 @Module({
   imports: [
-    // ✅ Global .env configuration
     ConfigModule.forRoot({
       isGlobal: true,
     }),
 
-    // ✅ TypeORM configuration with ConfigService
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -63,7 +56,6 @@ import { RecruiterProfileModule } from './recruiter-profile/recruiter-profile.mo
       }),
     }),
 
-    // ✅ All functional modules
     UserModule,
     ActivityLogsModule,
     AdminUsersModule,
@@ -91,11 +83,7 @@ import { RecruiterProfileModule } from './recruiter-profile/recruiter-profile.mo
     CertificationsModule,
     JobPostCertificationsModule,
     CandidateCertificationsModule,
-<<<<<<< HEAD
-    RecruiterProfilesModule,
-=======
-    RecruiterProfileModule,
->>>>>>> 7be5bb022177a14e6542ada53a1403fe85feae39
+    RecruiterProfilesModule, // ✅ Used this module — consistent with your *frontend* RecruiterProfiles usage
   ],
   controllers: [AppController],
   providers: [AppService],
