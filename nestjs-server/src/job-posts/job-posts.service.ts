@@ -216,5 +216,21 @@ async findByRecruiter(recruiterId: string) {
       data: updatedPost,
     };
   }
+// Add this method to JobPostsService class
+async findActiveJobs() {
+  const activeStatusId = '36f3301d-318e-11f0-aa4d-80ce6232908a';
+  const jobPosts = await this.jobPostRepository.find({ 
+    where: { status_id: activeStatusId } 
+  });
 
+  const jobsWithRelations = await Promise.all(
+    jobPosts.map(async (job) => ({
+      ...job,
+      skill_ids: await this.getSkillIdsForJob(job.id),
+      certification_ids: await this.getCertificationIdsForJob(job.id),
+    })),
+  );
+
+  return jobsWithRelations;
+}
 }

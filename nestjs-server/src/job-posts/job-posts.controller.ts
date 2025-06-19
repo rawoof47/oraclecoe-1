@@ -118,4 +118,13 @@ async findByRecruiter(@Param('recruiterId') recruiterId: string) {
       data: updatedJobPost,
     };
   }
+
+  @Get('active/list')
+async findActiveJobs() {
+  const jobPosts = await this.jobPostsService.findActiveJobs();
+  return { 
+    message: 'Active job posts fetched successfully', 
+    data: jobPosts 
+  };
+}
 }

@@ -1,16 +1,22 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
+
+// Components and Pipes
 import { NavbarComponent } from '../../common/navbar/navbar.component';
 import { PageBannerComponent } from '../../common/page-banner/page-banner.component';
 import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
-import { FormsModule } from '@angular/forms';
-import { NgSelectModule } from '@ng-select/ng-select';
 import { SkillFiltersComponent } from './filters/skills-filter/skills-filter.component';
-import { AuthStateService } from '../../services/auth-state.service';
 import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.pipe';
+
+// Services
+import { AuthStateService } from '../../services/auth-state.service';
+import { JobPostService } from '../../services/job-post.service';
+
 @Component({
   selector: 'app-jobs',
   standalone: true,
@@ -62,7 +68,7 @@ export class JobsComponent implements OnInit {
   searchKeyword: string = '';
   searchLocation: string = '';
 
-  currentUserId: string | null = null; // ✅ Replaced hardcoded user ID
+  currentUserId: string | null = null;
 
   selectedSkillIds: string[] = [];
   selectedCertIds: string[] = [];
@@ -72,12 +78,13 @@ export class JobsComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private authState: AuthStateService, // ✅ Inject auth service
+    private jobPostService: JobPostService,
+    private authState: AuthStateService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.currentUserId = this.authState.getCurrentUserId(); // ✅ Get current user ID
+    this.currentUserId = this.authState.getCurrentUserId();
     this.fetchJobs();
   }
 
@@ -85,12 +92,13 @@ export class JobsComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
+  // ✅ Updated method using service
   fetchJobs(): void {
-    this.http.get<any[]>('http://localhost:3000/jobs').subscribe({
-      next: (data) => {
-        this.allJobs = data;
-        this.jobs = data;
-        this.jobCount = data.length;
+    this.jobPostService.getActiveJobs().subscribe({
+      next: (response) => {
+        this.allJobs = response.data;
+        this.jobs = response.data;
+        this.jobCount = response.data.length;
         this.loading = false;
         this.checkAppliedStatuses();
       },
@@ -104,7 +112,7 @@ export class JobsComponent implements OnInit {
   }
 
   checkAppliedStatuses(): void {
-    if (!this.currentUserId) return; // ✅ Skip if not logged in
+    if (!this.currentUserId) return;
 
     this.jobs.forEach(job => {
       const payload = {

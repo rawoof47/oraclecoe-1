@@ -188,4 +188,10 @@ getApplicationsCountByJobIds(jobIds: string[]): Observable<Record<string, number
       { statusId }
     );
   }
+
+  getActiveJobs(): Observable<JobPostListResponse> {
+  return this.http.get<JobPostListResponse>(
+    `${this.baseUrl}/active/list`
+  );
+}
 }
