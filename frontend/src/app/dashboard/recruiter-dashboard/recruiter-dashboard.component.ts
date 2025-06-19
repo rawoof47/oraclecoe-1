@@ -8,6 +8,7 @@ import { RecruiterSidebarComponent } from '../../common/recruiter-sidebar/recrui
 
 import { RecruiterProfileService } from '../../services/recruiter-profile.service';
 import { JobPostService } from '../../services/job-post.service';
+import { ApplicationService } from '../../services/application.service'; // ✅ Added import
 
 @Component({
   selector: 'app-recruiter-dashboard',
@@ -31,13 +32,14 @@ export class RecruiterDashboardComponent implements OnInit {
   stats = {
     postedJobs: 0,
     applications: 0,
-    interviews: 0,
-    hired: 0
+    shortlisted: 0,
+    rejected: 0
   };
 
   constructor(
     private profileService: RecruiterProfileService,
-    private jobPostService: JobPostService
+    private jobPostService: JobPostService,
+    private applicationService: ApplicationService // ✅ Injected service
   ) {}
 
   ngOnInit(): void {
@@ -63,7 +65,31 @@ export class RecruiterDashboardComponent implements OnInit {
     this.jobPostService.getByRecruiter(recruiterId).subscribe({
       next: (response) => {
         this.stats.postedJobs = response.data.length;
-        // You can implement logic to count applications/interviews/hired if available
+        const jobIds = response.data.map((job: any) => job.id);
+
+        if (jobIds.length > 0) {
+          this.jobPostService.getApplicationsCountByJobIds(jobIds).subscribe({
+            next: (counts) => {
+              this.stats.applications = Object.values(counts).reduce(
+                (sum, count) => sum + count, 0
+              );
+            },
+            error: (err) => {
+              console.error('Failed to fetch application counts:', err);
+            }
+          });
+        }
+
+        // ✅ Fetch shortlisted and rejected counts
+        this.applicationService.getCountsByStatuses(recruiterId).subscribe({
+          next: (counts) => {
+            this.stats.shortlisted = counts.shortlisted || 0;
+            this.stats.rejected = counts.rejected || 0;
+          },
+          error: (err) => {
+            console.error('Failed to fetch status counts:', err);
+          }
+        });
       },
       error: (err) => {
         console.error('Failed to fetch job posts:', err);

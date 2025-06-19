@@ -27,7 +27,7 @@
             </div>
 
             
-<!-- Stats Section (Dynamic) -->
+
 <div *ngIf="profileData" class="profile-content-inner">
   <h2>Recruitment Stats</h2>
   <div class="row stats-row">
@@ -45,18 +45,19 @@
     </div>
     <div class="col-lg-3 col-md-6 col-6">
       <div class="stats-box">
-        <h3>{{ stats.interviews }}</h3>
-        <p>Interviews</p>
+        <h3>{{ stats.shortlisted }}</h3>
+        <p>Shortlisted</p>  <!-- Changed from Interviews -->
       </div>
     </div>
     <div class="col-lg-3 col-md-6 col-6">
       <div class="stats-box">
-        <h3>{{ stats.hired }}</h3>
-        <p>Hired</p>
+        <h3>{{ stats.rejected }}</h3>
+        <p>Rejected</p>     <!-- Changed from Hired -->
       </div>
     </div>
   </div>
 </div>
+
 <br />
 
             <!-- Company Info -->
