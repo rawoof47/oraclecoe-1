@@ -34,6 +34,7 @@ import { CertificationsModule } from './certifications/certifications.module';
 import { JobPostCertificationsModule } from './job-post-certification/job-post-certifications.module';
 import { CandidateCertificationsModule } from './candidate_certifications/candidate_certifications.module';
 import { RecruiterProfileModule } from './recruiter-profile/recruiter-profile.module';
+import { DegreeModule } from './degree/degree.module';
 
 @Module({
   imports: [
@@ -87,6 +88,7 @@ import { RecruiterProfileModule } from './recruiter-profile/recruiter-profile.mo
     JobPostCertificationsModule,
     CandidateCertificationsModule,
     RecruiterProfileModule,
+    DegreeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
