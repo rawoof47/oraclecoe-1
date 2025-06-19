@@ -16,7 +16,7 @@ import {
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { lastValueFrom } from 'rxjs';
-import { Router } from '@angular/router'; // Added Router import
+import { Router } from '@angular/router';
 
 import { CandidateProfileService } from '../../services/candidate-profile.service';
 import { AuthStateService } from '../../services/auth-state.service';
@@ -33,6 +33,10 @@ import {
   toggleCertification,
   getSkillsLabel,
   getCertificationsLabel,
+  Degree,
+  loadDegrees,
+  toggleDegree,
+  getDegreesLabel,
 } from './candidate-skills-certs.helper';
 
 @Component({
@@ -45,7 +49,8 @@ import {
     NgSelectModule,
     BackToTopComponent,
     FooterComponent,
-    NavbarComponent,CandidateSidebarComponent,
+    NavbarComponent,
+    CandidateSidebarComponent,
   ],
   templateUrl: './candidate-profile.component.html',
   styleUrls: ['./candidate-profile.component.scss'],
@@ -55,7 +60,7 @@ export class CandidateProfileComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
   private profileService = inject(CandidateProfileService);
   private authState = inject(AuthStateService);
-  private router = inject(Router); // Injected Router
+  private router = inject(Router);
 
   profileForm!: FormGroup;
   isSubmitting = false;
@@ -70,8 +75,15 @@ export class CandidateProfileComponent implements OnInit {
   profileSkillIds: string[] = [];
   profileCertificationIds: string[] = [];
 
+  groupedDegrees: any[] = [];
+  selectedDegrees: Degree[] = [];
+  showDegreesDropdown = false;
+  profileDegreeIds: string[] = [];
+  years: number[] = [];
+
   @ViewChild('skillsDropdown') skillsDropdown!: ElementRef;
   @ViewChild('certsDropdown') certsDropdown!: ElementRef;
+  @ViewChild('degreesDropdown') degreesDropdown!: ElementRef;
 
   ngOnInit(): void {
     this.userId = this.authState.getCurrentUserId();
@@ -79,31 +91,33 @@ export class CandidateProfileComponent implements OnInit {
     this.loadUserData();
     this.loadCandidateProfile();
     this.fetchSkillsAndCertifications();
+    this.fetchDegrees();
+    this.years = Array.from({ length: 51 }, (_, i) => 1980 + i);
   }
 
   initializeForm(): void {
     this.profileForm = this.fb.group({
-      firstName: ['', [Validators.required, Validators.maxLength(50)]],  
-      middleName: ['', [Validators.maxLength(50)]],                      
+      firstName: ['', [Validators.required, Validators.maxLength(50)]],
+      middleName: ['', [Validators.maxLength(50)]],
       lastName: ['', [Validators.required, Validators.maxLength(50)]],
       email: ['', [Validators.required, Validators.email, Validators.maxLength(150)]],
       mobileNumber: ['', [Validators.maxLength(20)]],
-      gender: [''],   
+      gender: [''],
       about_me: [''],
       professional_summary: [''],
       social_links: [''],
       resume_link: ['', Validators.pattern('https?://.+')],
-      education: [''],
+      year_of_passing: [null],
       experience_years: [null, [Validators.min(0), Validators.max(50)]],
       notice_period: [''],
       skills: [[]],
       certifications: [[]],
+      degrees: [[]],
     });
   }
 
   private loadUserData(): void {
     if (!this.userId) return;
-    
     this.profileService.getUser(this.userId).subscribe({
       next: (user) => {
         this.profileForm.patchValue({
@@ -111,18 +125,18 @@ export class CandidateProfileComponent implements OnInit {
           middleName: user.middle_name || '',
           lastName: user.last_name,
           email: user.email,
-          mobileNumber: user.mobile_number || ''
+          mobileNumber: user.mobile_number || '',
         });
       },
       error: (error) => {
         console.error('Failed to load user data', error);
-      }
+      },
     });
   }
 
   private loadCandidateProfile(): void {
     if (!this.userId) return;
-    
+
     this.profileService.getMyProfile().subscribe({
       next: (profile) => {
         this.profileForm.patchValue({
@@ -131,18 +145,79 @@ export class CandidateProfileComponent implements OnInit {
           professional_summary: profile.professional_summary || '',
           social_links: profile.social_links || '',
           resume_link: profile.resume_link || '',
-          education: profile.education || '',
+          
           experience_years: profile.experience_years || null,
           notice_period: profile.notice_period || '',
+          year_of_passing: profile.year_of_passing || null, // Load year value
         });
 
         this.profileSkillIds = profile.skill_ids || [];
         this.profileCertificationIds = profile.certification_ids || [];
+        this.profileDegreeIds = profile.degree_ids || [];
       },
       error: (error) => {
         console.error('Failed to load candidate profile', error);
-      }
+      },
     });
+  }
+
+  fetchSkillsAndCertifications(): void {
+    loadSkillsAndCertifications(
+      this.profileService,
+      (skills, certs) => {
+        this.groupedSkills = skills;
+        this.groupedCertifications = certs;
+        this.setInitialSelections();
+      },
+      () => {
+        this.showSnackBar('Failed to load skills or certifications.', 'snackbar-error');
+      }
+    );
+  }
+
+  private fetchDegrees(): void {
+    loadDegrees(
+      this.profileService,
+      (degrees) => {
+        this.groupedDegrees = degrees;
+        this.setInitialDegreeSelections();
+      },
+      () => {
+        this.showSnackBar('Failed to load degrees.', 'snackbar-error');
+      }
+    );
+  }
+
+  private setInitialSelections(): void {
+    this.groupedSkills.forEach(group => {
+      group.items.forEach((skill: Skill) => {
+        if (this.profileSkillIds.includes(skill.id)) {
+          this.selectedSkills = toggleSkill(skill, this.selectedSkills);
+        }
+      });
+    });
+
+    this.groupedCertifications.forEach(group => {
+      group.items.forEach((cert: Certification) => {
+        if (this.profileCertificationIds.includes(cert.id)) {
+          this.selectedCertifications = toggleCertification(cert, this.selectedCertifications);
+        }
+      });
+    });
+
+    this.updateFormSelections();
+  }
+
+  private setInitialDegreeSelections(): void {
+    this.groupedDegrees.forEach(group => {
+      group.items.forEach((degree: Degree) => {
+        if (this.profileDegreeIds.includes(degree.id)) {
+          this.selectedDegrees = toggleDegree(degree, this.selectedDegrees);
+        }
+      });
+    });
+
+    this.updateFormSelections();
   }
 
   onSubmit(): void {
@@ -170,19 +245,19 @@ export class CandidateProfileComponent implements OnInit {
               };
               delete profileData.skills;
               delete profileData.certifications;
+              delete profileData.degrees;
 
               this.profileService.saveCandidateProfile(profileData).subscribe({
                 next: () => {
                   this.isSubmitting = false;
                   this.showSnackBar('Profile saved successfully!', 'snackbar-success');
-                  // Added redirection to dashboard
                   this.router.navigate(['/dashboard']);
                 },
                 error: (error) => {
                   this.isSubmitting = false;
                   console.error('Profile save error:', error);
                   this.showSnackBar('Failed to save profile', 'snackbar-error');
-                }
+                },
               });
             }).catch(error => {
               this.isSubmitting = false;
@@ -194,68 +269,26 @@ export class CandidateProfileComponent implements OnInit {
             this.isSubmitting = false;
             console.error('Name update error:', error);
             this.showSnackBar('Failed to update name', 'snackbar-error');
-          }
+          },
         });
       },
       error: (error) => {
         this.isSubmitting = false;
-        console.error('Contact info update error:', error);
-        
         let errorMsg = 'Failed to update contact information';
-        if (error.status === 409) {
-          errorMsg = 'Email already exists';
-        }
-        
+        if (error.status === 409) errorMsg = 'Email already exists';
         this.showSnackBar(errorMsg, 'snackbar-error');
-      }
+      },
     });
   }
 
   private async saveSkillsAndCerts(): Promise<void> {
     const skillIds = this.selectedSkills.map(skill => skill.id);
     const certIds = this.selectedCertifications.map(cert => cert.id);
+    const degreeIds = this.selectedDegrees.map(degree => degree.id);
 
-    await lastValueFrom(
-      this.profileService.saveCandidateSkills(this.userId!, skillIds)
-    );
-
-    await lastValueFrom(
-      this.profileService.saveCandidateCertifications(this.userId!, certIds)
-    );
-  }
-
-  fetchSkillsAndCertifications(): void {
-    loadSkillsAndCertifications(
-      this.profileService,
-      (skills, certs) => {
-        this.groupedSkills = skills;
-        this.groupedCertifications = certs;
-        this.setInitialSelections();
-      },
-      () => {
-        this.showSnackBar('Failed to load skills or certifications.', 'snackbar-error');
-      }
-    );
-  }
-
-  private setInitialSelections(): void {
-    this.groupedSkills.forEach(group => {
-      group.items.forEach((skill: Skill) => {
-        if (this.profileSkillIds.includes(skill.id)) {
-          this.selectedSkills = toggleSkill(skill, this.selectedSkills);
-        }
-      });
-    });
-
-    this.groupedCertifications.forEach(group => {
-      group.items.forEach((cert: Certification) => {
-        if (this.profileCertificationIds.includes(cert.id)) {
-          this.selectedCertifications = toggleCertification(cert, this.selectedCertifications);
-        }
-      });
-    });
-
-    this.updateFormSelections();
+    await lastValueFrom(this.profileService.saveCandidateSkills(this.userId!, skillIds));
+    await lastValueFrom(this.profileService.saveCandidateCertifications(this.userId!, certIds));
+    await lastValueFrom(this.profileService.saveCandidateDegrees(this.userId!, degreeIds));
   }
 
   toggleSkillsDropdown(): void {
@@ -264,6 +297,10 @@ export class CandidateProfileComponent implements OnInit {
 
   toggleCertsDropdown(): void {
     this.showCertsDropdown = !this.showCertsDropdown;
+  }
+
+  toggleDegreesDropdown(): void {
+    this.showDegreesDropdown = !this.showDegreesDropdown;
   }
 
   onSkillChange(skill: Skill): void {
@@ -276,10 +313,16 @@ export class CandidateProfileComponent implements OnInit {
     this.updateFormSelections();
   }
 
+  onDegreeChange(degree: Degree): void {
+    this.selectedDegrees = toggleDegree(degree, this.selectedDegrees);
+    this.updateFormSelections();
+  }
+
   updateFormSelections(): void {
     this.profileForm.patchValue({
       skills: this.selectedSkills.map((s) => s.id),
       certifications: this.selectedCertifications.map((c) => c.id),
+      degrees: this.selectedDegrees.map((d) => d.id),
     });
   }
 
@@ -289,6 +332,10 @@ export class CandidateProfileComponent implements OnInit {
 
   getCertsDropdownLabel(): string {
     return getCertificationsLabel(this.selectedCertifications);
+  }
+
+  getDegreesDropdownLabel(): string {
+    return getDegreesLabel(this.selectedDegrees);
   }
 
   @HostListener('document:click', ['$event'])
@@ -307,6 +354,14 @@ export class CandidateProfileComponent implements OnInit {
       !this.certsDropdown.nativeElement.contains(event.target)
     ) {
       this.showCertsDropdown = false;
+    }
+
+    if (
+      this.showDegreesDropdown &&
+      this.degreesDropdown &&
+      !this.degreesDropdown.nativeElement.contains(event.target)
+    ) {
+      this.showDegreesDropdown = false;
     }
   }
 

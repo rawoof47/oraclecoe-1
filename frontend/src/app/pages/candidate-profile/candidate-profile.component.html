@@ -51,6 +51,7 @@
                         <option value="">Select Gender</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
+                        <option value="Others">Others</option>
                       </select>
                     </div>
 
@@ -70,10 +71,54 @@
                     <textarea id="professional_summary" formControlName="professional_summary" placeholder="Career highlights and expertise"></textarea>
                   </div>
 
+                  <!-- ✅ New Degrees Dropdown -->
+<div class="form-group">
+  <label class="form-group__label">Degrees</label>
+  <div class="dropdown" #degreesDropdown>
+    <div class="dropdown__header" (click)="toggleDegreesDropdown()">
+      <span>{{ getDegreesDropdownLabel() }}</span>
+      <span class="arrow">&#9662;</span>
+    </div>
+
+    <div class="dropdown__list" *ngIf="showDegreesDropdown">
+      <div *ngFor="let group of groupedDegrees" class="dropdown__group">
+        <div class="dropdown__group-title">{{ group.categoryName }}</div>
+        <div *ngFor="let degree of group.items" class="dropdown__item">
+          <input
+            type="checkbox"
+            [checked]="degree.selected"
+            (change)="onDegreeChange(degree)"
+            [id]="'degree-' + degree.id"
+          />
+          <label [for]="'degree-' + degree.id">
+            {{ degree.name }} ({{ degree.abbreviation }})
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+                  
+
+                  
+
+                 <div class="form-group">
+  <label for="year_of_passing" class="form-group__label">Year of Passing</label>
+  <select id="year_of_passing" formControlName="year_of_passing" class="form-control">
+    <option value="">Select Year</option>
+    <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+  </select>
+</div>
+
+
+
+
                   <div class="form-group">
-                    <label for="social_links" class="form-group__label">Social Links</label>
-                    <textarea id="social_links" formControlName="social_links" placeholder="Comma-separated URLs (LinkedIn, GitHub, etc.)"></textarea>
+                    <label for="experience_years" class="form-group__label">Experience (Years)</label>
+                    <input id="experience_years" type="number" formControlName="experience_years" min="0" max="50" />
                   </div>
+
 
                   <div class="form-group">
                     <label for="resume_link" class="form-group__label">Resume Link</label>
@@ -81,13 +126,8 @@
                   </div>
 
                   <div class="form-group">
-                    <label for="education" class="form-group__label">Education</label>
-                    <textarea id="education" formControlName="education" placeholder="Degrees, institutions, and years"></textarea>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="experience_years" class="form-group__label">Experience (Years)</label>
-                    <input id="experience_years" type="number" formControlName="experience_years" min="0" max="50" />
+                    <label for="social_links" class="form-group__label">Social Links</label>
+                    <textarea id="social_links" formControlName="social_links" placeholder="Comma-separated URLs (LinkedIn, GitHub, etc.)"></textarea>
                   </div>
 
                   <div class="form-group">
