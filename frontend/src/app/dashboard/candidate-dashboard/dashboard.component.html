@@ -1,12 +1,14 @@
 <app-navbar /> 
 
+<!-- 
 <app-page-banner
   [pageTitle]="'Dashboard'"
   [backgroundImage]="'img/page-title-bg.jpg'"
 />
+/> -->
 
 <!-- Sidebar + Main Content Layout -->
-<div class="dashboard-layout container">
+<div class="dashboard-layout container-fluid">
   <!-- Sidebar -->
   <app-candidate-sidebar></app-candidate-sidebar>
 
@@ -14,7 +16,7 @@
   <div class="dashboard-main">
     <section class="dashboard-section">
       <div class="dashboard-content">
-        <div class="profile-card">
+        <div class="profile-card"> 
           <!-- Loading State -->
           <div *ngIf="isLoading" class="loading-section">
             <div class="spinner"></div>
@@ -47,12 +49,12 @@
 
             <div class="stats-grid">
               <div class="stat-card">
-                <h4>Experience</h4>
+                <h3>Experience</h3>
                 <p>{{ profile.experience_years ?? 0 }} years</p>
               </div>
 
               <div class="stat-card">
-                <h4>Notice Period</h4>
+                <h3>Notice Period</h3>
                 <p>{{ profile.notice_period || 'Not specified' }}</p>
               </div>
             </div>

@@ -540,3 +540,36 @@
     min-width: 120px;
   }
 }
+/* new styles - 17/6/24  - UI*/
+
+.job-details-list {
+  list-style: none;
+  padding: 0;
+}
+
+.job-details-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.job-details-list i {
+  font-size: 22px;
+  margin-right: 12px;
+  color: #fe4a55;
+  min-width: 24px;
+  position: absolute;
+  left: 0px;
+  top: 5px;
+}
+
+.job-details-list h4 {
+  font-size: 16px;
+  margin: 0 8px 0 0;
+  font-weight: 600;
+}
+
+.job-details-list span {
+  font-size: 15px;
+  color: #555;
+}

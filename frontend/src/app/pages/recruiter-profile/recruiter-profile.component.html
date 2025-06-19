@@ -54,10 +54,22 @@
             <input type="text" formControlName="lastName" />
           </div>
 
+<<<<<<< HEAD
           <div class="form-row">
             <label>Email:</label>
             <input type="email" formControlName="email" />
           </div>
+=======
+<div class="form-row">
+  <label>Email:</label>
+  <input type="email" formControlName="email" />
+</div>
+
+<div class="form-row">
+  <label>Phone:</label>
+  <input type="tel" formControlName="phone" />
+</div>
+>>>>>>> 7be5bb022177a14e6542ada53a1403fe85feae39
 
           <div class="form-row">
             <label>Position:</label>
@@ -66,9 +78,21 @@
         </div>
 
         <!-- Submit -->
+<<<<<<< HEAD
         <div class="button-wrapper">
           <button type="submit">Save Profile</button>
         </div>
+=======
+        <!-- recruiter-profile.component.html -->
+<div class="button-wrapper">
+  <button type="submit" [disabled]="isLoading">
+    <span *ngIf="!isLoading">Save Profile</span>
+    <span *ngIf="isLoading">
+      <i class="spinner"></i> Saving...
+    </span>
+  </button>
+</div>
+>>>>>>> 7be5bb022177a14e6542ada53a1403fe85feae39
       </form>
     </div>
   </div>
