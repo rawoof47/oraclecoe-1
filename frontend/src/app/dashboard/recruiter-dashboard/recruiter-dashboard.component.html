@@ -27,37 +27,38 @@
             </div>
 
             
-<!-- Stats (Static Section) -->
-            <div *ngIf="profileData" class="profile-content-inner">
-              <h2>Recruitment Stats</h2>
-              <div class="row stats-row">
-                <div class="col-lg-3 col-md-6 col-6">
-                  <div class="stats-box">
-                    <h3>24</h3>
-                    <p>Active Jobs</p>
-                  </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-6">
-                  <div class="stats-box">
-                    <h3>142</h3>
-                    <p>Applications</p>
-                  </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-6">
-                  <div class="stats-box">
-                    <h3>38</h3>
-                    <p>Interviews</p>
-                  </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-6">
-                  <div class="stats-box">
-                    <h3>12</h3>
-                    <p>Hired</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <br/>
+<!-- Stats Section (Dynamic) -->
+<div *ngIf="profileData" class="profile-content-inner">
+  <h2>Recruitment Stats</h2>
+  <div class="row stats-row">
+    <div class="col-lg-3 col-md-6 col-6">
+      <div class="stats-box">
+        <h3>{{ stats.postedJobs }}</h3>
+        <p>Posted Jobs</p>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-6">
+      <div class="stats-box">
+        <h3>{{ stats.applications }}</h3>
+        <p>Applications</p>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-6">
+      <div class="stats-box">
+        <h3>{{ stats.interviews }}</h3>
+        <p>Interviews</p>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-6">
+      <div class="stats-box">
+        <h3>{{ stats.hired }}</h3>
+        <p>Hired</p>
+      </div>
+    </div>
+  </div>
+</div>
+<br />
+
             <!-- Company Info -->
             <div *ngIf="profileData" class="profile-content-inner">
               <h2>Company Information</h2>

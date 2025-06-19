@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { RouterModule, Router } from '@angular/router'; // ✅ Router added
+import { RouterModule, Router } from '@angular/router';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
@@ -42,7 +42,7 @@ export class RecruiterProfileComponent implements OnInit {
     private recruiterProfileService: RecruiterProfileService,
     private authState: AuthStateService,
     private snackBar: MatSnackBar,
-    private router: Router // ✅ Injected Router
+    private router: Router
   ) {
     this.recruiterForm = this.fb.group({
       companyName: ['', Validators.required],
@@ -147,13 +147,6 @@ export class RecruiterProfileComponent implements OnInit {
         this.authState.updateStoredUserName(firstName, lastName);
       }),
       switchMap(() => this.saveRecruiterProfile()),
-      tap(() => {
-        this.snackBar.open('Profile saved', 'Close', {
-          duration: 3000,
-          horizontalPosition: 'right',
-          verticalPosition: 'top'
-        });
-      }),
       switchMap(() => this.updateContactInfo(email, phone)),
       tap(() => {
         this.snackBar.open('Profile saved successfully', 'Close', {
@@ -161,7 +154,7 @@ export class RecruiterProfileComponent implements OnInit {
           horizontalPosition: 'right',
           verticalPosition: 'top'
         });
-        this.router.navigate(['/recruiter-dashboard']); // ✅ Redirect
+        this.router.navigate(['/recruiter-dashboard']);
       }),
       catchError((error) => {
         console.error('Failed to update profile:', error);
