@@ -302,4 +302,15 @@ $colors: (
       margin-bottom: 0.5rem;
     }
   }
+
+  // ... existing styles ...
+
+.status-badge {
+  // ... existing styles ...
+  
+  &.inactive {
+    background-color: rgba(color(error-300), 0.4);
+    color: darken(color(error-500), 10%);
+  }
+}
 }

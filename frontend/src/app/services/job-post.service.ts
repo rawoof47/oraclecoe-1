@@ -180,4 +180,12 @@ getApplicationsCountByJobIds(jobIds: string[]): Observable<Record<string, number
     { jobIds }
   );
 }
+
+// ✅ Add method to update job status
+  updateStatus(jobId: string, statusId: string): Observable<JobPostResponse> {
+    return this.http.put<JobPostResponse>(
+      `${this.baseUrl}/status/${jobId}`,
+      { statusId }
+    );
+  }
 }

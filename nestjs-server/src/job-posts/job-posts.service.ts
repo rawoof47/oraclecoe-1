@@ -199,4 +199,22 @@ async findByRecruiter(recruiterId: string) {
 
   return jobsWithRelations;
 }
+
+// ✅ Add method to update job status
+  async updateStatus(id: string, statusId: string) {
+    const jobPost = await this.jobPostRepository.findOne({ where: { id } });
+    
+    if (!jobPost) {
+      throw new NotFoundException('Job post not found');
+    }
+    
+    jobPost.status_id = statusId;
+    const updatedPost = await this.jobPostRepository.save(jobPost);
+    
+    return {
+      message: 'Job status updated successfully',
+      data: updatedPost,
+    };
+  }
+
 }
