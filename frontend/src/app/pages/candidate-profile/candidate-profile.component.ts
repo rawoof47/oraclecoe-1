@@ -16,7 +16,7 @@ import {
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { lastValueFrom } from 'rxjs';
-import { Router } from '@angular/router'; // Added Router import
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { CandidateProfileService } from '../../services/candidate-profile.service';
 import { AuthStateService } from '../../services/auth-state.service';
@@ -45,7 +45,8 @@ import {
     NgSelectModule,
     BackToTopComponent,
     FooterComponent,
-    NavbarComponent,CandidateSidebarComponent,
+    NavbarComponent,
+    CandidateSidebarComponent,
   ],
   templateUrl: './candidate-profile.component.html',
   styleUrls: ['./candidate-profile.component.scss'],
@@ -55,7 +56,8 @@ export class CandidateProfileComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
   private profileService = inject(CandidateProfileService);
   private authState = inject(AuthStateService);
-  private router = inject(Router); // Injected Router
+  private router = inject(Router);
+  private route = inject(ActivatedRoute); // ✅ Injected ActivatedRoute
 
   profileForm!: FormGroup;
   isSubmitting = false;
@@ -69,11 +71,17 @@ export class CandidateProfileComponent implements OnInit {
   showCertsDropdown = false;
   profileSkillIds: string[] = [];
   profileCertificationIds: string[] = [];
+  showLayout = true; // ✅ Default → show layout (navbar/footer/sidebar)
 
   @ViewChild('skillsDropdown') skillsDropdown!: ElementRef;
   @ViewChild('certsDropdown') certsDropdown!: ElementRef;
 
   ngOnInit(): void {
+    // ✅ Handle ?new=true param to hide/show layout
+    this.route.queryParams.subscribe((params) => {
+      this.showLayout = params['new'] === 'true' ? false : true;
+    });
+
     this.userId = this.authState.getCurrentUserId();
     this.initializeForm();
     this.loadUserData();
@@ -83,12 +91,12 @@ export class CandidateProfileComponent implements OnInit {
 
   initializeForm(): void {
     this.profileForm = this.fb.group({
-      firstName: ['', [Validators.required, Validators.maxLength(50)]],  
-      middleName: ['', [Validators.maxLength(50)]],                      
+      firstName: ['', [Validators.required, Validators.maxLength(50)]],
+      middleName: ['', [Validators.maxLength(50)]],
       lastName: ['', [Validators.required, Validators.maxLength(50)]],
       email: ['', [Validators.required, Validators.email, Validators.maxLength(150)]],
       mobileNumber: ['', [Validators.maxLength(20)]],
-      gender: [''],   
+      gender: [''],
       about_me: [''],
       professional_summary: [''],
       social_links: [''],
@@ -103,7 +111,7 @@ export class CandidateProfileComponent implements OnInit {
 
   private loadUserData(): void {
     if (!this.userId) return;
-    
+
     this.profileService.getUser(this.userId).subscribe({
       next: (user) => {
         this.profileForm.patchValue({
@@ -111,18 +119,18 @@ export class CandidateProfileComponent implements OnInit {
           middleName: user.middle_name || '',
           lastName: user.last_name,
           email: user.email,
-          mobileNumber: user.mobile_number || ''
+          mobileNumber: user.mobile_number || '',
         });
       },
       error: (error) => {
         console.error('Failed to load user data', error);
-      }
+      },
     });
   }
 
   private loadCandidateProfile(): void {
     if (!this.userId) return;
-    
+
     this.profileService.getMyProfile().subscribe({
       next: (profile) => {
         this.profileForm.patchValue({
@@ -141,7 +149,7 @@ export class CandidateProfileComponent implements OnInit {
       },
       error: (error) => {
         console.error('Failed to load candidate profile', error);
-      }
+      },
     });
   }
 
@@ -175,16 +183,15 @@ export class CandidateProfileComponent implements OnInit {
                 next: () => {
                   this.isSubmitting = false;
                   this.showSnackBar('Profile saved successfully!', 'snackbar-success');
-                  // Added redirection to dashboard
-                  this.router.navigate(['/dashboard']);
+                  this.router.navigate(['/dashboard']); // ✅ Navigate to dashboard after success
                 },
                 error: (error) => {
                   this.isSubmitting = false;
                   console.error('Profile save error:', error);
                   this.showSnackBar('Failed to save profile', 'snackbar-error');
-                }
+                },
               });
-            }).catch(error => {
+            }).catch((error) => {
               this.isSubmitting = false;
               console.error('Skills/certs save error:', error);
               this.showSnackBar('Failed to save skills or certifications', 'snackbar-error');
@@ -194,34 +201,29 @@ export class CandidateProfileComponent implements OnInit {
             this.isSubmitting = false;
             console.error('Name update error:', error);
             this.showSnackBar('Failed to update name', 'snackbar-error');
-          }
+          },
         });
       },
       error: (error) => {
         this.isSubmitting = false;
         console.error('Contact info update error:', error);
-        
+
         let errorMsg = 'Failed to update contact information';
         if (error.status === 409) {
           errorMsg = 'Email already exists';
         }
-        
+
         this.showSnackBar(errorMsg, 'snackbar-error');
-      }
+      },
     });
   }
 
   private async saveSkillsAndCerts(): Promise<void> {
-    const skillIds = this.selectedSkills.map(skill => skill.id);
-    const certIds = this.selectedCertifications.map(cert => cert.id);
+    const skillIds = this.selectedSkills.map((skill) => skill.id);
+    const certIds = this.selectedCertifications.map((cert) => cert.id);
 
-    await lastValueFrom(
-      this.profileService.saveCandidateSkills(this.userId!, skillIds)
-    );
-
-    await lastValueFrom(
-      this.profileService.saveCandidateCertifications(this.userId!, certIds)
-    );
+    await lastValueFrom(this.profileService.saveCandidateSkills(this.userId!, skillIds));
+    await lastValueFrom(this.profileService.saveCandidateCertifications(this.userId!, certIds));
   }
 
   fetchSkillsAndCertifications(): void {
@@ -239,7 +241,7 @@ export class CandidateProfileComponent implements OnInit {
   }
 
   private setInitialSelections(): void {
-    this.groupedSkills.forEach(group => {
+    this.groupedSkills.forEach((group) => {
       group.items.forEach((skill: Skill) => {
         if (this.profileSkillIds.includes(skill.id)) {
           this.selectedSkills = toggleSkill(skill, this.selectedSkills);
@@ -247,7 +249,7 @@ export class CandidateProfileComponent implements OnInit {
       });
     });
 
-    this.groupedCertifications.forEach(group => {
+    this.groupedCertifications.forEach((group) => {
       group.items.forEach((cert: Certification) => {
         if (this.profileCertificationIds.includes(cert.id)) {
           this.selectedCertifications = toggleCertification(cert, this.selectedCertifications);
@@ -279,7 +281,7 @@ export class CandidateProfileComponent implements OnInit {
   updateFormSelections(): void {
     this.profileForm.patchValue({
       skills: this.selectedSkills.map((s) => s.id),
-      certifications: this.selectedCertifications.map((c) => c.id),
+      certifications: this.selectedCertifications.map((c) => c.id),  // ✅ Fixed here
     });
   }
 

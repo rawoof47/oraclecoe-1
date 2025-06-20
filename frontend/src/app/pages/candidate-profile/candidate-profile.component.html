@@ -1,9 +1,11 @@
-<app-navbar></app-navbar>
+<app-navbar *ngIf="showLayout"></app-navbar>
+
 
 <div class="dashboard-layout container">
   <div class="row">
-    <!-- Sidebar (Left Side) -->
-    <div class="col-lg-4 col-md-12">
+    
+    <!-- Sidebar -->
+    <div class="col-lg-4 col-md-12" *ngIf="showLayout">
       <app-candidate-sidebar></app-candidate-sidebar>
     </div>
 
@@ -175,5 +177,6 @@
   </div>
 </div>
 
-<app-footer></app-footer>
+<app-footer *ngIf="showLayout"></app-footer>
+
 <app-back-to-top></app-back-to-top>

@@ -17,10 +17,20 @@
   <div class="form-group mb-3">
     <input type="email" class="form-control" formControlName="email" placeholder="Email">
   </div>
-  <div class="form-group mb-3">
-    <input type="password" class="form-control" formControlName="password" placeholder="Password">
+  <div class="form-group mb-3 position-relative">
+    <input [type]="showPassword ? 'text' : 'password'"
+           class="form-control"
+           formControlName="password"
+           placeholder="Password">
+  
+    <!-- FIXED Eye Icon Button -->
+    <span (click)="togglePasswordVisibility()"
+          class="position-absolute top-50 end-0 translate-middle-y me-3"
+          style="cursor: pointer; color: #555; font-size: 1.2rem;">
+      <i class="{{ showPassword ? 'bi bi-eye-slash' : 'bi bi-eye' }}"></i>
+    </span>
   </div>
-
+  
   <!-- Role Selection -->
   <div class="form-group mb-4">
     <div class="form-control d-flex align-items-center">

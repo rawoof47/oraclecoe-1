@@ -20,6 +20,9 @@ import { LoginRequest } from '../../models/login-request.model';
 export class RegisterComponent {
   registerForm: FormGroup;
   submitted = false;
+  showPassword: boolean = false;
+showConfirmPassword: boolean = false;
+
 
   private readonly roleMap: Record<string, string> = {
     Candidate: 'c1bb8df5-2c01-11f0-b60f-80ce6232908a',
@@ -77,7 +80,16 @@ export class RegisterComponent {
   get f() {
     return this.registerForm.controls;
   }
-
+  
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+  
+  toggleConfirmPasswordVisibility() {
+    this.showConfirmPassword = !this.showConfirmPassword;
+  }
+  
+  
   onSubmit(): void {
     this.submitted = true;
 
@@ -145,15 +157,20 @@ export class RegisterComponent {
             });
 
             const redirectPath = role === 'Candidate'
-              ? '/candidate-profile'
-              : '/recruiter-profile';
-
-            this.snackBar.open('Login successful! Redirecting to your profile...', 'Close', {
-              ...this.successConfig,
-              duration: 3000
-            });
-
+            ? '/candidate-profile'
+            : '/recruiter-profile';
+          
+          this.snackBar.open('Login successful! Redirecting to your profile...', 'Close', {
+            ...this.successConfig,
+            duration: 3000
+          });
+          
+          if (role === 'Candidate') {
+            this.router.navigate([redirectPath], { queryParams: { new: 'true' } });  // ✅ Show form only, no navbar/footer
+          } else {
             this.router.navigate([redirectPath]);
+          }
+          
           },
           error: () => {
             successSnack.dismiss();

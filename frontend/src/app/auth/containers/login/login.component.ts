@@ -19,6 +19,7 @@ import { AuthStateService } from '../../../services/auth-state.service';
 export class LoginComponent {
   loginForm: FormGroup;
   isSubmitting = false;
+  showPassword: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -34,7 +35,11 @@ export class LoginComponent {
       role: ['', Validators.required]
     });
   }
-
+// eye button logic
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+  
   onSubmit(): void {
     if (this.loginForm.invalid) {
       this.showSnackBar('Please fill in all required fields.', 'snack-error');
@@ -63,6 +68,7 @@ export class LoginComponent {
           return;
         }
 
+        
         // ✅ Fetch full user details and set complete auth state
         this.candidateProfileService.getUser(user.id).subscribe({
           next: (userDetails) => {
