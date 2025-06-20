@@ -32,6 +32,16 @@ export class CreateCandidateProfileDto {
   @IsOptional()
   year_of_passing?: number;
 
+  // ✅ Added university as free text
+  @IsString()
+  @IsOptional()
+  university?: string;
+
+  // ✅ Added grade or percentage
+  @IsString()
+  @IsOptional()
+  grade_or_percentage?: string;
+
   @IsNumber({ maxDecimalPlaces: 1 })
   @Min(0)
   @Max(50)

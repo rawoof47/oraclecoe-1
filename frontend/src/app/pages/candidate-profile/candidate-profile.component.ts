@@ -92,7 +92,7 @@ export class CandidateProfileComponent implements OnInit {
     this.loadCandidateProfile();
     this.fetchSkillsAndCertifications();
     this.fetchDegrees();
-    this.years = Array.from({ length: 5 }, (_, i) => 1980 + i);
+    this.years = Array.from({ length: 51 }, (_, i) => 1980 + i);
   }
 
   initializeForm(): void {
@@ -113,6 +113,8 @@ export class CandidateProfileComponent implements OnInit {
       skills: [[]],
       certifications: [[]],
       degrees: [[]],
+      university: [''],
+      grade_or_percentage: [''],
     });
   }
 
@@ -143,6 +145,9 @@ export class CandidateProfileComponent implements OnInit {
           gender: profile.gender || '',
           about_me: profile.about_me || '',
           professional_summary: profile.professional_summary || '',
+          university: profile.university || '',
+        grade_or_percentage: profile.grade_or_percentage || '',
+
           social_links: profile.social_links || '',
           resume_link: profile.resume_link || '',
           

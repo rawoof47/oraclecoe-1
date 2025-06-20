@@ -87,7 +87,12 @@ export class JobsComponent implements OnInit {
   ngOnInit(): void {
     this.currentUserId = this.authState.getCurrentUserId();
     this.currentUserRole = this.authState.getCurrentUserRole();
+    
     this.fetchJobs();
+  }
+
+  isCandidate(): boolean {
+    return this.currentUserRole === 'candidate';
   }
 
   redirectToLogin(): void {
@@ -96,14 +101,18 @@ export class JobsComponent implements OnInit {
 
   // ✅ Updated method using service
   fetchJobs(): void {
-    this.jobPostService.getActiveJobs().subscribe({
-      next: (response) => {
-        this.allJobs = response.data;
-        this.jobs = response.data;
-        this.jobCount = response.data.length;
-        this.loading = false;
+  this.jobPostService.getActiveJobs().subscribe({
+    next: (response) => {
+      this.allJobs = response.data;
+      this.jobs = response.data;
+      this.jobCount = response.data.length;
+      this.loading = false;
+      
+      // Only check applied status for candidates
+      if (this.isCandidate()) {
         this.checkAppliedStatuses();
-      },
+      }
+    },
       error: (err) => {
         console.error('Error fetching jobs:', err);
         this.error = 'Failed to load job data.';
@@ -114,7 +123,7 @@ export class JobsComponent implements OnInit {
   }
 
   checkAppliedStatuses(): void {
-    if (!this.currentUserId) return;
+    if (!this.isCandidate()) return;
 
     this.jobs.forEach(job => {
       const payload = {
@@ -138,7 +147,7 @@ export class JobsComponent implements OnInit {
   }
 
   applyToJob(jobId: string): void {
-    if (!this.currentUserId) {
+    if (!this.isCandidate()) {
       alert('Please log in to apply for jobs');
       this.redirectToLogin();
       return;

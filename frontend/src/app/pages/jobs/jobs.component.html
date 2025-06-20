@@ -150,7 +150,7 @@
 <div class="applyBtn">
   <!-- Replace the entire applyBtn section with this -->
 <div class="applyBtn">
-  <ng-container *ngIf="currentUserRole !== 'recruiter'">
+  <ng-container *ngIf="currentUserRole === 'candidate'">
     <button *ngIf="!appliedStatus[job.id] && currentUserId" 
             class="btn btn-success btn-sm" 
             (click)="applyToJob(job.id)">

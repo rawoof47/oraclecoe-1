@@ -684,11 +684,27 @@ select {
     border-radius: 20px;
   }
 }
-/* Remove this block entirely */
-select.list-box {
-  background-image: none;
-  padding-right: $spacing-md;
-  height: auto;
-  min-height: 150px;
-  overflow-y: auto;
+.compact-select {
+  select {
+    height: 48px; // Matches dropdown header height
+    padding: 0 $spacing-md; // 0 16px
+    font-size: $font-size-base; // 16px
+    line-height: 48px; // Vertical center text
+    background-position: right $spacing-md center; // Adjust icon position
+  }
+
+  .form-group__label {
+    margin-bottom: 10px; // Slightly reduced spacing
+  }
+
+  @media (max-width: 480px) {
+    select {
+      height: 42px; // Matches mobile dropdown header height
+      line-height: 42px; // Vertical center text
+      padding: 0 $spacing-sm; // 0 12px
+      font-size: $font-size-sm; // 14px
+      background-size: 14px; // Smaller dropdown icon
+    }
+  }
+  
 }

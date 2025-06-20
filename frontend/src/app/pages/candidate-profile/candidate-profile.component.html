@@ -99,18 +99,34 @@
   </div>
 </div>
 
-                  
 
-                  
+                  <div class="form-group">
+  <label for="university" class="form-group__label">University</label>
+  <input 
+    id="university" 
+    type="text" 
+    formControlName="university" 
+    placeholder="University Name"
+  />
+</div>
 
 <div class="form-group">
+  <label for="grade_or_percentage" class="form-group__label">Grade/Percentage</label>
+  <input 
+    id="grade_or_percentage" 
+    type="text" 
+    formControlName="grade_or_percentage" 
+    placeholder="e.g. 3.8 GPA or 85%"
+  />
+</div>
+
+<div class="form-group compact-select">
   <label for="year_of_passing" class="form-group__label">Year of Passing</label>
   <select id="year_of_passing" formControlName="year_of_passing" class="form-control">
     <option value="" disabled selected>Select Year</option>
     <option *ngFor="let year of years" [value]="year">{{ year }}</option>
   </select>
 </div>
-
 
 
 
