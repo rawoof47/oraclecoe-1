@@ -4,7 +4,11 @@ import { inject } from '@angular/core';
 import { AuthStateService } from '../services/auth-state.service';
 import { map, take } from 'rxjs';
 
-export function roleGuard(expectedRole: 'candidate' | 'recruiter'): CanActivateFn {
+/**
+ * Role-based route guard supporting one or multiple roles.
+ * Example: roleGuard('candidate'), roleGuard('recruiter'), or roleGuard('candidate', 'recruiter')
+ */
+export function roleGuard(...allowedRoles: ('candidate' | 'recruiter')[]): CanActivateFn {
   return () => {
     const authStateService = inject(AuthStateService);
     const router = inject(Router);
@@ -12,7 +16,7 @@ export function roleGuard(expectedRole: 'candidate' | 'recruiter'): CanActivateF
     return authStateService.userRole$.pipe(
       take(1),
       map(role => {
-        if (role !== expectedRole) {
+        if (!allowedRoles.includes(role as any)) {
           router.navigate(['/']);
           return false;
         }

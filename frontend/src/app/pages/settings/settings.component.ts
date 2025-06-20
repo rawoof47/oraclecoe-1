@@ -27,6 +27,7 @@ export class SettingsComponent implements OnInit {
   passwordForm!: FormGroup;
   userId: string | null = null;
   currentEmail: string = '';
+  userRoleLabel: string = 'Employee'; // Default role
 
   constructor(
     private fb: FormBuilder,
@@ -39,43 +40,45 @@ export class SettingsComponent implements OnInit {
     const currentUser = this.authStateService.getCurrentUser();
     this.userId = currentUser?.id || null;
     this.currentEmail = currentUser?.email || '';
+    this.userRoleLabel = currentUser?.role === 'recruiter' ? 'Employer' : 'Employee';
 
     this.emailForm = this.fb.group({
       email: [this.currentEmail, [Validators.required, Validators.email]],
     });
 
-    this.passwordForm = this.fb.group({
-  currentPassword: ['', Validators.required],
-  newPassword: ['', [Validators.required, Validators.minLength(6)]],
-  confirmPassword: ['', Validators.required],
-}, {
-  validators: (form: FormGroup) => {
-    const newPassword = form.get('newPassword')?.value;
-    const confirmPassword = form.get('confirmPassword')?.value;
-    return newPassword === confirmPassword ? null : { mismatch: true };
-  }
-});
-
+    this.passwordForm = this.fb.group(
+      {
+        currentPassword: ['', Validators.required],
+        newPassword: ['', [Validators.required, Validators.minLength(6)]],
+        confirmPassword: ['', Validators.required],
+      },
+      {
+        validators: (form: FormGroup) => {
+          const newPassword = form.get('newPassword')?.value;
+          const confirmPassword = form.get('confirmPassword')?.value;
+          return newPassword === confirmPassword ? null : { mismatch: true };
+        },
+      }
+    );
   }
 
   updateEmail(): void {
-  if (this.emailForm.valid && this.userId) {
-    this.settingsService.updateEmail(this.userId, this.emailForm.value.email).subscribe({
-      next: () => this.showToast(' Email updated successfully.'),
-      error: () => this.showToast(' Failed to update email.', false),
-    });
+    if (this.emailForm.valid && this.userId) {
+      this.settingsService.updateEmail(this.userId, this.emailForm.value.email).subscribe({
+        next: () => this.showToast(`${this.userRoleLabel} email updated successfully.`),
+        error: () => this.showToast(`Failed to update ${this.userRoleLabel.toLowerCase()} email.`, false),
+      });
+    }
   }
-}
 
-updatePassword(): void {
-  if (this.passwordForm.valid && this.userId) {
-    this.settingsService.updatePassword(this.userId, this.passwordForm.value.newPassword).subscribe({
-      next: () => this.showToast(' Password changed successfully.'),
-      error: () => this.showToast(' Failed to update password.', false),
-    });
+  updatePassword(): void {
+    if (this.passwordForm.valid && this.userId) {
+      this.settingsService.updatePassword(this.userId, this.passwordForm.value.newPassword).subscribe({
+        next: () => this.showToast(`${this.userRoleLabel} password changed successfully.`),
+        error: () => this.showToast(`Failed to update ${this.userRoleLabel.toLowerCase()} password.`, false),
+      });
+    }
   }
-}
-
 
   private showToast(message: string, isSuccess: boolean = true): void {
   this.snackBar.open(message, 'Close', {

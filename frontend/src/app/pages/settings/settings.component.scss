@@ -12,6 +12,20 @@
     margin-bottom: 1rem;
   }
   ::ng-deep .snack-success {
+  background-color: #03a9f4;
+  color: white;
+  font-weight: 500;
+  border-radius: 4px;
+}
+
+::ng-deep .snack-error {
+  background-color: #f44336;
+  color: white;
+  font-weight: 500;
+  border-radius: 4px;
+}
+
+  ::ng-deep .snack-success {
   background-color: #03a9f4; // sky blue
   color: white;
   font-weight: 500;

@@ -31,11 +31,11 @@ import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard
 import { AppliedJobsComponent } from './pages/applied-jobs/applied-jobs.component';
 import { JobApplicantsComponent } from './pages/job-applicants/job-applicants.component';
 import { RecruiterDashboardComponent } from './dashboard/recruiter-dashboard/recruiter-dashboard.component';
-import { PostedJobsComponent } from './pages/posted-jobs/posted-jobs.component'; // ✅ NEW
+import { PostedJobsComponent } from './pages/posted-jobs/posted-jobs.component';
 import { SettingsComponent } from './pages/settings/settings.component';
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 
-
-// Guards
+// ✅ Guards
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 
@@ -91,39 +91,40 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard('candidate')]
   },
   {
-  path: 'settings',
-  component: SettingsComponent,
-  canActivate: [authGuard, roleGuard('candidate')]
-},
-
-  {
     path: 'applied-jobs',
     component: AppliedJobsComponent,
     canActivate: [authGuard, roleGuard('candidate')]
   },
-   { path: 'settings', component: SettingsComponent },
+
+  // ✅ Shared Settings Route (for both roles)
+  {
+    path: 'settings',
+    component: SettingsComponent,
+    canActivate: [authGuard, roleGuard('candidate', 'recruiter')]
+  },
+
+  {
+    path: 'settings/update-password',
+    loadComponent: () =>
+      import('./components/update-password/update-password.component').then(
+        (m) => m.UpdatePasswordComponent
+      ),
+    canActivate: [authGuard, roleGuard('candidate', 'recruiter')]
+  },
+  {
+    path: 'settings/update-email',
+    loadComponent: () =>
+      import('./components/edit-email/edit-email.component').then(
+        (m) => m.EditEmailComponent
+      ),
+    canActivate: [authGuard, roleGuard('candidate', 'recruiter')]
+  },
+
   {
     path: 'single-resume',
     component: SingleResumeComponent,
     canActivate: [authGuard, roleGuard('candidate')]
   },
-  //updates
-  {
-  path: 'settings/update-password',
-  loadComponent: () =>
-    import('./components/update-password/update-password.component').then(
-      (m) => m.UpdatePasswordComponent
-    ),
-},
-{
-  path: 'settings/update-email',
-  loadComponent: () =>
-    import('./components/edit-email/edit-email.component').then(
-      (m) => m.EditEmailComponent
-    ),
-},
-
-
 
   // 🔒 Recruiter Routes
   {
@@ -132,19 +133,14 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard('recruiter')]
   },
   {
-    path: 'single-resume',
-    component: SingleResumeComponent,
-    canActivate: [authGuard, roleGuard('candidate')]
-  },
-  {
     path: 'job-applicants/:jobId',
     component: JobApplicantsComponent,
-    canActivate: [authGuard, roleGuard('recruiter')],
+    canActivate: [authGuard, roleGuard('recruiter')]
   },
   {
     path: 'job-applicants',
     component: JobApplicantsComponent,
-    canActivate: [authGuard, roleGuard('recruiter')],
+    canActivate: [authGuard, roleGuard('recruiter')]
   },
   {
     path: 'recruiter-dashboard',
@@ -152,14 +148,18 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard('recruiter')]
   },
   {
-    path: 'recruiter/posted-jobs', // ✅ NEW ROUTE
+    path: 'recruiter/posted-jobs',
     component: PostedJobsComponent,
     canActivate: [authGuard, roleGuard('recruiter')]
   },
 
+  // 🔐 Forgot Password
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+
+  // 🔐 Admin
   { path: 'admin/login', component: AdminLoginComponent },
   { path: 'admin-dashboard', component: AdminDashboardComponent },
 
-  // Catch-all route
+  // 🔚 Catch-all route
   { path: '**', component: ErrorPageComponent }
 ];
