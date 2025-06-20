@@ -1,0 +1,78 @@
+.settings-container {
+  background: #e6f2ff;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 600px;
+  margin: 2rem auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  .section-title {
+    font-size: 1.5rem;
+    color: #004080;
+    margin-bottom: 1rem;
+  }
+  ::ng-deep .snack-success {
+  background-color: #03a9f4;
+  color: white;
+  font-weight: 500;
+  border-radius: 4px;
+}
+
+::ng-deep .snack-error {
+  background-color: #f44336;
+  color: white;
+  font-weight: 500;
+  border-radius: 4px;
+}
+
+  ::ng-deep .snack-success {
+  background-color: #03a9f4; // sky blue
+  color: white;
+  font-weight: 500;
+  border-radius: 4px;
+}
+
+::ng-deep .snack-error {
+  background-color: #f44336;
+  color: white;
+  font-weight: 500;
+  border-radius: 4px;
+}
+
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    label {
+      font-weight: 500;
+    }
+
+    input {
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      margin-top: 1rem;
+      background-color: #0099ff;
+      color: white;
+      padding: 0.5rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+
+      &:disabled {
+        background-color: #c2e7ff;
+        cursor: not-allowed;
+      }
+    }
+
+    .error {
+      color: #d32f2f;
+      font-size: 0.875rem;
+    }
+  }
+}

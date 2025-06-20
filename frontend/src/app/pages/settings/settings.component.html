@@ -1,0 +1,39 @@
+<app-navbar></app-navbar>
+
+<div class="settings-container">
+  <!-- Update Email -->
+  <h2 class="section-title">Update Email</h2>
+  <form [formGroup]="emailForm" (ngSubmit)="updateEmail()">
+    <label>Current Email: <strong>{{ currentEmail }}</strong></label><br /><br />
+    
+    <label for="email">New Email</label>
+    <input id="email" type="email" formControlName="email" />
+    <div *ngIf="emailForm.get('email')?.invalid && emailForm.get('email')?.touched" class="error">
+      Please enter a valid email.
+    </div>
+
+    <button type="submit" [disabled]="emailForm.invalid">Update Email</button>
+  </form>
+
+  <!-- Update Password -->
+  <h2 class="section-title">Update Password</h2>
+  <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()">
+    <label for="currentPassword">Current Password</label>
+    <input id="currentPassword" type="password" formControlName="currentPassword" />
+
+    <label for="newPassword">New Password</label>
+    <input id="newPassword" type="password" formControlName="newPassword" />
+
+    <label for="confirmPassword">Confirm New Password</label>
+    <input id="confirmPassword" type="password" formControlName="confirmPassword" />
+
+    <div *ngIf="passwordForm.errors?.['mismatch']" class="error">
+      Passwords do not match.
+    </div>
+
+    <button type="submit" [disabled]="passwordForm.invalid">Update Password</button>
+  </form>
+</div>
+
+<app-footer></app-footer>
+<app-back-to-top></app-back-to-top>

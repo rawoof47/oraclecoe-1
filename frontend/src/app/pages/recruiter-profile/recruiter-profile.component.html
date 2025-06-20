@@ -54,15 +54,15 @@
             <input type="text" formControlName="lastName" />
           </div>
 
-<div class="form-row">
-  <label>Email:</label>
-  <input type="email" formControlName="email" />
-</div>
+          <div class="form-row">
+            <label>Email:</label>
+            <input type="email" formControlName="email" />
+          </div>
 
-<div class="form-row">
-  <label>Phone:</label>
-  <input type="tel" formControlName="phone" />
-</div>
+          <div class="form-row">
+            <label>Phone:</label>
+            <input type="tel" formControlName="phone" />
+          </div>
 
           <div class="form-row">
             <label>Position:</label>
@@ -71,15 +71,15 @@
         </div>
 
         <!-- Submit -->
-        <!-- recruiter-profile.component.html -->
-<div class="button-wrapper">
-  <button type="submit" [disabled]="isLoading">
-    <span *ngIf="!isLoading">Save Profile</span>
-    <span *ngIf="isLoading">
-      <i class="spinner"></i> Saving...
-    </span>
-  </button>
-</div>
+        <div class="button-wrapper">
+          <button type="submit" [disabled]="isLoading">
+            <span *ngIf="!isLoading">Save Profile</span>
+            <span *ngIf="isLoading">
+              <i class="spinner"></i> Saving...
+            </span>
+          </button>
+        </div>
+
       </form>
     </div>
   </div>

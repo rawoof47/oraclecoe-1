@@ -1,3 +1,4 @@
+// src/app.module.ts
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -5,8 +6,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-// Modules
-import { UserModule } from './users/users.module';
+// ✅ Correct Module Import
+import { UsersModule } from './users/users.module';
+
 import { ActivityLogsModule } from './activity-logs/activity-logs.module';
 import { AdminUsersModule } from './admin-users/admin-users.module';
 import { ApiAccessTokensModule } from './api-access-tokens/api-access-tokens.module';
@@ -39,29 +41,27 @@ import { CandidateDegreesModule } from './candidate_degrees/candidate_degrees.mo
 
 @Module({
   imports: [
-    // ✅ Global .env configuration
     ConfigModule.forRoot({
       isGlobal: true,
     }),
 
-    // ✅ TypeORM configuration with ConfigService
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'mysql',
         host: configService.get<string>('DB_HOST', 'localhost'),
-        port: configService.get<number>('DB_PORT', 3307),
-        username: configService.get<string>('DB_USERNAME', 'root'),
-        password: configService.get<string>('DB_PASSWORD', ''),
+        port: configService.get<number>('DB_PORT', 3306),
+        username: configService.get<string>('DB_USERNAME','yardglobal'),
+        password: configService.get<string>('DB_PASSWORD', 'Yard@^78'),
         database: configService.get<string>('DB_NAME', 'oracle_job_portal'),
         autoLoadEntities: true,
-        synchronize: false, // NEVER true in production
+        synchronize: false,
       }),
     }),
 
-    // ✅ All functional modules
-    UserModule,
+    UsersModule, // ✅ Correct name here
+
     ActivityLogsModule,
     AdminUsersModule,
     ApiAccessTokensModule,
