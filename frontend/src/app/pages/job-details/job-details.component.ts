@@ -13,6 +13,7 @@ import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.p
 import { ApplicationStatusService } from '../../services/application-status.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-job-details',
@@ -43,6 +44,7 @@ export class JobDetailsComponent implements OnInit, OnDestroy {
   jobId: string = '';
   hasApplied = false;
   applyStatusMessage = '';
+  userRole$!: Observable<string | null>;  // 👈 Add this line
 
   private destroy$ = new Subject<void>();
 
@@ -56,6 +58,7 @@ export class JobDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userId = this.authState.getCurrentUserId();
+    this.userRole$ = this.authState.userRole$; // ✅ ADD THIS LINE
 
     this.route.paramMap.subscribe(params => {
       const jobIdParam = params.get('id');

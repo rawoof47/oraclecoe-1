@@ -684,3 +684,11 @@ select {
     border-radius: 20px;
   }
 }
+/* Remove this block entirely */
+select.list-box {
+  background-image: none;
+  padding-right: $spacing-md;
+  height: auto;
+  min-height: 150px;
+  overflow-y: auto;
+}

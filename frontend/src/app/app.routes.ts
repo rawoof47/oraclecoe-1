@@ -73,7 +73,7 @@ export const routes: Routes = [
   {
     path: 'jobs',
     component: JobsComponent,
-    canActivate: [authGuard, roleGuard('candidate')]
+    canActivate: [authGuard, roleGuard('candidate', 'recruiter')]
   },
   {
     path: 'favourite-jobs',
@@ -83,7 +83,7 @@ export const routes: Routes = [
   {
     path: 'job-details/:id',
     component: JobDetailsComponent,
-    canActivate: [authGuard, roleGuard('candidate')]
+    canActivate: [authGuard, roleGuard('candidate', 'recruiter')]
   },
   {
     path: 'candidate-profile',

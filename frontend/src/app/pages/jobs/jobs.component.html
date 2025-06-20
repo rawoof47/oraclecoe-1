@@ -148,11 +148,25 @@
               </div>
             </a>
 <div class="applyBtn">
-  <!-- Show different buttons based on state -->
-  <button *ngIf="!appliedStatus[job.id] && currentUserId"  class="btn btn-success btn-sm" (click)="applyToJob(job.id)">Apply</button>
-  <button *ngIf="appliedStatus[job.id]" class="btn btn-secondary btn-sm"  disabled> Already Applied </button> 
-  <button *ngIf="!currentUserId" class="btn btn-outline-primary btn-sm" (click)="redirectToLogin()"> Login to Apply </button>
-</div>
+  <!-- Replace the entire applyBtn section with this -->
+<div class="applyBtn">
+  <ng-container *ngIf="currentUserRole !== 'recruiter'">
+    <button *ngIf="!appliedStatus[job.id] && currentUserId" 
+            class="btn btn-success btn-sm" 
+            (click)="applyToJob(job.id)">
+      Apply
+    </button>
+    <button *ngIf="appliedStatus[job.id]" 
+            class="btn btn-secondary btn-sm" 
+            disabled>
+      Already Applied
+    </button> 
+    <button *ngIf="!currentUserId" 
+            class="btn btn-outline-primary btn-sm" 
+            (click)="redirectToLogin()">
+      Login to Apply
+    </button>
+  </ng-container>
 </div>
         </div>
         <div *ngIf="loading" class="text-center mt-5"><p>Loading jobs...</p></div>

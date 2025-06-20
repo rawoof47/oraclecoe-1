@@ -42,6 +42,7 @@ export class JobsComponent implements OnInit {
   allJobs: any[] = [];
   jobCount = 0;
   loading = true;
+  currentUserRole: string | null = null;
   error: string | null = null;
 
   workModeOptions: string[] = ['Remote', 'On-site', 'Hybrid'];
@@ -85,6 +86,7 @@ export class JobsComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUserId = this.authState.getCurrentUserId();
+    this.currentUserRole = this.authState.getCurrentUserRole();
     this.fetchJobs();
   }
 

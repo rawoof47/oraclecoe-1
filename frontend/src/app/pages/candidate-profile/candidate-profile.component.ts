@@ -92,7 +92,7 @@ export class CandidateProfileComponent implements OnInit {
     this.loadCandidateProfile();
     this.fetchSkillsAndCertifications();
     this.fetchDegrees();
-    this.years = Array.from({ length: 51 }, (_, i) => 1980 + i);
+    this.years = Array.from({ length: 5 }, (_, i) => 1980 + i);
   }
 
   initializeForm(): void {
