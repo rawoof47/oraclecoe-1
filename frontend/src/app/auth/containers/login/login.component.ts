@@ -38,7 +38,7 @@ export class LoginComponent {
   onSubmit(): void {
     if (this.loginForm.invalid) {
       this.showSnackBar('Please fill in all required fields.', 'snack-error');
-      console.error('❌ Form validation failed:', this.loginForm.value);
+      console.error(' Form validation failed:', this.loginForm.value);
       return;
     }
 
@@ -49,7 +49,7 @@ export class LoginComponent {
     this.authService.login({ email, password }).subscribe({
       next: (res) => {
         this.isSubmitting = false;
-        console.log('✅ Login response:', res);
+        console.log(' Login response:', res);
         const token = res.token;
         const user = {
           id: res.uuid,
@@ -59,7 +59,7 @@ export class LoginComponent {
 
         if (!token || !user.id || !user.role) {
           this.showSnackBar('Invalid response from server.', 'snack-error');
-          console.error('❌ Missing token or user info in response:', res);
+          console.error(' Missing token or user info in response:', res);
           return;
         }
 
@@ -83,16 +83,16 @@ export class LoginComponent {
                 this.router.navigate(['/recruiter-dashboard']);
               } else {
                 this.showSnackBar('Unsupported role.', 'snack-error');
-                console.warn('⚠️ Role not handled:', user.role);
+                console.warn(' Role not handled:', user.role);
               }
             } else {
               this.showSnackBar(`You are not registered as a ${role}.`, 'snack-error');
-              console.warn('⚠️ Role mismatch:', { selectedRole: role, returnedRole: user.role });
+              console.warn(' Role mismatch:', { selectedRole: role, returnedRole: user.role });
             }
           },
           error: (fetchError) => {
             this.showSnackBar('Failed to fetch user details.', 'snack-error');
-            console.error('❌ Error fetching user details:', fetchError);
+            console.error(' Error fetching user details:', fetchError);
           }
         });
       },
@@ -100,7 +100,7 @@ export class LoginComponent {
         this.isSubmitting = false;
         const message = err.error?.message || 'Login failed. Please try again.';
         this.showSnackBar(message, 'snack-error');
-        console.error('❌ Login error:', err);
+        console.error(' Login error:', err);
       }
     });
   }
