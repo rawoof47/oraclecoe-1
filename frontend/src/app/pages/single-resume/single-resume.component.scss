@@ -653,3 +653,87 @@ $glass-effect: rgba(255, 255, 255, 0.65);
 .pt-30{
     padding-top: 30px;
 }
+/* Add after existing styles */
+.education-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+  margin-top: 20px;
+}
+
+.education-item {
+  background: rgba(67, 97, 238, 0.05);
+  border-radius: 16px;
+  padding: 18px 25px;
+  border: 1px solid rgba(214, 228, 255, 0.4);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: $primary-gradient;
+    transition: width 0.3s ease;
+  }
+  
+  strong {
+    color: $text-primary;
+    display: block;
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(67, 97, 238, 0.1);
+    
+    &::before {
+      width: 6px;
+    }
+  }
+}
+
+.degrees-container {
+  grid-column: 1 / -1;
+  
+  .degrees-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 15px;
+  }
+}
+
+.degree-tag {
+  background: rgba(76, 201, 240, 0.15);
+  color: #4cc9f0;
+  padding: 8px 18px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid rgba(76, 201, 240, 0.3);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(76, 201, 240, 0.2);
+    background: rgba(76, 201, 240, 0.25);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .education-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  
+  .education-item {
+    padding: 15px 20px;
+  }
+}

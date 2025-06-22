@@ -24,9 +24,12 @@ export interface CandidateProfile {
   experience_years: number;
   notice_period: string;
   resume_link: string;
-  education: string;
+  university?: string;
+  year_of_passing?: number;
+  grade_or_percentage?: string;
   skills?: string[];
   certifications?: { certification_name: string }[];
+  degrees?: string[]; // Add this
 }
 
 @Component({
@@ -73,13 +76,15 @@ export class DashboardComponent implements OnInit {
     forkJoin({
       profile: this.profileService.getMyProfile(),
       skills: this.profileService.getCandidateSkills(userId),
-      certifications: this.profileService.getCandidateCertifications(userId)
+      certifications: this.profileService.getCandidateCertifications(userId),
+      degrees: this.profileService.getCandidateDegrees(userId) // Add this
     }).subscribe({
       next: (response) => {
         this.profile = {
           ...response.profile,
           skills: response.skills,
-          certifications: response.certifications
+          certifications: response.certifications,
+          degrees: response.degrees // Add degrees
         };
         this.isLoading = false;
       },

@@ -135,4 +135,10 @@ export class CandidateProfileService {
     degree_ids: degreeIds
   });
 }
+
+// Add this method to get candidate degrees
+getCandidateDegrees(userId: string): Observable<string[]> {
+  return this.http.get<any[]>(`${this.backendBaseUrl}/candidate_degrees/user/${userId}`)
+    .pipe(map(degrees => degrees.map(d => d.degree.name))); // Changed from degree_name to name
+}
 }

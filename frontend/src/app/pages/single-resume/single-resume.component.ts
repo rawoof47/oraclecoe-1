@@ -11,6 +11,7 @@ import { forkJoin } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LinkifyPipe } from '../../shared/pipes/linkify.pipe';
 import { CandidateSidebarComponent } from '../../common/candidate-sidebar/candidate-sidebar.component';
+
 @Component({
   selector: 'app-single-resume',
   standalone: true,
@@ -20,7 +21,8 @@ import { CandidateSidebarComponent } from '../../common/candidate-sidebar/candid
     PageBannerComponent,
     FooterComponent,
     BackToTopComponent,
-    LinkifyPipe,CandidateSidebarComponent
+    LinkifyPipe,
+    CandidateSidebarComponent
   ],
   templateUrl: './single-resume.component.html',
   styleUrls: ['./single-resume.component.scss']
@@ -28,6 +30,7 @@ import { CandidateSidebarComponent } from '../../common/candidate-sidebar/candid
 export class SingleResumeComponent implements OnInit {
   candidateProfile: any;
   user: any;
+  degrees: string[] = []; // Add this
   skills: string[] = [];
   certifications: string[] = [];
   isLoading = true;
@@ -44,7 +47,7 @@ export class SingleResumeComponent implements OnInit {
 
   loadProfileData() {
     const userId = this.authState.getCurrentUser()?.id;
-    
+
     if (!userId) {
       this.errorMessage = 'User not authenticated';
       this.isLoading = false;
@@ -55,7 +58,8 @@ export class SingleResumeComponent implements OnInit {
       profile: this.profileService.getMyProfile(),
       user: this.profileService.getUser(userId),
       skills: this.profileService.getCandidateSkills(userId),
-      certifications: this.profileService.getCandidateCertifications(userId)
+      certifications: this.profileService.getCandidateCertifications(userId),
+      degrees: this.profileService.getCandidateDegrees(userId) // Add this
     })
     .pipe(
       catchError(error => {
@@ -65,11 +69,12 @@ export class SingleResumeComponent implements OnInit {
         return [];
       })
     )
-    .subscribe(({ profile, user, skills, certifications }) => {
+    .subscribe(({ profile, user, skills, certifications, degrees }) => {
       this.candidateProfile = profile;
       this.user = user;
       this.skills = skills;
       this.certifications = certifications;
+      this.degrees = degrees; // Add this
       this.isLoading = false;
     });
   }

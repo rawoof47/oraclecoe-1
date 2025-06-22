@@ -66,11 +66,33 @@
              <p>{{ candidateProfile.professional_summary }}</p>
           </div>
 
-          <!-- Education -->
-          <div class="profile bottom-item" *ngIf="candidateProfile.education">
-            <h5>Education</h5>
-            <p>{{ candidateProfile.education }}</p>
+         <!-- Education Section -->
+    <div class="profile bottom-item" *ngIf="candidateProfile.university || candidateProfile.year_of_passing || candidateProfile.grade_or_percentage || degrees.length > 0">
+      <h5>Education</h5>
+      
+      <div class="education-grid">
+        <div *ngIf="candidateProfile.university" class="education-item">
+          <strong>University:</strong> {{ candidateProfile.university }}
+        </div>
+        
+        <div *ngIf="candidateProfile.year_of_passing" class="education-item">
+          <strong>Year of Passing:</strong> {{ candidateProfile.year_of_passing }}
+        </div>
+        
+        <div *ngIf="candidateProfile.grade_or_percentage" class="education-item">
+          <strong>Grade/Percentage:</strong> {{ candidateProfile.grade_or_percentage }}
+        </div>
+        
+        <div *ngIf="degrees.length > 0" class="education-item degrees-container">
+          <strong>Degrees:</strong>
+          <div class="degrees-list">
+            <span *ngFor="let degree of degrees" class="degree-tag">
+              {{ degree }}
+            </span>
           </div>
+        </div>
+      </div>
+    </div>
 
           <!-- Skills Section -->
           <div class="skills bottom-item" *ngIf="skills.length > 0">
