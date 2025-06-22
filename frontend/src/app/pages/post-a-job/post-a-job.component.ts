@@ -3,14 +3,17 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { Subject } from 'rxjs';
-
+import { Subject, of, forkJoin } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { map } from 'rxjs/operators';
 import { JobPostService } from '../../services/job-post.service';
 import { NavbarComponent } from '../../common/navbar/navbar.component';
 import { PageBannerComponent } from '../../common/page-banner/page-banner.component';
 import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
 import { MatTabsModule } from '@angular/material/tabs';
+import { JobPost } from '../../auth/models/job-post.model';
+
 interface Skill {
   id: string;
   name: string;
@@ -21,14 +24,14 @@ interface Certification {
   certification_name: string;
 }
 
-interface JobPost {
-  id?: string;
-  recruiter_id: string;
-}
-
 interface JobPostResponse {
   message: string;
   data: JobPost;
+}
+
+interface JobPostListResponse {
+  message: string;
+  data: JobPost[];
 }
 
 @Component({
@@ -51,7 +54,8 @@ interface JobPostResponse {
 export class PostAJobComponent implements OnInit {
   jobForm: FormGroup;
   loading = false;
-  moduleTypeahead = new Subject<string>();
+  isEditMode = false;
+  jobId: string | null = null;
 
   functionalSkills: Skill[] = [];
   technicalSkills: Skill[] = [];
@@ -68,22 +72,22 @@ export class PostAJobComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private jobPostService: JobPostService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private route: ActivatedRoute,
+    private router: Router
   ) {
     this.jobForm = this.fb.group({
       jobTitle: ['', Validators.required],
       location: [''],
-      certificationsRequired: [''],
       experienceMin: [null, [Validators.required, Validators.min(0)]],
       experienceMax: [null, [Validators.required, Validators.min(0)]],
-      employmentType: [[], Validators.required], // updated for multi-select
+      employmentType: [[], Validators.required],
       compensationRange: ['', Validators.required],
       workMode: ['', Validators.required],
       jobDescription: ['', Validators.required],
       noticePeriod: ['', Validators.required],
       applicationDeadline: [''],
       recruiterId: ['', Validators.required],
-      createdBy: [''],
 
       roleSummary: ['', Validators.required],
       preferredQualifications: [''],
@@ -113,8 +117,92 @@ export class PostAJobComponent implements OnInit {
       console.warn('⚠️ No recruiter ID found. Ensure recruiter is logged in.');
     }
 
-    this.loadSkillsByCategory();
-    this.loadCertificationsByCategory();
+    this.route.queryParams.subscribe(params => {
+      const id = params['id'];
+      if (id) {
+        this.isEditMode = true;
+        this.jobId = id;
+        this.fetchJobDetails(id);
+      } else {
+        this.loadSkillsByCategory();
+        this.loadCertificationsByCategory();
+      }
+    });
+  }
+
+  private fetchJobDetails(jobId: string): void {
+    this.loading = true;
+    forkJoin({
+      job: this.jobPostService.getById(jobId).pipe(map(res => res.data)),
+      functionalSkills: this.jobPostService.getFunctionalSkills('612222a1-791a-4125-be8d-1d86808a37bf'),
+      technicalSkills: this.jobPostService.getFunctionalSkills('b9677d69-356f-11f0-bd34-80ce6232908a'),
+      oracleMiddlewareSkills: this.jobPostService.getFunctionalSkills('0ec31fb0-3591-11f0-ae4b-80ce6232908a'),
+      reportingSkills: this.jobPostService.getFunctionalSkills('843a8e1d-3591-11f0-ae4b-80ce6232908a'),
+      financialCerts: this.jobPostService.getCertificationsByCategory('ed7c50c7-36d3-11f0-bfce-80ce6232908a'),
+      scmCerts: this.jobPostService.getCertificationsByCategory('ed7c5da6-36d3-11f0-bfce-80ce6232908a'),
+      hcmCerts: this.jobPostService.getCertificationsByCategory('ed7c5c88-36d3-11f0-bfce-80ce6232908a'),
+      cxCerts: this.jobPostService.getCertificationsByCategory('ed7c5e82-36d3-11f0-bfce-80ce6232908a'),
+    }).subscribe({
+      next: (responses) => {
+        const job = responses.job;
+        this.functionalSkills = responses.functionalSkills;
+        this.technicalSkills = responses.technicalSkills;
+        this.oracleMiddlewareSkills = responses.oracleMiddlewareSkills;
+        this.reportingSkills = responses.reportingSkills;
+        this.financialCertifications = responses.financialCerts;
+        this.scmCertifications = responses.scmCerts;
+        this.hcmCertifications = responses.hcmCerts;
+        this.cxCertifications = responses.cxCerts;
+        
+        this.populateForm(job, job.skill_ids || [], job.certification_ids || []);
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Failed to fetch job details', err);
+        this.loading = false;
+        this.snackBar.open('Failed to load job details. Please try again.', 'Close', {
+          duration: 4000,
+          panelClass: 'snackbar-error'
+        });
+      }
+    });
+  }
+
+  private populateForm(job: JobPost, skillIds: string[], certificationIds: string[]): void {
+    this.jobForm.patchValue({
+      jobTitle: job.job_title,
+      location: job.location,
+      experienceMin: job.experience_min,
+      experienceMax: job.experience_max,
+      employmentType: job.employment_type ? job.employment_type.split(',') : [],
+      compensationRange: job.compensation_range,
+      workMode: job.work_mode,
+      jobDescription: job.job_description,
+      noticePeriod: job.notice_period,
+      applicationDeadline: job.application_deadline 
+        ? new Date(job.application_deadline).toISOString().split('T')[0] 
+        : null,
+      roleSummary: job.role_summary,
+      preferredQualifications: job.preferred_qualifications,
+      whatWeOffer: job.what_we_offer,
+      howToApply: job.how_to_apply
+    });
+
+    // Map skill IDs to skill objects
+    this.jobForm.patchValue({
+      functionalSkills: this.functionalSkills.filter(s => skillIds.includes(s.id)),
+      technicalSkills: this.technicalSkills.filter(s => skillIds.includes(s.id)),
+      oracleMiddlewareSkills: this.oracleMiddlewareSkills.filter(s => skillIds.includes(s.id)),
+      reportingSkills: this.reportingSkills.filter(s => skillIds.includes(s.id)),
+    });
+
+    // Map certification IDs to certification objects
+    this.jobForm.patchValue({
+      financialCertifications: this.financialCertifications.filter(c => certificationIds.includes(c.id)),
+      scmCertifications: this.scmCertifications.filter(c => certificationIds.includes(c.id)),
+      hcmCertifications: this.hcmCertifications.filter(c => certificationIds.includes(c.id)),
+      cxCertifications: this.cxCertifications.filter(c => certificationIds.includes(c.id)),
+    });
   }
 
   loadSkillsByCategory(): void {
@@ -133,7 +221,7 @@ export class PostAJobComponent implements OnInit {
         this[property] = data || [];
       },
       error: (err) => {
-        console.error(`❌ Failed to load skills for ${property}:`, err);
+        console.error(`Failed to load skills for ${property}:`, err);
       }
     });
   }
@@ -154,7 +242,7 @@ export class PostAJobComponent implements OnInit {
         this[property] = data || [];
       },
       error: (err) => {
-        console.error(`❌ Failed to load certifications for ${property}:`, err);
+        console.error(`Failed to load certifications for ${property}:`, err);
       }
     });
   }
@@ -176,18 +264,14 @@ export class PostAJobComponent implements OnInit {
     const jobPostPayload = {
       ...formValues,
       employmentType: Array.isArray(formValues.employmentType)
-        ? formValues.employmentType.join(',') // convert array to comma-separated string
+        ? formValues.employmentType.join(',')
         : formValues.employmentType,
-      functionalSkills: formValues.functionalSkills.map((s: Skill) => s.name),
-      technicalSkills: formValues.technicalSkills.map((s: Skill) => s.name),
-      oracleMiddlewareSkills: formValues.oracleMiddlewareSkills.map((s: Skill) => s.name),
-      reportingSkills: formValues.reportingSkills.map((s: Skill) => s.name),
       experienceMin: Number(formValues.experienceMin),
       experienceMax: Number(formValues.experienceMax),
       applicationDeadline: formValues.applicationDeadline
         ? new Date(formValues.applicationDeadline).toISOString()
         : undefined,
-      updatedBy: undefined,
+      updatedBy: formValues.recruiterId,
     };
 
     const selectedSkillIds: string[] = [
@@ -204,70 +288,87 @@ export class PostAJobComponent implements OnInit {
       ...formValues.cxCertifications.map((c: Certification) => c?.id).filter(Boolean),
     ];
 
+    if (this.isEditMode && this.jobId) {
+      this.updateJob(this.jobId, jobPostPayload, selectedSkillIds, selectedCertificationIds);
+    } else {
+      this.createJob(jobPostPayload, selectedSkillIds, selectedCertificationIds);
+    }
+  }
+
+  private createJob(
+    jobPostPayload: any,
+    selectedSkillIds: string[],
+    selectedCertificationIds: string[]
+  ): void {
     this.jobPostService.create(jobPostPayload).subscribe({
       next: (response: JobPostResponse) => {
         const jobPostId = response.data?.id;
-
         if (!jobPostId) {
-          console.error('❌ Job post created, but no ID was returned.');
-          this.snackBar.open('Job created, but failed to save skills.', 'Close', {
+          throw new Error('Job post ID is missing in the response');
+        }
+        this.saveSkillsAndCerts(jobPostId, selectedSkillIds, selectedCertificationIds);
+      },
+      error: (err) => {
+        this.handleJobError(err);
+      },
+    });
+  }
+
+  private updateJob(
+    jobId: string,
+    jobPostPayload: any,
+    selectedSkillIds: string[],
+    selectedCertificationIds: string[]
+  ): void {
+    this.jobPostService.update(jobId, jobPostPayload).subscribe({
+      next: (response: JobPostResponse) => {
+        const jobPostId = response.data?.id || jobId;
+        this.saveSkillsAndCerts(jobPostId, selectedSkillIds, selectedCertificationIds);
+      },
+      error: (err) => {
+        this.handleJobError(err);
+      },
+    });
+  }
+
+  private saveSkillsAndCerts(
+    jobPostId: string,
+    skillIds: string[],
+    certificationIds: string[]
+  ): void {
+    const saveSkills$ = skillIds.length
+      ? this.jobPostService.saveSkills(jobPostId, skillIds)
+      : of(null);
+
+    const saveCerts$ = certificationIds.length
+      ? this.jobPostService.saveCertifications(jobPostId, certificationIds)
+      : of(null);
+
+    forkJoin([saveSkills$, saveCerts$]).subscribe({
+      next: () => {
+        this.showSuccessMessage();
+        this.router.navigate(['/recruiter/posted-jobs']);
+      },
+      error: (err) => {
+        console.error('Error saving skills/certs:', err);
+        this.snackBar.open(
+          'Job saved, but failed to save skills/certifications',
+          'Close',
+          {
             duration: 4000,
             panelClass: 'snackbar-error',
             horizontalPosition: 'right',
             verticalPosition: 'top',
-          });
-          this.loading = false;
-          return;
-        }
-
-        const saveSkills$ = selectedSkillIds.length
-          ? this.jobPostService.saveSkills(jobPostId, selectedSkillIds)
-          : null;
-
-        const saveCerts$ = selectedCertificationIds.length
-          ? this.jobPostService.saveCertifications(jobPostId, selectedCertificationIds)
-          : null;
-
-        if (saveSkills$ && saveCerts$) {
-          saveSkills$.subscribe({
-            next: () => {
-              saveCerts$.subscribe({
-                next: () => this.showSuccessMessage(),
-                error: (err) => this.handleCertError(err),
-              });
-            },
-            error: (err) => this.handleSkillError(err),
-          });
-        } else if (saveSkills$) {
-          saveSkills$.subscribe({
-            next: () => this.showSuccessMessage(),
-            error: (err) => this.handleSkillError(err),
-          });
-        } else if (saveCerts$) {
-          saveCerts$.subscribe({
-            next: () => this.showSuccessMessage(),
-            error: (err) => this.handleCertError(err),
-          });
-        } else {
-          this.showSuccessMessage();
-        }
-      },
-      error: (err) => {
-        console.error('❌ Job post failed:', err);
-        this.snackBar.open(err?.error?.message || 'Failed to post job. Please try again.', 'Close', {
-          duration: 4000,
-          panelClass: 'snackbar-error',
-          horizontalPosition: 'right',
-          verticalPosition: 'top',
-        });
+          }
+        );
         this.loading = false;
-      },
+      }
     });
   }
 
-  private handleSkillError(err: any) {
-    console.error('❌ Skill assignment failed:', err);
-    this.snackBar.open('Job posted, but skill saving failed.', 'Close', {
+  private handleJobError(err: any): void {
+    console.error('Job operation failed:', err);
+    this.snackBar.open(err?.error?.message || 'Failed to process job. Please try again.', 'Close', {
       duration: 4000,
       panelClass: 'snackbar-error',
       horizontalPosition: 'right',
@@ -276,27 +377,24 @@ export class PostAJobComponent implements OnInit {
     this.loading = false;
   }
 
-  private handleCertError(err: any) {
-    console.error('❌ Certification assignment failed:', err);
-    this.snackBar.open('Job posted, but certification saving failed.', 'Close', {
-      duration: 4000,
-      panelClass: 'snackbar-error',
-      horizontalPosition: 'right',
-      verticalPosition: 'top',
-    });
-    this.loading = false;
-  }
+  private showSuccessMessage(): void {
+    const message = this.isEditMode 
+      ? '✅ Job updated successfully!' 
+      : '✅ Job created successfully!';
 
-  private showSuccessMessage() {
-    this.snackBar.open('✅ Job, skills, and certifications saved successfully!', 'Close', {
+    this.snackBar.open(message, 'Close', {
       duration: 3000,
       panelClass: 'snackbar-success',
       horizontalPosition: 'right',
       verticalPosition: 'top',
     });
-    this.jobForm.reset();
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    this.jobForm.patchValue({ recruiterId: user?.id });
+    
+    if (!this.isEditMode) {
+      this.jobForm.reset();
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      this.jobForm.patchValue({ recruiterId: user?.id });
+    }
+    
     this.loading = false;
   }
 }
