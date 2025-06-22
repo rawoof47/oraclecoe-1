@@ -13,7 +13,7 @@ import { RecruiterProfileService } from '../../services/recruiter-profile.servic
 export class RecruiterSidebarComponent implements OnInit {
   firstName: string = '';
   position: string = ''; // New property for position
-  profileImage: string = 'img/ChatGPT Image Jun 8, 2025, 02_58_52 PM.png';
+  profileImage: string = 'img/dashboard4.png';
 
   constructor(
     private authState: AuthStateService,
