@@ -102,15 +102,21 @@ export class JobsComponent implements OnInit {
   }
 
   // ✅ Updated method using service
-  fetchJobs(): void {
+ fetchJobs(): void {
   this.jobPostService.getActiveJobs().subscribe({
     next: (response) => {
-      this.allJobs = response.data;
-      this.jobs = response.data;
+      // ✅ Handle undefined dates safely during sort (Newest jobs first)
+      this.allJobs = response.data.sort((a, b) => {
+        const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+        const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+        return dateB - dateA;
+      });
+
+      this.jobs = [...this.allJobs];
       this.jobCount = response.data.length;
       this.loading = false;
-      
-      // Only check applied status for candidates
+
+      // ✅ Only check applied status for candidates
       if (this.isCandidate()) {
         this.checkAppliedStatuses();
       }
