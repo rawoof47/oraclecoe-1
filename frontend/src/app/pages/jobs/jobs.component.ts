@@ -12,10 +12,11 @@ import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
 import { SkillFiltersComponent } from './filters/skills-filter/skills-filter.component';
 import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.pipe';
-
+import { MatSnackBar } from '@angular/material/snack-bar';
 // Services
 import { AuthStateService } from '../../services/auth-state.service';
 import { JobPostService } from '../../services/job-post.service';
+
 
 @Component({
   selector: 'app-jobs',
@@ -81,7 +82,8 @@ export class JobsComponent implements OnInit {
     private http: HttpClient,
     private jobPostService: JobPostService,
     private authState: AuthStateService,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -115,8 +117,12 @@ export class JobsComponent implements OnInit {
     },
       error: (err) => {
         console.error('Error fetching jobs:', err);
-        this.error = 'Failed to load job data.';
-        alert('❌ Error loading job listings.');
+        this.snackBar.open('❌ Failed to load job data', 'Dismiss', {
+        duration: 5000,
+        panelClass: ['error-snackbar'],
+    horizontalPosition: 'end',     // right
+  verticalPosition: 'top'  
+      });
         this.loading = false;
       }
     });
@@ -148,8 +154,14 @@ export class JobsComponent implements OnInit {
 
   applyToJob(jobId: string): void {
     if (!this.isCandidate()) {
-      alert('Please log in to apply for jobs');
+       this.snackBar.open('Please log in to apply for jobs', 'Login', {
+      duration: 3000,
+      panelClass: ['warning-snackbar'],
+    horizontalPosition: 'end',     // right
+  verticalPosition: 'top'  
+    }).onAction().subscribe(() => {
       this.redirectToLogin();
+    });
       return;
     }
 
@@ -161,20 +173,41 @@ export class JobsComponent implements OnInit {
     this.http.post('http://localhost:3000/applications/by-user', payload).subscribe({
       next: () => {
         this.appliedStatus[jobId] = true;
-        alert('✅ Application submitted successfully!');
+      this.snackBar.open('✅ Application submitted successfully!', 'Dismiss', {
+        duration: 3000,
+        panelClass: ['success-snackbar'],
+    horizontalPosition: 'end',     // right
+  verticalPosition: 'top'  
+      });
       },
       error: (error) => {
-        if (error.status === 409) {
-          this.appliedStatus[jobId] = true;
-          alert('⚠️ You have already applied for this job.');
-        } else if (error.status === 404) {
-          alert('❌ Candidate profile not found for current user.');
-        } else {
-          alert('❌ Failed to submit application.');
-        }
+      if (error.status === 409) {
+        this.appliedStatus[jobId] = true;
+        this.snackBar.open('⚠️ You already applied for this job', 'Dismiss', {
+          duration: 3000,
+          panelClass: ['warning-snackbar'],
+    horizontalPosition: 'end',     // right
+  verticalPosition: 'top'  
+        });
+      } else if (error.status === 404) {
+        this.snackBar.open('❌ Candidate profile not found', 'Dismiss', {
+          duration: 5000,
+          panelClass: ['error-snackbar'],
+    horizontalPosition: 'end',     // right
+  verticalPosition: 'top'  
+        });
+      } else {
+        this.snackBar.open('❌ Failed to submit application', 'Dismiss', {
+          duration: 5000,
+          panelClass: ['error-snackbar'],
+    horizontalPosition: 'end',     // right
+  verticalPosition: 'top'  
+          
+        });
       }
-    });
-  }
+    }
+  });
+}
 
   formatPostedDate(dateStr: string): string {
     if (!dateStr) return 'Unknown date';
@@ -328,5 +361,11 @@ export class JobsComponent implements OnInit {
     }
 
     this.filterJobs();
+    this.snackBar.open('✅ All filters reset', 'Dismiss', {
+    duration: 3000,
+    panelClass: ['success-snackbar'],
+    horizontalPosition: 'end',     // right
+  verticalPosition: 'top'  
+  });
   }
 }

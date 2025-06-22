@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { NavbarComponent } from '../../common/navbar/navbar.component';
 import { FooterComponent } from '../../common/footer/footer.component';
@@ -53,7 +54,8 @@ export class JobDetailsComponent implements OnInit, OnDestroy {
     private router: Router,
     private jobPostService: JobPostService,
     private authState: AuthStateService,
-    private applicationStatusService: ApplicationStatusService
+    private applicationStatusService: ApplicationStatusService,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -102,6 +104,12 @@ export class JobDetailsComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.error = err.error?.message || 'Failed to load job details';
+        this.snackBar.open('❌ Failed to load job details', 'Dismiss', {
+        duration: 5000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+        panelClass: ['error-snackbar']
+      });
         this.isLoading = false;
       }
     });
@@ -148,12 +156,18 @@ export class JobDetailsComponent implements OnInit, OnDestroy {
     if (this.hasApplied) return;
 
     if (!this.userId) {
-      alert('Please log in to apply for this job');
+      this.snackBar.open('Please log in to apply for this job', 'Login', {
+      duration: 3000,
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: ['warning-snackbar']
+    }).onAction().subscribe(() => {
       this.router.navigate(['/login'], {
         queryParams: { returnUrl: this.router.url }
       });
-      return;
-    }
+    });
+    return;
+  }
 
     this.jobPostService.applyToJob(this.userId, this.jobId).subscribe({
       next: () => {
@@ -166,16 +180,31 @@ export class JobDetailsComponent implements OnInit, OnDestroy {
           this.checkIfUserAlreadyApplied(this.userId, this.jobId);
         }
 
-        alert('✅ Application submitted successfully!');
+         this.snackBar.open('✅ Application submitted successfully!', 'Dismiss', {
+        duration: 3000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+        panelClass: ['success-snackbar']
+      });
       },
       error: (error) => {
         if (error.status === 409) {
           this.hasApplied = true;
           this.applyStatusMessage = 'You have already applied for this job.';
-          alert('⚠️ You have already applied for this job.');
+          this.snackBar.open('⚠️ You already applied for this job', 'Dismiss', {
+          duration: 3000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['warning-snackbar']
+        });
         } else {
           console.error('[JobDetailsComponent] ❌ Failed to apply:', error);
-          alert('❌ Failed to submit application. Please try again.');
+           this.snackBar.open('❌ Failed to submit application', 'Dismiss', {
+          duration: 5000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['error-snackbar']
+        });
         }
       }
     });
