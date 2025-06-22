@@ -49,7 +49,15 @@ export class SettingsComponent implements OnInit {
     this.passwordForm = this.fb.group(
       {
         currentPassword: ['', Validators.required],
-        newPassword: ['', [Validators.required, Validators.minLength(6)]],
+       newPassword: [
+  '',
+  [
+    Validators.required,
+    Validators.minLength(8),
+    Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/)
+  ]
+],
+
         confirmPassword: ['', Validators.required],
       },
       {

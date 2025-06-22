@@ -6,41 +6,35 @@ import { Role } from '../roles/entities/role.entity';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
-import { ConfigService } from '@nestjs/config'; // ✅ Import ConfigService
+import { ConfigService } from '@nestjs/config';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+
     @InjectRepository(Role)
     private rolesRepository: Repository<Role>,
+
     private jwtService: JwtService,
-    private configService: ConfigService, // ✅ Inject ConfigService
+    private configService: ConfigService
   ) {}
 
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
 
-    console.log('📥 Incoming login:', email);
-
     const user = await this.usersRepository.findOne({
       where: { email },
-      relations: [],
     });
 
-    console.log('🔍 Found user:', user);
-
     if (!user) {
-      console.warn('❌ No user found with email:', email);
       throw new UnauthorizedException('Invalid credentials');
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password_hash);
-    console.log('🔐 Password match:', isPasswordValid);
-
     if (!isPasswordValid) {
-      console.warn('❌ Incorrect password for user:', email);
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -49,7 +43,6 @@ export class AuthService {
     });
 
     if (!role) {
-      console.warn('❌ Role not found for user:', user.id);
       throw new UnauthorizedException('User role not found');
     }
 
@@ -60,12 +53,12 @@ export class AuthService {
     };
 
     const accessToken = this.jwtService.sign(payload, {
-      secret: this.configService.get<string>('JWT_SECRET'), // ✅ Consistent usage
+      secret: this.configService.get<string>('JWT_SECRET'),
       expiresIn: '7d',
     });
 
     const refreshToken = this.jwtService.sign(payload, {
-      secret: this.configService.get<string>('JWT_REFRESH_SECRET'), // ✅ Consistent usage
+      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
       expiresIn: '7d',
     });
 
@@ -85,10 +78,44 @@ export class AuthService {
     };
 
     const accessToken = this.jwtService.sign(payload, {
-      secret: this.configService.get<string>('JWT_SECRET'), // ✅ Consistent usage
+      secret: this.configService.get<string>('JWT_SECRET'),
       expiresIn: '7d',
     });
 
     return { token: accessToken };
+  }
+
+  async resetPassword(dto: ResetPasswordDto) {
+    const { email, role, newPassword, mobile_number } = dto;
+
+    // Step 1: Lookup role dynamically
+    const roleRecord = await this.rolesRepository.findOne({
+      where: { role_name: role.toLowerCase() }, // 'candidate' or 'recruiter'
+    });
+
+    if (!roleRecord) {
+      throw new UnauthorizedException('Invalid role provided');
+    }
+
+    // Step 2: Find the user by email, mobile number, and role
+    const user = await this.usersRepository.findOne({
+      where: {
+        email,
+        mobile_number,
+        role_id: roleRecord.id,
+      },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found with provided credentials');
+    }
+
+    // Step 3: Hash and update the password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password_hash = hashedPassword;
+
+    await this.usersRepository.save(user);
+
+    return { message: 'Password updated successfully' };
   }
 }

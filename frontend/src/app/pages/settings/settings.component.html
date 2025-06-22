@@ -23,11 +23,20 @@
 
     <label for="newPassword">New Password</label>
     <input id="newPassword" type="password" formControlName="newPassword" />
+    <div *ngIf="passwordForm.get('newPassword')?.touched && passwordForm.get('newPassword')?.invalid" class="error">
+      <div *ngIf="passwordForm.get('newPassword')?.errors?.['required']">New password is required.</div>
+      <div *ngIf="passwordForm.get('newPassword')?.errors?.['minlength']">Minimum 8 characters required.</div>
+      <div *ngIf="passwordForm.get('newPassword')?.errors?.['pattern']">
+        Must include uppercase, lowercase, number, and special character.
+      </div>
+    </div>
 
     <label for="confirmPassword">Confirm New Password</label>
     <input id="confirmPassword" type="password" formControlName="confirmPassword" />
-
-    <div *ngIf="passwordForm.errors?.['mismatch']" class="error">
+    <div *ngIf="passwordForm.get('confirmPassword')?.touched && passwordForm.get('confirmPassword')?.invalid" class="error">
+      Confirm password is required.
+    </div>
+    <div *ngIf="passwordForm.errors?.['mismatch'] && passwordForm.get('confirmPassword')?.touched" class="error">
       Passwords do not match.
     </div>
 

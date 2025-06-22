@@ -43,4 +43,6 @@ export class User {
 
   @Column({ type: 'char', length: 36, nullable: true })
   updated_by?: string;
+
+  
 }

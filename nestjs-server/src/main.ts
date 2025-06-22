@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { CallHandler, ExecutionContext, NestInterceptor } from '@nestjs/common';
+import { CallHandler, ExecutionContext, NestInterceptor, ValidationPipe } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
 class LoggingInterceptor implements NestInterceptor {
@@ -25,6 +25,9 @@ async function bootstrap() {
 
   // Global request logging
   app.useGlobalInterceptors(new LoggingInterceptor());
+
+  app.useGlobalPipes(new ValidationPipe());
+
 
   // Swagger documentation setup
   const config = new DocumentBuilder()
