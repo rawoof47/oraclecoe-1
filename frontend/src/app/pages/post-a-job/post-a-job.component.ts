@@ -315,21 +315,28 @@ export class PostAJobComponent implements OnInit {
   }
 
   private updateJob(
-    jobId: string,
-    jobPostPayload: any,
-    selectedSkillIds: string[],
-    selectedCertificationIds: string[]
-  ): void {
-    this.jobPostService.update(jobId, jobPostPayload).subscribe({
-      next: (response: JobPostResponse) => {
-        const jobPostId = response.data?.id || jobId;
-        this.saveSkillsAndCerts(jobPostId, selectedSkillIds, selectedCertificationIds);
-      },
-      error: (err) => {
-        this.handleJobError(err);
-      },
-    });
-  }
+  jobId: string,
+  jobPostPayload: any,
+  selectedSkillIds: string[],
+  selectedCertificationIds: string[]
+): void {
+  // ✅ Include job number in payload
+  const payloadWithJobNumber = {
+    ...jobPostPayload,
+    jobNumber: this.jobForm.getRawValue().jobNumber, // 🆕 Add job number
+  };
+
+  this.jobPostService.update(jobId, payloadWithJobNumber).subscribe({
+    next: (response: JobPostResponse) => {
+      const jobPostId = response.data?.id || jobId;
+      this.saveSkillsAndCerts(jobPostId, selectedSkillIds, selectedCertificationIds);
+    },
+    error: (err) => {
+      this.handleJobError(err);
+    },
+  });
+}
+
 
   private saveSkillsAndCerts(
     jobPostId: string,

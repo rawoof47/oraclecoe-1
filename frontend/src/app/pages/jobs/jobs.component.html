@@ -117,8 +117,8 @@
           <div *ngFor="let job of jobs" class="col-lg-6 col-md-6 ">
             <div class="job-listings">
             <div class="employer-item">
-            <a [routerLink]="['/job-details', job.id]" class="job-link d-block text-decoration-none text-dark">
-              <div class="d-flex align-items-center mb-3">
+<a [routerLink]="['/job-details', 'JID' + job.job_number]" class="job-link d-block text-decoration-none text-dark">      
+  <div class="d-flex align-items-center mb-3">
                 <img [src]="job.image_url || 'img/home-one/job1.png'" alt="Employer" class="job-img mr-3 rounded" style="width: 60px; height: 60px; object-fit: cover"/>
                 <h5 class="mb-0">{{ job.job_title }}</h5>
               </div>

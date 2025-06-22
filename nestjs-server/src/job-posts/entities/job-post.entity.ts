@@ -89,4 +89,8 @@ export class JobPost {
   // ✅ NEW: Reverse relation for applications
   @OneToMany(() => Application, (application) => application.job_post)
   applications: Application[];
+
+  @Column({ type: 'int', nullable: true, unique: true })
+job_number: number | null;
+
 }

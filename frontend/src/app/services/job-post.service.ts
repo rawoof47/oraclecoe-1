@@ -194,4 +194,10 @@ getApplicationsCountByJobIds(jobIds: string[]): Observable<Record<string, number
     `${this.baseUrl}/active/list`
   );
 }
+
+getByJobNumber(jobNumber: number): Observable<JobPostResponse> {
+  return this.http.get<JobPostResponse>(
+    `${this.baseUrl}/by-job-number/${jobNumber}`
+  );
+}
 }

@@ -27,6 +27,7 @@ export interface AppliedJobPost extends JobPost {
   withdrawal_reason?: string;
   applied_date: string;
   withdrawn_date?: string;
+  job_number: number; // Add this line
 }
 
 @Component({
@@ -114,15 +115,16 @@ export class AppliedJobsComponent implements OnInit {
           .filter(app => app.job_post)
           .map(app => {
             const job: AppliedJobPost = {
-              ...(app.job_post as JobPost),
-              application_id: app.id,
-              status_id: app.application_status_id,
-              status: this.mapStatus(app.application_status_id, !!app.withdrawn),
-              withdrawn: !!app.withdrawn,
-              withdrawal_reason: app.withdrawal_reason,
-              applied_date: app.applied_on,
-              withdrawn_date: app.updated_on
-            };
+  ...(app.job_post as JobPost),
+  job_number: (app.job_post as any).job_number, // Add this line
+  application_id: app.id,
+  status_id: app.application_status_id,
+  status: this.mapStatus(app.application_status_id, !!app.withdrawn),
+  withdrawn: !!app.withdrawn,
+  withdrawal_reason: app.withdrawal_reason,
+  applied_date: app.applied_on,
+  withdrawn_date: app.updated_on
+};
 
             console.log(`[Mapping] Job ID: ${job.id}, Status ID: ${job.status_id}, Status: ${job.status}`);
             return job;

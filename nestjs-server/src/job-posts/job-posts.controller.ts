@@ -127,4 +127,16 @@ async findActiveJobs() {
     data: jobPosts 
   };
 }
+
+@Get('by-job-number/:jobNumber')
+async findByJobNumber(@Param('jobNumber') jobNumber: number) {
+  const jobPost = await this.jobPostsService.findByJobNumber(jobNumber);
+  if (!jobPost) {
+    throw new NotFoundException('Job post not found');
+  }
+  return {
+    message: 'Job post fetched successfully',
+    data: jobPost,
+  };
+}
 }

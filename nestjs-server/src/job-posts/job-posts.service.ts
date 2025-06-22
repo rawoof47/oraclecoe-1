@@ -46,12 +46,48 @@ export class JobPostsService {
     jobPost.what_we_offer = createJobPostDto.whatWeOffer ?? null;
     jobPost.how_to_apply = createJobPostDto.howToApply ?? null;
 
+    // Check required fields first
     if (!jobPost.job_title || !jobPost.job_description) {
       throw new BadRequestException('Job Title and Job Description are required.');
     }
 
-    const savedPost = await this.jobPostRepository.save(jobPost);
+    let savedPost: JobPost | null = null;
+    let attempts = 0;
+    const MAX_ATTEMPTS = 3;
 
+    while (attempts < MAX_ATTEMPTS && !savedPost) {
+      attempts++;
+      try {
+        // Get current max job_number
+        const maxResult = await this.jobPostRepository
+          .createQueryBuilder('job_post')
+          .select('MAX(job_post.job_number)', 'max')
+          .getRawOne();
+
+        const currentMax = maxResult?.max || 0;
+        const nextJobNumber = currentMax + 1;
+
+        // Assign calculated job number
+        jobPost.job_number = nextJobNumber;
+
+        // Attempt to save
+        savedPost = await this.jobPostRepository.save(jobPost);
+      } catch (error) {
+        if (error.code === 'ER_DUP_ENTRY' && attempts < MAX_ATTEMPTS) {
+          // Duplicate entry - wait and retry
+          await new Promise(resolve => setTimeout(resolve, 100));
+        } else {
+          throw error; // Rethrow other errors
+        }
+      }
+    }
+
+    // Throw if we couldn't save after all attempts
+    if (!savedPost) {
+      throw new Error('Failed to create job post after 3 attempts');
+    }
+
+    // Handle skills and certifications
     if (
       createJobPostDto.skillIds &&
       Array.isArray(createJobPostDto.skillIds) &&
@@ -76,6 +112,8 @@ export class JobPostsService {
       data: savedPost,
     };
   }
+  
+  
 
   // ✅ Get all job posts (with skill_ids and certification_ids)
   async findAll() {
@@ -121,7 +159,11 @@ export class JobPostsService {
       throw new NotFoundException('Job post not found');
     }
 
+    const existingJobNumber = jobPost.job_number;
+
     Object.assign(jobPost, updateJobPostDto);
+
+    jobPost.job_number = existingJobNumber;
 
     if (updateJobPostDto.workMode) {
       jobPost.work_mode = updateJobPostDto.workMode;
@@ -232,5 +274,20 @@ async findActiveJobs() {
   );
 
   return jobsWithRelations;
+}
+
+
+async findByJobNumber(jobNumber: number) {
+  const jobPost = await this.jobPostRepository.findOne({ 
+    where: { job_number: jobNumber } 
+  });
+  
+  if (!jobPost) return null;
+
+  return {
+    ...jobPost,
+    skill_ids: await this.getSkillIdsForJob(jobPost.id),
+    certification_ids: await this.getCertificationIdsForJob(jobPost.id),
+  };
 }
 }
