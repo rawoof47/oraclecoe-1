@@ -12,7 +12,7 @@
             <div class="user-content">
               <div class="top">
                 <h2>Register</h2>
-                <form [formGroup]="registerForm" (ngSubmit)="onSubmit()"> 
+                <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
                   <div class="form-group mb-3">
                     <input
                       type="email"
@@ -30,7 +30,7 @@
                     />
                   </div>
 
-                  <!-- Aligned Role Selection -->
+                  <!-- Role Selection -->
                   <div class="form-group mb-3">
                     <div class="form-control d-flex align-items-center">
                       <label class="me-3 mb-0">Select Role:</label>
@@ -57,39 +57,52 @@
                     </div>
                   </div>
 
-                  <!-- Replace the existing password field with this: -->
-<div class="form-group mb-3">
-  <div class="input-group">
-    <input
-      type="password"
-      formControlName="password"
-      class="form-control"
-      placeholder="Password"
-    >
-    <!-- Tooltip Icon - Now properly integrated -->
-    <span 
-      class="input-group-text password-tooltip"
-      matTooltip="Password must be 8+ chars with A-Z, a-z, 0-9 & symbol."
-      matTooltipPosition="right"
-      matTooltipClass="custom-tooltip"
-    >
-      ?
-    </span>
-  </div>
-</div>
+                  <!-- Password Field with Tooltip and Toggle -->
+                  <div class="form-group mb-3">
+                    <div class="input-group">
+                      <input
+                        [type]="hidePassword ? 'password' : 'text'"
+                        formControlName="password"
+                        class="form-control"
+                        placeholder="Password"
+                      >
+                      <span
+                        class="input-group-text password-tooltip"
+                        matTooltip="Password must be 8+ chars with A-Z, a-z, 0-9 & symbol."
+                        matTooltipPosition="right"
+                        matTooltipClass="custom-tooltip"
+                      >
+                        ?
+                      </span>
+                      <span
+                        class="input-group-text password-toggle"
+                        (click)="hidePassword = !hidePassword"
+                      >
+                        <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                      </span>
+                    </div>
+                  </div>
 
+                  <!-- Confirm Password Field with Toggle -->
                   <div class="form-group mb-4">
-                    <input
-                      type="password"
-                      formControlName="confirmPassword"
-                      class="form-control"
-                      placeholder="Confirm Password"
-                    />
+                    <div class="input-group">
+                      <input
+                        [type]="hideConfirmPassword ? 'password' : 'text'"
+                        formControlName="confirmPassword"
+                        class="form-control"
+                        placeholder="Confirm Password"
+                      >
+                      <span
+                        class="input-group-text password-toggle"
+                        (click)="hideConfirmPassword = !hideConfirmPassword"
+                      >
+                        <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                      </span>
+                    </div>
                   </div>
 
                   <button type="submit" class="btn btn-primary w-100">Register Here</button>
 
-                  <!-- Fixed Login Link -->
                   <div class="login-link mt-3 text-center">
                     Already have an account?
                     <a [routerLink]="['/login']" class="login-redirect">Login</a>

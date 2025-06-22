@@ -34,10 +34,6 @@
     }
   }
 
- 
-
-  
-
   // Dismiss animation
   .mat-mdc-snack-bar-handset:not(.mat-mdc-snack-bar-action) {
     animation: snackDismiss 0.3s forwards;
@@ -84,35 +80,110 @@
   }
 }
 
-/* Password Input Styling */
+/* Password Input Styling Enhancements */
 .input-group {
   position: relative;
   display: flex;
-}
+  align-items: stretch;
+  width: 100%;
 
-.password-tooltip {
-  cursor: help;
-  background-color: #f8f9fa;
-  border: 1px solid #ced4da;
-  border-left: none;
-  border-radius: 0 4px 4px 0;
-  padding: 0.375rem 0.75rem;
-  user-select: none;
-  transition: background-color 0.15s;
+  .form-control {
+    flex: 1 1 auto;
+    min-width: 0;
+    position: relative;
+    border-right: none;
+    border-radius: 4px 0 0 4px !important;
+    transition: border-color 0.15s ease-in-out;
+    
+    &:focus {
+      z-index: 3; /* Bring focused input to front */
+    }
+  }
 
-  &:hover {
-    background-color: #e9ecef;
+  /* Input group text shared styles */
+  .input-group-text {
+    display: flex;
+    align-items: center;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    text-align: center;
+    white-space: nowrap;
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    transition: all 0.15s ease;
+  }
+
+  /* Tooltip specific styles */
+  .password-tooltip {
+    cursor: help;
+    user-select: none;
+    border-left: none;
+    border-right: none;
+    z-index: 2; /* Place above input */
+    background-color: #f0f3f5;
+    
+    &:hover {
+      background-color: #e2e6ea;
+      color: #212529;
+    }
+  }
+
+  /* Toggle button styles */
+  .password-toggle {
+    cursor: pointer;
+    border-left: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    z-index: 2; /* Place above input */
+    
+    &:hover {
+      background-color: #e2e6ea;
+      
+      .mat-icon {
+        color: #212529;
+      }
+    }
+
+    .mat-icon {
+      font-size: 20px;
+      height: 20px;
+      width: 40px;
+      color: #6c757d;
+      transition: color 0.15s ease;
+    }
+  }
+
+  /* Right border radius for last element */
+  > :last-child {
+    border-radius: 0 4px 4px 0 !important;
+    border-left: none;
   }
 }
 
-.form-control {
-  border-right: none;
-  border-radius: 4px 0 0 4px !important;
-}
-
+/* Tooltip styling */
 .custom-tooltip {
   font-size: 14px;
   max-width: 250px !important;
   white-space: pre-line;
   background: rgba(97, 97, 97, 0.92);
+  backdrop-filter: blur(2px);
+  padding: 12px;
+  border-radius: 6px;
+  line-height: 1.5;
+}
+
+/* Enhanced responsive adjustments */
+@media (max-width: 575px) {
+  .input-group {
+    flex-wrap: nowrap;
+    
+    .password-tooltip {
+      padding: 0.375rem 0.5rem;
+    }
+  }
 }

@@ -19,7 +19,7 @@ import { AuthStateService } from '../../../services/auth-state.service';
 export class LoginComponent {
   loginForm: FormGroup;
   isSubmitting = false;
-
+showPassword = false; // Added for password visibility toggle
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -34,6 +34,10 @@ export class LoginComponent {
       role: ['', Validators.required]
     });
   }
+
+   togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+   }
 
   onSubmit(): void {
     if (this.loginForm.invalid) {

@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { RouterModule, Router } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
 
 import { AuthService } from '../../../services/auth.service';
 import { AuthStateService } from '../../../services/auth-state.service';
@@ -13,13 +14,15 @@ import { LoginRequest } from '../../models/login-request.model';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatSnackBarModule, RouterModule, MatTooltipModule],
+  imports: [CommonModule, ReactiveFormsModule, MatSnackBarModule, RouterModule, MatTooltipModule, MatIconModule  ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
   registerForm: FormGroup;
   submitted = false;
+  hidePassword = true;
+  hideConfirmPassword = true;
 
   private readonly roleMap: Record<string, string> = {
     Candidate: 'c1bb8df5-2c01-11f0-b60f-80ce6232908a',
