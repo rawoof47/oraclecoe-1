@@ -94,10 +94,11 @@
                           View Applicants
                         </button>
 
-                        <!-- Edit Button -->
-                        <button mat-stroked-button [routerLink]="['/post-a-job']" [queryParams]="{ id: job.id }">
-                          Edit
-                        </button>
+                       <!-- View Job Button (NEW) -->
+  <button mat-stroked-button 
+          [routerLink]="['/job-details', 'JID' + job.job_number]">
+    View Job
+  </button>
 
                         <!-- Toggle Status Button -->
                         <button mat-stroked-button 

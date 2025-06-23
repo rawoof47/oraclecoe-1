@@ -74,35 +74,41 @@ export class PostedJobsComponent implements OnInit {
     this.fetchJobPosts();
   }
 
-  fetchJobPosts(): void {
-    this.jobPostService.getByRecruiter(this.recruiterId!).subscribe({
-      next: (response) => {
-        this.jobPosts = response.data || [];
+  // posted-jobs.component.ts
+fetchJobPosts(): void {
+  this.jobPostService.getByRecruiter(this.recruiterId!).subscribe({
+    next: (response) => {
+      // Sort jobs by created_at (newest first)
+      this.jobPosts = (response.data || []).sort((a, b) => {
+        const dateA = new Date(a.created_at || 0).getTime();
+        const dateB = new Date(b.created_at || 0).getTime();
+        return dateB - dateA; // Descending order
+      });
 
-        const jobIds = this.jobPosts.map(job => job.id!);
-        if (jobIds.length > 0) {
-          this.jobPostService.getApplicationsCountByJobIds(jobIds).subscribe({
-            next: (counts) => {
-              this.jobPosts = this.jobPosts.map(job => ({
-                ...job,
-                applicationsCount: counts[job.id!] || 0
-              }));
-              this.loading = false;
-            },
-            error: () => {
-              this.handleApplicationsError();
-            }
-          });
-        } else {
-          this.loading = false;
-        }
-      },
-      error: () => {
-        this.error = 'Failed to load job posts. Please try again later.';
+      const jobIds = this.jobPosts.map(job => job.id!);
+      if (jobIds.length > 0) {
+        this.jobPostService.getApplicationsCountByJobIds(jobIds).subscribe({
+          next: (counts) => {
+            this.jobPosts = this.jobPosts.map(job => ({
+              ...job,
+              applicationsCount: counts[job.id!] || 0
+            }));
+            this.loading = false;
+          },
+          error: () => {
+            this.handleApplicationsError();
+          }
+        });
+      } else {
         this.loading = false;
       }
-    });
-  }
+    },
+    error: () => {
+      this.error = 'Failed to load job posts. Please try again later.';
+      this.loading = false;
+    }
+  });
+}
 
   private handleApplicationsError(): void {
     this.jobPosts = this.jobPosts.map(job => ({

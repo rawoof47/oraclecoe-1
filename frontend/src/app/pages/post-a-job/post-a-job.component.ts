@@ -67,6 +67,8 @@ export class PostAJobComponent implements OnInit {
   hcmCertifications: Certification[] = [];
   cxCertifications: Certification[] = [];
 
+  
+
   workModeOptions = ['Remote', 'On-site', 'Hybrid'];
 
   constructor(
@@ -296,23 +298,35 @@ export class PostAJobComponent implements OnInit {
   }
 
   private createJob(
-    jobPostPayload: any,
-    selectedSkillIds: string[],
-    selectedCertificationIds: string[]
-  ): void {
-    this.jobPostService.create(jobPostPayload).subscribe({
-      next: (response: JobPostResponse) => {
-        const jobPostId = response.data?.id;
-        if (!jobPostId) {
-          throw new Error('Job post ID is missing in the response');
-        }
-        this.saveSkillsAndCerts(jobPostId, selectedSkillIds, selectedCertificationIds);
-      },
-      error: (err) => {
-        this.handleJobError(err);
-      },
-    });
-  }
+  jobPostPayload: any,
+  selectedSkillIds: string[],
+  selectedCertificationIds: string[]
+): void {
+  this.jobPostService.create(jobPostPayload).subscribe({
+    next: (response: JobPostResponse) => {
+      const jobPostId = response.data?.id;
+      if (!jobPostId) {
+        throw new Error('Job post ID is missing in the response');
+      }
+      
+      // Get job number from response
+      const jobNumber = response.data?.job_number;
+      
+      // Navigate to job details page with job number
+      this.saveSkillsAndCerts(jobPostId, selectedSkillIds, selectedCertificationIds);
+      
+      // Add navigation here
+      if (jobNumber) {
+        this.router.navigate(['/job-details', 'JID' + jobNumber]);
+      } else {
+        console.warn('Job number not found in response');
+      }
+    },
+    error: (err) => {
+      this.handleJobError(err);
+    },
+  });
+}
 
   private updateJob(
   jobId: string,
@@ -354,7 +368,6 @@ export class PostAJobComponent implements OnInit {
     forkJoin([saveSkills$, saveCerts$]).subscribe({
       next: () => {
         this.showSuccessMessage();
-        this.router.navigate(['/recruiter/posted-jobs']);
       },
       error: (err) => {
         console.error('Error saving skills/certs:', err);
