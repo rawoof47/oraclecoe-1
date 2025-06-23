@@ -40,9 +40,9 @@ import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/index-2', pathMatch: 'full' },
+  { path: '', redirectTo: '/Home', pathMatch: 'full' },
   { path: 'index-1', component: HomeDemoOneComponent },
-  { path: 'index-2', component: HomeDemoTwoComponent },
+  { path: 'Home', component: HomeDemoTwoComponent },
   { path: 'index-3', component: HomeDemoThreeComponent },
 
   { path: 'about', component: AboutUsComponent },

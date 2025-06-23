@@ -17,23 +17,27 @@
       <div class="search-bar d-flex shadow rounded overflow-hidden">
         <div class="p-3 border-right flex-grow-1">
           <label class="d-block text-uppercase text-muted text-left small mb-1">Find</label>
-          <input type="text" class="form-control p-2" placeholder="Job title, skill, keyword" [(ngModel)]="searchKeyword" name="searchKeyword" />
+          <input type="text" class="form-control p-2" placeholder="Job title, skill, keyword" 
+                 [(ngModel)]="searchKeyword" name="searchKeyword"
+                 (keyup.enter)="onSearch()" />
         </div>
         <div class="p-3 border-right flex-grow-1">
           <label class="d-block text-uppercase text-muted text-left small mb-1">Location</label>
-          <input type="text" class="form-control p-2" placeholder="City, state, country" [(ngModel)]="searchLocation" name="searchLocation"/>
+          <input type="text" class="form-control p-2" placeholder="City, state, country" 
+                 [(ngModel)]="searchLocation" name="searchLocation"
+                 (keyup.enter)="onSearch()" />
         </div>
-        <button class="btn btn-dark d-flex align-items-center justify-content-center px-4" style="border-radius: 0;" (click)="onSearch()">
+        <button class="btn btn-dark d-flex align-items-center justify-content-center px-4" 
+                style="border-radius: 0;" 
+                (click)="onSearch()">
           <i class="fas fa-search text-white"></i>
         </button>
       </div>
     </div>
       </div>
     </div>
-    
   </div>
 </section>
-
 
 <div class="job-filter-area pt-20">
     <div class="container">
