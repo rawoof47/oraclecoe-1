@@ -41,14 +41,16 @@
                     </div>
 
                     <div class="form-group col-md-4">
-                      <label for="mobileNumber" class="form-group__label">Mobile Number</label>
-                      <input id="mobileNumber" type="tel" formControlName="mobileNumber" />
+                      <!-- Updated Mobile Number -->
+                      <label for="mobileNumber" class="form-group__label form-group__label--required">Mobile Number</label>
+                      <input id="mobileNumber" type="tel" formControlName="mobileNumber" required />
                     </div>
 
                     <div class="form-group col-md-4">
-                      <label for="gender" class="form-group__label">Gender</label>
-                      <select id="gender" formControlName="gender" class="form-control">
-                        <option value="">Select Gender</option>
+                      <!-- Updated Gender -->
+                      <label for="gender" class="form-group__label form-group__label--required">Gender</label>
+                      <select id="gender" formControlName="gender" class="form-control" required>
+                        <option value="" disabled selected>Select Gender</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
                         <option value="Others">Others</option>
@@ -56,8 +58,9 @@
                     </div>
 
                     <div class="form-group col-md-12">
-                      <label for="about_me" class="form-group__label">About Me</label>
-                      <textarea id="about_me" formControlName="about_me" placeholder="Brief personal introduction"></textarea>
+                      <!-- Updated About Me -->
+                      <label for="about_me" class="form-group__label form-group__label--required">About Me</label>
+                      <textarea id="about_me" formControlName="about_me" placeholder="Brief personal introduction" required></textarea>
                     </div>
                   </div>
                 </section>
@@ -71,71 +74,69 @@
                     <textarea id="professional_summary" formControlName="professional_summary" placeholder="Career highlights and expertise"></textarea>
                   </div>
 
-                  <!-- ✅ New Degrees Dropdown -->
-<div class="form-group">
-  <label class="form-group__label">Highest Degree</label>
-  <div class="dropdown" #degreesDropdown>
-    <div class="dropdown__header" (click)="toggleDegreesDropdown()">
-      <span>{{ getDegreesDropdownLabel() }}</span>
-      <span class="arrow">&#9662;</span>
-    </div>
+                  <!-- Highest Degree Dropdown -->
+                  <div class="form-group">
+                    <label class="form-group__label">Highest Degree</label>
+                    <div class="dropdown" #degreesDropdown>
+                      <div class="dropdown__header" (click)="toggleDegreesDropdown()">
+                        <span>{{ getDegreesDropdownLabel() }}</span>
+                        <span class="arrow">&#9662;</span>
+                      </div>
 
-    <div class="dropdown__list" *ngIf="showDegreesDropdown">
-      <div *ngFor="let group of groupedDegrees" class="dropdown__group">
-        <div class="dropdown__group-title">{{ group.categoryName }}</div>
-        <div *ngFor="let degree of group.items" class="dropdown__item">
-          <input
-            type="checkbox"
-            [checked]="degree.selected"
-            (change)="onDegreeChange(degree)"
-            [id]="'degree-' + degree.id"
-          />
-          <label [for]="'degree-' + degree.id">
-            {{ degree.name }} ({{ degree.abbreviation }})
-          </label>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
+                      <div class="dropdown__list" *ngIf="showDegreesDropdown">
+                        <div *ngFor="let group of groupedDegrees" class="dropdown__group">
+                          <div class="dropdown__group-title">{{ group.categoryName }}</div>
+                          <div *ngFor="let degree of group.items" class="dropdown__item">
+                            <input
+                              type="checkbox"
+                              [checked]="degree.selected"
+                              (change)="onDegreeChange(degree)"
+                              [id]="'degree-' + degree.id"
+                            />
+                            <label [for]="'degree-' + degree.id">
+                              {{ degree.name }} ({{ degree.abbreviation }})
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
                   <div class="form-group">
-  <label for="university" class="form-group__label">University</label>
-  <input 
-    id="university" 
-    type="text" 
-    formControlName="university" 
-    placeholder="University Name"
-  />
-</div>
+                    <!-- Updated University -->
+                    <label for="university" class="form-group__label form-group__label--required">University</label>
+                    <input 
+                      id="university" 
+                      type="text" 
+                      formControlName="university" 
+                      placeholder="University Name"
+                      required
+                    />
+                  </div>
 
-<div class="form-group">
-  <label for="grade_or_percentage" class="form-group__label">Grade/Percentage</label>
-  <input 
-    id="grade_or_percentage" 
-    type="text" 
-    formControlName="grade_or_percentage" 
-    placeholder="e.g. 3.8 GPA or 85%"
-  />
-</div>
+                  <div class="form-group">
+                    <label for="grade_or_percentage" class="form-group__label">Grade/Percentage</label>
+                    <input 
+                      id="grade_or_percentage" 
+                      type="text" 
+                      formControlName="grade_or_percentage" 
+                      placeholder="e.g. 3.8 GPA or 85%"
+                    />
+                  </div>
 
-<div class="form-group compact-select">
-  <label for="year_of_passing" class="form-group__label">Year of Passing</label>
-  <select id="year_of_passing" formControlName="year_of_passing" class="form-control">
-    <option value="" disabled selected>Select Year</option>
-    <option *ngFor="let year of years" [value]="year">{{ year }}</option>
-  </select>
-</div>
-
-
-
+                  <div class="form-group compact-select">
+                    <!-- Updated Year of Passing -->
+                    <label for="year_of_passing" class="form-group__label form-group__label--required">Year of Passing</label>
+                    <select id="year_of_passing" formControlName="year_of_passing" class="form-control" required>
+                      <option value="" disabled selected>Select Year</option>
+                      <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+                    </select>
+                  </div>
 
                   <div class="form-group">
                     <label for="experience_years" class="form-group__label">Experience (Years)</label>
                     <input id="experience_years" type="number" formControlName="experience_years" min="0" max="50" />
                   </div>
-
 
                   <div class="form-group">
                     <label for="resume_link" class="form-group__label">Resume Link</label>
@@ -165,7 +166,8 @@
                   <h2 class="form-section__title">Skills & Certifications</h2>
 
                   <div class="form-group">
-                    <label class="form-group__label">Skills</label>
+                    <!-- Updated Skills -->
+                    <label class="form-group__label form-group__label--required">Skills</label>
                     <div class="dropdown" #skillsDropdown>
                       <div class="dropdown__header" (click)="toggleSkillsDropdown()">
                         <span>{{ getSkillsDropdownLabel() }}</span>
