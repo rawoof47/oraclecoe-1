@@ -16,7 +16,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 // Services
 import { AuthStateService } from '../../services/auth-state.service';
 import { JobPostService } from '../../services/job-post.service';
-
+import { CandidateProfileService } from '../../services/candidate-profile.service'; // Added import
 
 @Component({
   selector: 'app-jobs',
@@ -45,6 +45,8 @@ export class JobsComponent implements OnInit {
   loading = true;
   currentUserRole: string | null = null;
   error: string | null = null;
+  isProfileComplete = true; // Added property
+  COMPLETED_STATUS = '5e04d3c0-3993-11f0-a36b-80ce6232908a'; // Added constant
 
   workModeOptions: string[] = ['Remote', 'On-site', 'Hybrid'];
   selectedWorkMode: string = '';
@@ -83,7 +85,8 @@ export class JobsComponent implements OnInit {
     private jobPostService: JobPostService,
     private authState: AuthStateService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private candidateProfileService: CandidateProfileService // Added injection
   ) {}
 
   ngOnInit(): void {
@@ -91,6 +94,23 @@ export class JobsComponent implements OnInit {
     this.currentUserRole = this.authState.getCurrentUserRole();
     
     this.fetchJobs();
+    
+    // Add profile check for candidates
+    if (this.isCandidate()) {
+      this.checkProfileCompletion();
+    }
+  }
+
+  // Added method
+  checkProfileCompletion(): void {
+    this.candidateProfileService.getMyProfile().subscribe({
+      next: (profile) => {
+        this.isProfileComplete = profile.status_id === this.COMPLETED_STATUS;
+      },
+      error: () => {
+        this.isProfileComplete = false;
+      }
+    });
   }
 
   isCandidate(): boolean {
@@ -159,18 +179,31 @@ export class JobsComponent implements OnInit {
   }
 
   applyToJob(jobId: string): void {
-    if (!this.isCandidate()) {
-       this.snackBar.open('Please log in to apply for jobs', 'Login', {
-      duration: 3000,
-      panelClass: ['warning-snackbar'],
-    horizontalPosition: 'end',     // right
-  verticalPosition: 'top'  
-    }).onAction().subscribe(() => {
-      this.redirectToLogin();
-    });
+    // Handle non-logged-in users
+    if (!this.currentUserId) {
+      this.snackBar.open('Please login to apply for jobs', 'Login', {
+        duration: 3000,
+        panelClass: ['warning-snackbar'],
+        horizontalPosition: 'end',
+        verticalPosition: 'top'
+      }).onAction().subscribe(() => {
+        this.redirectToLogin();
+      });
       return;
     }
 
+    // Handle incomplete candidate profiles
+    if (this.isCandidate() && !this.isProfileComplete) {
+      this.router.navigate(['/candidate-profile']);
+      this.snackBar.open('Please complete your profile before applying', 'Close', {
+        duration: 5000,
+        panelClass: ['snack-info'],
+        horizontalPosition: 'right',
+        verticalPosition: 'top'
+      });
+      return;
+    }
+    
     const payload = {
       user_id: this.currentUserId,
       job_id: jobId
@@ -196,7 +229,10 @@ export class JobsComponent implements OnInit {
   verticalPosition: 'top'  
         });
       } else if (error.status === 404) {
-        this.snackBar.open('❌ Candidate profile not found', 'Dismiss', {
+        // Navigate to candidate profile when profile incomplete error occurs
+        this.router.navigate(['/candidate-profile']);
+        
+        this.snackBar.open('Please complete your profile to apply for jobs', 'Dismiss', {
           duration: 5000,
           panelClass: ['error-snackbar'],
     horizontalPosition: 'end',     // right
@@ -208,7 +244,6 @@ export class JobsComponent implements OnInit {
           panelClass: ['error-snackbar'],
     horizontalPosition: 'end',     // right
   verticalPosition: 'top'  
-          
         });
       }
     }

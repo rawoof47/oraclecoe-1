@@ -152,10 +152,17 @@
               </div>
             </a>
 <div class="applyBtn">
-  <!-- Replace the entire applyBtn section with this -->
-<div class="applyBtn">
-  <ng-container *ngIf="currentUserRole === 'candidate'">
-    <button *ngIf="!appliedStatus[job.id] && currentUserId" 
+  <!-- Non-logged-in users see login prompt -->
+  <ng-container *ngIf="!currentUserId">
+    <button class="btn btn-outline-primary btn-sm" 
+            (click)="redirectToLogin()">
+      Login to Apply
+    </button>
+  </ng-container>
+  
+  <!-- Logged-in candidates see apply button -->
+  <ng-container *ngIf="currentUserRole === 'candidate' && currentUserId">
+    <button *ngIf="!appliedStatus[job.id]" 
             class="btn btn-success btn-sm" 
             (click)="applyToJob(job.id)">
       Apply
@@ -164,14 +171,8 @@
             class="btn btn-secondary btn-sm" 
             disabled>
       Already Applied
-    </button> 
-    <button *ngIf="!currentUserId" 
-            class="btn btn-outline-primary btn-sm" 
-            (click)="redirectToLogin()">
-      Login to Apply
     </button>
   </ng-container>
-</div>
         </div>
         <div *ngIf="loading" class="text-center mt-5"><p>Loading jobs...</p></div>
         <div *ngIf="!loading && jobs.length === 0" class="text-center mt-5"><p>No job posts found.</p></div>

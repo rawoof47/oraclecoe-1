@@ -75,11 +75,7 @@ export const routes: Routes = [
     path: 'jobs',
     component: JobsComponent,
   },
-  {
-  path: 'jobs',
-  component: JobsComponent,
-  canActivate: [authGuard, roleGuard('candidate'), CandidateProfileCompletionGuard]
-},
+  
   {
     path: 'favourite-jobs',
     component: FavouriteJobsComponent,

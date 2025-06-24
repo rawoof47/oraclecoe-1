@@ -211,7 +211,11 @@ export class JobDetailsComponent implements OnInit, OnDestroy {
           });
         } else {
           console.error('[JobDetailsComponent] ❌ Failed to apply:', error);
-          this.snackBar.open('❌ Failed to submit application', 'Dismiss', {
+          
+          // Navigate to candidate profile when profile incomplete error occurs
+          this.router.navigate(['/candidate-profile']);
+          
+          this.snackBar.open('Please complete your profile to apply for jobs', 'Dismiss', {
             duration: 5000,
             horizontalPosition: 'end',
             verticalPosition: 'top',
