@@ -76,7 +76,7 @@
 
                   <!-- Highest Degree Dropdown -->
                   <div class="form-group">
-                    <label class="form-group__label">Highest Degree</label>
+  <label class="form-group__label form-group__label--required">Highest Degree</label>
                     <div class="dropdown" #degreesDropdown>
                       <div class="dropdown__header" (click)="toggleDegreesDropdown()">
                         <span>{{ getDegreesDropdownLabel() }}</span>
@@ -223,8 +223,8 @@
 
                 <!-- Form Actions -->
                 <div class="form-actions">
-                  <button type="submit" [disabled]="isSubmitting">Save Profile</button>
-                </div>
+  <button type="submit" [disabled]="isSubmitting || profileForm.invalid">Save Profile</button>
+</div>
               </form>
             </main>
           </div>

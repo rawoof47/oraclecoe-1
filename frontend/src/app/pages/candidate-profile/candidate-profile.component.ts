@@ -96,27 +96,27 @@ export class CandidateProfileComponent implements OnInit {
   }
 
   initializeForm(): void {
-    this.profileForm = this.fb.group({
-      firstName: ['', [Validators.required, Validators.maxLength(50)]],
-      middleName: ['', [Validators.maxLength(50)]],
-      lastName: ['', [Validators.required, Validators.maxLength(50)]],
-      email: ['', [Validators.required, Validators.email, Validators.maxLength(150)]],
-      mobileNumber: ['', [Validators.maxLength(20)]],
-      gender: [''],
-      about_me: [''],
-      professional_summary: [''],
-      social_links: [''],
-      resume_link: ['', Validators.pattern('https?://.+')],
-      year_of_passing: [null],
-      experience_years: [null, [Validators.min(0), Validators.max(50)]],
-      notice_period: [''],
-      skills: [[]],
-      certifications: [[]],
-      degrees: [[]],
-      university: [''],
-      grade_or_percentage: [''],
-    });
-  }
+  this.profileForm = this.fb.group({
+    firstName: ['', [Validators.required, Validators.maxLength(50)]],
+    middleName: ['', [Validators.maxLength(50)]],
+    lastName: ['', [Validators.required, Validators.maxLength(50)]],
+    email: ['', [Validators.required, Validators.email, Validators.maxLength(150)]],
+    mobileNumber: ['', [Validators.required, Validators.maxLength(20)]], // Added required
+    gender: ['', Validators.required], // Added required
+    about_me: ['', Validators.required], // Added required
+    professional_summary: [''],
+    social_links: [''],
+    resume_link: ['', Validators.pattern('https?://.+')],
+    year_of_passing: [null, Validators.required], // Added required
+    experience_years: [null, [Validators.min(0), Validators.max(50)]],
+    notice_period: [''],
+    skills: [[], [Validators.required, Validators.minLength(1)]], // Require at least 1 skill
+    certifications: [[]],
+    degrees: [[], [Validators.required, Validators.minLength(1)]], // Require at least 1 degree
+    university: ['', Validators.required], // Added required
+    grade_or_percentage: [''],
+  });
+}
 
   private loadUserData(): void {
     if (!this.userId) return;
@@ -292,7 +292,9 @@ export class CandidateProfileComponent implements OnInit {
     const degreeIds = this.selectedDegrees.map(degree => degree.id);
 
     await lastValueFrom(this.profileService.saveCandidateSkills(this.userId!, skillIds));
+if (certIds.length > 0) {
     await lastValueFrom(this.profileService.saveCandidateCertifications(this.userId!, certIds));
+  }
     await lastValueFrom(this.profileService.saveCandidateDegrees(this.userId!, degreeIds));
   }
 
