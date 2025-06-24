@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { CandidateProfileService } from '../../../services/candidate-profile.service'; // ✅ New import
+import { CandidateProfileService } from '../../../services/candidate-profile.service';
 
 import { AuthService } from '../../../services/auth.service';
 import { AuthStateService } from '../../../services/auth-state.service';
@@ -19,14 +19,15 @@ import { AuthStateService } from '../../../services/auth-state.service';
 export class LoginComponent {
   loginForm: FormGroup;
   isSubmitting = false;
-showPassword = false; // Added for password visibility toggle
+  showPassword = false;
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private authStateService: AuthStateService,
     private router: Router,
     private snackBar: MatSnackBar,
-    private candidateProfileService: CandidateProfileService // ✅ New dependency
+    private candidateProfileService: CandidateProfileService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -35,9 +36,9 @@ showPassword = false; // Added for password visibility toggle
     });
   }
 
-   togglePasswordVisibility(): void {
+  togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
-   }
+  }
 
   onSubmit(): void {
     if (this.loginForm.invalid) {
@@ -67,7 +68,6 @@ showPassword = false; // Added for password visibility toggle
           return;
         }
 
-        // ✅ Fetch full user details and set complete auth state
         this.candidateProfileService.getUser(user.id).subscribe({
           next: (userDetails) => {
             const fullUser = {
@@ -82,7 +82,7 @@ showPassword = false; // Added for password visibility toggle
             if (user.role === role) {
               this.showSnackBar('Login successful!', 'snack-success');
               if (user.role === 'candidate') {
-                this.router.navigate(['/jobs']);
+                this.checkCandidateProfileStatus(user.id);
               } else if (user.role === 'recruiter') {
                 this.router.navigate(['/recruiter-dashboard']);
               } else {
@@ -105,6 +105,23 @@ showPassword = false; // Added for password visibility toggle
         const message = err.error?.message || 'Login failed. Please try again.';
         this.showSnackBar(message, 'snack-error');
         console.error('❌ Login error:', err);
+      }
+    });
+  }
+
+  private checkCandidateProfileStatus(userId: string): void {
+    this.candidateProfileService.getMyProfile().subscribe({
+      next: (profile) => {
+        if (profile.status_id === '5e04d3c0-3993-11f0-a36b-80ce6232908a') {
+          this.router.navigate(['/jobs']);
+        } else {
+          this.router.navigate(['/candidate-profile']);
+          this.showSnackBar('Please complete your Employee profile to proceed.', 'snack-info');
+        }
+      },
+      error: () => {
+        this.router.navigate(['/candidate-profile']);
+        this.showSnackBar('Please complete your Employee profile to proceed.', 'snack-info');
       }
     });
   }
