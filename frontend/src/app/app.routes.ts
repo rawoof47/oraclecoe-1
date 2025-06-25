@@ -35,6 +35,7 @@ import { PostedJobsComponent } from './pages/posted-jobs/posted-jobs.component';
 import { RecruiterProfileComponent } from './pages/recruiter-profile/recruiter-profile.component';
 import { RecruiterSidebarComponent } from './common/recruiter-sidebar/recruiter-sidebar.component';
 import { CandidateProfileCompletionGuard } from './guards/candidate-profile-completion.guard';
+import { SettingComponent } from './pages/setting/setting.component';
 
 // Guards
 import { authGuard } from './guards/auth.guard';
@@ -143,6 +144,13 @@ export const routes: Routes = [
   component: RecruiterSidebarComponent,
   canActivate: [authGuard, roleGuard('recruiter')]
 },
+
+{
+  path: 'settings',
+  component: SettingComponent,
+  canActivate: [authGuard] // Optional: protect with login if needed
+},
+
 
 
 

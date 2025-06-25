@@ -1,0 +1,25 @@
+// setting.component.scss
+.password-tooltip {
+  cursor: help;
+  background-color: #f8f9fa;
+  border: 1px solid #ced4da;
+}
+
+.snack-success {
+  background-color: #28a745 !important;
+  color: white !important;
+}
+
+.snack-error {
+  background-color: #dc3545 !important;
+  color: white !important;
+}
+
+.card {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.form-label {
+  font-weight: 500;
+}

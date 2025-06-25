@@ -1,0 +1,100 @@
+<!-- setting.component.html -->
+<div class="container mt-5">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h2 class="mb-0">Change Password</h2>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="passwordForm" (ngSubmit)="onSubmit()">
+        <!-- Current Password -->
+        <div class="mb-3">
+          <label class="form-label">Current Password</label>
+          <div class="input-group">
+            <input 
+              [type]="hideCurrentPassword ? 'password' : 'text'" 
+              formControlName="currentPassword"
+              class="form-control"
+              placeholder="Enter current password"
+            >
+            <button 
+              class="btn btn-outline-secondary" 
+              type="button"
+              (click)="hideCurrentPassword = !hideCurrentPassword"
+            >
+              <mat-icon>{{ hideCurrentPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <!-- New Password -->
+        <div class="mb-3">
+          <label class="form-label">New Password</label>
+          <div class="input-group">
+            <input 
+              [type]="hideNewPassword ? 'password' : 'text'" 
+              formControlName="newPassword"
+              class="form-control"
+              placeholder="Enter new password"
+            >
+            <span 
+              class="input-group-text password-tooltip"
+              matTooltip="Password must be 8+ chars with A-Z, a-z, 0-9 & symbol."
+              matTooltipPosition="right"
+            >
+              ?
+            </span>
+            <button 
+              class="btn btn-outline-secondary" 
+              type="button"
+              (click)="hideNewPassword = !hideNewPassword"
+            >
+              <mat-icon>{{ hideNewPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </div>
+          <!-- Updated error messages using getControl() -->
+          <div *ngIf="getControl('newPassword')?.invalid && (getControl('newPassword')?.dirty || getControl('newPassword')?.touched)" class="text-danger mt-1">
+            <small *ngIf="getControl('newPassword')?.errors?.['required']">Password is required</small>
+            <small *ngIf="getControl('newPassword')?.errors?.['minlength']">Must be at least 8 characters</small>
+            <small *ngIf="getControl('newPassword')?.errors?.['pattern']">
+              Must include uppercase, lowercase, number & symbol
+            </small>
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="mb-4">
+          <label class="form-label">Confirm New Password</label>
+          <div class="input-group">
+            <input 
+              [type]="hideConfirmPassword ? 'password' : 'text'" 
+              formControlName="confirmPassword"
+              class="form-control"
+              placeholder="Confirm new password"
+            >
+            <button 
+              class="btn btn-outline-secondary" 
+              type="button"
+              (click)="hideConfirmPassword = !hideConfirmPassword"
+            >
+              <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </div>
+          <!-- Updated error message using getControl() -->
+          <div *ngIf="passwordForm.errors?.['mismatch'] && (getControl('confirmPassword')?.dirty || getControl('confirmPassword')?.touched)" 
+               class="text-danger mt-1">
+            <small>Passwords do not match</small>
+          </div>
+        </div>
+
+        <button 
+          type="submit" 
+          class="btn btn-primary w-100"
+          [disabled]="passwordForm.invalid || isSubmitting"
+        >
+          <span *ngIf="!isSubmitting">Update Password</span>
+          <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm" role="status"></span>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
