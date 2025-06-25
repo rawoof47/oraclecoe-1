@@ -4,28 +4,28 @@
   <div class="container">
     <div class="profile-content no-sidebar">
       <form [formGroup]="recruiterForm" (ngSubmit)="onSubmit()" class="form-layout">
-
+        
+        
         <!-- Company Info -->
         <div class="profile-content-inner">
           <h2 class="section-title">Company Information</h2>
 
           <div class="form-row">
-            <label>Company Name:</label>
+            <label>Company Name<span class="required">*</span>:</label>
             <input type="text" formControlName="companyName" />
           </div>
 
-         <div class="form-row">
-  <label>Industry:</label>
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Select Industries</mat-label>
-    <mat-select formControlName="industries" multiple>
-      <mat-option *ngFor="let industry of industries" [value]="industry.id">
-        {{ industry.name }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-</div>
-
+          <div class="form-row">
+            <label>Industry<span class="required">*</span>:</label>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Select Industries</mat-label>
+              <mat-select formControlName="industries" multiple>
+                <mat-option *ngFor="let industry of industries" [value]="industry.id">
+                  {{ industry.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
 
           <div class="form-row">
             <label>Company Size:</label>
@@ -33,12 +33,12 @@
           </div>
 
           <div class="form-row">
-            <label>Website:</label>
+            <label>Website<span class="required">*</span>:</label>
             <input type="text" formControlName="website" />
           </div>
 
           <div class="form-row align-top">
-            <label>Company Description:</label>
+            <label>Company Description<span class="required">*</span>:</label>
             <textarea rows="4" formControlName="companyDescription"></textarea>
           </div>
         </div>
@@ -48,7 +48,7 @@
           <h2 class="section-title">Recruiter Profile</h2>
 
           <div class="form-row">
-            <label>First Name:</label>
+            <label>First Name<span class="required">*</span>:</label>
             <input type="text" formControlName="firstName" />
           </div>
 
@@ -58,36 +58,35 @@
           </div>
 
           <div class="form-row">
-            <label>Last Name:</label>
+            <label>Last Name<span class="required">*</span>:</label>
             <input type="text" formControlName="lastName" />
           </div>
 
-<div class="form-row">
-  <label>Email:</label>
-  <input type="email" formControlName="email" />
-</div>
-
-<div class="form-row">
-  <label>Phone:</label>
-  <input type="tel" formControlName="phone" />
-</div>
+          <div class="form-row">
+            <label>Email<span class="required">*</span>:</label>
+            <input type="email" formControlName="email" />
+          </div>
 
           <div class="form-row">
-            <label>Position:</label>
+            <label>Phone<span class="required">*</span>:</label>
+            <input type="tel" formControlName="phone" />
+          </div>
+
+          <div class="form-row">
+            <label>Position<span class="required">*</span>:</label>
             <input type="text" formControlName="position" />
           </div>
         </div>
 
-        <!-- Submit -->
-        <!-- recruiter-profile.component.html -->
-<div class="button-wrapper">
-  <button type="submit" [disabled]="isLoading">
-    <span *ngIf="!isLoading">Save Profile</span>
-    <span *ngIf="isLoading">
-      <i class="spinner"></i> Saving...
-    </span>
-  </button>
-</div>
+        <!-- Submit Button -->
+        <div class="button-wrapper">
+         <button type="submit" [disabled]="isFormInvalid()">
+  <span *ngIf="!isLoading">Save Profile</span>
+  <span *ngIf="isLoading">
+    <i class="spinner"></i> Saving...
+  </span>
+</button>
+        </div>
       </form>
     </div>
   </div>

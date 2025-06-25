@@ -20,7 +20,6 @@ import { RecruiterProfileService } from '../../services/recruiter-profile.servic
 import { AuthStateService } from '../../services/auth-state.service';
 import { Industry } from '../../auth/models/recruiter-profile.model';
 
-
 @Component({
   selector: 'app-recruiter-profile',
   standalone: true,
@@ -56,24 +55,28 @@ export class RecruiterProfileComponent implements OnInit {
   ) {
     this.recruiterForm = this.fb.group({
       companyName: ['', Validators.required],
-      industries: [[], Validators.required], // Changed to array
-      companySize: ['', Validators.required],
+      industries: [[], Validators.required],
+      companySize: [''], // Removed required validator
       website: ['', Validators.required],
       companyDescription: ['', Validators.required],
       firstName: ['', [Validators.required, Validators.maxLength(50)]],
       middleName: ['', [Validators.maxLength(50)]],
       lastName: ['', [Validators.required, Validators.maxLength(50)]],
       email: ['', [Validators.required, Validators.email]],
-      phone: [''],
+      phone: ['', Validators.required], // Added required validator
       position: ['', Validators.required],
-      
     });
   }
 
   ngOnInit(): void {
     this.loadUserData();
-    this.loadIndustries(); // Load industries first
+    this.loadIndustries();
     this.loadRecruiterProfile();
+  }
+
+  // New method to check form validity
+  isFormInvalid(): boolean {
+    return this.isLoading || this.recruiterForm.invalid;
   }
 
   loadUserData(): void {
@@ -113,7 +116,7 @@ export class RecruiterProfileComponent implements OnInit {
         if (profile) {
           this.recruiterForm.patchValue({
             companyName: profile.company_name,
-            industries: profile.industries, // Now uses array
+            industries: profile.industries,
             companySize: profile.company_size,
             website: profile.website,
             companyDescription: profile.company_description,
@@ -214,12 +217,12 @@ export class RecruiterProfileComponent implements OnInit {
     
     const recruiterData = {
       ...otherData,
-       user_id: this.userId!,
-    industryIds: industries,
-    company_name: otherData.companyName,        // Map to snake_case
-    company_size: otherData.companySize,        // Map to snake_case
-    company_description: otherData.companyDescription,  // Map to snake_case
-    recruiter_position: position,    
+      user_id: this.userId!,
+      industryIds: industries,
+      company_name: otherData.companyName,
+      company_size: otherData.companySize,
+      company_description: otherData.companyDescription,
+      recruiter_position: position,    
     };
 
     return this.recruiterProfileService.saveRecruiterProfile(recruiterData);

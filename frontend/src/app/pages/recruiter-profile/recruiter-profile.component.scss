@@ -138,3 +138,57 @@
 mat-form-field {
   width: 100%;
 }
+
+.required {
+  color: #ff0000; /* Red color */
+  margin-left: 3px;
+}
+
+.required-note {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+
+.button-wrapper {
+  text-align: right;
+  margin-top: 2rem;
+
+  button {
+    background: linear-gradient(to right, #66bfff, #3399ff);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer; /* Normal cursor for enabled state */
+
+    &:hover {
+      background: linear-gradient(to right, #3399ff, #007acc);
+    }
+
+    /* Add disabled state styles */
+    &:disabled {
+      background: #cccccc;
+      cursor: not-allowed; /* Change cursor to not-allowed */
+      opacity: 0.7;
+    }
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+}
