@@ -37,6 +37,7 @@ import { RecruiterProfileModule } from './recruiter-profile/recruiter-profile.mo
 import { DegreeModule } from './degree/degree.module';
 import { CandidateDegreesModule } from './candidate_degrees/candidate_degrees.module';
 import { IndustriesModule } from './industries/industries.module'; // Add this
+import { RecruiterIndustriesModule } from './recruiter-industries/recruiter-industries.module';
 
 @Module({
   imports: [
@@ -93,6 +94,7 @@ import { IndustriesModule } from './industries/industries.module'; // Add this
     DegreeModule,
     CandidateDegreesModule,
     IndustriesModule,
+    RecruiterIndustriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

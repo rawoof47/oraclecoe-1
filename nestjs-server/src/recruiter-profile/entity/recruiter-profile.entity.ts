@@ -4,7 +4,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { RecruiterIndustry } from '../../recruiter-industries/entities/recruiter-industry.entity';
 
 @Entity('recruiter_profiles')
 export class RecruiterProfile {
@@ -16,9 +18,6 @@ export class RecruiterProfile {
 
   @Column({ length: 255 })
   company_name: string;
-
-  @Column({ length: 100, nullable: true })
-  industry: string;
 
   @Column({ length: 50, nullable: true })
   company_size: string;
@@ -46,4 +45,11 @@ export class RecruiterProfile {
 
   @Column({ type: 'char', length: 36, nullable: true })
   updated_by: string;
+
+  // 🆕 One-to-many relation with recruiter_industries table
+  @OneToMany(() => RecruiterIndustry, (ri) => ri.user)
+  recruiterIndustries: RecruiterIndustry[];
+
+  // 🆕 Transient property for returning just industry IDs
+  industries?: string[];
 }

@@ -210,16 +210,16 @@ export class RecruiterProfileComponent implements OnInit {
   }
 
   private saveRecruiterProfile() {
-    const { companyName, industries, companySize, website, companyDescription, position } = this.recruiterForm.value;
-
+    const { industries, position, ...otherData } = this.recruiterForm.value;
+    
     const recruiterData = {
-      user_id: this.userId!,
-      company_name: companyName,
-      industryIds: industries, // Send as array of IDs
-      company_size: companySize,
-      website: website,
-      company_description: companyDescription,
-      recruiter_position: position
+      ...otherData,
+       user_id: this.userId!,
+    industryIds: industries,
+    company_name: otherData.companyName,        // Map to snake_case
+    company_size: otherData.companySize,        // Map to snake_case
+    company_description: otherData.companyDescription,  // Map to snake_case
+    recruiter_position: position,    
     };
 
     return this.recruiterProfileService.saveRecruiterProfile(recruiterData);

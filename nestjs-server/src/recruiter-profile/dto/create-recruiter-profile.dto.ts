@@ -10,11 +10,6 @@ export class CreateRecruiterProfileDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(100)
-  industry?: string;
-
-  @IsOptional()
-  @IsString()
   @MaxLength(50)
   company_size?: string;
 
