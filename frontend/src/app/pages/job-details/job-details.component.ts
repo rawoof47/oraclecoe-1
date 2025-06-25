@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { NavbarComponent } from '../../common/navbar/navbar.component';
 import { FooterComponent } from '../../common/footer/footer.component';
@@ -11,7 +12,7 @@ import { JobPost } from '../../auth/models/job-post.model';
 import { AuthStateService } from '../../services/auth-state.service';
 import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.pipe';
 import { ApplicationStatusService } from '../../services/application-status.service';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -43,6 +44,7 @@ export class JobDetailsComponent implements OnInit, OnDestroy {
   jobId: string = '';
   hasApplied = false;
   applyStatusMessage = '';
+  userRole$!: Observable<string | null>;
 
   private destroy$ = new Subject<void>();
 
@@ -51,17 +53,42 @@ export class JobDetailsComponent implements OnInit, OnDestroy {
     private router: Router,
     private jobPostService: JobPostService,
     private authState: AuthStateService,
-    private applicationStatusService: ApplicationStatusService
+    private applicationStatusService: ApplicationStatusService,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
     this.userId = this.authState.getCurrentUserId();
+    this.userRole$ = this.authState.userRole$;
 
     this.route.paramMap.subscribe(params => {
-      const jobIdParam = params.get('id');
+      const jobIdParam = params.get('jobId'); // e.g. jid42
+
       if (jobIdParam) {
-        this.jobId = jobIdParam;
-        this.fetchJobPost(this.jobId);
+        if (jobIdParam.toUpperCase().startsWith('JID')) {
+          const jobNumber = +jobIdParam.substring(3); // Remove 'JID' prefix
+
+          if (!isNaN(jobNumber)) {
+            this.fetchJobPostByJobNumber(jobNumber);
+            return;
+          }
+        }
+        this.error = 'Invalid job number format';
+      } else {
+        this.error = 'Job ID is missing';
+      }
+
+      this.isLoading = false;
+    });
+  }
+
+  fetchJobPostByJobNumber(jobNumber: number): void {
+  this.jobPostService.getByJobNumber(jobNumber).subscribe({
+    next: (res: any) => {
+      this.jobPost = res.data || null;
+      if (this.jobPost) {
+        this.jobId = this.jobPost.id!;
+
         this.fetchJobSkills(this.jobId);
         this.fetchJobCertifications(this.jobId);
 
@@ -79,29 +106,26 @@ export class JobDetailsComponent implements OnInit, OnDestroy {
                 : 'You can apply for this job.';
             }
           });
-      } else {
-        this.error = 'Invalid job ID';
-        this.isLoading = false;
       }
-    });
-  }
+      this.isLoading = false;
+    },
+    error: (err) => {
+      this.error = err.error?.message || 'Failed to load job details';
+      this.snackBar.open('❌ Failed to load job details', 'Dismiss', {
+        duration: 5000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+        panelClass: ['error-snackbar']
+      });
+      this.isLoading = false;
+    }
+  });
+}
+
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  fetchJobPost(jobId: string): void {
-    this.jobPostService.getById(jobId).subscribe({
-      next: (res: any) => {
-        this.jobPost = res?.data?.data || null;
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.error = err.error?.message || 'Failed to load job details';
-        this.isLoading = false;
-      }
-    });
   }
 
   fetchJobSkills(jobId: string): void {
@@ -145,9 +169,15 @@ export class JobDetailsComponent implements OnInit, OnDestroy {
     if (this.hasApplied) return;
 
     if (!this.userId) {
-      alert('Please log in to apply for this job');
-      this.router.navigate(['/login'], {
-        queryParams: { returnUrl: this.router.url }
+      this.snackBar.open('Please log in to apply for this job', 'Login', {
+        duration: 3000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+        panelClass: ['warning-snackbar']
+      }).onAction().subscribe(() => {
+        this.router.navigate(['/login'], {
+          queryParams: { returnUrl: this.router.url }
+        });
       });
       return;
     }
@@ -158,21 +188,39 @@ export class JobDetailsComponent implements OnInit, OnDestroy {
         this.applyStatusMessage = 'You have successfully applied for this job.';
         this.applicationStatusService.updateStatus(this.jobId, true);
 
-        // ✅ Add this to refresh status from server
         if (this.userId) {
           this.checkIfUserAlreadyApplied(this.userId, this.jobId);
         }
 
-        alert('✅ Application submitted successfully!');
+        this.snackBar.open('✅ Application submitted successfully!', 'Dismiss', {
+          duration: 3000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          panelClass: ['success-snackbar']
+        });
       },
       error: (error) => {
         if (error.status === 409) {
           this.hasApplied = true;
           this.applyStatusMessage = 'You have already applied for this job.';
-          alert('⚠️ You have already applied for this job.');
+          this.snackBar.open('⚠️ You already applied for this job', 'Dismiss', {
+            duration: 3000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            panelClass: ['warning-snackbar']
+          });
         } else {
           console.error('[JobDetailsComponent] ❌ Failed to apply:', error);
-          alert('❌ Failed to submit application. Please try again.');
+          
+          // Navigate to candidate profile when profile incomplete error occurs
+          this.router.navigate(['/candidate-profile']);
+          
+          this.snackBar.open('Please complete your profile to apply for jobs', 'Dismiss', {
+            duration: 5000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            panelClass: ['error-snackbar']
+          });
         }
       }
     });

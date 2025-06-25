@@ -31,4 +31,8 @@ export interface JobPost {
   // ✅ Add applications relationship
   applications?: Application[];
   applicationsCount?: number;
+
+   skill_ids?: string[];        // Add this
+  certification_ids?: string[]; // Add this
+   job_number: number; // ✅ Added
 }

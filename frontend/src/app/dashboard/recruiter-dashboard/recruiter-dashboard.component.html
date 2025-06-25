@@ -3,52 +3,65 @@
 <div class="dashboard-area ptb-100">
   <div class="container">
     <div class="row">
-      <!-- Sidebar -->
+      <!-- Sidebar Component -->
       <div class="col-lg-4 col-md-12">
-        <div class="profile-item">
-          <!-- Updated profile image -->
-          <img
-            src="img/ChatGPT Image Jun 8, 2025, 02_58_52 PM.png"
-            alt="Recruiter Headshot"
-          />
-          <h2>Sarah Johnson</h2>
-          <span>Talent Acquisition Manager</span>
-        </div>
-        <div class="nav flex-column nav-pills">
-          <a
-            class="nav-link"
-            routerLink="/recruiter-dashboard"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-          >
-            <i class="bx bx-user"></i> My Profile
-          </a>
-          <a class="nav-link" routerLink="/post-a-job" routerLinkActive="active">
-            <i class="bx bx-plus"></i> Post a New Job
-          </a>
-          <a
-            class="nav-link"
-            routerLink="/recruiter/posted-jobs"
-            routerLinkActive="active"
-          >
-            <i class="bx bx-list-ul"></i> Posted Jobs
-          </a>
-          <a
-            class="nav-link"
-            routerLink="/job-applicants"
-            routerLinkActive="active"
-          >
-            <i class="bx bx-file"></i> Applications
-          </a>
-        </div>
+        <app-recruiter-sidebar></app-recruiter-sidebar>
       </div>
 
       <!-- Main Content -->
       <div class="col-lg-8 col-md-12">
         <div class="profile-content">
           <form>
+            <!-- Loading State -->
+            <div *ngIf="isLoading" class="text-center py-5">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <p class="mt-3">Loading profile data...</p>
+            </div>
+
+            <!-- Error State -->
+            <div *ngIf="error" class="alert alert-danger">
+              {{ error }}
+              <button class="btn btn-sm btn-outline-danger ms-3" (click)="fetchProfileData()">Retry</button>
+            </div>
+
+            
+
+<div *ngIf="profileData" class="profile-content-inner">
+  <h2>Recruitment Dashboard</h2>
+  <div class="row stats-row">
+    <div class="col-lg-3 col-md-6 col-6">
+      <div class="stats-box">
+        <h3>{{ stats.postedJobs }}</h3>
+        <p>Posted Jobs</p>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-6">
+      <div class="stats-box">
+        <h3>{{ stats.applications }}</h3>
+        <p>Applied</p>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-6">
+      <div class="stats-box">
+        <h3>{{ stats.shortlisted }}</h3>
+        <p>Shortlisted</p>  <!-- Changed from Interviews -->
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-6">
+      <div class="stats-box">
+        <h3>{{ stats.rejected }}</h3>
+        <p>Rejected</p>     <!-- Changed from Hired -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<br />
+
             <!-- Company Info -->
-            <div class="profile-content-inner">
+            <div *ngIf="profileData" class="profile-content-inner">
               <h2>Company Information</h2>
               <div class="row">
                 <div class="col-lg-6 col-md-12">
@@ -57,7 +70,7 @@
                     <input
                       type="text"
                       class="form-control"
-                      value="Tech Innovations Inc."
+                      [value]="profileData.company_name"
                       readonly
                     />
                   </div>
@@ -68,7 +81,7 @@
                     <input
                       type="text"
                       class="form-control"
-                      value="Information Technology"
+                      [value]="profileData.industry || 'Not specified'"
                       readonly
                     />
                   </div>
@@ -79,7 +92,7 @@
                     <input
                       type="text"
                       class="form-control"
-                      value="500+ Employees"
+                      [value]="profileData.company_size || 'Not specified'"
                       readonly
                     />
                   </div>
@@ -90,7 +103,7 @@
                     <input
                       type="text"
                       class="form-control"
-                      value="www.techinnovations.com"
+                      [value]="profileData.website || 'Not specified'"
                       readonly
                     />
                   </div>
@@ -99,7 +112,7 @@
                   <div class="form-group">
                     <label>Company Description:</label>
                     <textarea class="form-control" rows="4" readonly>
-Leading provider of innovative tech solutions with offices in 5 countries. We specialize in AI-driven platforms for enterprise solutions.
+{{ profileData.company_description || 'No description available' }}
                     </textarea>
                   </div>
                 </div>
@@ -107,49 +120,15 @@ Leading provider of innovative tech solutions with offices in 5 countries. We sp
             </div>
 
             <!-- Recruiter Profile -->
-            <div class="profile-content-inner">
-              <h2>Recruiter Profile</h2>
+            <div *ngIf="profileData" class="profile-content-inner">
               <div class="row">
                 <div class="col-lg-6 col-md-12">
                   <div class="form-group">
-                    <label>Your Name:</label>
+                    <label>Your Position:</label>
                     <input
                       type="text"
                       class="form-control"
-                      value="Sarah Johnson"
-                      readonly
-                    />
-                  </div>
-                </div>
-                <div class="col-lg-6 col-md-12">
-                  <div class="form-group">
-                    <label>Your Email:</label>
-                    <input
-                      type="email"
-                      class="form-control"
-                      value="sarah@techinnovations.com"
-                      readonly
-                    />
-                  </div>
-                </div>
-                <div class="col-lg-6 col-md-12">
-                  <div class="form-group">
-                    <label>Phone:</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      value="+1 (555) 123-4567"
-                      readonly
-                    />
-                  </div>
-                </div>
-                <div class="col-lg-6 col-md-12">
-                  <div class="form-group">
-                    <label>Position:</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      value="Senior Talent Acquisition Manager"
+                      [value]="profileData.recruiter_position || 'Not specified'"
                       readonly
                     />
                   </div>
@@ -157,36 +136,7 @@ Leading provider of innovative tech solutions with offices in 5 countries. We sp
               </div>
             </div>
 
-            <!-- Stats -->
-            <div class="profile-content-inner">
-              <h2>Recruitment Stats</h2>
-              <div class="row stats-row">
-                <div class="col-lg-3 col-md-6 col-6">
-                  <div class="stats-box">
-                    <h3>24</h3>
-                    <p>Active Jobs</p>
-                  </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-6">
-                  <div class="stats-box">
-                    <h3>142</h3>
-                    <p>Applications</p>
-                  </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-6">
-                  <div class="stats-box">
-                    <h3>38</h3>
-                    <p>Interviews</p>
-                  </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-6">
-                  <div class="stats-box">
-                    <h3>12</h3>
-                    <p>Hired</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            
           </form>
         </div>
       </div>

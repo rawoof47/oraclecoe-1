@@ -305,4 +305,24 @@ export class ApplicationsService {
       return acc;
     }, {} as Record<string, number>);
   }
+   async getCountsByStatus(recruiterId: string): Promise<{ shortlisted: number, rejected: number }> {
+  const results = await this.applicationRepository
+    .createQueryBuilder('app')
+    .innerJoin('job_posts', 'job', 'job.id = app.job_id')
+    .where('job.recruiter_id = :recruiterId', { recruiterId })
+    .andWhere('app.withdrawn = :withdrawn', { withdrawn: false })
+    .select([
+      // Use actual UUIDs from your statusMap
+      `SUM(CASE WHEN app.application_status_id = 'e8d0da93-452c-11f0-8520-ac1f6bbcd360' THEN 1 ELSE 0 END) AS shortlisted`,
+      `SUM(CASE WHEN app.application_status_id = 'e8d0fb03-452c-11f0-8520-ac1f6bbcd360' THEN 1 ELSE 0 END) AS rejected`
+    ])
+    .getRawOne();
+
+  return {
+    shortlisted: parseInt(results.shortlisted) || 0,
+    rejected: parseInt(results.rejected) || 0
+  };
 }
+}
+
+

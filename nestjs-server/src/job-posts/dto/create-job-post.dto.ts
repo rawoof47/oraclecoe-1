@@ -94,4 +94,9 @@ export class CreateJobPostDto {
   @IsArray()
   @IsString({ each: true })
   certificationIds?: string[];
+
+  // ✅ NEW: Job Number (auto-assigned, not required from client)
+  @IsOptional()
+  @IsNumber()
+  jobNumber?: number;
 }

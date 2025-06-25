@@ -9,22 +9,33 @@
 </a>
 
 
-        <!-- Toggle Button -->
-        <button class="navbar-toggler shadow-none rounded-0" type="button" (click)="navbarToggleClass()">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+        
 
         <!-- Left Menu -->
         <div class="collapse navbar-collapse">
           <ul class="navbar-nav me-auto">
-            <li class="nav-item"><a routerLink="/index-2" class="nav-link" routerLinkActive="active">Home</a></li>
+            <li class="nav-item"><a routerLink="/Home" class="nav-link" routerLinkActive="active">Home</a></li>
             <li class="nav-item"><a routerLink="/jobs" class="nav-link" routerLinkActive="active">Jobs</a></li>
             <li class="nav-item"><a routerLink="/employers" class="nav-link" routerLinkActive="active">Companies</a></li>
             <li class="nav-item"><a routerLink="/about" class="nav-link" routerLinkActive="active">About</a></li>
             <li class="nav-item"><a routerLink="/contact" class="nav-link" routerLinkActive="active">Contact</a></li>
           </ul>
         </div>
-
+<!-- Toggle Button -->
+        <button class="navbar-toggler shadow-none rounded-0 d-lg-none mobileToggle" type="button" (click)="navbarToggleClass()">
+          <span class="navbar-toggler-icon"></span>
+        </button> 
+ 
+                <!-- Mobile Navigation Menu -->
+        <div [ngClass]="{'collapse': !isNavbarOpen, 'navbar-collapse': true}" class="d-lg-none">
+          <ul class="navbar-nav flex-column text-center bg-light p-4 rounded shadow-sm mobile-menu d-lg-none"> 
+            <li class="nav-item"><a routerLink="/Home" class="nav-link" routerLinkActive="active">Home</a></li>
+            <li class="nav-item"><a routerLink="/jobs" class="nav-link" routerLinkActive="active">Jobs</a></li>
+            <li class="nav-item"><a routerLink="/employers" class="nav-link" routerLinkActive="active">Companies</a></li>
+            <li class="nav-item"><a routerLink="/about" class="nav-link" routerLinkActive="active">About</a></li>
+            <li class="nav-item"><a routerLink="/contact" class="nav-link" routerLinkActive="active">Contact</a></li>
+          </ul>
+        </div>
         <!-- Right Side -->
         <ul class="navbar-nav ms-auto d-flex align-items-center">
 
@@ -83,8 +94,8 @@
           <!-- Login/Register -->
           <li class="nav-item dropdown" *ngIf="!(isLoggedIn$ | async)">
             <a href="javascript:void(0)" class="nav-link dropdown-toggle text-primary" data-bs-toggle="dropdown">
-              <mat-icon class="me-1">login</mat-icon> Login/Register
-              <mat-icon class="ms-1">arrow_drop_down</mat-icon>
+              <mat-icon class="me-1">login</mat-icon> <span class="d-none d-sm-inline">Login/Register</span>
+              <!-- <mat-icon class="ms-1">arrow_drop_down</mat-icon> -->
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
               <li><a routerLink="/login" class="dropdown-item">Login</a></li>

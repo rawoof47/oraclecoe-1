@@ -30,8 +30,17 @@ export class CandidateProfile {
   @Column({ type: 'varchar', length: 255, nullable: true })
   resume_link: string;
 
-  @Column({ type: 'text', nullable: true })
-  education: string;
+  // ✅ Replaced education with year_of_passing
+  @Column({ type: 'year', nullable: true })
+  year_of_passing: number;
+
+  // ✅ Added university as free text
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  university: string;
+
+  // ✅ Added grade/percentage
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  grade_or_percentage: string;
 
   @Column({ type: 'decimal', precision: 3, scale: 1, nullable: true })
   experience_years: number;

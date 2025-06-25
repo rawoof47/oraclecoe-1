@@ -32,15 +32,18 @@ import { AppliedJobsComponent } from './pages/applied-jobs/applied-jobs.componen
 import { JobApplicantsComponent } from './pages/job-applicants/job-applicants.component';
 import { RecruiterDashboardComponent } from './dashboard/recruiter-dashboard/recruiter-dashboard.component';
 import { PostedJobsComponent } from './pages/posted-jobs/posted-jobs.component'; // ✅ NEW
+import { RecruiterProfileComponent } from './pages/recruiter-profile/recruiter-profile.component';
+import { RecruiterSidebarComponent } from './common/recruiter-sidebar/recruiter-sidebar.component';
+import { CandidateProfileCompletionGuard } from './guards/candidate-profile-completion.guard';
 
 // Guards
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/index-2', pathMatch: 'full' },
+  { path: '', redirectTo: '/Home', pathMatch: 'full' },
   { path: 'index-1', component: HomeDemoOneComponent },
-  { path: 'index-2', component: HomeDemoTwoComponent },
+  { path: 'Home', component: HomeDemoTwoComponent },
   { path: 'index-3', component: HomeDemoThreeComponent },
 
   { path: 'about', component: AboutUsComponent },
@@ -64,40 +67,40 @@ export const routes: Routes = [
 
   // 🔒 Candidate Routes
   {
-    path: 'dashboard',
-    component: DashboardComponent,
-    canActivate: [authGuard, roleGuard('candidate')]
-  },
+  path: 'dashboard',
+  component: DashboardComponent,
+  canActivate: [authGuard, roleGuard('candidate'), CandidateProfileCompletionGuard]
+},
   {
     path: 'jobs',
     component: JobsComponent,
-    canActivate: [authGuard, roleGuard('candidate')]
   },
+  
   {
     path: 'favourite-jobs',
     component: FavouriteJobsComponent,
     canActivate: [authGuard, roleGuard('candidate')]
   },
-  {
-    path: 'job-details/:id',
-    component: JobDetailsComponent,
-    canActivate: [authGuard, roleGuard('candidate')]
-  },
+  { 
+  path: 'job-details/:jobId', // Keep parameter name as jobId
+  component: JobDetailsComponent,
+  canActivate: [authGuard, roleGuard('candidate', 'recruiter')]
+},
   {
     path: 'candidate-profile',
     component: CandidateProfileComponent,
     canActivate: [authGuard, roleGuard('candidate')]
   },
   {
-    path: 'applied-jobs',
-    component: AppliedJobsComponent,
-    canActivate: [authGuard, roleGuard('candidate')]
-  },
+  path: 'applied-jobs',
+  component: AppliedJobsComponent,
+  canActivate: [authGuard, roleGuard('candidate'), CandidateProfileCompletionGuard]
+},
   {
-    path: 'single-resume',
-    component: SingleResumeComponent,
-    canActivate: [authGuard, roleGuard('candidate')]
-  },
+  path: 'single-resume',
+  component: SingleResumeComponent,
+  canActivate: [authGuard, roleGuard('candidate'), CandidateProfileCompletionGuard]
+},
 
   // 🔒 Recruiter Routes
   {
@@ -130,6 +133,18 @@ export const routes: Routes = [
     component: PostedJobsComponent,
     canActivate: [authGuard, roleGuard('recruiter')]
   },
+  {
+  path: 'recruiter-profile',
+  component: RecruiterProfileComponent,
+  canActivate: [authGuard, roleGuard('recruiter')]
+},
+{
+  path: 'recruiter/sidebar',
+  component: RecruiterSidebarComponent,
+  canActivate: [authGuard, roleGuard('recruiter')]
+},
+
+
 
   { path: 'admin/login', component: AdminLoginComponent },
   { path: 'admin-dashboard', component: AdminDashboardComponent },
