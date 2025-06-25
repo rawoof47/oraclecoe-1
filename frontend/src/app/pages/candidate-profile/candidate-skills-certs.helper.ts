@@ -131,12 +131,7 @@ export function toggleCertification(cert: Certification, selectedCerts: Certific
     : selectedCerts.filter(c => c.id !== cert.id);
 }
 
-export function toggleDegree(degree: Degree, selectedDegrees: Degree[]): Degree[] {
-  degree.selected = !degree.selected;
-  return degree.selected
-    ? [...selectedDegrees, degree]
-    : selectedDegrees.filter(d => d.id !== degree.id);
-}
+
 
 //#endregion
 

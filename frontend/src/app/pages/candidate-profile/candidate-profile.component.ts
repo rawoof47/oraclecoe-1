@@ -35,7 +35,6 @@ import {
   getCertificationsLabel,
   Degree,
   loadDegrees,
-  toggleDegree,
   getDegreesLabel,
 } from './candidate-skills-certs.helper';
 
@@ -76,7 +75,7 @@ export class CandidateProfileComponent implements OnInit {
   profileCertificationIds: string[] = [];
 
   groupedDegrees: any[] = [];
-  selectedDegrees: Degree[] = [];
+  selectedDegree: Degree | null = null; // Changed to single degree
   showDegreesDropdown = false;
   profileDegreeIds: string[] = [];
   years: number[] = [];
@@ -101,19 +100,19 @@ export class CandidateProfileComponent implements OnInit {
     middleName: ['', [Validators.maxLength(50)]],
     lastName: ['', [Validators.required, Validators.maxLength(50)]],
     email: ['', [Validators.required, Validators.email, Validators.maxLength(150)]],
-    mobileNumber: ['', [Validators.required, Validators.maxLength(20)]], // Added required
-    gender: ['', Validators.required], // Added required
-    about_me: ['', Validators.required], // Added required
+    mobileNumber: ['', [Validators.required, Validators.maxLength(20)]],
+    gender: ['', Validators.required],
+    about_me: ['', Validators.required],
     professional_summary: [''],
     social_links: [''],
     resume_link: ['', Validators.pattern('https?://.+')],
-    year_of_passing: [null, Validators.required], // Added required
+    year_of_passing: [null, Validators.required],
     experience_years: [null, [Validators.min(0), Validators.max(50)]],
     notice_period: [''],
-    skills: [[], [Validators.required, Validators.minLength(1)]], // Require at least 1 skill
+    skills: [[], [Validators.required, Validators.minLength(1)]],
     certifications: [[]],
-    degrees: [[], [Validators.required, Validators.minLength(1)]], // Require at least 1 degree
-    university: ['', Validators.required], // Added required
+    degrees: [[], [Validators.required, Validators.minLength(1)]],
+    university: ['', Validators.required],
     grade_or_percentage: [''],
   });
 }
@@ -153,7 +152,7 @@ export class CandidateProfileComponent implements OnInit {
           
           experience_years: profile.experience_years || null,
           notice_period: profile.notice_period || '',
-          year_of_passing: profile.year_of_passing || null, // Load year value
+          year_of_passing: profile.year_of_passing || null,
         });
 
         this.profileSkillIds = profile.skill_ids || [];
@@ -214,14 +213,16 @@ export class CandidateProfileComponent implements OnInit {
   }
 
   private setInitialDegreeSelections(): void {
-    this.groupedDegrees.forEach(group => {
-      group.items.forEach((degree: Degree) => {
-        if (this.profileDegreeIds.includes(degree.id)) {
-          this.selectedDegrees = toggleDegree(degree, this.selectedDegrees);
+    if (this.profileDegreeIds.length > 0) {
+      const firstDegreeId = this.profileDegreeIds[0];
+      for (const group of this.groupedDegrees) {
+        const degree = group.items.find((d: Degree) => d.id === firstDegreeId);
+        if (degree) {
+          this.selectedDegree = degree;
+          break;
         }
-      });
-    });
-
+      }
+    }
     this.updateFormSelections();
   }
 
@@ -289,7 +290,7 @@ export class CandidateProfileComponent implements OnInit {
   private async saveSkillsAndCerts(): Promise<void> {
     const skillIds = this.selectedSkills.map(skill => skill.id);
     const certIds = this.selectedCertifications.map(cert => cert.id);
-    const degreeIds = this.selectedDegrees.map(degree => degree.id);
+    const degreeIds = this.selectedDegree ? [this.selectedDegree.id] : [];
 
     await lastValueFrom(this.profileService.saveCandidateSkills(this.userId!, skillIds));
 if (certIds.length > 0) {
@@ -321,15 +322,16 @@ if (certIds.length > 0) {
   }
 
   onDegreeChange(degree: Degree): void {
-    this.selectedDegrees = toggleDegree(degree, this.selectedDegrees);
+    this.selectedDegree = this.selectedDegree?.id === degree.id ? null : degree;
     this.updateFormSelections();
+    this.showDegreesDropdown = false; // Close dropdown after selection
   }
 
   updateFormSelections(): void {
     this.profileForm.patchValue({
       skills: this.selectedSkills.map((s) => s.id),
       certifications: this.selectedCertifications.map((c) => c.id),
-      degrees: this.selectedDegrees.map((d) => d.id),
+      degrees: this.selectedDegree ? [this.selectedDegree.id] : [],
     });
   }
 
@@ -342,7 +344,9 @@ if (certIds.length > 0) {
   }
 
   getDegreesDropdownLabel(): string {
-    return getDegreesLabel(this.selectedDegrees);
+    return this.selectedDegree 
+      ? `${this.selectedDegree.name} (${this.selectedDegree.abbreviation})` 
+      : 'Select Degree';
   }
 
   @HostListener('document:click', ['$event'])

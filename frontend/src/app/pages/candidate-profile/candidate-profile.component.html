@@ -77,31 +77,32 @@
                   <!-- Highest Degree Dropdown -->
                   <div class="form-group">
   <label class="form-group__label form-group__label--required">Highest Degree</label>
-                    <div class="dropdown" #degreesDropdown>
-                      <div class="dropdown__header" (click)="toggleDegreesDropdown()">
-                        <span>{{ getDegreesDropdownLabel() }}</span>
-                        <span class="arrow">&#9662;</span>
-                      </div>
+  <div class="dropdown" #degreesDropdown>
+    <div class="dropdown__header" (click)="toggleDegreesDropdown()">
+      <span>{{ getDegreesDropdownLabel() }}</span>
+      <span class="arrow">&#9662;</span>
+    </div>
 
-                      <div class="dropdown__list" *ngIf="showDegreesDropdown">
-                        <div *ngFor="let group of groupedDegrees" class="dropdown__group">
-                          <div class="dropdown__group-title">{{ group.categoryName }}</div>
-                          <div *ngFor="let degree of group.items" class="dropdown__item">
-                            <input
-                              type="checkbox"
-                              [checked]="degree.selected"
-                              (change)="onDegreeChange(degree)"
-                              [id]="'degree-' + degree.id"
-                            />
-                            <label [for]="'degree-' + degree.id">
-                              {{ degree.name }} ({{ degree.abbreviation }})
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
+    <div class="dropdown__list" *ngIf="showDegreesDropdown">
+      <div *ngFor="let group of groupedDegrees" class="dropdown__group">
+        <div class="dropdown__group-title">{{ group.categoryName }}</div>
+        <div *ngFor="let degree of group.items" class="dropdown__item">
+          <!-- Changed to radio button -->
+          <input
+            type="radio"
+            name="degreeSelection"
+            [checked]="selectedDegree?.id === degree.id"
+            (change)="onDegreeChange(degree)"
+            [id]="'degree-' + degree.id"
+          />
+          <label [for]="'degree-' + degree.id">
+            {{ degree.name }} ({{ degree.abbreviation }})
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
                   <div class="form-group">
                     <!-- Updated University -->
                     <label for="university" class="form-group__label form-group__label--required">University</label>
