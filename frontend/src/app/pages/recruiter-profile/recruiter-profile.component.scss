@@ -114,3 +114,27 @@
     to { transform: rotate(360deg); }
   }
 }
+
+.industries-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.industry-option {
+  background: #e6f2ff;
+  border-radius: 16px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+
+  &.selected {
+    background: #3399ff;
+    color: white;
+  }
+}
+
+mat-form-field {
+  width: 100%;
+}

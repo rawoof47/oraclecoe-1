@@ -5,7 +5,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
-
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { NavbarComponent } from '../../common/navbar/navbar.component';
@@ -15,6 +18,8 @@ import { BackToTopComponent } from '../../common/back-to-top/back-to-top.compone
 import { CandidateProfileService } from '../../services/candidate-profile.service';
 import { RecruiterProfileService } from '../../services/recruiter-profile.service';
 import { AuthStateService } from '../../services/auth-state.service';
+import { Industry } from '../../auth/models/recruiter-profile.model';
+
 
 @Component({
   selector: 'app-recruiter-profile',
@@ -26,7 +31,11 @@ import { AuthStateService } from '../../services/auth-state.service';
     NavbarComponent,
     FooterComponent,
     BackToTopComponent,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule,
+    MatInputModule
   ],
   templateUrl: './recruiter-profile.component.html',
   styleUrls: ['./recruiter-profile.component.scss']
@@ -35,6 +44,7 @@ export class RecruiterProfileComponent implements OnInit {
   recruiterForm: FormGroup;
   userId: string | null = null;
   isLoading = false;
+  industries: Industry[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -46,7 +56,7 @@ export class RecruiterProfileComponent implements OnInit {
   ) {
     this.recruiterForm = this.fb.group({
       companyName: ['', Validators.required],
-      industry: ['', Validators.required],
+      industries: [[], Validators.required], // Changed to array
       companySize: ['', Validators.required],
       website: ['', Validators.required],
       companyDescription: ['', Validators.required],
@@ -56,11 +66,13 @@ export class RecruiterProfileComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       phone: [''],
       position: ['', Validators.required],
+      
     });
   }
 
   ngOnInit(): void {
     this.loadUserData();
+    this.loadIndustries(); // Load industries first
     this.loadRecruiterProfile();
   }
 
@@ -101,7 +113,7 @@ export class RecruiterProfileComponent implements OnInit {
         if (profile) {
           this.recruiterForm.patchValue({
             companyName: profile.company_name,
-            industry: profile.industry,
+            industries: profile.industries, // Now uses array
             companySize: profile.company_size,
             website: profile.website,
             companyDescription: profile.company_description,
@@ -118,6 +130,20 @@ export class RecruiterProfileComponent implements OnInit {
         });
         console.error('Failed to load recruiter profile:', err);
         this.isLoading = false;
+      }
+    });
+  }
+
+  private loadIndustries() {
+    this.recruiterProfileService.getIndustries().subscribe({
+      next: (industries) => {
+        this.industries = industries;
+      },
+      error: (err) => {
+        console.error('Failed to load industries', err);
+        this.snackBar.open('Failed to load industries', 'Close', { 
+          duration: 3000 
+        });
       }
     });
   }
@@ -184,12 +210,12 @@ export class RecruiterProfileComponent implements OnInit {
   }
 
   private saveRecruiterProfile() {
-    const { companyName, industry, companySize, website, companyDescription, position } = this.recruiterForm.value;
+    const { companyName, industries, companySize, website, companyDescription, position } = this.recruiterForm.value;
 
     const recruiterData = {
       user_id: this.userId!,
       company_name: companyName,
-      industry: industry,
+      industryIds: industries, // Send as array of IDs
       company_size: companySize,
       website: website,
       company_description: companyDescription,

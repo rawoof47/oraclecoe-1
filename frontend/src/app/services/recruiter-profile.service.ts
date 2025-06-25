@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthStateService } from '../services/auth-state.service';
+import { Industry } from '../auth/models/recruiter-profile.model';
 
 @Injectable({
   providedIn: 'root'
@@ -24,4 +25,9 @@ export class RecruiterProfileService {
   getMyProfile(): Observable<any> {
     return this.http.get(`${this.baseUrl}/by-user/me`);
   }
+
+
+  getIndustries(): Observable<Industry[]> {
+  return this.http.get<Industry[]>(`${this.backendBaseUrl}/industries`);
+}
 }

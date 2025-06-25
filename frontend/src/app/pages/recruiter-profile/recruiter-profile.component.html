@@ -14,10 +14,18 @@
             <input type="text" formControlName="companyName" />
           </div>
 
-          <div class="form-row">
-            <label>Industry:</label>
-            <input type="text" formControlName="industry" />
-          </div>
+         <div class="form-row">
+  <label>Industry:</label>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Select Industries</mat-label>
+    <mat-select formControlName="industries" multiple>
+      <mat-option *ngFor="let industry of industries" [value]="industry.id">
+        {{ industry.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
 
           <div class="form-row">
             <label>Company Size:</label>
