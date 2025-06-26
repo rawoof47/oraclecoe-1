@@ -41,11 +41,12 @@ export class CandidateCertificationsService {
   }
 
   async replaceCertifications(userId: string, certificationIds: string[]): Promise<CandidateCertification[]> {
-    try {
-      // ✅ Simple delete (no query runner)
-      await this.candidateCertificationRepo.delete({ user_id: userId });
+  try {
+    // ✅ Delete existing certifications
+    await this.candidateCertificationRepo.delete({ user_id: userId });
 
-      // ✅ Prepare and save new certifications
+    // ✅ Only add new certifications if the array is not empty
+    if (certificationIds.length > 0) {
       const newCerts = certificationIds.map(certId =>
         this.candidateCertificationRepo.create({
           user_id: userId,
@@ -54,9 +55,12 @@ export class CandidateCertificationsService {
       );
 
       return await this.candidateCertificationRepo.save(newCerts);
-    } catch (error) {
-      console.error('[CERT] Replacement Error:', error);
-      throw new InternalServerErrorException('Failed to update certifications');
     }
+
+    return []; // ✅ Return empty array if no new certifications provided
+  } catch (error) {
+    console.error('[CERT] Replacement Error:', error);
+    throw new InternalServerErrorException('Failed to update certifications');
   }
+}
 }

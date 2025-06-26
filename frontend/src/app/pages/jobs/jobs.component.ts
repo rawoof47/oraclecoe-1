@@ -1,16 +1,24 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
+
+// Components and Pipes
 import { NavbarComponent } from '../../common/navbar/navbar.component';
 import { PageBannerComponent } from '../../common/page-banner/page-banner.component';
 import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
-import { FormsModule } from '@angular/forms';
-import { NgSelectModule } from '@ng-select/ng-select';
 import { SkillFiltersComponent } from './filters/skills-filter/skills-filter.component';
-import { AuthStateService } from '../../services/auth-state.service';
 import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.pipe';
+import { environment } from '../../../environments/environment';
+import { MatSnackBar } from '@angular/material/snack-bar';
+// Services
+import { AuthStateService } from '../../services/auth-state.service';
+import { JobPostService } from '../../services/job-post.service';
+import { CandidateProfileService } from '../../services/candidate-profile.service'; // Added import
+
 @Component({
   selector: 'app-jobs',
   standalone: true,
@@ -31,12 +39,15 @@ import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.p
 })
 export class JobsComponent implements OnInit {
   @ViewChild(SkillFiltersComponent) skillsFilter!: SkillFiltersComponent;
-
+  baseURL: string = environment.apiBaseUrl
   jobs: any[] = [];
   allJobs: any[] = [];
   jobCount = 0;
   loading = true;
+  currentUserRole: string | null = null;
   error: string | null = null;
+  isProfileComplete = true; // Added property
+  COMPLETED_STATUS = '5e04d3c0-3993-11f0-a36b-80ce6232908a'; // Added constant
 
   workModeOptions: string[] = ['Remote', 'On-site', 'Hybrid'];
   selectedWorkMode: string = '';
@@ -62,7 +73,7 @@ export class JobsComponent implements OnInit {
   searchKeyword: string = '';
   searchLocation: string = '';
 
-  currentUserId: string | null = null; // ✅ Replaced hardcoded user ID
+  currentUserId: string | null = null;
 
   selectedSkillIds: string[] = [];
   selectedCertIds: string[] = [];
@@ -72,39 +83,80 @@ export class JobsComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private authState: AuthStateService, // ✅ Inject auth service
-    private router: Router
+    private jobPostService: JobPostService,
+    private authState: AuthStateService,
+    private router: Router,
+    private snackBar: MatSnackBar,
+    private candidateProfileService: CandidateProfileService // Added injection
   ) {}
 
   ngOnInit(): void {
-    this.currentUserId = this.authState.getCurrentUserId(); // ✅ Get current user ID
+    this.currentUserId = this.authState.getCurrentUserId();
+    this.currentUserRole = this.authState.getCurrentUserRole();
+    
     this.fetchJobs();
+    
+    // Add profile check for candidates
+    if (this.isCandidate()) {
+      this.checkProfileCompletion();
+    }
+  }
+
+  // Added method
+  checkProfileCompletion(): void {
+    this.candidateProfileService.getMyProfile().subscribe({
+      next: (profile) => {
+        this.isProfileComplete = profile.status_id === this.COMPLETED_STATUS;
+      },
+      error: () => {
+        this.isProfileComplete = false;
+      }
+    });
+  }
+
+  isCandidate(): boolean {
+    return this.currentUserRole === 'candidate';
   }
 
   redirectToLogin(): void {
     this.router.navigate(['/login']);
   }
 
-  fetchJobs(): void {
-    this.http.get<any[]>('http://localhost:3000/jobs').subscribe({
-      next: (data) => {
-        this.allJobs = data;
-        this.jobs = data;
-        this.jobCount = data.length;
-        this.loading = false;
+  // ✅ Updated method using service
+ fetchJobs(): void {
+  this.jobPostService.getActiveJobs().subscribe({
+    next: (response) => {
+      // ✅ Handle undefined dates safely during sort (Newest jobs first)
+      this.allJobs = response.data.sort((a, b) => {
+        const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+        const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+        return dateB - dateA;
+      });
+
+      this.jobs = [...this.allJobs];
+      this.jobCount = response.data.length;
+      this.loading = false;
+
+      // ✅ Only check applied status for candidates
+      if (this.isCandidate()) {
         this.checkAppliedStatuses();
-      },
+      }
+    },
       error: (err) => {
         console.error('Error fetching jobs:', err);
-        this.error = 'Failed to load job data.';
-        alert('❌ Error loading job listings.');
+        this.snackBar.open('❌ Failed to load job data', 'Dismiss', {
+        duration: 5000,
+        panelClass: ['error-snackbar'],
+    horizontalPosition: 'end',     // right
+  verticalPosition: 'top'  
+      });
         this.loading = false;
       }
     });
   }
 
   checkAppliedStatuses(): void {
-    if (!this.currentUserId) return; // ✅ Skip if not logged in
+    if (!this.isCandidate()) return;
 
     this.jobs.forEach(job => {
       const payload = {
@@ -113,7 +165,7 @@ export class JobsComponent implements OnInit {
       };
 
       this.http.post<{ applied: boolean }>(
-        'http://localhost:3000/applications/check-by-user-and-job',
+        this.baseURL + '/applications/check-by-user-and-job',
         payload
       ).subscribe({
         next: (res) => {
@@ -128,34 +180,76 @@ export class JobsComponent implements OnInit {
   }
 
   applyToJob(jobId: string): void {
+    // Handle non-logged-in users
     if (!this.currentUserId) {
-      alert('Please log in to apply for jobs');
-      this.redirectToLogin();
+      this.snackBar.open('Please login to apply for jobs', 'Login', {
+        duration: 3000,
+        panelClass: ['warning-snackbar'],
+        horizontalPosition: 'end',
+        verticalPosition: 'top'
+      }).onAction().subscribe(() => {
+        this.redirectToLogin();
+      });
       return;
     }
 
+    // Handle incomplete candidate profiles
+    if (this.isCandidate() && !this.isProfileComplete) {
+      this.router.navigate(['/candidate-profile']);
+      this.snackBar.open('Please complete your profile before applying', 'Close', {
+        duration: 5000,
+        panelClass: ['snack-info'],
+        horizontalPosition: 'right',
+        verticalPosition: 'top'
+      });
+      return;
+    }
+    
     const payload = {
       user_id: this.currentUserId,
       job_id: jobId
     };
 
-    this.http.post('http://localhost:3000/applications/by-user', payload).subscribe({
+    this.http.post(this.baseURL + '/applications/by-user', payload).subscribe({
       next: () => {
         this.appliedStatus[jobId] = true;
-        alert('✅ Application submitted successfully!');
+      this.snackBar.open('✅ Application submitted successfully!', 'Dismiss', {
+        duration: 3000,
+        panelClass: ['success-snackbar'],
+    horizontalPosition: 'end',     // right
+  verticalPosition: 'top'  
+      });
       },
       error: (error) => {
-        if (error.status === 409) {
-          this.appliedStatus[jobId] = true;
-          alert('⚠️ You have already applied for this job.');
-        } else if (error.status === 404) {
-          alert('❌ Candidate profile not found for current user.');
-        } else {
-          alert('❌ Failed to submit application.');
-        }
+      if (error.status === 409) {
+        this.appliedStatus[jobId] = true;
+        this.snackBar.open('⚠️ You already applied for this job', 'Dismiss', {
+          duration: 3000,
+          panelClass: ['warning-snackbar'],
+    horizontalPosition: 'end',     // right
+  verticalPosition: 'top'  
+        });
+      } else if (error.status === 404) {
+        // Navigate to candidate profile when profile incomplete error occurs
+        this.router.navigate(['/candidate-profile']);
+        
+        this.snackBar.open('Please complete your profile to apply for jobs', 'Dismiss', {
+          duration: 5000,
+          panelClass: ['error-snackbar'],
+    horizontalPosition: 'end',     // right
+  verticalPosition: 'top'  
+        });
+      } else {
+        this.snackBar.open('❌ Failed to submit application', 'Dismiss', {
+          duration: 5000,
+          panelClass: ['error-snackbar'],
+    horizontalPosition: 'end',     // right
+  verticalPosition: 'top'  
+        });
       }
-    });
-  }
+    }
+  });
+}
 
   formatPostedDate(dateStr: string): string {
     if (!dateStr) return 'Unknown date';
@@ -309,5 +403,11 @@ export class JobsComponent implements OnInit {
     }
 
     this.filterJobs();
+    this.snackBar.open('✅ All filters reset', 'Dismiss', {
+    duration: 3000,
+    panelClass: ['success-snackbar'],
+    horizontalPosition: 'end',     // right
+  verticalPosition: 'top'  
+  });
   }
 }

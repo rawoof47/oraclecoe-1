@@ -22,14 +22,37 @@ $card-min-size: 280px;     // More compact size
   background: linear-gradient(135deg, $background-grey 0%, #edf2f7 100%);
   padding: 2.5rem 1.5rem;
   min-height: 100vh;
-  
-  // Grid layout for applicant cards
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
 
-  > h2, > .alert, > .spinner-border {
-    grid-column: 1 / -1;
+  // Fix for row layout
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+
+    > div:first-child {
+      flex: 0 0 auto;
+      padding-right: 1.5rem;
+      border-right: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    > div:last-child {
+      flex: 1;
+      min-width: 300px;
+    }
+  }
+
+  @media (max-width: 992px) {
+    .row {
+      flex-direction: column;
+      
+      > div:first-child {
+        padding-right: 0;
+        border-right: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        padding-bottom: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+    }
   }
 
   h2 {
@@ -573,8 +596,6 @@ $card-min-size: 280px;     // More compact size
   100% { transform: rotate(360deg); }
 }
 
-// ... existing styles ...
-
 // ==========================
 // Snackbar Styling
 // ==========================
@@ -645,5 +666,3 @@ $card-min-size: 280px;     // More compact size
     transform: translate(-50%, 20px);
   }
 }
-
-// ... existing styles ...

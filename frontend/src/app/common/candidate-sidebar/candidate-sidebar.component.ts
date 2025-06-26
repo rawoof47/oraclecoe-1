@@ -12,7 +12,7 @@ import { AuthStateService } from '../../services/auth-state.service'; // Adjust 
 })
 export class CandidateSidebarComponent implements OnInit {
   firstName: string = '';
-  profileImage: string = 'img/dashboard1.jpg'; // Use existing image path
+  profileImage: string = 'img/dashboard3.png'; // Use existing image path
 
 
   constructor(private authState: AuthStateService) {}

@@ -187,4 +187,12 @@ async getCountByJobs(
 ): Promise<Record<string, number>> {
   return this.applicationsService.getCountByJobs(body.jobIds);
 }
+@Get('counts-by-status/:recruiterId')
+  @HttpCode(HttpStatus.OK)
+  async getCountsByStatus(
+    @Param('recruiterId') recruiterId: string
+  ): Promise<{ shortlisted: number, rejected: number }> {
+    return this.applicationsService.getCountsByStatus(recruiterId);
+  }
+
 }

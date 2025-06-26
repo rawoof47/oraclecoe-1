@@ -105,4 +105,38 @@ async findByRecruiter(@Param('recruiterId') recruiterId: string) {
     data: jobPosts 
   };
 }
+
+// ✅ Add status update endpoint
+  @Put('status/:id')
+  async updateStatus(
+    @Param('id') id: string,
+    @Body() body: { statusId: string }
+  ) {
+    const updatedJobPost = await this.jobPostsService.updateStatus(id, body.statusId);
+    return {
+      message: 'Job status updated successfully',
+      data: updatedJobPost,
+    };
+  }
+
+  @Get('active/list')
+async findActiveJobs() {
+  const jobPosts = await this.jobPostsService.findActiveJobs();
+  return { 
+    message: 'Active job posts fetched successfully', 
+    data: jobPosts 
+  };
+}
+
+@Get('by-job-number/:jobNumber')
+async findByJobNumber(@Param('jobNumber') jobNumber: number) {
+  const jobPost = await this.jobPostsService.findByJobNumber(jobNumber);
+  if (!jobPost) {
+    throw new NotFoundException('Job post not found');
+  }
+  return {
+    message: 'Job post fetched successfully',
+    data: jobPost,
+  };
+}
 }
