@@ -41,9 +41,9 @@ import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/Home', pathMatch: 'full' },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'index-1', component: HomeDemoOneComponent },
-  { path: 'Home', component: HomeDemoTwoComponent },
+  { path: 'home', component: HomeDemoTwoComponent },
   { path: 'index-3', component: HomeDemoThreeComponent },
 
   { path: 'about', component: AboutUsComponent },
@@ -152,3 +152,5 @@ export const routes: Routes = [
   // Catch-all route
   { path: '**', component: ErrorPageComponent }
 ];
+
+console.log('✅ Loaded app.routes.ts');

@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { AuthStateService } from '../services/auth-state.service'; // Adjust path if needed
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CandidateProfileService {
-  private backendBaseUrl = 'http://localhost:3000';
+  private backendBaseUrl = environment.apiBaseUrl;
   private baseUrl = `${this.backendBaseUrl}/candidate-profiles`;
   private skillUrl = `${this.backendBaseUrl}/skills`;
   private certificationUrl = `${this.backendBaseUrl}/certifications`;

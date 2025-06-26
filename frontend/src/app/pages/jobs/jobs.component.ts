@@ -12,6 +12,7 @@ import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
 import { SkillFiltersComponent } from './filters/skills-filter/skills-filter.component';
 import { CompensationFormatPipe } from '../../shared/pipes/compensation-format.pipe';
+import { environment } from '../../../environments/environment';
 import { MatSnackBar } from '@angular/material/snack-bar';
 // Services
 import { AuthStateService } from '../../services/auth-state.service';
@@ -38,7 +39,7 @@ import { CandidateProfileService } from '../../services/candidate-profile.servic
 })
 export class JobsComponent implements OnInit {
   @ViewChild(SkillFiltersComponent) skillsFilter!: SkillFiltersComponent;
-
+  baseURL: string = environment.apiBaseUrl
   jobs: any[] = [];
   allJobs: any[] = [];
   jobCount = 0;
@@ -164,7 +165,7 @@ export class JobsComponent implements OnInit {
       };
 
       this.http.post<{ applied: boolean }>(
-        'http://localhost:3000/applications/check-by-user-and-job',
+        this.baseURL + '/applications/check-by-user-and-job',
         payload
       ).subscribe({
         next: (res) => {
@@ -209,7 +210,7 @@ export class JobsComponent implements OnInit {
       job_id: jobId
     };
 
-    this.http.post('http://localhost:3000/applications/by-user', payload).subscribe({
+    this.http.post(this.baseURL + '/applications/by-user', payload).subscribe({
       next: () => {
         this.appliedStatus[jobId] = true;
       this.snackBar.open('✅ Application submitted successfully!', 'Dismiss', {
