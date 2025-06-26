@@ -18,7 +18,7 @@ async function bootstrap() {
 
   // ✅ Enable CORS to allow Angular frontend to communicate with this backend
   app.enableCors({
-    origin: 'http://localhost:4200',
+    origin: 'https://uat.oraxinno.com',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
