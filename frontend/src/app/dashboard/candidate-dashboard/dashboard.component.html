@@ -1,12 +1,14 @@
 <app-navbar /> 
 
+<!-- 
 <app-page-banner
   [pageTitle]="'Dashboard'"
   [backgroundImage]="'img/page-title-bg.jpg'"
 />
+/> -->
 
 <!-- Sidebar + Main Content Layout -->
-<div class="dashboard-layout container">
+<div class="dashboard-layout container-fluid">
   <!-- Sidebar -->
   <app-candidate-sidebar></app-candidate-sidebar>
 
@@ -14,7 +16,7 @@
   <div class="dashboard-main">
     <section class="dashboard-section">
       <div class="dashboard-content">
-        <div class="profile-card">
+        <div class="profile-card"> 
           <!-- Loading State -->
           <div *ngIf="isLoading" class="loading-section">
             <div class="spinner"></div>
@@ -40,19 +42,43 @@
               <p>{{ profile.professional_summary || 'No information available' }}</p>
             </div>
 
-            <div class="profile-section">
-              <h3>Education</h3>
-              <p>{{ profile.education || 'No information available' }}</p>
-            </div>
+             <!-- Education Section -->
+  <div class="profile-section">
+    <h3>Education</h3>
+    
+    <div class="education-grid">
+      <div *ngIf="profile.university" class="education-item">
+        <strong>University:</strong> {{ profile.university }}
+      </div>
+      
+      <div *ngIf="profile.year_of_passing" class="education-item">
+        <strong>Year of Passing:</strong> {{ profile.year_of_passing }}
+      </div>
+      
+      <div *ngIf="profile.grade_or_percentage" class="education-item">
+        <strong>Grade/Percentage:</strong> {{ profile.grade_or_percentage }}
+      </div>
+      
+      <div *ngIf="profile?.degrees?.length" class="education-item degrees-container">
+        <strong>Degrees:</strong>
+        <div class="degrees-list">
+          <span *ngFor="let degree of profile.degrees" class="degree-tag">
+            {{ degree }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Education Section -->
 
             <div class="stats-grid">
               <div class="stat-card">
-                <h4>Experience</h4>
+                <h3>Experience</h3>
                 <p>{{ profile.experience_years ?? 0 }} years</p>
               </div>
 
               <div class="stat-card">
-                <h4>Notice Period</h4>
+                <h3>Notice Period</h3>
                 <p>{{ profile.notice_period || 'Not specified' }}</p>
               </div>
             </div>

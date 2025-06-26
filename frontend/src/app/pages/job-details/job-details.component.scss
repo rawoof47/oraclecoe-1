@@ -540,3 +540,68 @@
     min-width: 120px;
   }
 }
+/* new styles - 17/6/24  - UI*/
+
+.job-details-list {
+  list-style: none;
+  padding: 0;
+}
+
+.job-details-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.job-details-list i {
+  font-size: 22px;
+  margin-right: 12px;
+  color: #fe4a55;
+  min-width: 24px;
+  position: absolute;
+  left: 0px;
+  top: 5px;
+}
+
+.job-details-list h4 {
+  font-size: 16px;
+  margin: 0 8px 0 0;
+  font-weight: 600;
+}
+
+.job-details-list span {
+  font-size: 15px;
+  color: #555;
+}
+/* Snack Bar Styles - Top Right Position */
+.success-snackbar {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.error-snackbar {
+  background-color: #F44336;
+  color: white;
+}
+
+.warning-snackbar {
+  background-color: #FF9800;
+  color: white;
+}
+
+.info-snackbar {
+  background-color: #2196F3;
+  color: white;
+}
+
+/* Action button styles */
+.mat-snack-bar-action {
+  color: #ffd740 !important;
+}
+
+/* Custom positioning to ensure top-right placement */
+.mat-snack-bar-container {
+  margin-top: 20px !important;
+  margin-right: 20px !important;
+  max-width: 400px !important;
+}

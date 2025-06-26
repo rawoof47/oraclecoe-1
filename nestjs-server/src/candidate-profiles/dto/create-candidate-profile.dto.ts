@@ -25,9 +25,22 @@ export class CreateCandidateProfileDto {
   @IsOptional()
   resume_link?: string;
 
+  // ✅ Replaced education with year_of_passing
+  @IsNumber()
+  @Min(1980)
+  @Max(2030) // You can update this based on your future range
+  @IsOptional()
+  year_of_passing?: number;
+
+  // ✅ Added university as free text
   @IsString()
   @IsOptional()
-  education?: string;
+  university?: string;
+
+  // ✅ Added grade or percentage
+  @IsString()
+  @IsOptional()
+  grade_or_percentage?: string;
 
   @IsNumber({ maxDecimalPlaces: 1 })
   @Min(0)

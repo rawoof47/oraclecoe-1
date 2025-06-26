@@ -1,0 +1,53 @@
+<div class="sidebar-container">
+  <div class="profile-item">
+    <img
+      src="img/dashboard4.png"
+      alt="Recruiter Headshot"
+    />
+     <h2>{{ firstName }}</h2> <!-- Dynamic first name -->
+    <span>{{ position }}</span> <!-- Updated to use position -->
+  </div>
+  <div class="nav flex-column nav-pills">
+    <a
+      class="nav-link"
+      routerLink="/recruiter-dashboard"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i class="bx bx-user"></i> My Profile
+    </a>
+
+    <a class="nav-link" routerLink="/post-a-job" routerLinkActive="active">
+      <i class="bx bx-plus"></i> Post A New Job
+    </a>
+    <a
+      class="nav-link"
+      routerLink="/recruiter/posted-jobs"
+      routerLinkActive="active"
+    >
+      <i class="bx bx-list-ul"></i> View All Posted Jobs
+    </a>
+    <a
+      class="nav-link"
+      routerLink="/job-applicants"
+      routerLinkActive="active"
+    >
+      <i class="bx bx-file"></i> View All Applications
+    </a>
+       <a 
+      class="nav-link" 
+      routerLink="/employer-details" 
+      routerLinkActive="active"
+    >
+      <i class="bx bx-user-circle"></i> View Profile
+    </a>
+    <!--  Edit Profile button  -->
+    <a 
+      class="nav-link edit-profile-link" 
+      routerLink="/recruiter-profile" 
+      routerLinkActive="active"
+    >
+      <i class="bx bx-edit"></i> Edit Profile
+    </a>
+  </div>
+</div>

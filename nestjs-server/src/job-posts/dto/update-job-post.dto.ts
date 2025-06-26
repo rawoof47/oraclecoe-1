@@ -97,4 +97,9 @@ export class UpdateJobPostDto {
   @IsArray()
   @IsString({ each: true })
   certificationIds?: string[];
+
+  // ✅ NEW: Job Number (optional field)
+  @IsOptional()
+  @IsNumber()
+  jobNumber?: number;
 }

@@ -1,6 +1,8 @@
 import { forkJoin } from 'rxjs';
 import { CandidateProfileService } from '../../services/candidate-profile.service';
 
+//#region Interfaces
+
 export interface Skill {
   id: string;
   name: string;
@@ -13,6 +15,18 @@ export interface Certification {
   name?: string;
   selected?: boolean;
 }
+
+export interface Degree {
+  id: string;
+  name: string;
+  abbreviation: string;
+  level: string;
+  selected?: boolean;
+}
+
+//#endregion
+
+//#region Static Category Mappings
 
 export const SKILL_CATEGORIES = {
   functional: '612222a1-791a-4125-be8d-1d86808a37bf',
@@ -27,6 +41,10 @@ export const CERT_CATEGORIES = {
   scm: 'ed7c5da6-36d3-11f0-bfce-80ce6232908a',
   cx: 'ed7c5e82-36d3-11f0-bfce-80ce6232908a',
 };
+
+//#endregion
+
+//#region Loaders
 
 export function loadSkillsAndCertifications(
   service: CandidateProfileService,
@@ -71,74 +89,116 @@ export function loadSkillsAndCertifications(
   });
 }
 
+export function loadDegrees(
+  service: CandidateProfileService,
+  onSuccess: (degrees: any[]) => void,
+  onError: () => void
+): void {
+  service.getAllDegrees().subscribe({
+    next: (degrees) => {
+      const groupedDegrees = [
+        {
+          categoryName: 'Degrees',
+          items: degrees.map(d => ({
+            ...d,
+            selected: false,
+          }))
+        }
+      ];
+      onSuccess(groupedDegrees);
+    },
+    error: () => {
+      onError();
+    }
+  });
+}
+
+//#endregion
+
+//#region Toggle Functions
+
 export function toggleSkill(skill: Skill, selectedSkills: Skill[]): Skill[] {
   skill.selected = !skill.selected;
-  const updatedList = skill.selected
+  return skill.selected
     ? [...selectedSkills, skill]
     : selectedSkills.filter(s => s.id !== skill.id);
-
-  return updatedList;
 }
 
 export function toggleCertification(cert: Certification, selectedCerts: Certification[]): Certification[] {
   cert.selected = !cert.selected;
-  const updatedList = cert.selected
+  return cert.selected
     ? [...selectedCerts, cert]
     : selectedCerts.filter(c => c.id !== cert.id);
-
-  return updatedList;
 }
 
+
+
+//#endregion
+
+//#region Labels
+
 export function getSkillsLabel(selectedSkills: Skill[]): string {
-  const label = selectedSkills.length > 0
+  return selectedSkills.length > 0
     ? `${selectedSkills.length} skill(s) selected`
     : 'Select Skills';
-
-  return label;
 }
 
 export function getCertificationsLabel(selectedCerts: Certification[]): string {
-  const label = selectedCerts.length > 0
+  return selectedCerts.length > 0
     ? `${selectedCerts.length} certification(s) selected`
     : 'Select Certifications';
-
-  return label;
 }
+
+export function getDegreesLabel(selectedDegrees: Degree[]): string {
+  return selectedDegrees.length > 0
+    ? `${selectedDegrees.length} degree(s) selected`
+    : 'Select Degrees';
+}
+
+//#endregion
+
+//#region Save Functions
 
 export function saveSkills(
   userId: string,
   selectedSkills: Skill[],
-  candidateProfileService: CandidateProfileService,
+  service: CandidateProfileService,
   onSuccess: () => void,
   onError: (error: any) => void
 ): void {
   const skillIds = selectedSkills.map(skill => skill.id);
-
-  candidateProfileService.saveCandidateSkills(userId, skillIds).subscribe({
-    next: () => {
-      onSuccess();
-    },
-    error: (error) => {
-      onError(error);
-    }
+  service.saveCandidateSkills(userId, skillIds).subscribe({
+    next: () => onSuccess(),
+    error: (error) => onError(error)
   });
 }
 
 export function saveCertifications(
   userId: string,
   selectedCerts: Certification[],
-  candidateProfileService: CandidateProfileService,
+  service: CandidateProfileService,
   onSuccess: () => void,
   onError: (error: any) => void
 ): void {
   const certificationIds = selectedCerts.map(cert => cert.id);
-
-  candidateProfileService.saveCandidateCertifications(userId, certificationIds).subscribe({
-    next: () => {
-      onSuccess();
-    },
-    error: (error) => {
-      onError(error);
-    }
+  service.saveCandidateCertifications(userId, certificationIds).subscribe({
+    next: () => onSuccess(),
+    error: (error) => onError(error)
   });
 }
+
+export function saveDegrees(
+  userId: string,
+  selectedDegrees: Degree[],
+  service: CandidateProfileService,
+  onSuccess: () => void,
+  onError: (error: any) => void
+): void {
+  const degreeIds = selectedDegrees.map(degree => degree.id);
+  service.saveCandidateDegrees(userId, degreeIds).subscribe({
+    next: () => onSuccess(),
+    error: (error) => onError(error)
+  });
+}
+
+//#endregion

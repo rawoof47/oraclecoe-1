@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { AuthStateService } from '../services/auth-state.service'; // Adjust path if needed
-import { tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -15,23 +14,18 @@ export class CandidateProfileService {
   private skillUrl = `${this.backendBaseUrl}/skills`;
   private certificationUrl = `${this.backendBaseUrl}/certifications`;
   private userUrl = `${this.backendBaseUrl}/users`;
+  private degreeUrl = `${this.backendBaseUrl}/degrees`; // ✅ Degree endpoint
 
-  constructor(private http: HttpClient, private authState: AuthStateService) {}
+  constructor(
+    private http: HttpClient,
+    private authState: AuthStateService
+  ) {}
 
   /**
    * Save candidate profile
-   * Payload includes details like about_me, summary, education, skill_ids, etc.
    */
   saveCandidateProfile(data: any): Observable<any> {
-    // Change endpoint to /upsert
     return this.http.post(`${this.baseUrl}/upsert`, data);
-  }
-
-  /**
-   * Get skills by category ID
-   */
-  getSkillsByCategory(categoryId: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.skillUrl}/${categoryId}`);
   }
 
   /**
@@ -42,28 +36,25 @@ export class CandidateProfileService {
   }
 
   /**
+   * Get skills by category ID
+   */
+  getSkillsByCategory(categoryId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.skillUrl}/${categoryId}`);
+  }
+
+  /**
+   * Get all degrees
+   */
+  getAllDegrees(): Observable<any[]> {
+    return this.http.get<any[]>(this.degreeUrl);
+  }
+
+  /**
    * Get certifications by category ID
    */
   getCertificationsByCategory(categoryId: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.certificationUrl}/by-category/${categoryId}`);
   }
-
-  /**
-   * Update user's name
-   */
-  updateUserName(userId: string, firstName: string, lastName: string, middleName?: string): Observable<any> {
-    return this.http.put(`${this.userUrl}/update-name/${userId}`, {
-      first_name: firstName,
-      last_name: lastName,
-      middle_name: middleName || ''
-    }).pipe(
-      tap(() => {
-        // Update stored name after successful API call
-        this.authState.updateStoredUserName(firstName, lastName);
-      })
-    );
-  }
-
 
   /**
    * Save candidate skills (bulk replace)
@@ -79,43 +70,76 @@ export class CandidateProfileService {
    * Save candidate certifications (bulk replace)
    */
   saveCandidateCertifications(userId: string, certificationIds: string[]): Observable<any> {
-    return this.http.post(
-      `${this.backendBaseUrl}/candidate_certifications/bulk-replace`, // FIXED
-      { user_id: userId, certification_ids: certificationIds }
-    );
+    return this.http.post(`${this.backendBaseUrl}/candidate_certifications/bulk-replace`, {
+      user_id: userId,
+      certification_ids: certificationIds
+    });
   }
 
+  /**
+   * Get candidate profile for logged-in user
+   */
   getMyProfile(): Observable<any> {
     return this.http.get(`${this.baseUrl}/by-user/me`);
   }
 
+  /**
+   * Get candidate skills by user ID
+   */
   getCandidateSkills(userId: string): Observable<string[]> {
-    return this.http.get<string[]>(
-      `${this.backendBaseUrl}/candidate_skills/skills/${userId}`
-    );
+    return this.http.get<string[]>(`${this.backendBaseUrl}/candidate_skills/skills/${userId}`);
   }
 
-  // ✅ Modified as per request: simplified to return certification_name[] directly
+  /**
+   * Get candidate certifications by user ID
+   */
   getCandidateCertifications(userId: string): Observable<string[]> {
-    return this.http.get<any[]>(
-      `${this.backendBaseUrl}/candidate_certifications/user/${userId}`
-    ).pipe(
-      map(certs => certs.map(c => c.certification.certification_name))
+    return this.http.get<any[]>(`${this.backendBaseUrl}/candidate_certifications/user/${userId}`)
+      .pipe(map(certs => certs.map(c => c.certification.certification_name)));
+  }
+
+  /**
+   * Update user's contact info
+   */
+  updateUserContactInfo(userId: string, email: string, mobileNumber?: string): Observable<any> {
+    return this.http.put(`${this.userUrl}/${userId}`, {
+      email,
+      mobile_number: mobileNumber
+    });
+  }
+
+  /**
+   * Update user's name
+   */
+  updateUserName(userId: string, firstName: string, lastName: string, middleName?: string): Observable<any> {
+    return this.http.put(`${this.userUrl}/update-name/${userId}`, {
+      first_name: firstName,
+      last_name: lastName,
+      middle_name: middleName || ''
+    }).pipe(
+      tap(() => {
+        this.authState.updateStoredUserName(firstName, lastName);
+      })
     );
   }
 
-  updateUserContactInfo(
-  userId: string, 
-  email: string, 
-  mobileNumber?: string
-): Observable<any> {
-  return this.http.put(`${this.userUrl}/${userId}`, {
-    email: email,
-    mobile_number: mobileNumber
+  /**
+   * Get user by ID
+   */
+  getUser(userId: string): Observable<any> {
+    return this.http.get(`${this.userUrl}/${userId}`);
+  }
+
+  saveCandidateDegrees(userId: string, degreeIds: string[]): Observable<any> {
+  return this.http.post(`${this.backendBaseUrl}/candidate_degrees/bulk-replace`, {
+    user_id: userId,
+    degree_ids: degreeIds
   });
 }
-// Add to CandidateProfileService
-getUser(userId: string): Observable<any> {
-  return this.http.get(`${this.userUrl}/${userId}`);
+
+// Add this method to get candidate degrees
+getCandidateDegrees(userId: string): Observable<string[]> {
+  return this.http.get<any[]>(`${this.backendBaseUrl}/candidate_degrees/user/${userId}`)
+    .pipe(map(degrees => degrees.map(d => d.degree.name))); // Changed from degree_name to name
 }
 }
