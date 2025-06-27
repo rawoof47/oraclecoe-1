@@ -75,17 +75,20 @@
                     />
                   </div>
                 </div>
+               <!-- industries -->
                 <div class="col-lg-6 col-md-12">
-                  <div class="form-group">
-                    <label>Industry:</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      [value]="profileData.industry || 'Not specified'"
-                      readonly
-                    />
-                  </div>
-                </div>
+  <div class="form-group">
+    <label>Industries:</label>
+    <input
+      type="text"
+      class="form-control"
+      [value]="profileData.industryNames?.join(', ') || 'Not specified'"
+      readonly
+    />
+  </div>
+</div>
+               
+              
                 <div class="col-lg-6 col-md-12">
                   <div class="form-group">
                     <label>Company Size:</label>

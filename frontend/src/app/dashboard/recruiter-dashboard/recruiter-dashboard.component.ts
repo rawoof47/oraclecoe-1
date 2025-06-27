@@ -5,10 +5,10 @@ import { NavbarComponent } from '../../common/navbar/navbar.component';
 import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
 import { RecruiterSidebarComponent } from '../../common/recruiter-sidebar/recruiter-sidebar.component';
-
 import { RecruiterProfileService } from '../../services/recruiter-profile.service';
 import { JobPostService } from '../../services/job-post.service';
-import { ApplicationService } from '../../services/application.service'; // ✅ Added import
+import { ApplicationService } from '../../services/application.service';
+import { Industry } from '../../auth/models/recruiter-profile.model'; // Assuming this is the correct import path
 
 @Component({
   selector: 'app-recruiter-dashboard',
@@ -28,6 +28,7 @@ export class RecruiterDashboardComponent implements OnInit {
   profileData: any = null;
   isLoading = true;
   error: string | null = null;
+  selectedIndustries: Industry[] = []; // Property to hold selected industries
 
   stats = {
     postedJobs: 0,
@@ -39,7 +40,7 @@ export class RecruiterDashboardComponent implements OnInit {
   constructor(
     private profileService: RecruiterProfileService,
     private jobPostService: JobPostService,
-    private applicationService: ApplicationService // ✅ Injected service
+    private applicationService: ApplicationService
   ) {}
 
   ngOnInit(): void {
@@ -50,6 +51,7 @@ export class RecruiterDashboardComponent implements OnInit {
     this.profileService.getMyProfile().subscribe({
       next: (profile) => {
         this.profileData = profile;
+        this.fetchIndustries(); // Fetch industries after profile is loaded
         this.fetchRecruiterStats(profile.user_id);
         this.isLoading = false;
       },
@@ -57,6 +59,19 @@ export class RecruiterDashboardComponent implements OnInit {
         console.error('Failed to fetch profile data:', err);
         this.error = 'Failed to load profile data. Please try again later.';
         this.isLoading = false;
+      }
+    });
+  }
+
+  fetchIndustries(): void {
+    this.profileService.getIndustries().subscribe({
+      next: (industries) => {
+        this.selectedIndustries = industries.filter(industry =>
+          this.profileData.industryIds.includes(industry.id)
+        );
+      },
+      error: (err) => {
+        console.error('Failed to fetch industries:', err);
       }
     });
   }
@@ -80,7 +95,6 @@ export class RecruiterDashboardComponent implements OnInit {
           });
         }
 
-        // ✅ Fetch shortlisted and rejected counts
         this.applicationService.getCountsByStatuses(recruiterId).subscribe({
           next: (counts) => {
             this.stats.shortlisted = counts.shortlisted || 0;

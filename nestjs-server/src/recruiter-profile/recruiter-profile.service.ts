@@ -70,17 +70,21 @@ export class RecruiterProfileService {
 
   // 🔍 Get recruiter profile with industries by user ID
   async findByUserId(userId: string): Promise<RecruiterProfile | null> {
-    const profile = await this.recruiterProfileRepository.findOne({
-      where: { user_id: userId },
-      relations: ['recruiterIndustries'], // Ensure entity is decorated with this relation
-    });
+  const profile = await this.recruiterProfileRepository.findOne({
+    where: { user_id: userId },
+    relations: [
+      'recruiterIndustries',
+      'recruiterIndustries.industry' // Add industry relation
+    ],
+  });
 
-    if (profile) {
-      profile['industryIds'] = profile.recruiterIndustries.map(
-        (ri) => ri.industry_id,
-      );
-    }
-
-    return profile;
+  if (profile) {
+    // Map industry names to profile
+    profile['industryNames'] = profile.recruiterIndustries
+      .map(ri => ri.industry?.name)
+      .filter(name => name); // Filter out undefined
   }
+
+  return profile;
+}
 }

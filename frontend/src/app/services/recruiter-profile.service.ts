@@ -38,4 +38,7 @@ export class RecruiterProfileService {
   getIndustries(): Observable<Industry[]> {
     return this.http.get<Industry[]>(`${this.backendBaseUrl}/industries`);
   }
+
+
+
 }

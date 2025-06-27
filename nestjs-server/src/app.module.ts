@@ -60,9 +60,7 @@ import { RecruiterIndustriesModule } from './recruiter-industries/recruiter-indu
         autoLoadEntities: true,
         synchronize: false, // NEVER true in production
 
-        // ✅ Enable SQL logging
-    logging: true,
-    logger: 'advanced-console',
+     
       }),
     }),
 
