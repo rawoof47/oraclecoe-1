@@ -59,6 +59,10 @@ import { RecruiterIndustriesModule } from './recruiter-industries/recruiter-indu
         database: configService.get<string>('DB_NAME', 'oracle_job_portal'),
         autoLoadEntities: true,
         synchronize: false, // NEVER true in production
+
+        // ✅ Enable SQL logging
+    logging: true,
+    logger: 'advanced-console',
       }),
     }),
 

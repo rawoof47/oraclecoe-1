@@ -21,53 +21,52 @@ export class RecruiterProfileService {
   ) {}
 
   // ✅ Create or update recruiter profile (with industries)
-  async upsert(
-    data: UpdateRecruiterProfileDto,
-    userId: string,
-  ): Promise<RecruiterProfile> {
-    return this.entityManager.transaction(async (transactionalEntityManager) => {
-      const DEFAULT_STATUS_ID = '34300a44-4775-11f0-8520-ac1f6bbcd360';
+ async upsert(
+  data: UpdateRecruiterProfileDto,
+  userId: string,
+): Promise<RecruiterProfile> {
+  return this.entityManager.transaction(async (transactionalEntityManager) => {
+    const DEFAULT_STATUS_ID = '34300a44-4775-11f0-8520-ac1f6bbcd360';
 
-      let profile = await transactionalEntityManager.findOne(RecruiterProfile, {
-        where: { user_id: userId },
-      });
-
-      if (!profile) {
-        // Create new profile
-        profile = transactionalEntityManager.create(RecruiterProfile, {
-          ...data,
-          user_id: userId,
-          status_id: DEFAULT_STATUS_ID,
-          created_by: userId,
-          updated_by: userId,
-        });
-      } else {
-        // Update existing profile
-        Object.assign(profile, data, {
-          updated_by: userId,
-          updated_at: new Date(),
-        });
-      }
-
-      const savedProfile = await transactionalEntityManager.save(profile);
-
-      // 🔄 Remove old industries
-      await transactionalEntityManager.delete(RecruiterIndustry, {
-        user_id: userId,
-      });
-
-      // ➕ Insert new selected industries
-      const industries = (data.industryIds || []).map((industryId) =>
-        transactionalEntityManager.create(RecruiterIndustry, {
-          user_id: userId,
-          industry_id: industryId,
-        }),
-      );
-      await transactionalEntityManager.save(industries);
-
-      return savedProfile;
+    // Find or create the profile
+    let profile = await transactionalEntityManager.findOne(RecruiterProfile, {
+      where: { user_id: userId },
     });
-  }
+
+    if (!profile) {
+      profile = transactionalEntityManager.create(RecruiterProfile, {
+        ...data,
+        user_id: userId,
+        status_id: DEFAULT_STATUS_ID,
+        created_by: userId,
+        updated_by: userId,
+      });
+    } else {
+      Object.assign(profile, data, {
+        updated_by: userId,
+        updated_at: new Date(),
+      });
+    }
+
+    const savedProfile = await transactionalEntityManager.save(profile);
+
+    // Remove old industries using the profile's ID
+    await transactionalEntityManager.delete(RecruiterIndustry, {
+      profile_id: savedProfile.id, // Fixed: Use profile_id
+    });
+
+    // Insert new industries using the profile's ID
+    const industries = (data.industryIds || []).map((industryId) =>
+      transactionalEntityManager.create(RecruiterIndustry, {
+        profile_id: savedProfile.id, // Fixed: Use profile_id
+        industry_id: industryId,
+      }),
+    );
+    await transactionalEntityManager.save(industries);
+
+    return savedProfile;
+  });
+}
 
   // 🔍 Get recruiter profile with industries by user ID
   async findByUserId(userId: string): Promise<RecruiterProfile | null> {

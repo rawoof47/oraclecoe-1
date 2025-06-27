@@ -16,7 +16,7 @@ export class RecruiterIndustry {
   id: string;
 
   @Column({ type: 'char', length: 36 })
-  user_id: string;
+  profile_id: string; // Renamed from user_id
 
   @Column({ type: 'char', length: 36 })
   industry_id: string;
@@ -28,8 +28,8 @@ export class RecruiterIndustry {
   updated_at: Date;
 
   @ManyToOne(() => RecruiterProfile, (profile) => profile.recruiterIndustries)
-  @JoinColumn({ name: 'user_id' })
-  user: RecruiterProfile;
+  @JoinColumn({ name: 'profile_id' }) // Updated JoinColumn
+  profile: RecruiterProfile; // Renamed from 'user' for clarity
 
   @ManyToOne(() => Industry)
   @JoinColumn({ name: 'industry_id' })

@@ -46,9 +46,10 @@ export class RecruiterProfile {
   @Column({ type: 'char', length: 36, nullable: true })
   updated_by: string;
 
-  // 🆕 One-to-many relation with recruiter_industries table
-  @OneToMany(() => RecruiterIndustry, (ri) => ri.user)
-  recruiterIndustries: RecruiterIndustry[];
+ // 🆕 One-to-many relation with recruiter_industries table
+@OneToMany(() => RecruiterIndustry, (ri) => ri.profile)
+recruiterIndustries: RecruiterIndustry[];
+
 
   // 🆕 Transient property for returning just industry IDs
   industries?: string[];

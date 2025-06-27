@@ -2,7 +2,7 @@ import { IsUUID } from 'class-validator';
 
 export class CreateRecruiterIndustryDto {
   @IsUUID()
-  user_id: string;
+  profile_id: string; // ✅ Renamed from user_id
 
   @IsUUID()
   industry_id: string;
