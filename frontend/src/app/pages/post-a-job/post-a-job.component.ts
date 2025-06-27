@@ -67,9 +67,16 @@ export class PostAJobComponent implements OnInit {
   hcmCertifications: Certification[] = [];
   cxCertifications: Certification[] = [];
 
-  
-
   workModeOptions = ['Remote', 'On-site', 'Hybrid'];
+
+  // Add default how-to-apply text
+  private defaultHowToApplyText: string = 
+    'How to Apply\n' +
+    'Step 1: Find the Job Posting\n' +
+    'Step 2: Read the Job Description Carefully\n' +
+    'Step 3: Update Your Resume\n' +
+    'Step 4: Click “Apply” and Fill in Details\n' +
+    'Step 5: Submit Your Application';
 
   constructor(
     private fb: FormBuilder,
@@ -94,7 +101,9 @@ export class PostAJobComponent implements OnInit {
       roleSummary: ['', Validators.required],
       preferredQualifications: [''],
       whatWeOffer: [''],
-      howToApply: [''],
+      // Updated with default text and added new control
+      howToApply: [this.defaultHowToApplyText, Validators.required],
+      useStandardInstructions: [true],
 
       functionalSkills: [[]],
       technicalSkills: [[]],
@@ -119,6 +128,9 @@ export class PostAJobComponent implements OnInit {
       console.warn('⚠️ No recruiter ID found. Ensure recruiter is logged in.');
     }
 
+    // Subscribe to the checkbox changes
+    this.subscribeToUseStandardInstructions();
+
     this.route.queryParams.subscribe(params => {
       const id = params['id'];
       if (id) {
@@ -128,6 +140,15 @@ export class PostAJobComponent implements OnInit {
       } else {
         this.loadSkillsByCategory();
         this.loadCertificationsByCategory();
+      }
+    });
+  }
+
+  // New method: Subscribe to checkbox changes
+  private subscribeToUseStandardInstructions(): void {
+    this.jobForm.get('useStandardInstructions')?.valueChanges.subscribe(checked => {
+      if (checked) {
+        this.jobForm.get('howToApply')?.setValue(this.defaultHowToApplyText, { emitEvent: false });
       }
     });
   }
@@ -171,6 +192,10 @@ export class PostAJobComponent implements OnInit {
   }
 
   private populateForm(job: JobPost, skillIds: string[], certificationIds: string[]): void {
+    // Determine how-to-apply value and checkbox state
+    const howToApplyValue = job.how_to_apply || this.defaultHowToApplyText;
+    const useStandard = howToApplyValue === this.defaultHowToApplyText;
+
     this.jobForm.patchValue({
       jobTitle: job.job_title,
       location: job.location,
@@ -187,8 +212,9 @@ export class PostAJobComponent implements OnInit {
       roleSummary: job.role_summary,
       preferredQualifications: job.preferred_qualifications,
       whatWeOffer: job.what_we_offer,
-      howToApply: job.how_to_apply
-    });
+      howToApply: howToApplyValue,
+      useStandardInstructions: useStandard
+    }, { emitEvent: false });  // Prevent triggering value changes
 
     // Map skill IDs to skill objects
     this.jobForm.patchValue({

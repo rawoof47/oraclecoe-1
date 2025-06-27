@@ -283,17 +283,33 @@
 
 <!-- How to Apply -->
  <div class="col-lg-12 col-md-12">
-              <label class="form-label">How to Apply</label>
-              <textarea
-                formControlName="jobDescription"
-                placeholder="Application Instruction"
-                class="form-control"
-              ></textarea>
-          </div>
+  <label class="form-label">How to Apply</label>
+  
+  <!-- Checkbox for using standard instructions -->
+  <div class="form-check mb-3">
+    <input 
+      class="form-check-input" 
+      type="checkbox" 
+      id="useStandardInstructions" 
+      formControlName="useStandardInstructions">
+    <label class="form-check-label" for="useStandardInstructions">
+      Use standard application instructions
+    </label>
+  </div>
+  
+  <!-- Textarea with conditional read-only state -->
+  <textarea
+    formControlName="howToApply"
+    placeholder="Application Instruction"
+    class="form-control"
+    [readOnly]="jobForm.get('useStandardInstructions')?.value"
+    rows="5"
+  ></textarea>
+</div>
 
           <!-- Notice Period -->
           <div class="col-lg-6 col-md-12">
-              <label class="form-label">Notice Period:</label>
+              <label class="form-label">Preferred Availability:</label>
               <select formControlName="noticePeriod" class="form-control">
                 <option value="">Select Notice Period</option>
                 <option value="Immediate">Immediate</option>
