@@ -11,11 +11,7 @@
               <img src="img/home-one/job3.png" alt="Details" />
               <h2>{{ recruiterProfile?.company_name || 'Tax Manager' }}</h2>
               <ul>
-                <li>
-                  <i class="bx bx-pie-chart-alt-2"></i>
-                  {{ recruiterProfile?.industry || 'Sales & Marketing' }}
-                </li>
-                
+                <!-- Removed industry line -->
               </ul>
             </div>
           </div>
@@ -79,39 +75,40 @@
                   <span>{{ recruiterProfile.company_size || '50 - 100 Members' }}</span>
                 </li>
 
-<!-- Add this new item for website -->
-        <li *ngIf="recruiterProfile.website">
-          <i class="fas fa-globe"></i>
-          <h4>Website</h4>
-          <a [href]="recruiterProfile.website" target="_blank">
-            {{ recruiterProfile.website }}
-          </a>
-        </li>
-
-                
-                <li>
-                  <i class="fas fa-industry"></i>
-                  <h4>Industry</h4>
-                  <span>{{ recruiterProfile.industry || 'Development' }}</span>
+                <!-- Website -->
+                <li *ngIf="recruiterProfile.website">
+                  <i class="fas fa-globe"></i>
+                  <h4>Website</h4>
+                  <a [href]="recruiterProfile.website" target="_blank">
+                    {{ recruiterProfile.website }}
+                  </a>
                 </li>
+
+                <!--  industry entry -->
+                  <li *ngIf="recruiterProfile.industryNames?.length">
+  <i class="fas fa-industry"></i>
+  <h4>Industry</h4>
+  <span>{{ recruiterProfile.industryNames.join(', ') }}</span>
+</li>
               </ul>
             </div>
 
             <div class="owner">
               <div class="top">
-<h3>Employer:
-            {{ recruiterUser?.first_name || '' }} 
-            {{ recruiterUser?.middle_name || '' }} 
-            {{ recruiterUser?.last_name || '' }}
-        </h3>              </div>
+                <h3>Employer:
+                  {{ recruiterUser?.first_name || '' }} 
+                  {{ recruiterUser?.middle_name || '' }} 
+                  {{ recruiterUser?.last_name || '' }}
+                </h3>
+              </div>
               <div class="information widget-item">
                 <ul class="job-details-list">
                   <li>
                     <i class="fa-solid fa-envelope"></i>
                     <h4>Email</h4>
-            <a [href]="'mailto:' + (recruiterUser?.email || 'hello@alzo.com')">
-                {{ recruiterUser?.email || 'hello@alzo.com' }}
-            </a>
+                    <a [href]="'mailto:' + (recruiterUser?.email || 'hello@alzo.com')">
+                      {{ recruiterUser?.email || 'hello@alzo.com' }}
+                    </a>
                   </li>
                 </ul>
               </div>

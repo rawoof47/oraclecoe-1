@@ -1,4 +1,3 @@
-// employer-details.component.ts
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NavbarComponent } from '../../common/navbar/navbar.component';
@@ -51,6 +50,32 @@ export class EmployerDetailsComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
+        // Prevent logic from running during SSR
+        if (typeof window === 'undefined') {
+            console.warn('Running in SSR - skipping token-dependent logic');
+            return;
+        }
+
+        this.waitForTokenAndFetchData();
+    }
+
+    waitForTokenAndFetchData(retryCount = 0): void {
+        if (typeof window === 'undefined') return;
+
+        const token = localStorage.getItem('access_token');
+        console.log('Calling getMyProfile with token:', token);
+
+        if (!token) {
+            if (retryCount < 10) {
+                console.warn('Token not found, retrying in 100ms...');
+                setTimeout(() => this.waitForTokenAndFetchData(retryCount + 1), 100);
+            } else {
+                console.error('Token still not available after multiple retries.');
+                this.isLoading = false;
+            }
+            return;
+        }
+
         this.fetchRecruiterProfile();
         this.fetchUserDetails();
     }
