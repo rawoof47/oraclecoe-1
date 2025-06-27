@@ -14,6 +14,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../services/auth.service';
 import { AuthStateService } from '../../services/auth-state.service';
+import { NavbarComponent } from '../../common/navbar/navbar.component'; // Add this
+import { FooterComponent } from '../../common/footer/footer.component'; // Add this
 
 @Component({
   selector: 'app-setting',
@@ -23,7 +25,9 @@ import { AuthStateService } from '../../services/auth-state.service';
     ReactiveFormsModule,
     MatSnackBarModule,
     MatTooltipModule,
-    MatIconModule
+    MatIconModule,
+     NavbarComponent, // Add this
+    FooterComponent 
   ],
   templateUrl: './setting.component.html',
   styleUrls: ['./setting.component.scss']
