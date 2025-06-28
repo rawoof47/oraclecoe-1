@@ -5,7 +5,6 @@
     <div class="profile-content no-sidebar">
       <form [formGroup]="recruiterForm" (ngSubmit)="onSubmit()" class="form-layout">
         
-        
         <!-- Company Info -->
         <div class="profile-content-inner">
           <h2 class="section-title">Company Information</h2>
@@ -37,39 +36,53 @@
             <input type="text" formControlName="website" />
           </div>
 
-          <div class="form-group">
-  <label for="region">Region</label>
-  <select class="form-control" formControlName="region_id" id="region">
-    <option value="">-- Select Region --</option>
-    <option *ngFor="let region of regions" [value]="region.id">
-      {{ region.name }}
-    </option>
-  </select>
+          <!-- Primary Location Section -->
+          <!-- Primary Location Section -->
+<div class="location-group">
+  <h3 class="location-title">Primary Location</h3>
+  
+  <div class="form-row">
+    <label>Region<span class="required">*</span>:</label>
+    <select class="form-control" formControlName="region_id" id="region">
+      <option value="">-- Select Region --</option>
+      <option *ngFor="let region of regions" [value]="region.id">
+        {{ region.name }}
+      </option>
+    </select>
+  </div>
+
+  <div *ngIf="recruiterForm.get('region_id')?.value">
+    <div class="form-row">
+      <label>Country<span class="required">*</span>:</label>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Country</mat-label>
+        <input 
+          type="text" 
+          matInput 
+          [formControl]="countrySearchControl" 
+          [matAutocomplete]="auto" 
+          placeholder="Type to search" 
+          [disabled]="recruiterForm.get('region_id')?.value === GLOBAL_REGION_ID"
+        />
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onCountrySelected($event)">
+          <mat-option *ngFor="let country of countries" [value]="country">
+            {{ country.name }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <label>City / State:</label>
+      <input 
+        type="text" 
+        formControlName="city_state" 
+        placeholder="Enter city/state (optional)"
+        [disabled]="recruiterForm.get('region_id')?.value === GLOBAL_REGION_ID"
+      />
+    </div>
+  </div>
 </div>
-
-<mat-form-field appearance="fill" class="full-width">
-  <mat-label>Country</mat-label>
-  <input 
-    type="text" 
-    matInput 
-    [formControl]="countrySearchControl" 
-    [matAutocomplete]="auto" 
-    placeholder="Type to search" 
-  />
-  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onCountrySelected($event)">
-    <mat-option *ngFor="let country of countries" [value]="country">
-      {{ country.name }}
-    </mat-option>
-  </mat-autocomplete>
-</mat-form-field>
-
-
-<div class="form-row">
-  <label>City / State:</label>
-  <input type="text" formControlName="city_state" placeholder="Enter city/state (optional)" />
-</div>
-
-
 
           <div class="form-row align-top">
             <label>Company Description<span class="required">*</span>:</label>
@@ -115,11 +128,11 @@
         <!-- Submit Button -->
         <div class="button-wrapper">
          <button type="submit" [disabled]="isFormInvalid()">
-  <span *ngIf="!isLoading">Save Profile</span>
-  <span *ngIf="isLoading">
-    <i class="spinner"></i> Saving...
-  </span>
-</button>
+          <span *ngIf="!isLoading">Save Profile</span>
+          <span *ngIf="isLoading">
+            <i class="spinner"></i> Saving...
+          </span>
+        </button>
         </div>
       </form>
     </div>

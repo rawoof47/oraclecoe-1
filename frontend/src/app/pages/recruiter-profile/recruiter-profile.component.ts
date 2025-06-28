@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { catchError, switchMap, tap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
@@ -46,15 +46,17 @@ import { RecruiterLocationService } from '../../services/recruiter-location.serv
   templateUrl: './recruiter-profile.component.html',
   styleUrls: ['./recruiter-profile.component.scss']
 })
-export class RecruiterProfileComponent implements OnInit {
+export class RecruiterProfileComponent implements OnInit, OnDestroy {
   recruiterForm: FormGroup;
   userId: string | null = null;
-  recruiterProfileId: string | null = null; // ✅ Added recruiterProfileId
+  recruiterProfileId: string | null = null;
   isLoading = false;
   industries: Industry[] = [];
   regions: Region[] = [];
   countries: Country[] = [];
   countrySearchControl = new FormControl();
+  readonly GLOBAL_REGION_ID = 'a1234567-aaaa-bbbb-cccc-000000000004';
+  private regionChangeSub: Subscription | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -91,14 +93,12 @@ export class RecruiterProfileComponent implements OnInit {
     this.loadRegions();
     this.loadRecruiterProfile();
 
-    // ✅ Handle region changes to reset country
-    this.recruiterForm.get('region_id')?.valueChanges.subscribe(() => {
-      this.recruiterForm.get('country_id')?.setValue('');
-      this.countrySearchControl.setValue('');
-      this.countries = [];
-    });
+    // Handle region changes
+    this.regionChangeSub = this.recruiterForm.get('region_id')?.valueChanges.subscribe((regionId) => {
+      this.handleRegionChange(regionId);
+    }) || null;
 
-    // ✅ Handle country search with debounce
+    // Handle country search with debounce
     this.countrySearchControl.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -115,6 +115,41 @@ export class RecruiterProfileComponent implements OnInit {
         this.countries = [];
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.regionChangeSub) {
+      this.regionChangeSub.unsubscribe();
+    }
+  }
+
+  private handleRegionChange(regionId: string): void {
+    const isGlobalRegion = regionId === this.GLOBAL_REGION_ID;
+    
+    if (isGlobalRegion) {
+      // Clear and disable location fields
+      this.recruiterForm.get('country_id')?.reset('');
+      this.recruiterForm.get('city_state')?.reset('');
+      this.countrySearchControl.reset('');
+      
+      // Disable form controls
+      this.recruiterForm.get('country_id')?.disable();
+      this.recruiterForm.get('city_state')?.disable();
+      this.countrySearchControl.disable();
+      
+      // Remove required validator for country
+      this.recruiterForm.get('country_id')?.clearValidators();
+      this.recruiterForm.get('country_id')?.updateValueAndValidity();
+    } else {
+      // Enable form controls
+      this.recruiterForm.get('country_id')?.enable();
+      this.recruiterForm.get('city_state')?.enable();
+      this.countrySearchControl.enable();
+      
+      // Add back required validator for country
+      this.recruiterForm.get('country_id')?.setValidators(Validators.required);
+      this.recruiterForm.get('country_id')?.updateValueAndValidity();
+    }
   }
 
   isFormInvalid(): boolean {
@@ -164,7 +199,7 @@ export class RecruiterProfileComponent implements OnInit {
     this.recruiterProfileService.getMyProfile().subscribe({
       next: (profile) => {
         if (profile) {
-          // ✅ Store the recruiter profile ID
+          // Store the recruiter profile ID
           this.recruiterProfileId = profile.id;
           
           // Patch the form without emitting events to avoid region change reset
@@ -178,6 +213,11 @@ export class RecruiterProfileComponent implements OnInit {
             region_id: profile.region_id,
             country_id: profile.country_id
           }, { emitEvent: false });
+
+          // Handle global region if needed
+          if (profile.region_id === this.GLOBAL_REGION_ID) {
+            this.handleRegionChange(this.GLOBAL_REGION_ID);
+          }
 
           // Set country name if exists
           if (profile.country_id) {
@@ -302,21 +342,20 @@ export class RecruiterProfileComponent implements OnInit {
       company_description: otherData.companyDescription,
       recruiter_position: position,
       region_id: otherData.region_id,
-      country_id: otherData.country_id, // ✅ Send selected country ID
+      country_id: otherData.country_id,
       city_state: otherData.city_state
     };
 
     return this.recruiterProfileService.saveRecruiterProfile(recruiterData);
   }
 
-  // ✅ Updated with recruiterProfileId and defensive check
   private saveRecruiterLocation() {
     const { region_id, country_id } = this.recruiterForm.value;
 
-    if (!this.recruiterProfileId) return of(null); // ✅ defensive check
+    if (!this.recruiterProfileId) return of(null);
 
     return this.locationService.upsertLocation({
-      recruiter_profile_id: this.recruiterProfileId, // ✅ Correct ID now
+      recruiter_profile_id: this.recruiterProfileId,
       region_id,
       country_id: country_id || null
     });
