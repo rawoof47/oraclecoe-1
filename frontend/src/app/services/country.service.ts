@@ -5,7 +5,7 @@ import { Country } from '../auth/models/country.model';
 
 @Injectable({ providedIn: 'root' })
 export class CountryService {
-  private baseUrl = 'http://localhost:3000/countries';
+  private baseUrl = 'http://localhost:3000/countries'; // adjust for /api if proxy used
 
   constructor(private http: HttpClient) {}
 
@@ -15,8 +15,12 @@ export class CountryService {
     });
   }
 
-  // In country.service.ts
-getCountryById(id: string): Observable<Country> {
-  return this.http.get<Country>(`${this.baseUrl}/${id}`);
-}
+  getCountryById(id: string): Observable<Country> {
+    return this.http.get<Country>(`${this.baseUrl}/${id}`);
+  }
+
+  // ✅ Newly added method to fetch all countries by region
+  getCountriesByRegion(regionId: string): Observable<Country[]> {
+    return this.http.get<Country[]>(`${this.baseUrl}/by-region/${regionId}`);
+  }
 }

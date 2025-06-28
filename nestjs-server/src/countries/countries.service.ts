@@ -20,4 +20,10 @@ export class CountriesService {
       take: 10,
     });
   }
+
+  async findByRegion(regionId: string): Promise<Country[]> {
+    return this.countryRepository.find({
+      where: { region_id: regionId },
+    });
+  }
 }

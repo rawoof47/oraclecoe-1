@@ -24,6 +24,7 @@ import { RegionService } from '../../services/region.service';
 import { Region } from '../../auth/models/region.model';
 import { Country } from '../../auth/models/country.model';
 import { CountryService } from '../../services/country.service';
+import { RecruiterLocationService } from '../../services/recruiter-location.service';
 
 @Component({
   selector: 'app-recruiter-profile',
@@ -48,6 +49,7 @@ import { CountryService } from '../../services/country.service';
 export class RecruiterProfileComponent implements OnInit {
   recruiterForm: FormGroup;
   userId: string | null = null;
+  recruiterProfileId: string | null = null; // ✅ Added recruiterProfileId
   isLoading = false;
   industries: Industry[] = [];
   regions: Region[] = [];
@@ -62,7 +64,8 @@ export class RecruiterProfileComponent implements OnInit {
     private regionService: RegionService,
     private countryService: CountryService,
     private snackBar: MatSnackBar,
-    private router: Router
+    private router: Router,
+    private locationService: RecruiterLocationService,
   ) {
     this.recruiterForm = this.fb.group({
       companyName: ['', Validators.required],
@@ -160,6 +163,9 @@ export class RecruiterProfileComponent implements OnInit {
     this.recruiterProfileService.getMyProfile().subscribe({
       next: (profile) => {
         if (profile) {
+          // ✅ Store the recruiter profile ID
+          this.recruiterProfileId = profile.id;
+          
           // Patch the form without emitting events to avoid region change reset
           this.recruiterForm.patchValue({
             companyName: profile.company_name,
@@ -246,6 +252,7 @@ export class RecruiterProfileComponent implements OnInit {
         this.authState.updateStoredUserName(firstName, lastName);
       }),
       switchMap(() => this.saveRecruiterProfile()),
+      switchMap(() => this.saveRecruiterLocation()),
       switchMap(() => this.updateContactInfo(email, phone)),
       tap(() => {
         this.snackBar.open('Profile saved successfully', 'Close', {
@@ -298,6 +305,19 @@ export class RecruiterProfileComponent implements OnInit {
     };
 
     return this.recruiterProfileService.saveRecruiterProfile(recruiterData);
+  }
+
+  // ✅ Updated with recruiterProfileId and defensive check
+  private saveRecruiterLocation() {
+    const { region_id, country_id } = this.recruiterForm.value;
+
+    if (!this.recruiterProfileId) return of(null); // ✅ defensive check
+
+    return this.locationService.upsertLocation({
+      recruiter_profile_id: this.recruiterProfileId, // ✅ Correct ID now
+      region_id,
+      country_id: country_id || null
+    });
   }
 
   private updateContactInfo(email: string, phone?: string) {

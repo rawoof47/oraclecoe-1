@@ -6,6 +6,7 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  Generated,
 } from 'typeorm';
 import { Region } from '../regions/region.entity';
 import { Country } from '../countries/country.entity';
@@ -14,6 +15,7 @@ import { RecruiterProfile } from '../recruiter-profile/entity/recruiter-profile.
 @Entity('recruiter_locations')
 export class RecruiterLocation {
   @PrimaryColumn({ type: 'char', length: 36 })
+  @Generated('uuid') // optional: remove if you generate UUIDs manually
   id: string;
 
   @Column({ type: 'char', length: 36 })
@@ -25,15 +27,15 @@ export class RecruiterLocation {
   @Column({ type: 'char', length: 36, nullable: true })
   country_id: string | null;
 
-  @ManyToOne(() => RecruiterProfile)
+  @ManyToOne(() => RecruiterProfile, { eager: false })
   @JoinColumn({ name: 'recruiter_profile_id' })
   recruiterProfile: RecruiterProfile;
 
-  @ManyToOne(() => Region)
+  @ManyToOne(() => Region, { eager: false })
   @JoinColumn({ name: 'region_id' })
   region: Region;
 
-  @ManyToOne(() => Country, { nullable: true })
+  @ManyToOne(() => Country, { nullable: true, eager: false })
   @JoinColumn({ name: 'country_id' })
   country: Country;
 

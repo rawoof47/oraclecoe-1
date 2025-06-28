@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { CountriesService } from './countries.service';
 import { Country } from './country.entity';
 
@@ -16,5 +16,13 @@ export class CountriesController {
     }
 
     return this.countriesService.searchCountries(regionId, keyword);
+  }
+
+  // ✅ Newly added
+  @Get('by-region/:regionId')
+  async getCountriesByRegion(
+    @Param('regionId') regionId: string,
+  ): Promise<Country[]> {
+    return this.countriesService.findByRegion(regionId);
   }
 }
