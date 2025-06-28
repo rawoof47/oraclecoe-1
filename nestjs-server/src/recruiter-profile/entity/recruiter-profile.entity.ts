@@ -7,6 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { RecruiterIndustry } from '../../recruiter-industries/entities/recruiter-industry.entity';
+import { RecruiterLocation } from '../../recruiter-location/recruiter-location.entity';
 
 @Entity('recruiter_profiles')
 export class RecruiterProfile {
@@ -56,4 +57,9 @@ export class RecruiterProfile {
   // ✅ NEW: Optional city/state field
   @Column({ name: 'city_state', type: 'varchar', length: 255, nullable: true })
   city_state?: string;
+
+  // ✅ NEW: One-to-many relation with recruiter_locations
+ @OneToMany(() => RecruiterLocation, (location) => location.recruiterProfile)
+locations: RecruiterLocation[];
+
 }

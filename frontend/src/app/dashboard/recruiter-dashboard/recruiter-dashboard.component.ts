@@ -1,3 +1,4 @@
+// ✅ Existing imports
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -8,7 +9,7 @@ import { RecruiterSidebarComponent } from '../../common/recruiter-sidebar/recrui
 import { RecruiterProfileService } from '../../services/recruiter-profile.service';
 import { JobPostService } from '../../services/job-post.service';
 import { ApplicationService } from '../../services/application.service';
-import { Industry } from '../../auth/models/recruiter-profile.model'; // Assuming this is the correct import path
+import { Industry } from '../../auth/models/recruiter-profile.model';
 
 @Component({
   selector: 'app-recruiter-dashboard',
@@ -28,7 +29,12 @@ export class RecruiterDashboardComponent implements OnInit {
   profileData: any = null;
   isLoading = true;
   error: string | null = null;
-  selectedIndustries: Industry[] = []; // Property to hold selected industries
+  selectedIndustries: Industry[] = [];
+
+  // ✅ Location display fields
+  regionName: string = 'N/A';
+  countryName: string = 'N/A';
+  cityState: string = 'N/A';
 
   stats = {
     postedJobs: 0,
@@ -51,7 +57,16 @@ export class RecruiterDashboardComponent implements OnInit {
     this.profileService.getMyProfile().subscribe({
       next: (profile) => {
         this.profileData = profile;
-        this.fetchIndustries(); // Fetch industries after profile is loaded
+
+        // ✅ Extract location details from `locations[0]`
+        const location = profile.locations?.[0];
+        if (location) {
+          this.regionName = location.region?.name || 'N/A';
+          this.countryName = location.country?.name || 'N/A';
+        }
+        this.cityState = profile.city_state || 'N/A';
+
+        this.fetchIndustries();
         this.fetchRecruiterStats(profile.user_id);
         this.isLoading = false;
       },
@@ -67,7 +82,7 @@ export class RecruiterDashboardComponent implements OnInit {
     this.profileService.getIndustries().subscribe({
       next: (industries) => {
         this.selectedIndustries = industries.filter(industry =>
-          this.profileData.industryIds.includes(industry.id)
+          this.profileData.industryIds?.includes(industry.id)
         );
       },
       error: (err) => {

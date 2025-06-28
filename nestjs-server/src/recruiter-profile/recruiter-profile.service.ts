@@ -74,17 +74,35 @@ export class RecruiterProfileService {
     where: { user_id: userId },
     relations: [
       'recruiterIndustries',
-      'recruiterIndustries.industry' // Add industry relation
+      'recruiterIndustries.industry',
+      'locations',              // ✅ recruiter_locations relation
+      'locations.region',       // ✅ join region
+      'locations.country'       // ✅ join country (nullable)
     ],
   });
 
-  if (profile) {
-    // Map industry names to profile
-    profile['industryNames'] = profile.recruiterIndustries
-      .map(ri => ri.industry?.name)
-      .filter(name => name); // Filter out undefined
+  if (!profile) return null;
+
+  // ✅ Add readable industry names
+  profile['industryNames'] = profile.recruiterIndustries
+    .map(ri => ri.industry?.name)
+    .filter(name => name);
+
+  // ✅ Handle location
+  const location = profile.locations?.[0]; // You can change this to filter latest if needed
+
+  if (location) {
+    profile['region'] = location.region?.name || null;
+    profile['country'] = location.country?.name || null;
+  } else {
+    profile['region'] = null;
+    profile['country'] = null;
   }
+
+  // ✅ city_state is already included in RecruiterProfile as a column
+  // So you don’t need anything extra for that
 
   return profile;
 }
+
 }
