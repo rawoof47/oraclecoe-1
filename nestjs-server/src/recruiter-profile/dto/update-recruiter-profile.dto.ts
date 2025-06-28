@@ -10,5 +10,11 @@ export class UpdateRecruiterProfileDto extends PartialType(CreateRecruiterProfil
   @IsOptional()
   @IsString()
   @MaxLength(100)
-  recruiter_position?: string;  // Add this field
+  recruiter_position?: string;
+
+  // ✅ NEW: Optional city/state field
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  city_state?: string;
 }

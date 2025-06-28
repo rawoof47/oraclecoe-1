@@ -38,4 +38,10 @@ export class CreateRecruiterProfileDto {
   @IsOptional()
   @IsUUID()
   updated_by?: string;
+
+    @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  city_state?: string;
+
 }

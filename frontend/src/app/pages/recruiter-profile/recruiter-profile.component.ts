@@ -80,7 +80,8 @@ export class RecruiterProfileComponent implements OnInit {
       phone: ['', Validators.required],
       position: ['', Validators.required],
       region_id: ['', Validators.required],
-      country_id: ['', Validators.required] // ✅ Added country_id to form
+      country_id: ['', Validators.required],
+      city_state: [''] 
     });
   }
 
@@ -301,7 +302,8 @@ export class RecruiterProfileComponent implements OnInit {
       company_description: otherData.companyDescription,
       recruiter_position: position,
       region_id: otherData.region_id,
-      country_id: otherData.country_id // ✅ Send selected country ID
+      country_id: otherData.country_id, // ✅ Send selected country ID
+      city_state: otherData.city_state
     };
 
     return this.recruiterProfileService.saveRecruiterProfile(recruiterData);

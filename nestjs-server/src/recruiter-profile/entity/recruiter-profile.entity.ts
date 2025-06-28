@@ -46,11 +46,14 @@ export class RecruiterProfile {
   @Column({ type: 'char', length: 36, nullable: true })
   updated_by: string;
 
- // 🆕 One-to-many relation with recruiter_industries table
-@OneToMany(() => RecruiterIndustry, (ri) => ri.profile)
-recruiterIndustries: RecruiterIndustry[];
-
+  // 🆕 One-to-many relation with recruiter_industries table
+  @OneToMany(() => RecruiterIndustry, (ri) => ri.profile)
+  recruiterIndustries: RecruiterIndustry[];
 
   // 🆕 Transient property for returning just industry IDs
   industries?: string[];
+
+  // ✅ NEW: Optional city/state field
+  @Column({ name: 'city_state', type: 'varchar', length: 255, nullable: true })
+  city_state?: string;
 }
