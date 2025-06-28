@@ -37,6 +37,34 @@
             <input type="text" formControlName="website" />
           </div>
 
+          <div class="form-group">
+  <label for="region">Region</label>
+  <select class="form-control" formControlName="region_id" id="region">
+    <option value="">-- Select Region --</option>
+    <option *ngFor="let region of regions" [value]="region.id">
+      {{ region.name }}
+    </option>
+  </select>
+</div>
+
+<mat-form-field appearance="fill" class="full-width">
+  <mat-label>Country</mat-label>
+  <input 
+    type="text" 
+    matInput 
+    [formControl]="countrySearchControl" 
+    [matAutocomplete]="auto" 
+    placeholder="Type to search" 
+  />
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onCountrySelected($event)">
+    <mat-option *ngFor="let country of countries" [value]="country">
+      {{ country.name }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>
+
+
+
           <div class="form-row align-top">
             <label>Company Description<span class="required">*</span>:</label>
             <textarea rows="4" formControlName="companyDescription"></textarea>

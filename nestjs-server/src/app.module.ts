@@ -38,7 +38,9 @@ import { DegreeModule } from './degree/degree.module';
 import { CandidateDegreesModule } from './candidate_degrees/candidate_degrees.module';
 import { IndustriesModule } from './industries/industries.module'; // Add this
 import { RecruiterIndustriesModule } from './recruiter-industries/recruiter-industries.module';
-
+import { RegionsModule } from './regions/regions.module';
+import { CountriesModule } from './countries/countries.module';
+import { RecruiterLocationModule } from './recruiter-location/recruiter-location.module';
 @Module({
   imports: [
     // ✅ Global .env configuration
@@ -97,6 +99,9 @@ import { RecruiterIndustriesModule } from './recruiter-industries/recruiter-indu
     CandidateDegreesModule,
     IndustriesModule,
     RecruiterIndustriesModule,
+    RegionsModule,
+    CountriesModule,
+    RecruiterLocationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
