@@ -10,7 +10,9 @@ export interface JobPost {
   experience_min?: number; // In years (e.g., 1.5)
   experience_max?: number; // In years (e.g., 4.0)
   employment_type?: 'Full Time' | 'Part Time' | 'Contract' | 'Internship' | 'Freelance';
-  compensation_range?: string; // e.g. "$1000 - $2000"
+   currency_id?: string;
+  compensation_value?: number;
+  salary_type?: string; // e.g. "$1000 - $2000"
   job_description?: string;
   notice_period?: string; // e.g. "1 month", "15 days"
   status_id: string; // UUID of the status
@@ -36,4 +38,5 @@ export interface JobPost {
    job_number: number; // ✅ Added
    region_id: string;
    country_id: string;
+    location?: string;
 }

@@ -41,6 +41,7 @@ import { RecruiterIndustriesModule } from './recruiter-industries/recruiter-indu
 import { RegionsModule } from './regions/regions.module';
 import { CountriesModule } from './countries/countries.module';
 import { RecruiterLocationModule } from './recruiter-location/recruiter-location.module';
+import { CurrencyModule } from './currency/currency.module';
 @Module({
   imports: [
     // ✅ Global .env configuration
@@ -102,6 +103,7 @@ import { RecruiterLocationModule } from './recruiter-location/recruiter-location
     RegionsModule,
     CountriesModule,
     RecruiterLocationModule,
+    CurrencyModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { Subject, of, forkJoin, Observable } from 'rxjs'; // Added Observable
+import { Subject, of, forkJoin, Observable } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { JobPostService } from '../../services/job-post.service';
@@ -13,12 +13,13 @@ import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { JobPost } from '../../auth/models/job-post.model';
-import { PostAJobHelper } from './post-a-job-helper'; // Added
-import { Region } from '../../auth/models/region.model'; // Added
-import { RegionService } from '../../services/region.service'; // Added
-// Add Country import
-import { Country } from '../../auth/models/country.model'; 
-
+import { PostAJobHelper } from './post-a-job-helper';
+import { Region } from '../../auth/models/region.model';
+import { RegionService } from '../../services/region.service';
+import { Country } from '../../auth/models/country.model';
+// Import Currency and CurrencyService
+import { Currency } from '../../auth/models/currency.model';
+import { CurrencyService } from '../../services/currency.service';
 
 interface Skill {
   id: string;
@@ -63,10 +64,12 @@ export class PostAJobComponent implements OnInit {
   isEditMode = false;
   jobId: string | null = null;
   
-  // Added regions$ observable
   regions$!: Observable<Region[]>;
-  // Add countries$ observable
   countries$!: Observable<Country[]>;
+  // Add currencies array
+  currencies: Currency[] = [];
+  selectedCurrencySymbol: string = '';
+  selectedCurrencyCode: string = '';
 
   functionalSkills: Skill[] = [];
   technicalSkills: Skill[] = [];
@@ -80,7 +83,6 @@ export class PostAJobComponent implements OnInit {
 
   workModeOptions = ['Remote', 'On-site', 'Hybrid'];
 
-  // Add default how-to-apply text
   private defaultHowToApplyText: string = 
     'How to Apply\n' +
     'Step 1: Find the Job Posting\n' +
@@ -95,41 +97,41 @@ export class PostAJobComponent implements OnInit {
     private snackBar: MatSnackBar,
     private route: ActivatedRoute,
     private router: Router,
-    private helper: PostAJobHelper // Added helper service
+    private helper: PostAJobHelper,
+    // Inject CurrencyService
+    private currencyService: CurrencyService
   ) {
     this.jobForm = this.fb.group({
       jobTitle: ['', Validators.required],
       experienceMin: [null, [Validators.required, Validators.min(0)]],
       experienceMax: [null, [Validators.required, Validators.min(0)]],
       employmentType: [[], Validators.required],
-      compensationRange: ['', Validators.required],
+      // REMOVE compensationRange and add new fields
+      // compensationRange: ['', Validators.required],
+      currency: ['', Validators.required],
+      compensation: [null, [Validators.required, Validators.min(0)]],
+      salaryType: ['', Validators.required],
       workMode: ['', Validators.required],
       jobDescription: ['', Validators.required],
       noticePeriod: ['', Validators.required],
       applicationDeadline: [''],
       recruiterId: ['', Validators.required],
-      
-      // Added region_id control
       region_id: ['', Validators.required],
-      // Add country_id control
       country_id: ['', Validators.required],
-
       roleSummary: ['', Validators.required],
       preferredQualifications: [''],
       whatWeOffer: [''],
-      // Updated with default text and added new control
       howToApply: [this.defaultHowToApplyText, Validators.required],
       useStandardInstructions: [true],
-
       functionalSkills: [[]],
       technicalSkills: [[]],
       oracleMiddlewareSkills: [[]],
       reportingSkills: [[]],
-
       financialCertifications: [[]],
       scmCertifications: [[]],
       hcmCertifications: [[]],
       cxCertifications: [[]],
+      location: [''],
     });
   }
 
@@ -144,10 +146,12 @@ export class PostAJobComponent implements OnInit {
       console.warn('⚠️ No recruiter ID found. Ensure recruiter is logged in.');
     }
 
-    // Initialize regions
     this.regions$ = this.helper.getRegions();
 
-    // Add region change listener
+    // Add currency initialization
+    this.loadCurrencies();
+    this.setupCurrencyListener();
+
     this.jobForm.get('region_id')?.valueChanges.subscribe(regionId => {
       if (regionId) {
         this.countries$ = this.helper.getCountriesByRegion(regionId);
@@ -157,7 +161,6 @@ export class PostAJobComponent implements OnInit {
       }
     });
 
-    // Subscribe to the checkbox changes
     this.subscribeToUseStandardInstructions();
 
     this.route.queryParams.subscribe(params => {
@@ -173,7 +176,29 @@ export class PostAJobComponent implements OnInit {
     });
   }
 
-  // New method: Subscribe to checkbox changes
+  // Add new methods for currency handling
+  private loadCurrencies(): void {
+    this.currencyService.getCurrencies().subscribe({
+      next: (data: Currency[]) => {
+        this.currencies = data.map(currency => ({
+          ...currency,
+          codeNameSymbol: `${currency.code} - ${currency.name} (${currency.symbol})`
+        }));
+      },
+      error: (err) => {
+        console.error('Failed to load currencies', err);
+      }
+    });
+  }
+
+  private setupCurrencyListener(): void {
+    this.jobForm.get('currency')?.valueChanges.subscribe(currencyId => {
+      const currency = this.currencies.find(c => c.id === currencyId);
+      this.selectedCurrencySymbol = currency?.symbol || '';
+      this.selectedCurrencyCode = currency?.code || '';
+    });
+  }
+
   private subscribeToUseStandardInstructions(): void {
     this.jobForm.get('useStandardInstructions')?.valueChanges.subscribe(checked => {
       if (checked) {
@@ -221,31 +246,34 @@ export class PostAJobComponent implements OnInit {
   }
 
   private populateForm(job: JobPost, skillIds: string[], certificationIds: string[]): void {
-    // Determine how-to-apply value and checkbox state
     const howToApplyValue = job.how_to_apply || this.defaultHowToApplyText;
     const useStandard = howToApplyValue === this.defaultHowToApplyText;
 
+    // Update form with new currency fields
     this.jobForm.patchValue({
       jobTitle: job.job_title,
       experienceMin: job.experience_min,
       experienceMax: job.experience_max,
       employmentType: job.employment_type ? job.employment_type.split(',') : [],
-      compensationRange: job.compensation_range,
+      // Set new currency fields
+      currency: job.currency_id,
+      compensation: job.compensation_value,
+      salaryType: job.salary_type,
       workMode: job.work_mode,
       jobDescription: job.job_description,
       noticePeriod: job.notice_period,
       applicationDeadline: job.application_deadline 
         ? new Date(job.application_deadline).toISOString().split('T')[0] 
         : null,
-      // Added region_id and country_id
       region_id: job.region_id,
       country_id: job.country_id,
       roleSummary: job.role_summary,
       preferredQualifications: job.preferred_qualifications,
       whatWeOffer: job.what_we_offer,
       howToApply: howToApplyValue,
-      useStandardInstructions: useStandard
-    }, { emitEvent: false });  // Prevent triggering value changes
+      useStandardInstructions: useStandard,
+      location: job.location || ''
+    }, { emitEvent: false });
 
     // Map skill IDs to skill objects
     this.jobForm.patchValue({
@@ -327,6 +355,10 @@ export class PostAJobComponent implements OnInit {
     this.loading = true;
     const formValues = this.jobForm.value;
 
+    // Get selected currency
+    const currency = this.currencies.find(c => c.id === formValues.currency);
+
+    // Build job payload with new compensation structure
     const jobPostPayload = {
       ...formValues,
       employmentType: Array.isArray(formValues.employmentType)
@@ -338,6 +370,11 @@ export class PostAJobComponent implements OnInit {
         ? new Date(formValues.applicationDeadline).toISOString()
         : undefined,
       updatedBy: formValues.recruiterId,
+      // Build compensation range string
+      compensation_range: currency ? 
+        `${currency.symbol} ${currency.code} ${formValues.compensation}` : 
+        `${formValues.compensation}`,
+      salaryType: formValues.salaryType
     };
 
     const selectedSkillIds: string[] = [
@@ -362,59 +399,59 @@ export class PostAJobComponent implements OnInit {
   }
 
   private createJob(
-  jobPostPayload: any,
-  selectedSkillIds: string[],
-  selectedCertificationIds: string[]
-): void {
-  this.jobPostService.create(jobPostPayload).subscribe({
-    next: (response: JobPostResponse) => {
-      const jobPostId = response.data?.id;
-      if (!jobPostId) {
-        throw new Error('Job post ID is missing in the response');
-      }
-      
-      // Get job number from response
-      const jobNumber = response.data?.job_number;
-      
-      // Navigate to job details page with job number
-      this.saveSkillsAndCerts(jobPostId, selectedSkillIds, selectedCertificationIds);
-      
-      // Add navigation here
-      if (jobNumber) {
-        this.router.navigate(['/job-details', 'JID' + jobNumber]);
-      } else {
-        console.warn('Job number not found in response');
-      }
-    },
-    error: (err) => {
-      this.handleJobError(err);
-    },
-  });
-}
+    jobPostPayload: any,
+    selectedSkillIds: string[],
+    selectedCertificationIds: string[]
+  ): void {
+    const payloadWithLocation = {
+      ...jobPostPayload,
+      location: jobPostPayload.location || null
+    };
+    
+    this.jobPostService.create(payloadWithLocation).subscribe({
+      next: (response: JobPostResponse) => {
+        const jobPostId = response.data?.id;
+        if (!jobPostId) {
+          throw new Error('Job post ID is missing in the response');
+        }
+        
+        const jobNumber = response.data?.job_number;
+        this.saveSkillsAndCerts(jobPostId, selectedSkillIds, selectedCertificationIds);
+        
+        if (jobNumber) {
+          this.router.navigate(['/job-details', 'JID' + jobNumber]);
+        } else {
+          console.warn('Job number not found in response');
+        }
+      },
+      error: (err) => {
+        this.handleJobError(err);
+      },
+    });
+  }
 
   private updateJob(
-  jobId: string,
-  jobPostPayload: any,
-  selectedSkillIds: string[],
-  selectedCertificationIds: string[]
-): void {
-  // ✅ Include job number in payload
-  const payloadWithJobNumber = {
-    ...jobPostPayload,
-    jobNumber: this.jobForm.getRawValue().jobNumber, // 🆕 Add job number
-  };
+    jobId: string,
+    jobPostPayload: any,
+    selectedSkillIds: string[],
+    selectedCertificationIds: string[]
+  ): void {
+    const payloadWithJobNumberAndLocation = {
+      ...jobPostPayload,
+      jobNumber: this.jobForm.getRawValue().jobNumber,
+      location: jobPostPayload.location || null
+    };
 
-  this.jobPostService.update(jobId, payloadWithJobNumber).subscribe({
-    next: (response: JobPostResponse) => {
-      const jobPostId = response.data?.id || jobId;
-      this.saveSkillsAndCerts(jobPostId, selectedSkillIds, selectedCertificationIds);
-    },
-    error: (err) => {
-      this.handleJobError(err);
-    },
-  });
-}
-
+    this.jobPostService.update(jobId, payloadWithJobNumberAndLocation).subscribe({
+      next: (response: JobPostResponse) => {
+        const jobPostId = response.data?.id || jobId;
+        this.saveSkillsAndCerts(jobPostId, selectedSkillIds, selectedCertificationIds);
+      },
+      error: (err) => {
+        this.handleJobError(err);
+      },
+    });
+  }
 
   private saveSkillsAndCerts(
     jobPostId: string,

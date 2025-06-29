@@ -13,19 +13,26 @@
               <input type="text" formControlName="jobTitle" placeholder="Web Developer" class="form-control"/>
           </div>
 
-          <div class="col-lg-4 col-md-6 col-sm-12">
+          <!-- Region Dropdown -->
+<div class="col-lg-4 col-md-6 col-sm-12">
   <label class="form-label">Region <span class="text-danger">*</span></label>
   <ng-select
+    class="custom-dropdown region-select"
     formControlName="region_id"
     [items]="regions$ | async"
     bindLabel="name"
     bindValue="id"
     placeholder="Select region"
-    [searchable]="true"
+    [searchable]="false"
     [clearable]="false"
     [appendTo]="'body'"
     [class.is-invalid]="jobForm.get('region_id')?.touched && jobForm.get('region_id')?.invalid"
   >
+    <ng-template ng-label-tmp let-item="item">
+      <div class="selected-item">
+        <span class="selected-text">{{ item.name }}</span>
+      </div>
+    </ng-template>
   </ng-select>
   <div *ngIf="jobForm.get('region_id')?.touched && jobForm.get('region_id')?.invalid" 
        class="invalid-feedback d-block">
@@ -33,10 +40,11 @@
   </div>
 </div>
 
-<!-- After Region dropdown -->
+<!-- Country Dropdown -->
 <div class="col-lg-4 col-md-6 col-sm-12">
   <label class="form-label">Country <span class="text-danger">*</span></label>
   <ng-select
+    class="custom-dropdown country-select"
     formControlName="country_id"
     [items]="countries$ | async"
     bindLabel="name"
@@ -48,12 +56,29 @@
     [disabled]="!jobForm.get('region_id')?.value"
     [class.is-invalid]="jobForm.get('country_id')?.touched && jobForm.get('country_id')?.invalid"
   >
+    <ng-template ng-label-tmp let-item="item">
+      <div class="selected-item">
+        <span class="selected-text">{{ item.name }}</span>
+      </div>
+    </ng-template>
   </ng-select>
   <div *ngIf="jobForm.get('country_id')?.touched && jobForm.get('country_id')?.invalid" 
        class="invalid-feedback d-block">
     Country is required.
   </div>
 </div>
+
+ <div class="col-lg-12 col-md-12 mt-3">
+            <label class="form-label">Location (Optional)</label>
+            <input 
+              type="text" 
+              formControlName="location" 
+              placeholder="e.g. City/State Office Address" 
+              class="form-control"
+            />
+          </div>
+          
+<hr class="mt-4 my-6 border-t-2 border-dashed border-gray-300">
 
           <div class="col-lg-2 col-md-2 col-sm-12">
         <label for="workMode" class="form-label"> Work Mode <span class="text-danger"></span></label>
@@ -278,18 +303,68 @@
 
 
 
-          <!-- Compensation Range -->
-          <div class="col-lg-4 col-md-4">
-              <label class="form-label">Compensation Range</label>
-              <select formControlName="compensationRange" class="form-control">
-                <option value="">Select Compensation Range</option>
-                <option value="<500000">Below ₹500,000</option>
-                <option value="500000-1000000">₹500,000 - ₹1,000,000</option>
-                <option value="1000000-1500000">₹1,000,000 - ₹1,500,000</option>
-                <option value="1500000-2000000">₹1,500,000 - ₹2,000,000</option>
-                <option value=">2000000">Above ₹2,000,000</option>
-              </select>
-          </div>     
+
+
+          <!-- Currency Dropdown -->
+<div class="col-lg-4 col-md-4">
+  <label class="form-label">Currency <span class="text-danger">*</span></label>
+  <ng-select
+    formControlName="currency"
+    placeholder="Select currency"
+    [items]="currencies"
+    bindLabel="codeNameSymbol"
+    bindValue="id"
+    [searchable]="true"
+    [clearable]="false"
+    [appendTo]="'body'"
+    [class.is-invalid]="jobForm.get('currency')?.touched && jobForm.get('currency')?.invalid"
+  >
+    <ng-template ng-label-tmp let-item="item">
+      {{ item.symbol }} - {{ item.name }} ({{ item.code }})
+    </ng-template>
+    <ng-template ng-option-tmp let-item="item">
+      {{ item.symbol }} - {{ item.name }} ({{ item.code }})
+    </ng-template>
+  </ng-select>
+  <div *ngIf="jobForm.get('currency')?.touched && jobForm.get('currency')?.invalid" 
+       class="invalid-feedback d-block">
+    Currency is required.
+  </div>
+</div>
+
+<!-- Compensation Amount (conditional) -->
+<div class="col-lg-4 col-md-4" *ngIf="jobForm.get('currency')?.value">
+  <label class="form-label">Amount <span class="text-danger">*</span></label>
+  <div class="input-group">
+    <span class="input-group-text">{{ selectedCurrencySymbol }} {{ selectedCurrencyCode }}</span>
+    <input
+      type="number"
+      formControlName="compensation"
+      placeholder="e.g. 50000"
+      class="form-control"
+      [class.is-invalid]="jobForm.get('compensation')?.touched && jobForm.get('compensation')?.invalid"
+    />
+  </div>
+  <div *ngIf="jobForm.get('compensation')?.touched && jobForm.get('compensation')?.invalid" 
+       class="invalid-feedback d-block">
+    Amount is required and must be a positive number.
+  </div>
+</div>
+
+<!-- Salary Type (conditional) -->
+<div class="col-lg-4 col-md-4" *ngIf="jobForm.get('compensation')?.value">
+  <label class="form-label">Salary Type <span class="text-danger">*</span></label>
+  <select formControlName="salaryType" class="form-control">
+    <option value="">Select salary type</option>
+    <option value="per annum">Per Annum</option>
+    <option value="monthly">Monthly</option>
+    <option value="hourly">Hourly</option>
+  </select>
+  <div *ngIf="jobForm.get('salaryType')?.touched && jobForm.get('salaryType')?.invalid" 
+       class="invalid-feedback d-block">
+    Salary type is required.
+  </div>
+</div>
 
 
           <!-- Job Description -->
