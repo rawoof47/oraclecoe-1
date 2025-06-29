@@ -4,7 +4,6 @@ export interface JobPost {
   id?: string; // UUID
   recruiter_id: string; // UUID of the recruiter
   job_title: string;
-  location?: string;
   modules_required?: string; // Comma-separated values
   skills_required?: string; // Comma-separated values
   certifications_required?: string; // Comma-separated values
@@ -35,4 +34,6 @@ export interface JobPost {
    skill_ids?: string[];        // Add this
   certification_ids?: string[]; // Add this
    job_number: number; // ✅ Added
+   region_id: string;
+   country_id: string;
 }

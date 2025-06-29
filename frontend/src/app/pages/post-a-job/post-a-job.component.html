@@ -13,13 +13,47 @@
               <input type="text" formControlName="jobTitle" placeholder="Web Developer" class="form-control"/>
           </div>
 
-            <!-- Location -->
-          <div class="col-lg-3 col-md-3 col-sm-12">
-            <div class="location-field">
-              <label class="form-label">Location</label>
-              <input type="text" formControlName="location" placeholder="City, Country" class="form-control"/>
-            </div>
-          </div>
+          <div class="col-lg-4 col-md-6 col-sm-12">
+  <label class="form-label">Region <span class="text-danger">*</span></label>
+  <ng-select
+    formControlName="region_id"
+    [items]="regions$ | async"
+    bindLabel="name"
+    bindValue="id"
+    placeholder="Select region"
+    [searchable]="true"
+    [clearable]="false"
+    [appendTo]="'body'"
+    [class.is-invalid]="jobForm.get('region_id')?.touched && jobForm.get('region_id')?.invalid"
+  >
+  </ng-select>
+  <div *ngIf="jobForm.get('region_id')?.touched && jobForm.get('region_id')?.invalid" 
+       class="invalid-feedback d-block">
+    Region is required.
+  </div>
+</div>
+
+<!-- After Region dropdown -->
+<div class="col-lg-4 col-md-6 col-sm-12">
+  <label class="form-label">Country <span class="text-danger">*</span></label>
+  <ng-select
+    formControlName="country_id"
+    [items]="countries$ | async"
+    bindLabel="name"
+    bindValue="id"
+    placeholder="Select country"
+    [searchable]="true"
+    [clearable]="false"
+    [appendTo]="'body'"
+    [disabled]="!jobForm.get('region_id')?.value"
+    [class.is-invalid]="jobForm.get('country_id')?.touched && jobForm.get('country_id')?.invalid"
+  >
+  </ng-select>
+  <div *ngIf="jobForm.get('country_id')?.touched && jobForm.get('country_id')?.invalid" 
+       class="invalid-feedback d-block">
+    Country is required.
+  </div>
+</div>
 
           <div class="col-lg-2 col-md-2 col-sm-12">
         <label for="workMode" class="form-label"> Work Mode <span class="text-danger"></span></label>

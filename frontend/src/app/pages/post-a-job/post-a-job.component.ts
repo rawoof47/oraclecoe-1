@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { Subject, of, forkJoin } from 'rxjs';
+import { Subject, of, forkJoin, Observable } from 'rxjs'; // Added Observable
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { JobPostService } from '../../services/job-post.service';
@@ -13,6 +13,12 @@ import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { JobPost } from '../../auth/models/job-post.model';
+import { PostAJobHelper } from './post-a-job-helper'; // Added
+import { Region } from '../../auth/models/region.model'; // Added
+import { RegionService } from '../../services/region.service'; // Added
+// Add Country import
+import { Country } from '../../auth/models/country.model'; 
+
 
 interface Skill {
   id: string;
@@ -56,6 +62,11 @@ export class PostAJobComponent implements OnInit {
   loading = false;
   isEditMode = false;
   jobId: string | null = null;
+  
+  // Added regions$ observable
+  regions$!: Observable<Region[]>;
+  // Add countries$ observable
+  countries$!: Observable<Country[]>;
 
   functionalSkills: Skill[] = [];
   technicalSkills: Skill[] = [];
@@ -83,11 +94,11 @@ export class PostAJobComponent implements OnInit {
     private jobPostService: JobPostService,
     private snackBar: MatSnackBar,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private helper: PostAJobHelper // Added helper service
   ) {
     this.jobForm = this.fb.group({
       jobTitle: ['', Validators.required],
-      location: [''],
       experienceMin: [null, [Validators.required, Validators.min(0)]],
       experienceMax: [null, [Validators.required, Validators.min(0)]],
       employmentType: [[], Validators.required],
@@ -97,6 +108,11 @@ export class PostAJobComponent implements OnInit {
       noticePeriod: ['', Validators.required],
       applicationDeadline: [''],
       recruiterId: ['', Validators.required],
+      
+      // Added region_id control
+      region_id: ['', Validators.required],
+      // Add country_id control
+      country_id: ['', Validators.required],
 
       roleSummary: ['', Validators.required],
       preferredQualifications: [''],
@@ -127,6 +143,19 @@ export class PostAJobComponent implements OnInit {
     } else {
       console.warn('⚠️ No recruiter ID found. Ensure recruiter is logged in.');
     }
+
+    // Initialize regions
+    this.regions$ = this.helper.getRegions();
+
+    // Add region change listener
+    this.jobForm.get('region_id')?.valueChanges.subscribe(regionId => {
+      if (regionId) {
+        this.countries$ = this.helper.getCountriesByRegion(regionId);
+      } else {
+        this.countries$ = of([]);
+        this.jobForm.get('country_id')?.reset();
+      }
+    });
 
     // Subscribe to the checkbox changes
     this.subscribeToUseStandardInstructions();
@@ -198,7 +227,6 @@ export class PostAJobComponent implements OnInit {
 
     this.jobForm.patchValue({
       jobTitle: job.job_title,
-      location: job.location,
       experienceMin: job.experience_min,
       experienceMax: job.experience_max,
       employmentType: job.employment_type ? job.employment_type.split(',') : [],
@@ -209,6 +237,9 @@ export class PostAJobComponent implements OnInit {
       applicationDeadline: job.application_deadline 
         ? new Date(job.application_deadline).toISOString().split('T')[0] 
         : null,
+      // Added region_id and country_id
+      region_id: job.region_id,
+      country_id: job.country_id,
       roleSummary: job.role_summary,
       preferredQualifications: job.preferred_qualifications,
       whatWeOffer: job.what_we_offer,
@@ -231,6 +262,13 @@ export class PostAJobComponent implements OnInit {
       hcmCertifications: this.hcmCertifications.filter(c => certificationIds.includes(c.id)),
       cxCertifications: this.cxCertifications.filter(c => certificationIds.includes(c.id)),
     });
+
+    // Set countries$ based on region_id
+    if (job.region_id) {
+      this.countries$ = this.helper.getCountriesByRegion(job.region_id);
+    } else {
+      this.countries$ = of([]);
+    }
   }
 
   loadSkillsByCategory(): void {
