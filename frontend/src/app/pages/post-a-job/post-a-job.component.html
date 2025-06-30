@@ -232,14 +232,15 @@
      <mat-tab label="Qualifications">
              <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> 
               <!-- Preferred Qualifications -->
-              <div>
-                  <label class="form-label">Preferred Qualifications</label>
-                  <textarea
-                    formControlName="preferredQualifications"
-                    placeholder="Additional desirable qualifications"
-                    class="form-control"
-                  ></textarea>
-              </div>
+               <div class="form-group">
+      <label for="degree">Preferred Degree</label>
+      <select class="form-control" id="degree" formControlName="preferred_degree">
+        <option value="">Select a degree</option>
+        <option *ngFor="let degree of degrees" [value]="degree.id">
+          {{ degree.name }}
+        </option>
+      </select>
+    </div>
             </div>
     </mat-tab>
     </mat-tab-group> 

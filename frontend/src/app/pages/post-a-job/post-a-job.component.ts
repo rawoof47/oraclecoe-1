@@ -17,9 +17,10 @@ import { PostAJobHelper } from './post-a-job-helper';
 import { Region } from '../../auth/models/region.model';
 import { RegionService } from '../../services/region.service';
 import { Country } from '../../auth/models/country.model';
-// Import Currency and CurrencyService
 import { Currency } from '../../auth/models/currency.model';
 import { CurrencyService } from '../../services/currency.service';
+import { Degree } from '../../auth/models/degree.model'; // Added Degree import
+import { DegreeService } from '../../services/degree.service'; // Added DegreeService import
 
 interface Skill {
   id: string;
@@ -66,10 +67,10 @@ export class PostAJobComponent implements OnInit {
   
   regions$!: Observable<Region[]>;
   countries$!: Observable<Country[]>;
-  // Add currencies array
   currencies: Currency[] = [];
   selectedCurrencySymbol: string = '';
   selectedCurrencyCode: string = '';
+  degrees: Degree[] = []; // Added degrees array
 
   functionalSkills: Skill[] = [];
   technicalSkills: Skill[] = [];
@@ -88,7 +89,7 @@ export class PostAJobComponent implements OnInit {
     'Step 1: Find the Job Posting\n' +
     'Step 2: Read the Job Description Carefully\n' +
     'Step 3: Update Your Resume\n' +
-    'Step 4: Click “Apply” and Fill in Details\n' +
+    'Step 4: Click "Apply" and Fill in Details\n' +
     'Step 5: Submit Your Application';
 
   constructor(
@@ -98,16 +99,14 @@ export class PostAJobComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private helper: PostAJobHelper,
-    // Inject CurrencyService
-    private currencyService: CurrencyService
+    private currencyService: CurrencyService,
+    private degreeService: DegreeService // Added DegreeService
   ) {
     this.jobForm = this.fb.group({
       jobTitle: ['', Validators.required],
       experienceMin: [null, [Validators.required, Validators.min(0)]],
       experienceMax: [null, [Validators.required, Validators.min(0)]],
       employmentType: [[], Validators.required],
-      // REMOVE compensationRange and add new fields
-      // compensationRange: ['', Validators.required],
       currency: ['', Validators.required],
       compensation: [null, [Validators.required, Validators.min(0)]],
       salaryType: ['', Validators.required],
@@ -119,7 +118,6 @@ export class PostAJobComponent implements OnInit {
       region_id: ['', Validators.required],
       country_id: ['', Validators.required],
       roleSummary: ['', Validators.required],
-      preferredQualifications: [''],
       whatWeOffer: [''],
       howToApply: [this.defaultHowToApplyText, Validators.required],
       useStandardInstructions: [true],
@@ -146,9 +144,16 @@ export class PostAJobComponent implements OnInit {
       console.warn('⚠️ No recruiter ID found. Ensure recruiter is logged in.');
     }
 
+    // Load degrees
+    this.degreeService.getDegrees().subscribe({
+      next: (res) => {
+        this.degrees = res;
+      },
+      error: (err) => console.error('Failed to load degrees', err),
+    });
+
     this.regions$ = this.helper.getRegions();
 
-    // Add currency initialization
     this.loadCurrencies();
     this.setupCurrencyListener();
 
@@ -176,7 +181,6 @@ export class PostAJobComponent implements OnInit {
     });
   }
 
-  // Add new methods for currency handling
   private loadCurrencies(): void {
     this.currencyService.getCurrencies().subscribe({
       next: (data: Currency[]) => {
@@ -249,13 +253,11 @@ export class PostAJobComponent implements OnInit {
     const howToApplyValue = job.how_to_apply || this.defaultHowToApplyText;
     const useStandard = howToApplyValue === this.defaultHowToApplyText;
 
-    // Update form with new currency fields
     this.jobForm.patchValue({
       jobTitle: job.job_title,
       experienceMin: job.experience_min,
       experienceMax: job.experience_max,
       employmentType: job.employment_type ? job.employment_type.split(',') : [],
-      // Set new currency fields
       currency: job.currency_id,
       compensation: job.compensation_value,
       salaryType: job.salary_type,
@@ -268,14 +270,12 @@ export class PostAJobComponent implements OnInit {
       region_id: job.region_id,
       country_id: job.country_id,
       roleSummary: job.role_summary,
-      preferredQualifications: job.preferred_qualifications,
       whatWeOffer: job.what_we_offer,
       howToApply: howToApplyValue,
       useStandardInstructions: useStandard,
       location: job.location || ''
     }, { emitEvent: false });
 
-    // Map skill IDs to skill objects
     this.jobForm.patchValue({
       functionalSkills: this.functionalSkills.filter(s => skillIds.includes(s.id)),
       technicalSkills: this.technicalSkills.filter(s => skillIds.includes(s.id)),
@@ -283,7 +283,6 @@ export class PostAJobComponent implements OnInit {
       reportingSkills: this.reportingSkills.filter(s => skillIds.includes(s.id)),
     });
 
-    // Map certification IDs to certification objects
     this.jobForm.patchValue({
       financialCertifications: this.financialCertifications.filter(c => certificationIds.includes(c.id)),
       scmCertifications: this.scmCertifications.filter(c => certificationIds.includes(c.id)),
@@ -291,7 +290,6 @@ export class PostAJobComponent implements OnInit {
       cxCertifications: this.cxCertifications.filter(c => certificationIds.includes(c.id)),
     });
 
-    // Set countries$ based on region_id
     if (job.region_id) {
       this.countries$ = this.helper.getCountriesByRegion(job.region_id);
     } else {
@@ -355,10 +353,8 @@ export class PostAJobComponent implements OnInit {
     this.loading = true;
     const formValues = this.jobForm.value;
 
-    // Get selected currency
     const currency = this.currencies.find(c => c.id === formValues.currency);
 
-    // Build job payload with new compensation structure
     const jobPostPayload = {
       ...formValues,
       employmentType: Array.isArray(formValues.employmentType)
@@ -370,7 +366,6 @@ export class PostAJobComponent implements OnInit {
         ? new Date(formValues.applicationDeadline).toISOString()
         : undefined,
       updatedBy: formValues.recruiterId,
-      // Build compensation range string
       compensation_range: currency ? 
         `${currency.symbol} ${currency.code} ${formValues.compensation}` : 
         `${formValues.compensation}`,
