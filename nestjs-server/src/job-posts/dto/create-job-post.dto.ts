@@ -80,6 +80,11 @@ export class CreateJobPostDto {
   whatWeOffer?: string;
 
   @IsString()
+@IsOptional()
+salaryType?: string;
+
+
+  @IsString()
   @IsOptional()
   howToApply?: string;
 

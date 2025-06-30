@@ -94,4 +94,7 @@ export class JobPost {
   @Column({ type: 'int', nullable: true, unique: true })
 job_number: number | null;
 
+@Column({ type: 'varchar', length: 50, nullable: true })
+salary_type: string | null;
+
 }

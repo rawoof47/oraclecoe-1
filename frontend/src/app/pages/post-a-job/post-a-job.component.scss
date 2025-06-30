@@ -1,17 +1,18 @@
-/* post-a-job.component.scss */
+/* post-a-job.component.scss - Enhanced Version */
 .post-job-area {
   padding: 80px 0;
   background: linear-gradient(135deg, #f6f9fc 0%, #edf2f9 100%);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
   position: relative;
-  overflow: visible;  /* Changed from hidden to visible */
+  overflow: visible;
+  color: #2c3e50;
 
   .container {
     max-width: 1200px;
     margin: 0 auto;
     position: relative;
-    overflow: visible;  /* Changed from hidden to visible */
-    z-index: 1;  /* Added stacking context */
+    overflow: visible;
+    z-index: 1;
   }
 
   form {
@@ -21,10 +22,10 @@
     box-shadow:
       0 15px 40px rgba(0, 45, 150, 0.1),
       0 5px 15px rgba(0, 0, 0, 0.03);
-    border: 1px solid rgba(214, 228, 255, 0.6);
+    border: 1px solid rgba(255, 247, 214, 0.6);
     position: relative;
-    overflow: visible;  /* Changed from hidden to visible */
-    z-index: auto;  /* Reset stacking context */
+    overflow: visible;
+    z-index: auto;
 
     &:before {
       content: '';
@@ -34,27 +35,12 @@
       width: 100%;
       height: 5px;
       background: linear-gradient(90deg, #4361ee, #4cc9f0);
+      border-radius: 20px 20px 0 0;
       z-index: 2;
     }
   }
 
-  /* Added new rule for dropdown panels */
-  .ng-dropdown-panel {
-    z-index: 1050 !important; /* Higher than all form elements */
-    position: absolute !important;
-  }
-
-  .post-item {
-    .row {
-      margin: 0 -15px;
-
-      [class*="col-"] {
-        padding: 0 15px;
-        margin-bottom: 25px;
-      }
-    }
-  }
-
+  /* ===== TYPOGRAPHY ENHANCEMENTS ===== */
   .form-label {
     font-weight: 600;
     margin-bottom: 12px;
@@ -63,6 +49,7 @@
     font-size: 15px;
     position: relative;
     padding-left: 20px;
+    letter-spacing: -0.15px;
 
     &:before {
       content: '';
@@ -80,15 +67,97 @@
       color: #e74c3c;
       margin-left: 3px;
     }
+
+    .text-muted {
+      color: #718096;
+    }
   }
 
+  /* ===== DROPDOWN PANEL ENHANCEMENTS ===== */
+  ::ng-deep .ng-dropdown-panel {
+    z-index: 1050 !important;
+    position: absolute !important;
+    background: #ffffff !important;
+    border: 1px solid #fdffe0 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 15px 40px rgba(67, 97, 238, 0.2) !important;
+    margin-top: 5px;
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+    
+    .ng-dropdown-header {
+      padding: 14px 20px;
+      background: linear-gradient(90deg, #4361ee, #4cc9f0);
+      color: white;
+      font-weight: 600;
+      font-size: 15px;
+      border-bottom: none;
+      letter-spacing: -0.1px;
+    }
+    
+    .ng-dropdown-panel-items {
+      .ng-option {
+        padding: 14px 20px;
+        color: #2c3e50;
+        transition: all 0.2s ease;
+        border-bottom: 1px solid rgba(251, 255, 3, 0.5);
+        font-size: 14.5px;
+        letter-spacing: -0.1px;
+        
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &.ng-option-marked {
+          background: rgba(67, 97, 238, 0.08) !important;
+          color: #4361ee !important;
+        }
+
+        &.ng-option-selected {
+          background: linear-gradient(90deg, rgba(67, 97, 238, 0.1), rgba(76, 201, 240, 0.08)) !important;
+          color: #4361ee !important;
+          font-weight: 600;
+          position: relative;
+          
+          &:after {
+            content: '✓';
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #4361ee;
+            font-weight: bold;
+            font-size: 14px;
+          }
+        }
+
+        &:hover:not(.ng-option-disabled) {
+          background: rgba(67, 97, 238, 0.1) !important;
+          transform: translateX(3px);
+        }
+      }
+    }
+  }
+
+  .post-item {
+    .row {
+      margin: 0 -15px;
+
+      [class*="col-"] {
+        padding: 0 15px;
+        margin-bottom: 25px;
+      }
+    }
+  }
+
+  /* ===== FORM CONTROL ENHANCEMENTS ===== */
   .form-control,
   .ng-select {
     width: 100%;
     border-radius: 12px;
     padding: 16px 20px;
-    border: 1px solid #e0e7ff;
-    transition: all 0.4s ease;
+    border: 1px solid #83d1d6c0;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     background: #f8faff;
     box-shadow:
       inset 0 1px 3px rgba(0, 0, 0, 0.03),
@@ -97,6 +166,8 @@
     color: #2c3e50;
     position: relative;
     z-index: 2;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: -0.1px;
 
     &:focus {
       border-color: #4361ee;
@@ -105,6 +176,7 @@
         inset 0 1px 3px rgba(0, 0, 0, 0.05);
       background: #fff;
       outline: none;
+      transform: translateY(-2px);
     }
   }
 
@@ -112,10 +184,20 @@
     resize: vertical;
     min-height: 140px;
     padding: 18px 20px;
+    transition: all 0.3s ease;
+    line-height: 1.6;
+    
+    &:focus {
+      box-shadow: 
+        0 0 0 4px rgba(67, 97, 238, 0.15),
+        inset 0 4px 8px rgba(0, 0, 0, 0.03);
+    }
   }
 
+  /* ===== NG-SELECT ENHANCEMENTS ===== */
   .ng-select {
     padding: 0;
+    font-size: 15px;
 
     &.ng-select-multiple .ng-select-container {
       min-height: 56px;
@@ -130,10 +212,11 @@
       box-shadow:
         inset 0 1px 3px rgba(0, 0, 0, 0.03),
         0 1px 0 rgba(255, 255, 255, 0.8);
-      transition: all 0.4s ease;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 
       .ng-value-container {
         padding: 0 8px;
+        font-size: 15px;
       }
 
       &:hover,
@@ -143,85 +226,64 @@
           0 0 0 4px rgba(67, 97, 238, 0.15),
           inset 0 1px 3px rgba(0, 0, 0, 0.05);
         background: #fff;
+        transform: translateY(-2px);
       }
     }
 
     &.is-invalid .ng-select-container {
       border-color: #e74c3c;
+      background: rgba(231, 76, 60, 0.03);
     }
 
-    .ng-dropdown-panel {
-      background: #ffffff !important;
-      border: 1px solid #e0e7ff;
-      border-radius: 12px;
-      box-shadow: 0 12px 30px rgba(0, 45, 150, 0.15);
-      margin-top: 5px;
-      position: absolute !important;
-      z-index: 1050 !important; /* Increased from 9999 to 1050 */
-
-      &.ng-select-bottom {
-        top: calc(100% + 5px);
-      }
-
-      .ng-dropdown-header,
-      .ng-dropdown-footer {
-        padding: 10px 15px;
-        border-bottom: 1px solid #e0e7ff;
-        background: #f8faff;
-      }
-
-      .ng-dropdown-panel-items {
-        .ng-option {
-          padding: 12px 20px;
-          color: #2c3e50;
-          transition: all 0.3s ease;
-
-          &.ng-option-marked {
-            background: rgba(67, 97, 238, 0.08);
-            color: #4361ee;
-          }
-
-          &.ng-option-selected {
-            background: rgba(67, 97, 238, 0.15);
-            color: #4361ee;
-            font-weight: 600;
-          }
-
-          &:hover:not(.ng-option-disabled) {
-            background: rgba(67, 97, 238, 0.1);
-          }
-        }
-      }
-
-      .ng-input {
-        padding: 10px 15px;
-
-        input {
-          background: #f8faff;
-          border: 1px solid #e0e7ff;
-          border-radius: 8px;
-          padding: 8px 15px;
-          font-size: 15px;
-
-          &:focus {
-            border-color: #4361ee;
-            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.15);
-          }
-        }
+    .ng-arrow-wrapper {
+      .ng-arrow {
+        border-color: #4361ee transparent transparent;
+        border-width: 6px 6px 2.5px;
       }
     }
   }
 
+  /* ===== VALIDATION STYLES ===== */
   .invalid-feedback {
     display: block;
     margin-top: 8px;
-    font-size: 13px;
+    font-size: 13.5px;
     color: #e74c3c;
     font-weight: 500;
+    padding-left: 20px;
+    position: relative;
+    letter-spacing: -0.1px;
+    
+    &:before {
+      content: '!';
+      position: absolute;
+      left: 5px;
+      top: 0;
+      width: 16px;
+      height: 16px;
+      background: #e74c3c;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
   }
 
+  /* ===== TAB GROUP ENHANCEMENTS ===== */
   .mat-tab-group {
     margin: 25px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    font-family: 'Inter', sans-serif;
+
+    .mat-tab-header {
+      background: linear-gradient(90deg, #f8faff, #edf2f9);
+      border-radius: 12px 12px 0 0;
+    }
 
     .mat-tab-label {
       font-weight: 600;
@@ -229,19 +291,33 @@
       opacity: 1;
       padding: 0 25px;
       min-width: auto;
+      transition: all 0.3s ease;
+      font-size: 14.5px;
+      letter-spacing: -0.1px;
+
+      &:hover {
+        color: #4361ee;
+        background: rgba(67, 97, 238, 0.1);
+      }
 
       &.mat-tab-label-active {
         color: #4361ee;
+        background: rgba(255, 255, 255, 0.8);
       }
     }
 
     .mat-ink-bar {
       background: linear-gradient(90deg, #4361ee, #4cc9f0);
       height: 3px;
+      border-radius: 3px;
     }
 
     .mat-tab-body-content {
-      padding: 25px 0;
+      padding: 25px;
+      background: white;
+      border-radius: 0 0 12px 12px;
+      font-size: 15px;
+      line-height: 1.6;
     }
   }
 
@@ -255,21 +331,42 @@
     border-top: 1px solid rgba(67, 97, 238, 0.15);
   }
 
+  /* ===== BUTTON ENHANCEMENTS ===== */
   .btn {
-    &-primary {
+    &-primary, &-primary-btn {
       background: linear-gradient(135deg, #4361ee, #4cc9f0);
-      color: white;
+      color: white !important;
       border: none;
       padding: 16px 45px;
       font-size: 16px;
       font-weight: 600;
       border-radius: 50px;
-      transition: all 0.4s ease;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
       box-shadow: 0 8px 20px rgba(67, 97, 238, 0.25);
+      display: inline-block;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.5px;
+      font-family: 'Inter', sans-serif;
+      
+      &:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: 0.5s;
+      }
 
       &:hover {
         transform: translateY(-3px);
         box-shadow: 0 12px 30px rgba(67, 97, 238, 0.35);
+        
+        &:before {
+          left: 100%;
+        }
       }
 
       &:disabled {
@@ -277,6 +374,7 @@
         box-shadow: none;
         transform: none;
         cursor: not-allowed;
+        opacity: 0.7;
       }
     }
   }
@@ -285,7 +383,144 @@
     text-align: center;
   }
 
-  /* Responsive Design */
+  /* ===== COMPENSATION RANGE STYLES ===== */
+  .d-flex {
+    display: flex;
+    gap: 15px;
+    
+    .input-group {
+      flex: 1;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      
+      &:hover {
+        box-shadow: 0 5px 15px rgba(67, 97, 238, 0.15);
+        transform: translateY(-2px);
+      }
+      
+      .input-group-text {
+        background: linear-gradient(135deg, #4361ee, #4cc9f0);
+        color: white;
+        border: none;
+        font-weight: 600;
+        min-width: 80px;
+        display: flex;
+        justify-content: center;
+        font-size: 14px;
+        letter-spacing: -0.1px;
+      }
+      
+      .form-control {
+        border-radius: 0;
+        border-left: none;
+        box-shadow: none;
+      }
+    }
+  }
+
+  /* ===== CHECKBOX STYLES ===== */
+  .form-check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    
+    .form-check-input {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      border: 2px solid #4361ee;
+      border-radius: 4px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      
+      &:checked {
+        background-color: #4361ee;
+        border-color: #4361ee;
+        
+        &:after {
+          content: '';
+          position: absolute;
+          width: 5px;
+          height: 10px;
+          border: solid white;
+          border-width: 0 2px 2px 0;
+          transform: rotate(45deg);
+          top: 2px;
+          left: 6px;
+        }
+      }
+      
+      &:hover {
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+      }
+    }
+    
+    .form-check-label {
+      color: #2c3e50;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 0.2s ease;
+      font-size: 15px;
+      
+      &:hover {
+        color: #4361ee;
+      }
+    }
+  }
+
+  /* ===== DATE PICKER ENHANCEMENT ===== */
+  input[type="date"] {
+    &::-webkit-calendar-picker-indicator {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%234361ee' viewBox='0 0 24 24'%3E%3Cpath d='M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z'/%3E%3C/svg%3E");
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+      
+      &:hover {
+        background-color: rgba(67, 97, 238, 0.1);
+      }
+    }
+  }
+
+  /* ===== ASTERISK LEGEND STYLES ===== */
+  .small {
+    font-size: 14px;
+    letter-spacing: -0.1px;
+    color: #718096;
+  }
+
+  /* ===== CUSTOM DROPDOWN FIXES ===== */
+  ::ng-deep .custom-dropdown {
+    .ng-select-container {
+      min-height: 56px !important;
+      padding: 8px 20px !important;
+      display: flex !important;
+      align-items: center !important;
+    }
+    
+    .ng-dropdown-panel {
+      .ng-dropdown-panel-items {
+        .ng-option {
+          padding: 16px 20px !important;
+          min-height: 56px !important;
+          display: flex !important;
+          align-items: center !important;
+          font-size: 14.5px !important;
+          
+          &.ng-option-selected:after {
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+          }
+        }
+      }
+    }
+  }
+
+  /* ===== RESPONSIVE DESIGN ===== */
   @media (max-width: 1199px) {
     padding: 60px 0;
 
@@ -302,13 +537,18 @@
     .mat-tab-group {
       .mat-tab-label {
         padding: 0 15px;
+        font-size: 14px;
       }
+    }
+    
+    .d-flex {
+      flex-wrap: wrap;
     }
   }
 
   @media (max-width: 767px) {
     padding: 50px 0;
-    overflow: visible; /* Added for mobile */
+    overflow: visible;
 
     form {
       padding: 25px 20px;
@@ -326,10 +566,20 @@
       max-width: 100%;
       min-width: 100%;
     }
+    
+    .d-flex {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .asterisk-legend {
+      flex-direction: column;
+      gap: 8px;
+    }
   }
 
   @media (max-width: 575px) {
-    overflow: visible; /* Ensure overflow visible on mobile */
+    overflow: visible;
     
     .grid {
       grid-template-columns: 1fr;
@@ -337,20 +587,43 @@
 
     .btn {
       width: 100%;
+      padding: 14px 20px;
     }
 
     .ng-select .ng-dropdown-panel {
-      position: fixed !important; /* Better for mobile */
-      left: 20px !important;
-      right: 20px !important;
+      position: fixed !important;
+      left: 10px !important;
+      right: 10px !important;
       width: auto !important;
-      z-index: 9999 !important; /* Highest priority on mobile */
+      z-index: 9999 !important;
+    }
+
+    /* Mobile dropdown fixes */
+    ::ng-deep .custom-dropdown {
+      .ng-select-container {
+        padding: 8px 15px !important;
+        min-height: 50px !important;
+      }
+      
+      .ng-dropdown-panel {
+        .ng-dropdown-panel-items {
+          .ng-option {
+            padding: 12px 15px !important;
+            min-height: 48px !important;
+            font-size: 14px !important;
+          }
+        }
+      }
     }
   }
 }
 
 /* Global override for ng-select dropdown */
 ::ng-deep .ng-dropdown-panel {
-  z-index: 1050 !important; /* Consistent high z-index */
+  z-index: 1050 !important;
   position: absolute !important;
+  background: #ffffff !important;
+  border: 1px solid #e0e7ff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 15px 40px rgba(67, 97, 238, 0.2) !important;
 }

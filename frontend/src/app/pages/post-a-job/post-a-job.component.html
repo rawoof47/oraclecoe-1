@@ -1,75 +1,83 @@
 <app-navbar />
 
-
-
 <div class="post-job-area ptb-100">
   <div class="container">
     <form [formGroup]="jobForm" (ngSubmit)="onSubmit()">
       <div class="post-item">
         <div class="row">
-         <!-- Job Title -->
+          <!-- Job Title -->
           <div class="col-lg-6 col-md-6 col-sm-12">
-              <label class="form-label">Job Title</label>
-              <input type="text" formControlName="jobTitle" placeholder="Web Developer" class="form-control"/>
+            <label class="form-label">Job Title <span class="text-danger">*</span></label>
+            <input 
+              type="text" 
+              formControlName="jobTitle" 
+              placeholder="Web Developer" 
+              class="form-control"
+            />
+            <div *ngIf="jobForm.get('jobTitle')?.touched && jobForm.get('jobTitle')?.invalid" 
+                 class="invalid-feedback d-block">
+              Job title is required.
+            </div>
           </div>
 
           <!-- Region Dropdown -->
-<div class="col-lg-4 col-md-6 col-sm-12">
-  <label class="form-label">Region <span class="text-danger">*</span></label>
-  <ng-select
-    class="custom-dropdown region-select"
-    formControlName="region_id"
-    [items]="regions$ | async"
-    bindLabel="name"
-    bindValue="id"
-    placeholder="Select region"
-    [searchable]="false"
-    [clearable]="false"
-    [appendTo]="'body'"
-    [class.is-invalid]="jobForm.get('region_id')?.touched && jobForm.get('region_id')?.invalid"
-  >
-    <ng-template ng-label-tmp let-item="item">
-      <div class="selected-item">
-        <span class="selected-text">{{ item.name }}</span>
-      </div>
-    </ng-template>
-  </ng-select>
-  <div *ngIf="jobForm.get('region_id')?.touched && jobForm.get('region_id')?.invalid" 
-       class="invalid-feedback d-block">
-    Region is required.
-  </div>
-</div>
+          <div class="col-lg-3 col-md-6 col-sm-12">
+            <label class="form-label">Region <span class="text-danger">*</span></label>
+            <ng-select
+              class="custom-dropdown region-select"
+              formControlName="region_id"
+              [items]="regions$ | async"
+              bindLabel="name"
+              bindValue="id"
+              placeholder="Select region"
+              [searchable]="false"
+              [clearable]="false"
+              [appendTo]="'body'"
+              [class.is-invalid]="jobForm.get('region_id')?.touched && jobForm.get('region_id')?.invalid"
+            >
+              <ng-template ng-label-tmp let-item="item">
+                <div class="selected-item">
+                  <span class="selected-text">{{ item.name }}</span>
+                </div>
+              </ng-template>
+            </ng-select>
+            <div *ngIf="jobForm.get('region_id')?.touched && jobForm.get('region_id')?.invalid" 
+                 class="invalid-feedback d-block">
+              Region is required.
+            </div>
+          </div>
 
-<!-- Country Dropdown -->
-<div class="col-lg-4 col-md-6 col-sm-12">
-  <label class="form-label">Country <span class="text-danger">*</span></label>
-  <ng-select
-    class="custom-dropdown country-select"
-    formControlName="country_id"
-    [items]="countries$ | async"
-    bindLabel="name"
-    bindValue="id"
-    placeholder="Select country"
-    [searchable]="true"
-    [clearable]="false"
-    [appendTo]="'body'"
-    [disabled]="!jobForm.get('region_id')?.value"
-    [class.is-invalid]="jobForm.get('country_id')?.touched && jobForm.get('country_id')?.invalid"
-  >
-    <ng-template ng-label-tmp let-item="item">
-      <div class="selected-item">
-        <span class="selected-text">{{ item.name }}</span>
-      </div>
-    </ng-template>
-  </ng-select>
-  <div *ngIf="jobForm.get('country_id')?.touched && jobForm.get('country_id')?.invalid" 
-       class="invalid-feedback d-block">
-    Country is required.
-  </div>
-</div>
+          <!-- Country Dropdown -->
+          <div class="col-lg-3 col-md-6 col-sm-12">
+            <label class="form-label">Country <span class="text-danger">*</span></label>
+            <ng-select
+              class="custom-dropdown country-select"
+              formControlName="country_id"
+              [items]="countries$ | async"
+              bindLabel="name"
+              bindValue="id"
+              placeholder="Select country"
+              [searchable]="true"
+              [clearable]="false"
+              [appendTo]="'body'"
+              [disabled]="!jobForm.get('region_id')?.value"
+              [class.is-invalid]="jobForm.get('country_id')?.touched && jobForm.get('country_id')?.invalid"
+            >
+              <ng-template ng-label-tmp let-item="item">
+                <div class="selected-item">
+                  <span class="selected-text">{{ item.name }}</span>
+                </div>
+              </ng-template>
+            </ng-select>
+            <div *ngIf="jobForm.get('country_id')?.touched && jobForm.get('country_id')?.invalid" 
+                 class="invalid-feedback d-block">
+              Country is required.
+            </div>
+          </div>
 
- <div class="col-lg-12 col-md-12 mt-3">
-            <label class="form-label">Location (Optional)</label>
+          <!-- Location -->
+          <div class="col-lg-12 col-md-12 mt-3">
+            <label class="form-label">Location (Optional) <span class="text-muted">**</span></label>
             <input 
               type="text" 
               formControlName="location" 
@@ -78,238 +86,281 @@
             />
           </div>
           
-<hr class="mt-4 my-6 border-t-2 border-dashed border-gray-300">
+          <hr class="mt-4 my-4 border-t-2 border-dashed border-gray-300">
 
-          <div class="col-lg-2 col-md-2 col-sm-12">
-        <label for="workMode" class="form-label"> Work Mode <span class="text-danger"></span></label>
-        
-        <ng-select id="workMode"
-          [items]="workModeOptions"
-          bindLabel="name"              
-          bindValue="id" formControlName="workMode"
-          placeholder="Select work mode"
-          [searchable]="false"
-          [clearable]="false" [appendTo]="'body'" 
-          [class.is-invalid]="jobForm.get('workMode')?.touched && jobForm.get('workMode')?.invalid"
-          class="form-control ng-select-matching">
-        </ng-select>
+          <!-- Work Mode -->
+         <div class="col-lg-2 col-md-6 col-sm-2">
+  <label class="form-label">Work Mode <span class="text-danger">*</span></label>
+  <ng-select
+    class="custom-dropdown"
+    [items]="workModeOptions"             
+    formControlName="workMode"
+    placeholder="Select work mode"
+    [searchable]="false"
+    [clearable]="false" 
+    [appendTo]="'body'" 
+    [class.is-invalid]="jobForm.get('workMode')?.touched && jobForm.get('workMode')?.invalid">
+  </ng-select>
 
-        <!-- Error message if field is invalid -->
-        <div *ngIf="jobForm.get('workMode')?.touched && jobForm.get('workMode')?.invalid" class="invalid-feedback d-block">
-          Work mode is required.
-        </div>
-      </div>
+  <div *ngIf="jobForm.get('workMode')?.touched && jobForm.get('workMode')?.invalid" 
+       class="invalid-feedback d-block">
+    Work mode is required.
+  </div>
+</div>
 
-          
+          <hr class="mt-4 my-4 border-t-2 border-dashed border-gray-300">
 
-          
-<hr class="mt-4 my-6 border-t-2 border-dashed border-gray-300">
-
-<div class="overflow-y-auto flex-1">
+          <!-- Skills & Certifications Tabs -->
+<div class="col-lg-12">
+  <div class="overflow-y-auto flex-1">
     <mat-tab-group class="jobPost">
-       
-    <!-- Tab 1: Personal Details --> 
-          <mat-tab label="Skills">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-           <!-- Functional Skills -->
+
+      <!-- ──────────── Skills Tab ──────────── -->
+      <mat-tab label="Skills *">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+
+          <!-- Functional Skills -->
           <div>
-                  <label class="form-label">Functional Skills</label>
-                  <ng-select
-                    [items]="functionalSkills"
-                    bindLabel="name"
-                    [multiple]="true"
-                    formControlName="functionalSkills" 
-                    placeholder="Select Functional Skills"
-                    [searchable]="true"
-                    [closeOnSelect]="false" [appendTo]="'body'" 
-                    class="form-control ng-select-matching"></ng-select>
-              </div>
+            <label class="form-label">Functional Skills</label>
+            <ng-select
+              class="custom-dropdown"
+              [items]="functionalSkills"
+              bindLabel="name"
+              [multiple]="true"
+              formControlName="functionalSkills"
+              placeholder="Select Functional Skills"
+              [searchable]="true"
+              [closeOnSelect]="false"
+              [appendTo]="'body'">
+            </ng-select>
+          </div>
+
           <!-- Analytics & Reporting -->
           <div>
-              <label class="form-label">Analytics & Reporting Skills</label>
-              <ng-select
-                [items]="reportingSkills"
-                bindLabel="name"
-                [multiple]="true"
-                formControlName="reportingSkills"
-                placeholder="Select Reporting Skills"
-                [searchable]="true"
-                [closeOnSelect]="false" [appendTo]="'body'" 
-                class="form-control ng-select-matching">
-              </ng-select>
-            </div> 
+            <label class="form-label">Analytics & Reporting Skills</label>
+            <ng-select
+              class="custom-dropdown"
+              [items]="reportingSkills"
+              bindLabel="name"
+              [multiple]="true"
+              formControlName="reportingSkills"
+              placeholder="Select Reporting Skills"
+              [searchable]="true"
+              [closeOnSelect]="false"
+              [appendTo]="'body'">
+            </ng-select>
+          </div>
+
           <!-- Technical Skills -->
           <div>
-              <label class="form-label">Technical Skills</label>
-              <ng-select
-                [items]="technicalSkills"
-                bindLabel="name"
-                [multiple]="true"
-                formControlName="technicalSkills"
-                placeholder="Select Technical Skills"
-                [searchable]="true"
-                [closeOnSelect]="false" [appendTo]="'body'" 
-                class="form-control ng-select-matching"
-              ></ng-select>
+            <label class="form-label">Technical Skills</label>
+            <ng-select
+              class="custom-dropdown"
+              [items]="technicalSkills"
+              bindLabel="name"
+              [multiple]="true"
+              formControlName="technicalSkills"
+              placeholder="Select Technical Skills"
+              [searchable]="true"
+              [closeOnSelect]="false"
+              [appendTo]="'body'">
+            </ng-select>
           </div>
+
           <!-- Oracle Middleware Skills -->
-            <div>
-                <label class="form-label">Oracle Middleware & Database skills</label>
-                <ng-select
-                  [items]="oracleMiddlewareSkills"
-                  bindLabel="name"
-                  [multiple]="true" formControlName="oracleMiddlewareSkills"
-                  placeholder="Select Middleware Skills"
-                  [searchable]="true" [closeOnSelect]="false" [appendTo]="'body'" 
-                  class="form-control ng-select-matching"></ng-select>
+          <div>
+            <label class="form-label">Oracle Middleware &amp; Database Skills</label>
+            <ng-select
+              class="custom-dropdown"
+              [items]="oracleMiddlewareSkills"
+              bindLabel="name"
+              [multiple]="true"
+              formControlName="oracleMiddlewareSkills"
+              placeholder="Select Middleware Skills"
+              [searchable]="true"
+              [closeOnSelect]="false"
+              [appendTo]="'body'">
+            </ng-select>
+          </div>
+
+        </div>
+      </mat-tab>
+
+      <!-- ─────────── Certifications Tab ─────────── -->
+      <mat-tab label="Certifications **">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+
+          <!-- Financial Certifications -->
+          <div>
+            <label class="form-label">Financial Certifications</label>
+            <ng-select
+              class="custom-dropdown"
+              [items]="financialCertifications"
+              bindLabel="certification_name"
+              [multiple]="true"
+              formControlName="financialCertifications"
+              placeholder="Select financial certifications"
+              [searchable]="true"
+              [closeOnSelect]="false"
+              [appendTo]="'body'">
+            </ng-select>
+          </div>
+
+          <!-- SCM Certifications -->
+          <div>
+            <label class="form-label">SCM Certifications</label>
+            <ng-select
+              class="custom-dropdown"
+              [items]="scmCertifications"
+              bindLabel="certification_name"
+              [multiple]="true"
+              formControlName="scmCertifications"
+              placeholder="Select SCM certifications"
+              [searchable]="true"
+              [closeOnSelect]="false"
+              [appendTo]="'body'">
+            </ng-select>
+          </div>
+
+          <!-- HCM Certifications -->
+          <div>
+            <label class="form-label">HCM Certifications</label>
+            <ng-select
+              class="custom-dropdown"
+              [items]="hcmCertifications"
+              bindLabel="certification_name"
+              [multiple]="true"
+              formControlName="hcmCertifications"
+              placeholder="Select HCM certifications"
+              [searchable]="true"
+              [closeOnSelect]="false"
+              [appendTo]="'body'">
+            </ng-select>
+          </div>
+
+          <!-- CX Certifications -->
+          <div>
+            <label class="form-label">CX Certifications</label>
+            <ng-select
+              class="custom-dropdown"
+              [items]="cxCertifications"
+              bindLabel="certification_name"
+              [multiple]="true"
+              formControlName="cxCertifications"
+              placeholder="Select CX certifications"
+              [searchable]="true"
+              [closeOnSelect]="false"
+              [appendTo]="'body'">
+            </ng-select>
+          </div>
+
+        </div>
+      </mat-tab>
+                
+                <!-- Qualifications Tab -->
+                <mat-tab label="Qualifications *">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                    <!-- Preferred Qualifications -->
+                    <div class="form-group">
+                      <label for="degree" class="form-label">Preferred Degree <span class="text-danger">*</span></label>
+                      <select 
+                        class="form-control" 
+                        id="degree" 
+                        formControlName="preferred_degree"
+                        [class.is-invalid]="jobForm.get('preferred_degree')?.touched && jobForm.get('preferred_degree')?.invalid">
+                        <option value="">Select a degree</option>
+                        <option *ngFor="let degree of degrees" [value]="degree.id">
+                          {{ degree.name }}
+                        </option>
+                      </select>
+                      <div *ngIf="jobForm.get('preferred_degree')?.touched && jobForm.get('preferred_degree')?.invalid" 
+                           class="invalid-feedback d-block">
+                        Preferred degree is required.
+                      </div>
+                    </div>
+                  </div>
+                </mat-tab>
+              </mat-tab-group> 
             </div>
           </div>
-     </mat-tab>
-     <mat-tab label="Certifications">      
-           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Financial Certifications -->
-            <div>
-                <label class="form-label">Financial Certifications</label>
-                <ng-select
-                  [items]="financialCertifications"
-                  bindLabel="certification_name"
-                  placeholder="Select financial certifications"
-                  [multiple]="true"
-                  formControlName="financialCertifications"
-                  [searchable]="true"
-                  [closeOnSelect]="false"  [appendTo]="'body'" 
-                  class="form-control ng-select-matching">
-                </ng-select>
-            </div>
 
-            <!-- SCM Certifications -->
-            <div >
-                <label class="form-label">SCM Certifications</label>
-                <ng-select
-                  [items]="scmCertifications"
-                  bindLabel="certification_name"
-                  placeholder="Select SCM certifications"
-                  [multiple]="true"
-                  formControlName="scmCertifications"
-                  [searchable]="true"
-                  [closeOnSelect]="false" [appendTo]="'body'" 
-                  class="form-control ng-select-matching"
-                >
-                </ng-select>
-            </div>
-            <!-- HCM Certifications -->
-            <div>
-                <label class="form-label">HCM Certifications</label>
-                <ng-select
-                  [items]="hcmCertifications"
-                  bindLabel="certification_name"
-                  placeholder="Select HCM certifications"
-                  [multiple]="true"
-                  formControlName="hcmCertifications"
-                  [searchable]="true"
-                  [closeOnSelect]="false" [appendTo]="'body'" 
-                  class="form-control ng-select-matching">
-                </ng-select>
-            </div>
+          <hr class="mt-4 my-4 border-t-2 border-dashed border-gray-300">
 
-            <!-- CX Certifications -->
-            <div>
-                <label class="form-label">CX Certifications</label>
-                <ng-select
-                  [items]="cxCertifications"
-                  bindLabel="certification_name"
-                  placeholder="Select CX certifications"
-                  [multiple]="true"
-                  formControlName="cxCertifications"
-                  [searchable]="true"
-                  [closeOnSelect]="false" [appendTo]="'body'" 
-                  class="form-control ng-select-matching"
-                >
-                </ng-select>
-            </div>
-          </div>
-    </mat-tab>
-     <mat-tab label="Qualifications">
-             <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> 
-              <!-- Preferred Qualifications -->
-               <div class="form-group">
-      <label for="degree">Preferred Degree</label>
-      <select class="form-control" id="degree" formControlName="preferred_degree">
-        <option value="">Select a degree</option>
-        <option *ngFor="let degree of degrees" [value]="degree.id">
-          {{ degree.name }}
-        </option>
-      </select>
-    </div>
-            </div>
-    </mat-tab>
-    </mat-tab-group> 
-</div>
-<hr class="mt-4 my-6 border-t-2 border-dashed border-gray-300">
           <!-- What We Offer -->
-          <div class="col-lg-12 col-md-6">
-              <label class="form-label">What We Offer</label>
-              <textarea
-                formControlName="whatWeOffer"
-                placeholder="Benefits and perks"
-                class="form-control"
-              ></textarea>
+          <div class="col-lg-12 col-md-12">
+            <label class="form-label">What We Offer <span class="text-muted">**</span></label>
+            <textarea
+              formControlName="whatWeOffer"
+              placeholder="Benefits and perks"
+              class="form-control"
+              rows="4"
+            ></textarea>
           </div>
 
-<!-- Experience Min -->
-          <div class="col-lg-4 col-md-4">
-              <label class="form-label">Experience Min (years)</label>
-              <input
-                type="number"
-                step="0.1"
-                formControlName="experienceMin"
-                placeholder="e.g. 1.5"
-                class="form-control"/>
+          <!-- Experience -->
+          <div class="col-lg-3 col-md-6">
+            <label class="form-label">Experience Min (years) <span class="text-danger">*</span></label>
+            <input
+              type="number"
+              step="0.1"
+              formControlName="experienceMin"
+              placeholder="e.g. 1.5"
+              class="form-control"
+              [class.is-invalid]="jobForm.get('experienceMin')?.touched && jobForm.get('experienceMin')?.invalid"
+            />
+            <div *ngIf="jobForm.get('experienceMin')?.touched && jobForm.get('experienceMin')?.invalid" 
+                 class="invalid-feedback d-block">
+              Minimum experience is required.
+            </div>
           </div>
 
-          <!-- Experience Max -->
-          <div class="col-lg-4 col-md-4">
-              <label class="form-label">Experience Max (years)</label>
-              <input
-                type="number"
-                step="0.1"
-                formControlName="experienceMax"
-                placeholder="e.g. 4.0"
-                class="form-control"
-              />
+          <div class="col-lg-3 col-md-6">
+            <label class="form-label">Experience Max (years) <span class="text-danger">*</span></label>
+            <input
+              type="number"
+              step="0.1"
+              formControlName="experienceMax"
+              placeholder="e.g. 4.0"
+              class="form-control"
+              [class.is-invalid]="jobForm.get('experienceMax')?.touched && jobForm.get('experienceMax')?.invalid"
+            />
+            <div *ngIf="jobForm.get('experienceMax')?.touched && jobForm.get('experienceMax')?.invalid" 
+                 class="invalid-feedback d-block">
+              Maximum experience is required.
+            </div>
           </div>
 
-          
-<!-- Employment Type -->
-<div class="col-lg-4 col-md-4 mt-3">
-    <label class="form-label">Employment Type</label>
-    <ng-select
-      formControlName="employmentType"
-      placeholder="Select employment types"
-      [multiple]="true"
-      [searchable]="false"
-      [closeOnSelect]="false" [appendTo]="'body'" 
-      class="form-control ng-select-matching"
-    >
-      <ng-option value="Full Time / Regular">Full Time / Regular</ng-option>
-      <ng-option value="Part Time / Freelance">Part Time / Freelance</ng-option>
-      <ng-option value="Contract">Contract</ng-option>
-      <ng-option value="Internship">Internship</ng-option>
-    </ng-select>
-    <div *ngIf="jobForm.get('employmentType')?.invalid && (jobForm.get('employmentType')?.touched)" 
-         class="text-danger small mt-1">
-      Required field
-    </div>
+          <!-- Employment Type -->
+          <div class="col-lg-6 col-md-12">
+  <label class="form-label">Employment Type <span class="text-danger">*</span></label>
+  <ng-select
+    class="custom-dropdown"
+    formControlName="employmentType"
+    placeholder="Select employment types"
+    [multiple]="true"
+    [searchable]="false"
+    [closeOnSelect]="false"
+    [appendTo]="'body'"
+    [class.is-invalid]="jobForm.get('employmentType')?.touched && jobForm.get('employmentType')?.invalid">
+    
+    <ng-option value="Full Time / Regular">Full Time / Regular</ng-option>
+    <ng-option value="Part Time / Freelance">Part Time / Freelance</ng-option>
+    <ng-option value="Contract">Contract</ng-option>
+    <ng-option value="Internship">Internship</ng-option>
+  </ng-select>
+
+  <div *ngIf="jobForm.get('employmentType')?.touched && jobForm.get('employmentType')?.invalid" 
+       class="invalid-feedback d-block">
+    At least one employment type is required.
+  </div>
 </div>
 
 
-
-
-
-          <!-- Currency Dropdown -->
-<div class="col-lg-4 col-md-4">
+          <!-- Compensation Section -->
+          <div class="col-lg-3 col-md-6">
   <label class="form-label">Currency <span class="text-danger">*</span></label>
   <ng-select
+    class="custom-dropdown currency-select"
     formControlName="currency"
     placeholder="Select currency"
     [items]="currencies"
@@ -318,127 +369,177 @@
     [searchable]="true"
     [clearable]="false"
     [appendTo]="'body'"
-    [class.is-invalid]="jobForm.get('currency')?.touched && jobForm.get('currency')?.invalid"
-  >
+    [class.is-invalid]="jobForm.get('currency')?.touched && jobForm.get('currency')?.invalid">
+    
     <ng-template ng-label-tmp let-item="item">
       {{ item.symbol }} - {{ item.name }} ({{ item.code }})
     </ng-template>
+    
     <ng-template ng-option-tmp let-item="item">
       {{ item.symbol }} - {{ item.name }} ({{ item.code }})
     </ng-template>
   </ng-select>
+
   <div *ngIf="jobForm.get('currency')?.touched && jobForm.get('currency')?.invalid" 
        class="invalid-feedback d-block">
     Currency is required.
   </div>
 </div>
 
-<!-- Compensation Amount (conditional) -->
-<div class="col-lg-4 col-md-4" *ngIf="jobForm.get('currency')?.value">
-  <label class="form-label">Amount <span class="text-danger">*</span></label>
-  <div class="input-group">
-    <span class="input-group-text">{{ selectedCurrencySymbol }} {{ selectedCurrencyCode }}</span>
-    <input
-      type="number"
-      formControlName="compensation"
-      placeholder="e.g. 50000"
-      class="form-control"
-      [class.is-invalid]="jobForm.get('compensation')?.touched && jobForm.get('compensation')?.invalid"
-    />
-  </div>
-  <div *ngIf="jobForm.get('compensation')?.touched && jobForm.get('compensation')?.invalid" 
-       class="invalid-feedback d-block">
-    Amount is required and must be a positive number.
-  </div>
-</div>
 
-<!-- Salary Type (conditional) -->
-<div class="col-lg-4 col-md-4" *ngIf="jobForm.get('compensation')?.value">
-  <label class="form-label">Salary Type <span class="text-danger">*</span></label>
-  <select formControlName="salaryType" class="form-control">
-    <option value="">Select salary type</option>
-    <option value="per annum">Per Annum</option>
-    <option value="monthly">Monthly</option>
-    <option value="hourly">Hourly</option>
-  </select>
-  <div *ngIf="jobForm.get('salaryType')?.touched && jobForm.get('salaryType')?.invalid" 
-       class="invalid-feedback d-block">
-    Salary type is required.
-  </div>
-</div>
+          <!-- Compensation Range -->
+          <div class="col-lg-6 col-md-6" *ngIf="jobForm.get('currency')?.value">
+            <label class="form-label">Compensation Range <span class="text-danger">*</span></label>
+            <div class="d-flex">
+              <div class="input-group me-2">
+                <span class="input-group-text">{{ selectedCurrencySymbol }} {{ selectedCurrencyCode }}</span>
+                <input
+                  type="number"
+                  placeholder="Min"
+                  class="form-control"
+                  formControlName="minCompensation"
+                  [class.is-invalid]="jobForm.get('minCompensation')?.touched && jobForm.get('minCompensation')?.invalid"
+                />
+              </div>
 
+              <div class="input-group">
+                <span class="input-group-text">{{ selectedCurrencySymbol }} {{ selectedCurrencyCode }}</span>
+                <input
+                  type="number"
+                  placeholder="Max"
+                  class="form-control"
+                  formControlName="maxCompensation"
+                  [class.is-invalid]="jobForm.get('maxCompensation')?.touched && jobForm.get('maxCompensation')?.invalid"
+                />
+              </div>
+            </div>
+
+            <div *ngIf="jobForm.get('minCompensation')?.touched && jobForm.get('minCompensation')?.invalid"
+                 class="invalid-feedback d-block">
+              Minimum compensation is required and must be positive.
+            </div>
+            <div *ngIf="jobForm.get('maxCompensation')?.touched && jobForm.get('maxCompensation')?.invalid"
+                 class="invalid-feedback d-block">
+              Maximum compensation is required and must be greater than minimum.
+            </div>
+          </div>
+         
+
+          <!-- Salary Type -->
+          <div class="col-lg-3 col-md-6" *ngIf="jobForm.get('currency')?.value">
+            <label class="form-label">Salary Type <span class="text-danger">*</span></label>
+            <select 
+              formControlName="salaryType" 
+              class="form-control"
+              [class.is-invalid]="jobForm.get('salaryType')?.touched && jobForm.get('salaryType')?.invalid">
+              <option value="">Select salary type</option>
+              <option value="per annum">Per Annum</option>
+              <option value="monthly">Monthly</option>
+              <option value="hourly">Hourly</option>
+            </select>
+            <div *ngIf="jobForm.get('salaryType')?.touched && jobForm.get('salaryType')?.invalid" 
+                 class="invalid-feedback d-block">
+              Salary type is required.
+            </div>
+          </div>
 
           <!-- Job Description -->
           <div class="col-lg-12 col-md-12">
-              <label class="form-label">Job Description</label>
-              <textarea
-                formControlName="jobDescription"
-                placeholder="Describe the job role, responsibilities, etc."
-                class="form-control"
-              ></textarea>
+            <label class="form-label">Job Description <span class="text-danger">*</span></label>
+            <textarea
+              formControlName="jobDescription"
+              placeholder="Describe the job role, responsibilities, etc."
+              class="form-control"
+              rows="6"
+              [class.is-invalid]="jobForm.get('jobDescription')?.touched && jobForm.get('jobDescription')?.invalid"
+            ></textarea>
+            <div *ngIf="jobForm.get('jobDescription')?.touched && jobForm.get('jobDescription')?.invalid" 
+                 class="invalid-feedback d-block">
+              Job description is required.
+            </div>
           </div>
 
-      
-<!-- Role Summary -->
-<div class="col-lg-12 col-md-12">
-    <label class="form-label">Role Summary <span class="text-danger">*</span></label>
-    <textarea
-      formControlName="roleSummary"
-      placeholder="Key responsibilities and role overview"
-      class="form-control"></textarea>
-    <div *ngIf="jobForm.get('roleSummary')?.invalid && (jobForm.get('roleSummary')?.touched)" class="text-danger small mt-1">
-      Required field
-  </div>
-</div>
+          <!-- Role Summary -->
+          <div class="col-lg-12 col-md-12">
+            <label class="form-label">Role Summary <span class="text-danger">*</span></label>
+            <textarea
+              formControlName="roleSummary"
+              placeholder="Key responsibilities and role overview"
+              class="form-control"
+              rows="4"
+              [class.is-invalid]="jobForm.get('roleSummary')?.touched && jobForm.get('roleSummary')?.invalid"
+            ></textarea>
+            <div *ngIf="jobForm.get('roleSummary')?.touched && jobForm.get('roleSummary')?.invalid" 
+                 class="invalid-feedback d-block">
+              Role summary is required.
+            </div>
+          </div>
 
-<!-- How to Apply -->
- <div class="col-lg-12 col-md-12">
-  <label class="form-label">How to Apply</label>
-  
-  <!-- Checkbox for using standard instructions -->
-  <div class="form-check mb-3">
-    <input 
-      class="form-check-input" 
-      type="checkbox" 
-      id="useStandardInstructions" 
-      formControlName="useStandardInstructions">
-    <label class="form-check-label" for="useStandardInstructions">
-      Use standard application instructions
-    </label>
-  </div>
-  
-  <!-- Textarea with conditional read-only state -->
-  <textarea
-    formControlName="howToApply"
-    placeholder="Application Instruction"
-    class="form-control"
-    [readOnly]="jobForm.get('useStandardInstructions')?.value"
-    rows="5"
-  ></textarea>
-</div>
+          <!-- How to Apply -->
+          <div class="col-lg-12 col-md-12">
+            <label class="form-label">How to Apply <span class="text-muted">**</span></label>
+            <div class="form-check mb-3">
+              <input 
+                class="form-check-input" 
+                type="checkbox" 
+                id="useStandardInstructions" 
+                formControlName="useStandardInstructions">
+              <label class="form-check-label" for="useStandardInstructions">
+                Use standard application instructions
+              </label>
+            </div>
+            <textarea
+              formControlName="howToApply"
+              placeholder="Application Instruction"
+              class="form-control"
+              [readOnly]="jobForm.get('useStandardInstructions')?.value"
+              rows="4"
+            ></textarea>
+          </div>
 
-          <!-- Notice Period -->
+          <!-- Preferred Availability -->
           <div class="col-lg-6 col-md-12">
-              <label class="form-label">Preferred Availability:</label>
-              <select formControlName="noticePeriod" class="form-control">
-                <option value="">Select Notice Period</option>
-                <option value="Immediate">Immediate</option>
-                <option value="< 1 Month">Below 1 Month</option>
-                <option value="1 Month">1 Month</option>
-                <option value="2 Months">2 Months</option>
-                <option value="3 Months">3 Months</option>
-              </select>
+            <label class="form-label">Preferred Availability <span class="text-danger">*</span></label>
+            <select 
+              formControlName="noticePeriod" 
+              class="form-control"
+              [class.is-invalid]="jobForm.get('noticePeriod')?.touched && jobForm.get('noticePeriod')?.invalid">
+              <option value="">Select Notice Period</option>
+              <option value="Immediate">Immediate</option>
+              <option value="< 1 Month">Below 1 Month</option>
+              <option value="1 Month">1 Month</option>
+              <option value="2 Months">2 Months</option>
+              <option value="3 Months">3 Months</option>
+            </select>
+            <div *ngIf="jobForm.get('noticePeriod')?.touched && jobForm.get('noticePeriod')?.invalid" 
+                 class="invalid-feedback d-block">
+              Preferred availability is required.
+            </div>
           </div>
-
 
           <!-- Application Deadline -->
           <div class="col-lg-6 col-md-12">
-              <label class="form-label">Application Deadline:</label>
-              <input type="date" formControlName="applicationDeadline" class="form-control cursor-pointer" />
+            <label class="form-label">Application Deadline <span class="text-danger">*</span></label>
+            <input 
+              type="date" 
+              formControlName="applicationDeadline" 
+              class="form-control cursor-pointer"
+              [class.is-invalid]="jobForm.get('applicationDeadline')?.touched && jobForm.get('applicationDeadline')?.invalid"
+            />
+            <div *ngIf="jobForm.get('applicationDeadline')?.touched && jobForm.get('applicationDeadline')?.invalid" 
+                 class="invalid-feedback d-block">
+              Application deadline is required.
+            </div>
           </div>
 
           <!-- Hidden Recruiter ID -->
           <input type="hidden" formControlName="recruiterId" />
+        </div>
+
+        <!-- Asterisk Legend -->
+        <div class="mt-4 mb-3 text-muted small">
+          <span class="me-3"><span class="text-danger">*</span> Mandatory field</span>
+          <span><span class="text-muted">**</span> Strongly recommended</span>
         </div>
 
         <!-- Submit Button Centered -->
@@ -446,7 +547,7 @@
           <button
             type="submit"
             class="btn primary-btn"
-            [disabled]="loading"
+            [disabled]="loading || jobForm.invalid"
           >
             {{ loading ? 'Posting...' : 'POST A JOB' }}
           </button>

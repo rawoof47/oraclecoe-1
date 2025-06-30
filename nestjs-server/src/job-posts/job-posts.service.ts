@@ -39,6 +39,7 @@ export class JobPostsService {
     jobPost.created_by = createJobPostDto.createdBy ?? null;
     jobPost.updated_by = createJobPostDto.updatedBy ?? null;
     jobPost.work_mode = createJobPostDto.workMode ?? null;
+    jobPost.salary_type = createJobPostDto.salaryType ?? null;
 
     // ✅ New fields
     jobPost.role_summary = createJobPostDto.roleSummary ?? null;
@@ -112,8 +113,6 @@ export class JobPostsService {
       data: savedPost,
     };
   }
-  
-  
 
   // ✅ Get all job posts (with skill_ids and certification_ids)
   async findAll() {
@@ -167,6 +166,10 @@ export class JobPostsService {
 
     if (updateJobPostDto.workMode) {
       jobPost.work_mode = updateJobPostDto.workMode;
+    }
+
+    if (updateJobPostDto.salaryType !== undefined) {
+      jobPost.salary_type = updateJobPostDto.salaryType;
     }
 
     if (!jobPost.job_title || !jobPost.job_description) {
@@ -225,69 +228,68 @@ export class JobPostsService {
     const certs = await this.jobPostCertificationsService.getByJobPostId(jobId);
     return certs.map((cert) => cert.certification_id);
   }
-  // Add this method to JobPostsService class
-async findByRecruiter(recruiterId: string) {
-  const jobPosts = await this.jobPostRepository.find({ 
-    where: { recruiter_id: recruiterId } 
-  });
 
-  const jobsWithRelations = await Promise.all(
-    jobPosts.map(async (job) => ({
-      ...job,
-      skill_ids: await this.getSkillIdsForJob(job.id),
-      certification_ids: await this.getCertificationIdsForJob(job.id),
-    })),
-  );
+  async findByRecruiter(recruiterId: string) {
+    const jobPosts = await this.jobPostRepository.find({
+      where: { recruiter_id: recruiterId },
+    });
 
-  return jobsWithRelations;
-}
+    const jobsWithRelations = await Promise.all(
+      jobPosts.map(async (job) => ({
+        ...job,
+        skill_ids: await this.getSkillIdsForJob(job.id),
+        certification_ids: await this.getCertificationIdsForJob(job.id),
+      })),
+    );
 
-// ✅ Add method to update job status
+    return jobsWithRelations;
+  }
+
+  // ✅ Add method to update job status
   async updateStatus(id: string, statusId: string) {
     const jobPost = await this.jobPostRepository.findOne({ where: { id } });
-    
+
     if (!jobPost) {
       throw new NotFoundException('Job post not found');
     }
-    
+
     jobPost.status_id = statusId;
     const updatedPost = await this.jobPostRepository.save(jobPost);
-    
+
     return {
       message: 'Job status updated successfully',
       data: updatedPost,
     };
   }
-// Add this method to JobPostsService class
-async findActiveJobs() {
-  const activeStatusId = '36f3301d-318e-11f0-aa4d-80ce6232908a';
-  const jobPosts = await this.jobPostRepository.find({ 
-    where: { status_id: activeStatusId } 
-  });
 
-  const jobsWithRelations = await Promise.all(
-    jobPosts.map(async (job) => ({
-      ...job,
-      skill_ids: await this.getSkillIdsForJob(job.id),
-      certification_ids: await this.getCertificationIdsForJob(job.id),
-    })),
-  );
+  async findActiveJobs() {
+    const activeStatusId = '36f3301d-318e-11f0-aa4d-80ce6232908a';
+    const jobPosts = await this.jobPostRepository.find({
+      where: { status_id: activeStatusId },
+    });
 
-  return jobsWithRelations;
-}
+    const jobsWithRelations = await Promise.all(
+      jobPosts.map(async (job) => ({
+        ...job,
+        skill_ids: await this.getSkillIdsForJob(job.id),
+        certification_ids: await this.getCertificationIdsForJob(job.id),
+      })),
+    );
 
+    return jobsWithRelations;
+  }
 
-async findByJobNumber(jobNumber: number) {
-  const jobPost = await this.jobPostRepository.findOne({ 
-    where: { job_number: jobNumber } 
-  });
-  
-  if (!jobPost) return null;
+  async findByJobNumber(jobNumber: number) {
+    const jobPost = await this.jobPostRepository.findOne({
+      where: { job_number: jobNumber },
+    });
 
-  return {
-    ...jobPost,
-    skill_ids: await this.getSkillIdsForJob(jobPost.id),
-    certification_ids: await this.getCertificationIdsForJob(jobPost.id),
-  };
-}
+    if (!jobPost) return null;
+
+    return {
+      ...jobPost,
+      skill_ids: await this.getSkillIdsForJob(jobPost.id),
+      certification_ids: await this.getCertificationIdsForJob(jobPost.id),
+    };
+  }
 }

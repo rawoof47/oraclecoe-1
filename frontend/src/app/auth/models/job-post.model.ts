@@ -11,8 +11,8 @@ export interface JobPost {
   experience_max?: number; // In years (e.g., 4.0)
   employment_type?: 'Full Time' | 'Part Time' | 'Contract' | 'Internship' | 'Freelance';
    currency_id?: string;
-  compensation_value?: number;
-  salary_type?: string; // e.g. "$1000 - $2000"
+  compensation_range?: string;
+  salary_type?: string; 
   job_description?: string;
   notice_period?: string; // e.g. "1 month", "15 days"
   status_id: string; // UUID of the status
