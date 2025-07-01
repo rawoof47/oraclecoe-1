@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JobPost } from './entities/job-post.entity';
 import { CreateJobPostDto } from './dto';
+import { MoreThanOrEqual } from 'typeorm';
 import { UpdateJobPostDto } from './dto/update-job-post.dto';
 import { JobPostSkillService } from 'src/job-post-skill/job-post-skill.service';
 import { JobPostCertificationsService } from 'src/job-post-certification/job-post-certifications.service';
@@ -263,21 +264,28 @@ export class JobPostsService {
   }
 
   async findActiveJobs() {
-    const activeStatusId = '36f3301d-318e-11f0-aa4d-80ce6232908a';
-    const jobPosts = await this.jobPostRepository.find({
-      where: { status_id: activeStatusId },
-    });
+  const activeStatusId = '36f3301d-318e-11f0-aa4d-80ce6232908a';
 
-    const jobsWithRelations = await Promise.all(
-      jobPosts.map(async (job) => ({
-        ...job,
-        skill_ids: await this.getSkillIdsForJob(job.id),
-        certification_ids: await this.getCertificationIdsForJob(job.id),
-      })),
-    );
+  // Convert today's date to YYYY-MM-DD format
+  const today = new Date().toISOString().split('T')[0]; // e.g., '2025-07-01'
 
-    return jobsWithRelations;
-  }
+  const jobPosts = await this.jobPostRepository.find({
+    where: {
+      status_id: activeStatusId,
+      application_deadline: MoreThanOrEqual(today),
+    },
+  });
+
+  const jobsWithRelations = await Promise.all(
+    jobPosts.map(async (job) => ({
+      ...job,
+      skill_ids: await this.getSkillIdsForJob(job.id),
+      certification_ids: await this.getCertificationIdsForJob(job.id),
+    })),
+  );
+
+  return jobsWithRelations;
+}
 
   async findByJobNumber(jobNumber: number) {
     const jobPost = await this.jobPostRepository.findOne({

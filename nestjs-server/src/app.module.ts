@@ -42,12 +42,15 @@ import { RegionsModule } from './regions/regions.module';
 import { CountriesModule } from './countries/countries.module';
 import { RecruiterLocationModule } from './recruiter-location/recruiter-location.module';
 import { CurrencyModule } from './currency/currency.module';
+import { ScheduleModule } from '@nestjs/schedule';
 @Module({
   imports: [
     // ✅ Global .env configuration
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+
+    ScheduleModule.forRoot(),
 
     // ✅ TypeORM configuration with ConfigService
     TypeOrmModule.forRootAsync({
