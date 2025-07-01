@@ -75,6 +75,7 @@ export class PostAJobComponent implements OnInit {
   cxCertifications: Certification[] = [];
 
   workModeOptions = ['Remote', 'On-site', 'Hybrid'];
+  compensationTypes = ['Above', 'Below', 'Range', 'Exact'];
 
   private defaultHowToApplyText: string = 
     'How to Apply\n' +
@@ -100,8 +101,10 @@ export class PostAJobComponent implements OnInit {
       experienceMax: [null, [Validators.required, Validators.min(0)]],
       employmentType: [[], Validators.required],
       currency: ['', Validators.required],
-      minCompensation: [null, [Validators.required, Validators.min(0)]],
-      maxCompensation: [null, [Validators.required, Validators.min(0)]],
+      compensationType: ['', Validators.required],
+      compensationValue: [null, [Validators.min(0)]],
+      compensationMin: [null, [Validators.min(0)]],
+      compensationMax: [null, [Validators.min(0)]],
       salaryType: ['', Validators.required],
       workMode: ['', Validators.required],
       jobDescription: ['', Validators.required],
@@ -123,7 +126,7 @@ export class PostAJobComponent implements OnInit {
       hcmCertifications: [[]],
       cxCertifications: [[]],
       location: [''], // Removed Validators.required since it's optional
-    }, { validators: this.compensationRangeValidator });
+    }, { validators: this.compensationValidator });
   }
 
   ngOnInit(): void {
@@ -163,17 +166,56 @@ export class PostAJobComponent implements OnInit {
     // Always load skills and certifications for new job posting
     this.loadSkillsByCategory();
     this.loadCertificationsByCategory();
+
+    // Set validators based on compensation type
+    this.jobForm.get('compensationType')?.valueChanges.subscribe(type => {
+      const valueControl = this.jobForm.get('compensationValue');
+      const minControl = this.jobForm.get('compensationMin');
+      const maxControl = this.jobForm.get('compensationMax');
+
+      // Clear previous validators
+      valueControl?.clearValidators();
+      minControl?.clearValidators();
+      maxControl?.clearValidators();
+
+      // Set validators based on type
+      switch(type) {
+        case 'Above':
+          valueControl?.setValidators([Validators.required, Validators.min(0)]);
+          break;
+        case 'Below':
+          valueControl?.setValidators([Validators.required, Validators.min(0)]);
+          break;
+        case 'Range':
+          minControl?.setValidators([Validators.required, Validators.min(0)]);
+          maxControl?.setValidators([Validators.required, Validators.min(0)]);
+          break;
+        case 'Exact':
+          valueControl?.setValidators([Validators.required, Validators.min(0)]);
+          break;
+      }
+
+      valueControl?.updateValueAndValidity();
+      minControl?.updateValueAndValidity();
+      maxControl?.updateValueAndValidity();
+    });
   }
 
-  // Custom validator for compensation range
-  private compensationRangeValidator(group: AbstractControl): ValidationErrors | null {
-    const min = group.get('minCompensation')?.value;
-    const max = group.get('maxCompensation')?.value;
+  // Custom validator for compensation
+  private compensationValidator(group: AbstractControl): ValidationErrors | null {
+    const compType = group.get('compensationType')?.value;
+    const compValue = group.get('compensationValue')?.value;
+    const compMin = group.get('compensationMin')?.value;
+    const compMax = group.get('compensationMax')?.value;
 
-    if (min !== null && max !== null && min > max) {
+    if (compType === 'Range' && compMin !== null && compMax !== null && compMin > compMax) {
       return { minGreaterThanMax: true };
     }
     return null;
+  }
+
+  private formatNumberWithCommas(x: number): string {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
   private loadCurrencies(): void {
@@ -259,11 +301,40 @@ export class PostAJobComponent implements OnInit {
       return;
     }
 
+    // Validate compensation range
+    const compType = this.jobForm.get('compensationType')?.value;
+    const compMin = this.jobForm.get('compensationMin')?.value;
+    const compMax = this.jobForm.get('compensationMax')?.value;
+    
+    if (compType === 'Range' && compMin > compMax) {
+      this.snackBar.open('Maximum compensation must be greater than minimum compensation.', 'Close', {
+        duration: 3000,
+        panelClass: 'snackbar-error',
+        horizontalPosition: 'right',
+        verticalPosition: 'top',
+      });
+      return;
+    }
+
     this.loading = true;
     const formValues = this.jobForm.value;
 
-    // Build compensation range string
-    const compensationRange = `${formValues.minCompensation} - ${formValues.maxCompensation}`;
+    // Build compensation range string based on type
+    let compensationRange = '';
+    switch(formValues.compensationType) {
+      case 'Above':
+        compensationRange = `${this.selectedCurrencySymbol} ${this.selectedCurrencyCode} ${this.formatNumberWithCommas(formValues.compensationValue)} above`;
+        break;
+      case 'Below':
+        compensationRange = `${this.selectedCurrencySymbol} ${this.selectedCurrencyCode} below ${this.formatNumberWithCommas(formValues.compensationValue)}`;
+        break;
+      case 'Range':
+        compensationRange = `${this.selectedCurrencySymbol} ${this.selectedCurrencyCode} ${this.formatNumberWithCommas(formValues.compensationMin)} - ${this.formatNumberWithCommas(formValues.compensationMax)}`;
+        break;
+      case 'Exact':
+        compensationRange = `${this.selectedCurrencySymbol} ${this.selectedCurrencyCode} ${this.formatNumberWithCommas(formValues.compensationValue)}`;
+        break;
+    }
 
     const jobPostPayload = {
       ...formValues,

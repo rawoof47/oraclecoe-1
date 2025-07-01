@@ -10,6 +10,7 @@ import { NavbarComponent } from '../../common/navbar/navbar.component';
 import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
 import { RecruiterSidebarComponent  } from '../../common/recruiter-sidebar/recruiter-sidebar.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   standalone: true,
@@ -18,6 +19,7 @@ import { RecruiterSidebarComponent  } from '../../common/recruiter-sidebar/recru
   styleUrls: ['./job-applicants.component.scss'],
   imports: [
     CommonModule,
+    FormsModule,
     InitialsPipe,
     NavbarComponent,
     FooterComponent,
@@ -27,9 +29,12 @@ import { RecruiterSidebarComponent  } from '../../common/recruiter-sidebar/recru
 })
 export class JobApplicantsComponent implements OnInit {
   applicants: Applicant[] = [];
+  filteredApplicants: Applicant[] = [];
   isLoading = true;
   errorMessage: string | null = null;
   jobId: string | null = null;
+  statusFilter: string = 'all';
+  searchTerm: string = ''; // ✅ Added search term property
 
   // ✅ New title support
   pageTitle = 'Job Applicants';
@@ -107,6 +112,9 @@ export class JobApplicantsComponent implements OnInit {
         withdrawalReason: app.withdrawal_reason || null
       }));
 
+      // Initialize filtered list
+      this.filteredApplicants = [...this.applicants];
+
       // ✅ If we still don’t have jobTitle, get it from first applicant
       if (this.jobId && !this.specificJobTitle && this.applicants.length > 0) {
         this.specificJobTitle = this.applicants[0].job_title;
@@ -120,6 +128,31 @@ export class JobApplicantsComponent implements OnInit {
     } finally {
       this.isLoading = false;
     }
+  }
+
+  // ✅ Updated filterApplicants to include search functionality
+  filterApplicants() {
+    let temp = [...this.applicants];
+    
+    // Apply status filter
+    if (this.statusFilter === 'withdrawn') {
+      temp = temp.filter(a => a.withdrawn);
+    } 
+    else if (this.statusFilter !== 'all') {
+      temp = temp.filter(a => 
+        a.status_id === this.statusFilter && !a.withdrawn
+      );
+    }
+    
+    // Apply search filter
+    if (this.searchTerm.trim()) {
+      const term = this.searchTerm.trim().toLowerCase();
+      temp = temp.filter(applicant => 
+        applicant.name.toLowerCase().includes(term)
+      );
+    }
+
+    this.filteredApplicants = temp;
   }
 
   private mapStatus(statusId: string, withdrawn: boolean): string {
@@ -136,6 +169,9 @@ export class JobApplicantsComponent implements OnInit {
           if (applicant) {
             applicant.status = this.mapStatus(newStatusId, false);
             applicant.status_id = newStatusId;
+            
+            // Update filtered list after status change
+            this.filterApplicants();
 
             const message = newStatusId === 'e8d0da93-452c-11f0-8520-ac1f6bbcd360'
               ? 'Applicant shortlisted successfully'
@@ -175,7 +211,7 @@ export class JobApplicantsComponent implements OnInit {
     } else if (this.jobId) {
       this.pageTitle = `Job #${this.jobId} Applicants`;
     } else {
-      this.pageTitle = 'All Applications ';
+      this.pageTitle = 'All Applications';
     }
   }
 }
