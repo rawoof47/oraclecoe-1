@@ -34,9 +34,12 @@ export class JobApplicantsComponent implements OnInit {
   errorMessage: string | null = null;
   jobId: string | null = null;
   statusFilter: string = 'all';
-  searchTerm: string = ''; // ✅ Added search term property
+  searchTerm: string = '';
+  
+  // New properties for auto-filtering
+  autoApplyFilter = false;
+  filterSource: string | null = null;
 
-  // ✅ New title support
   pageTitle = 'Job Applicants';
   specificJobTitle: string | null = null;
 
@@ -54,20 +57,39 @@ export class JobApplicantsComponent implements OnInit {
     'e8d0fb03-452c-11f0-8520-ac1f6bbcd360': 'Rejected'
   };
 
+  // Map dashboard status to filter values
+  dashboardStatusMap: Record<string, string> = {
+    'applied': '12c7f28f-3a21-11f0-8520-ac1f6bbcd360',
+    'shortlisted': 'e8d0da93-452c-11f0-8520-ac1f6bbcd360',
+    'rejected': 'e8d0fb03-452c-11f0-8520-ac1f6bbcd360'
+  };
+
   constructor(
     private jobPostService: JobPostService,
     private authService: AuthService,
     private route: ActivatedRoute,
-    private router: Router // ✅ Added Router
+    private router: Router
   ) {}
 
   async ngOnInit() {
     console.log('[Init] Component initializing...');
+    
+    // Check for filter state from navigation
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation?.extras.state?.['statusFilter']) {
+      const filter = navigation.extras.state['statusFilter'];
+      this.filterSource = navigation.extras.state['filterSource'] || null;
+      
+      if (this.dashboardStatusMap[filter]) {
+        this.statusFilter = this.dashboardStatusMap[filter];
+        this.autoApplyFilter = true;
+      }
+    }
+
     this.route.params.subscribe(async (params) => {
       this.jobId = params['jobId'] || null;
 
-      // ✅ Get jobTitle if passed via navigation state
-      const navigation = this.router.getCurrentNavigation();
+      // Get jobTitle if passed via navigation state
       if (navigation?.extras.state?.['jobTitle']) {
         this.specificJobTitle = navigation.extras.state['jobTitle'];
       }
@@ -112,10 +134,10 @@ export class JobApplicantsComponent implements OnInit {
         withdrawalReason: app.withdrawal_reason || null
       }));
 
-      // Initialize filtered list
-      this.filteredApplicants = [...this.applicants];
+      // Initialize filtered list with automatic filter applied
+      this.filterApplicants();
 
-      // ✅ If we still don’t have jobTitle, get it from first applicant
+      // If we still don't have jobTitle, get it from first applicant
       if (this.jobId && !this.specificJobTitle && this.applicants.length > 0) {
         this.specificJobTitle = this.applicants[0].job_title;
         this.updatePageTitle();
@@ -130,7 +152,7 @@ export class JobApplicantsComponent implements OnInit {
     }
   }
 
-  // ✅ Updated filterApplicants to include search functionality
+  // Updated filterApplicants to include search functionality
   filterApplicants() {
     let temp = [...this.applicants];
     
@@ -213,5 +235,13 @@ export class JobApplicantsComponent implements OnInit {
     } else {
       this.pageTitle = 'All Applications';
     }
+  }
+
+  // Clear automatic filter
+  clearFilter(): void {
+    this.statusFilter = 'all';
+    this.filterApplicants();
+    this.autoApplyFilter = false;
+    this.filterSource = null;
   }
 }

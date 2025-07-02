@@ -1,5 +1,6 @@
 // ✅ Existing imports
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router'; // Added Router
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../../common/navbar/navbar.component';
@@ -46,11 +47,26 @@ export class RecruiterDashboardComponent implements OnInit {
   constructor(
     private profileService: RecruiterProfileService,
     private jobPostService: JobPostService,
-    private applicationService: ApplicationService
+    private applicationService: ApplicationService,
+    private router: Router // Injected Router
   ) {}
 
   ngOnInit(): void {
     this.fetchProfileData();
+  }
+
+  // Navigation methods
+  navigateToPostedJobs(): void {
+    this.router.navigate(['/recruiter/posted-jobs']);
+  }
+  
+  navigateToJobApplicants(status: string): void {
+  this.router.navigate(['/job-applicants'], {
+    state: { 
+      statusFilter: status.toLowerCase(),
+      filterSource: 'dashboard' // Add identifier if needed
+    }
+  });
   }
 
   fetchProfileData(): void {
