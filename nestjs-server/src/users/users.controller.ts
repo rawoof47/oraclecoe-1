@@ -61,4 +61,13 @@ async changePassword(
     body.new_password,
   );
 }
+
+// Add this endpoint to UserController
+@Get('check-email/:email')
+async checkEmailRegistered(
+  @Param('email') email: string
+): Promise<{ registered: boolean }> {
+  const exists = await this.userService.isEmailRegistered(email);
+  return { registered: exists };
+}
 }

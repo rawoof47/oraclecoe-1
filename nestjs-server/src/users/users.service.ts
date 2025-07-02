@@ -132,4 +132,10 @@ export class UserService {
   
   await this.userRepository.save(user);
 }
+
+// Add this method to UserService
+async isEmailRegistered(email: string): Promise<boolean> {
+  const user = await this.userRepository.findOne({ where: { email } });
+  return !!user;
+}
 }

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../../services/auth.service'; // ✅ Import AuthService
 
 @Component({
   selector: 'app-forgot-password',
@@ -17,7 +18,7 @@ export class ForgotPasswordComponent {
   message: string | null = null;
   messageType: 'success' | 'danger' | null = null;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private authService: AuthService) {
     this.forgotPasswordForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]]
     });
@@ -30,22 +31,28 @@ export class ForgotPasswordComponent {
       return;
     }
 
-    // Reset previous messages
+    const email = this.forgotPasswordForm.get('email')?.value;
+    this.isSubmitting = true;
     this.message = null;
     this.messageType = null;
-    
-    this.isSubmitting = true;
-    
-    // Simulate API call (will be replaced with actual service)
-    setTimeout(() => {
-      this.isSubmitting = false;
-      
-      // Always show success to prevent email enumeration
-      this.message = 'If this email is registered, a reset link has been sent.';
-      this.messageType = 'success';
-      
-      // Reset form after submission
-      this.forgotPasswordForm.reset();
-    }, 1500);
+
+    this.authService.checkEmailRegistered(email).subscribe({
+      next: (response) => {
+        this.isSubmitting = false;
+        if (response.registered) {
+          this.message = 'This email is registered';
+          this.messageType = 'success';
+        } else {
+          this.message = 'This email is not registered. Please enter a valid email address.';
+          this.messageType = 'danger';
+        }
+        this.forgotPasswordForm.reset();
+      },
+      error: (error) => {
+        this.isSubmitting = false;
+        this.message = 'An error occurred. Please try again.';
+        this.messageType = 'danger';
+      }
+    });
   }
 }

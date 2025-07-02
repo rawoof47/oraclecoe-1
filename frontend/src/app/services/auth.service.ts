@@ -64,5 +64,12 @@ export class AuthService {
   });
 }
 
+// Add this method to AuthService
+checkEmailRegistered(email: string): Observable<{ registered: boolean }> {
+  return this.http.get<{ registered: boolean }>(
+    `${environment.apiBaseUrl}/users/check-email/${encodeURIComponent(email)}`
+  );
+}
+
   
 }
