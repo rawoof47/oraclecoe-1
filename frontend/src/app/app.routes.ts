@@ -71,10 +71,8 @@ export const routes: Routes = [
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'terms-conditions', component: TermsConditionsComponent },
 
-  {
-  path: 'reset-password/:token',
-  component: ResetPasswordComponent
-},
+  { path: 'reset-password/:token', loadComponent: () => import('./pages/reset-password/reset-password.component').then(m => m.ResetPasswordComponent) },
+
 
   
 

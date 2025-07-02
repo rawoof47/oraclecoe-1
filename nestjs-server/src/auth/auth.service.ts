@@ -4,10 +4,12 @@ import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import { Role } from '../roles/entities/role.entity';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
 import { ConfigService } from '@nestjs/config'; // ✅ Import ConfigService
 import { MailService } from '../mail/mail.service';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { BadRequestException } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -116,7 +118,7 @@ export class AuthService {
       expiresIn: '15m',
     });
 
-    const resetLink = `https://oraxinno.com/reset-password/${token}`;
+    const resetLink = `http://localhost:4200/reset-password/${token}`;
 
     console.log('📨 Sending reset link:', resetLink);
 
@@ -127,6 +129,37 @@ export class AuthService {
     console.error('❌ Forgot password error:', err);
     throw err; // Don't swallow it — let NestJS return the right error code
   }
+}
+
+async resetPassword(dto: ResetPasswordDto): Promise<{ message: string }> {
+  const { token, newPassword } = dto;
+
+  let payload: any;
+
+  try {
+    payload = this.jwtService.verify(token, {
+      secret: this.configService.get<string>('JWT_SECRET'),
+    });
+  } catch (err) {
+    throw new BadRequestException('Invalid or expired reset token');
+  }
+
+  if (payload.purpose !== 'password-reset') {
+    throw new BadRequestException('Invalid token purpose');
+  }
+
+  const user = await this.usersRepository.findOne({ where: { id: payload.sub } });
+
+  if (!user) {
+    throw new BadRequestException('User not found');
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  user.password_hash = hashedPassword;
+
+  await this.usersRepository.save(user);
+
+  return { message: 'Password reset successful' };
 }
 
 

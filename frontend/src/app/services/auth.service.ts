@@ -75,10 +75,11 @@ forgotPassword(email: string) {
 }
 
 resetPassword(token: string, newPassword: string) {
-  return this.http.post('/api/auth/reset-password', {
+  return this.http.post('http://localhost:3000/auth/reset-password', {
     token,
     newPassword
   });
 }
+
   
 }

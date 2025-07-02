@@ -1,10 +1,25 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service'; // Adjust path if needed
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
+import {  MatSnackBarConfig } from '@angular/material/snack-bar';
+
+import { AuthService } from '../../services/auth.service'; // ✅ Adjust if needed
 
 @Component({
   selector: 'app-reset-password',
+  standalone: true,
+  imports: [
+    CommonModule, 
+    ReactiveFormsModule, 
+    RouterModule,
+    MatSnackBarModule,
+    MatTooltipModule,
+    MatIconModule
+  ],
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.scss']
 })
@@ -12,17 +27,42 @@ export class ResetPasswordComponent implements OnInit {
   resetForm: FormGroup;
   token: string = '';
   isSubmitting = false;
-  message: string | null = null;
-  messageType: 'success' | 'danger' | null = null;
+  hideNewPassword = true;
+  hideConfirmPassword = true;
+
+  // SnackBar Configs
+  private snackConfig: MatSnackBarConfig = {
+    duration: 3000,
+    verticalPosition: 'top',
+    horizontalPosition: 'right'
+  };
+
+  private successConfig: MatSnackBarConfig = {
+    ...this.snackConfig,
+    panelClass: ['snack-success']
+  };
+
+  private errorConfig: MatSnackBarConfig = {
+    ...this.snackConfig,
+    panelClass: ['snack-error', 'custom-snackbar']
+  };
 
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private snackBar: MatSnackBar
   ) {
     this.resetForm = this.fb.group({
-      newPassword: ['', [Validators.required, Validators.minLength(6)]],
+      newPassword: [
+        '', 
+        [
+          Validators.required, 
+          Validators.minLength(8),
+          Validators.pattern(/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/)
+        ]
+      ],
       confirmPassword: ['', [Validators.required]]
     }, { validators: this.passwordsMatchValidator });
   }
@@ -42,19 +82,32 @@ export class ResetPasswordComponent implements OnInit {
 
     const newPassword = this.resetForm.get('newPassword')?.value;
     this.isSubmitting = true;
-    this.message = null;
-    this.messageType = null;
+
+    // Show processing snackbar
+    const processingSnack = this.snackBar.open('Resetting your password...', '', {
+      ...this.snackConfig,
+      duration: undefined
+    });
 
     this.authService.resetPassword(this.token, newPassword).subscribe({
-      next: (res) => {
-        this.message = 'Password has been reset successfully.';
-        this.messageType = 'success';
-        this.resetForm.reset();
+      next: () => {
+        processingSnack.dismiss();
+        this.snackBar.open('Password has been reset successfully!', 'Close', this.successConfig);
         setTimeout(() => this.router.navigate(['/login']), 2000);
       },
       error: (err) => {
-        this.message = err.error?.message || 'Failed to reset password.';
-        this.messageType = 'danger';
+        processingSnack.dismiss();
+        const msg = err.error?.message || 'Failed to reset password.';
+        
+        if (msg.toLowerCase().includes('token')) {
+          this.snackBar.open('Please request a new password reset.', 'Close', {
+            ...this.errorConfig,
+            duration: 5000
+          });
+        } else {
+          this.snackBar.open(msg, 'Close', this.errorConfig);
+        }
+        
         this.isSubmitting = false;
       }
     });
