@@ -70,6 +70,15 @@ checkEmailRegistered(email: string): Observable<{ registered: boolean }> {
     `${environment.apiBaseUrl}/users/check-email/${encodeURIComponent(email)}`
   );
 }
+forgotPassword(email: string) {
+  return this.http.post('http://localhost:3000/auth/forgot-password', { email });
+}
 
+resetPassword(token: string, newPassword: string) {
+  return this.http.post('/api/auth/reset-password', {
+    token,
+    newPassword
+  });
+}
   
 }

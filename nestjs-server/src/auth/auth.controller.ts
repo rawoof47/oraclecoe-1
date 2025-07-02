@@ -19,4 +19,10 @@ export class AuthController {
   refreshToken(@GetUser() user: any) {
     return this.authService.refreshAccessToken(user);
   }
+
+  @Post('forgot-password')
+async forgotPassword(@Body('email') email: string) {
+  await this.authService.handleForgotPassword(email);
+  return { message: 'Reset link sent to your email.' };
+}
 }

@@ -25,34 +25,34 @@ export class ForgotPasswordComponent {
   }
 
   onSubmit(): void {
-    if (this.forgotPasswordForm.invalid) {
-      this.message = 'Please enter a valid email address.';
-      this.messageType = 'danger';
-      return;
-    }
-
-    const email = this.forgotPasswordForm.get('email')?.value;
-    this.isSubmitting = true;
-    this.message = null;
-    this.messageType = null;
-
-    this.authService.checkEmailRegistered(email).subscribe({
-      next: (response) => {
-        this.isSubmitting = false;
-        if (response.registered) {
-          this.message = 'This email is registered';
-          this.messageType = 'success';
-        } else {
-          this.message = 'This email is not registered. Please enter a valid email address.';
-          this.messageType = 'danger';
-        }
-        this.forgotPasswordForm.reset();
-      },
-      error: (error) => {
-        this.isSubmitting = false;
-        this.message = 'An error occurred. Please try again.';
-        this.messageType = 'danger';
-      }
-    });
+  if (this.forgotPasswordForm.invalid) {
+    this.message = 'Please enter a valid email address.';
+    this.messageType = 'danger';
+    return;
   }
+
+  const email = this.forgotPasswordForm.get('email')?.value;
+  this.isSubmitting = true;
+  this.message = null;
+  this.messageType = null;
+
+  this.authService.forgotPassword(email).subscribe({
+    next: () => {
+      this.isSubmitting = false;
+      this.message = 'Reset link sent to your email.';
+      this.messageType = 'success';
+      this.forgotPasswordForm.reset();
+    },
+    error: (err) => {
+      this.isSubmitting = false;
+      if (err.status === 404) {
+        this.message = 'This email is not registered.';
+      } else {
+        this.message = 'Something went wrong. Please try again later.';
+      }
+      this.messageType = 'danger';
+    }
+  });
+}
+
 }

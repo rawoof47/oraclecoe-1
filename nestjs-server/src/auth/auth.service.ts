@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
 import { ConfigService } from '@nestjs/config'; // ✅ Import ConfigService
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +17,8 @@ export class AuthService {
     @InjectRepository(Role)
     private rolesRepository: Repository<Role>,
     private jwtService: JwtService,
-    private configService: ConfigService, // ✅ Inject ConfigService
+    private configService: ConfigService,
+    private mailService: MailService,
   ) {}
 
   async login(loginDto: LoginDto) {
@@ -91,4 +93,41 @@ export class AuthService {
 
     return { token: accessToken };
   }
+
+  async handleForgotPassword(email: string): Promise<void> {
+  try {
+    console.log('📥 Forgot password requested for:', email);
+
+    const user = await this.usersRepository.findOne({ where: { email } });
+
+    if (!user) {
+      console.warn('❌ Email not found in DB:', email);
+      throw new NotFoundException('Email not found');
+    }
+
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      purpose: 'password-reset',
+    };
+
+    const token = this.jwtService.sign(payload, {
+      secret: this.configService.get<string>('JWT_SECRET'),
+      expiresIn: '15m',
+    });
+
+    const resetLink = `https://oraxinno.com/reset-password/${token}`;
+
+    console.log('📨 Sending reset link:', resetLink);
+
+    await this.mailService.sendResetPasswordEmail(email, resetLink);
+
+    console.log('✅ Email sent successfully.');
+  } catch (err) {
+    console.error('❌ Forgot password error:', err);
+    throw err; // Don't swallow it — let NestJS return the right error code
+  }
+}
+
+
 }

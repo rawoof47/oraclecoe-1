@@ -37,6 +37,7 @@ import { RecruiterSidebarComponent } from './common/recruiter-sidebar/recruiter-
 import { CandidateProfileCompletionGuard } from './guards/candidate-profile-completion.guard';
 import { SettingComponent } from './pages/setting/setting.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 
 
 // Guards
@@ -69,6 +70,11 @@ export const routes: Routes = [
   { path: 'coming-soon', component: ComingSoonComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'terms-conditions', component: TermsConditionsComponent },
+
+  {
+  path: 'reset-password/:token',
+  component: ResetPasswordComponent
+},
 
   
 
