@@ -63,11 +63,11 @@ export class RecruiterDashboardComponent implements OnInit {
   navigateToJobApplicants(status: string): void {
   this.router.navigate(['/job-applicants'], {
     state: { 
-      statusFilter: status.toLowerCase(),
-      filterSource: 'dashboard' // Add identifier if needed
+      statusFilter: status,  // Remove .toLowerCase()
+      filterSource: 'dashboard'
     }
   });
-  }
+}
 
   fetchProfileData(): void {
     this.profileService.getMyProfile().subscribe({
