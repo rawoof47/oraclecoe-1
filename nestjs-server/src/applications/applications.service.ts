@@ -10,6 +10,7 @@ import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
 import { CandidateProfile } from 'src/candidate-profiles/entities/candidate-profile.entity';
 import { User } from 'src/users/entities/user.entity';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class ApplicationsService {
@@ -22,6 +23,7 @@ export class ApplicationsService {
 
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    private readonly mailService: MailService
   ) {}
 
   async create(createApplicationDto: CreateApplicationDto): Promise<Application> {
@@ -38,34 +40,35 @@ export class ApplicationsService {
   }
 
   async createFromUser(payload: { user_id: string; job_id: string }): Promise<Application> {
-    const candidateProfile = await this.candidateProfilesRepository.findOne({
-      where: { user_id: payload.user_id },
-    });
+  const candidateProfile = await this.candidateProfilesRepository.findOne({
+    where: { user_id: payload.user_id },
+  });
 
-    if (!candidateProfile) {
-      throw new NotFoundException(`No candidate profile found for user_id ${payload.user_id}`);
-    }
+  if (!candidateProfile) {
+    throw new NotFoundException(`No candidate profile found for user_id ${payload.user_id}`);
+  }
 
-    const candidate_id = candidateProfile.id;
+  const candidate_id = candidateProfile.id;
 
-    const existing = await this.applicationRepository.findOne({
-      where: {
-        candidate_id,
-        job_id: payload.job_id,
-        withdrawn: true,
-      },
-    });
+  const existing = await this.applicationRepository.findOne({
+    where: {
+      candidate_id,
+      job_id: payload.job_id,
+      withdrawn: true,
+    },
+  });
 
-    if (existing) {
-      existing.withdrawn = false;
-      existing.withdrawal_reason = null;
-      existing.application_status_id = '12c7f28f-3a21-11f0-8520-ac1f6bbcd360';
-      existing.updated_by = payload.user_id;
-      existing.applied_on = new Date();
+  let application: Application;
 
-      return this.applicationRepository.save(existing);
-    }
+  if (existing) {
+    existing.withdrawn = false;
+    existing.withdrawal_reason = null;
+    existing.application_status_id = '12c7f28f-3a21-11f0-8520-ac1f6bbcd360';
+    existing.updated_by = payload.user_id;
+    existing.applied_on = new Date();
 
+    application = await this.applicationRepository.save(existing);
+  } else {
     const createDto: CreateApplicationDto = {
       candidate_id,
       job_id: payload.job_id,
@@ -75,8 +78,45 @@ export class ApplicationsService {
       updated_by: payload.user_id,
     };
 
-    return this.create(createDto);
+    application = await this.create(createDto);
   }
+
+  // ✅ Send job application confirmation email
+ try {
+  const user = await this.usersRepository.findOne({
+    where: { id: payload.user_id },
+  });
+
+  if (!user) {
+    throw new NotFoundException(`User not found for id ${payload.user_id}`);
+  }
+
+  const result = await this.applicationRepository
+    .createQueryBuilder('app')
+    .innerJoin('job_posts', 'job', 'job.id = app.job_id')
+    .innerJoin('recruiter_profiles', 'profile', 'profile.user_id = job.recruiter_id')
+    .select([
+      'job.job_title AS job_title',
+      'profile.company_name AS company_name',
+    ])
+    .where('app.id = :id', { id: application.id })
+    .getRawOne();
+
+  const jobTitle = result?.job_title || 'a job';
+  const companyName = result?.company_name || 'the company';
+
+  await this.mailService.sendJobApplicationConfirmationEmail(
+    `${user.first_name} ${user.last_name}`,
+    user.email,
+    jobTitle,
+    companyName
+  );
+} catch (err) {
+  console.error('❌ Failed to send job application email:', err);
+}
+  return application;
+}
+
 
   async hasUserAppliedToJob(user_id: string, job_id: string): Promise<boolean> {
     const candidateProfile = await this.candidateProfilesRepository.findOne({
@@ -174,30 +214,99 @@ export class ApplicationsService {
   }
 
   async withdraw(id: string, user_id: string): Promise<Application> {
-    const application = await this.applicationRepository.findOne({ where: { id } });
-    if (!application) throw new NotFoundException('Application not found');
+  const application = await this.applicationRepository.findOne({ where: { id } });
+  if (!application) throw new NotFoundException('Application not found');
 
-    application.application_status_id = '99e8ca42-4058-11f0-8520-ac1f6bbcd360';
-    application.withdrawn = true;
-    application.updated_by = user_id;
+  application.application_status_id = '99e8ca42-4058-11f0-8520-ac1f6bbcd360';
+  application.withdrawn = true;
+  application.updated_by = user_id;
 
-    return this.applicationRepository.save(application);
+  const savedApplication = await this.applicationRepository.save(application);
+
+  try {
+    const user = await this.usersRepository.findOne({ where: { id: user_id } });
+    if (!user) throw new NotFoundException('User not found');
+
+    const result = await this.applicationRepository
+      .createQueryBuilder('app')
+      .innerJoin('job_posts', 'job', 'job.id = app.job_id')
+      .innerJoin('recruiter_profiles', 'profile', 'profile.user_id = job.recruiter_id')
+      .select([
+        'job.job_title AS job_title',
+        'profile.company_name AS company_name',
+      ])
+      .where('app.id = :id', { id: savedApplication.id })
+      .getRawOne();
+
+    const jobTitle = result?.job_title || 'a job';
+    const companyName = result?.company_name || 'the company';
+
+    console.log(`📤 Sending withdrawal email to ${user.email}`);
+    await this.mailService.sendApplicationWithdrawalEmail(
+      `${user.first_name} ${user.last_name}`,
+      user.email,
+      jobTitle,
+      companyName
+    );
+  } catch (err) {
+    console.error('❌ Failed to send withdrawal email:', err);
   }
+
+  return savedApplication;
+}
+
+
 
   async withdrawWithReason(id: string, user_id: string, reason?: string): Promise<Application> {
-    const application = await this.applicationRepository.findOne({ where: { id } });
-    if (!application) throw new NotFoundException('Application not found');
+  console.log('⚠️ withdrawWithReason() method hit'); // Debug log
 
-    application.application_status_id = '99e8ca42-4058-11f0-8520-ac1f6bbcd360';
-    application.withdrawn = true;
-    application.updated_by = user_id;
+  const application = await this.applicationRepository.findOne({ where: { id } });
+  if (!application) throw new NotFoundException('Application not found');
 
-    if ('withdrawal_reason' in application && reason) {
-      (application as any).withdrawal_reason = reason;
-    }
+  application.application_status_id = '99e8ca42-4058-11f0-8520-ac1f6bbcd360';
+  application.withdrawn = true;
+  application.updated_by = user_id;
 
-    return this.applicationRepository.save(application);
+  if ('withdrawal_reason' in application && reason) {
+    (application as any).withdrawal_reason = reason;
   }
+
+  const saved = await this.applicationRepository.save(application);
+
+  // ✅ Send withdrawal email
+  try {
+    const user = await this.usersRepository.findOne({ where: { id: user_id } });
+    if (!user) throw new NotFoundException('User not found');
+
+    const result = await this.applicationRepository
+      .createQueryBuilder('app')
+      .innerJoin('job_posts', 'job', 'job.id = app.job_id')
+      .innerJoin('recruiter_profiles', 'profile', 'profile.user_id = job.recruiter_id')
+      .select([
+        'job.job_title AS job_title',
+        'profile.company_name AS company_name',
+      ])
+      .where('app.id = :id', { id: application.id })
+      .getRawOne();
+
+    const jobTitle = result?.job_title || 'a job';
+    const companyName = result?.company_name || 'the company';
+
+    console.log(`📤 Sending withdrawal email to ${user.email}`);
+
+    await this.mailService.sendApplicationWithdrawalEmail(
+      `${user.first_name} ${user.last_name}`,
+      user.email,
+      jobTitle,
+      companyName
+    );
+  } catch (err) {
+    console.error('❌ Failed to send withdrawal email:', err);
+  }
+
+  return saved;
+}
+
 
   async findByRecruiter(recruiterId: string): Promise<any[]> {
     const results = await this.applicationRepository
@@ -323,6 +432,7 @@ export class ApplicationsService {
     rejected: parseInt(results.rejected) || 0
   };
 }
+
 }
 
 
