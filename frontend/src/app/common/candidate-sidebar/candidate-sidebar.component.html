@@ -1,21 +1,45 @@
 <div class="sidebar-container">
-  <div class="profile-item">
-    <img [src]="profileImage" alt="Profile"> <!-- Updated -->
-<h2>{{ firstName }}</h2> <!-- Updated to use firstName -->    
+  <div class="profile-item text-center">
+    <img
+      [src]="profileImage || 'assets/images/default-avatar.png'"
+      alt="Profile"
+      width="120"
+      height="120"
+      style="border-radius: 50%; object-fit: cover;"
+    />
+
+    <h2>{{ firstName }}</h2>
+
+    <!-- Hidden File Input -->
+    <input
+      type="file"
+      #fileInput
+      (change)="onFileSelected($event)"
+      accept="image/*"
+      style="display: none;"
+    />
+
+    <!-- Visible Button -->
+    <button
+      class="btn btn-sm btn-outline-primary mt-2"
+      type="button"
+      (click)="fileInput.click()"
+    >
+      Change Photo
+    </button>
   </div>
-  
-  <div class="nav-pills">
-    <!-- candidate-sidebar.component.html -->
-<a class="nav-link" routerLink="/dashboard" routerLinkActive="active">
-  <i class="bx bx-user"></i> My Profile
-</a>
+
+  <div class="nav-pills mt-4">
+    <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">
+      <i class="bx bx-user"></i> My Profile
+    </a>
     <a class="nav-link" routerLink="/applied-jobs" routerLinkActive="active">
       <i class="bx bxs-inbox"></i> Applied Jobs
     </a>
     <a class="nav-link" routerLink="/single-resume" routerLinkActive="active">
       <i class="bx bx-note"></i> My Resume
     </a>
-     <a class="nav-link" routerLink="/candidate-profile" routerLinkActive="active">
+    <a class="nav-link" routerLink="/candidate-profile" routerLinkActive="active">
       <i class="bx bx-edit"></i> Edit Profile
     </a>
     <a class="nav-link" routerLink="/login">
