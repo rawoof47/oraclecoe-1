@@ -115,6 +115,37 @@ async sendApplicationWithdrawalEmail(
     console.error('❌ Failed to send withdrawal email:', error);
   }
 }
+async sendShortlistedEmail(
+  applicantName: string,
+  email: string,
+  jobTitle: string,
+  companyName: string
+): Promise<void> {
+  const htmlContent = `
+    <p>Dear ${applicantName},</p>
+    <p>We’re pleased to inform you that your application for the <strong>${jobTitle}</strong> position at <strong>${companyName}</strong>, submitted via OraXINNO, has been shortlisted by the employer.</p>
+    <p>This means your profile has moved forward in the hiring process, and the company may reach out to you shortly for the next steps such as interviews or assessments.</p>
+    <p>We’ll continue to keep you updated on any changes to your application status.</p>
+    <p>Best of luck!<br/>
+    The OraXINNO Team<br/>
+    <a href="mailto:support@oraxinno.com">support@oraxinno.com</a><br/>
+    <a href="https://www.oraxinno.com" target="_blank">www.oraxinno.com</a></p>
+  `;
+
+  try {
+    console.log(`📤 Sending shortlisted email to ${email}`);
+    await this.transporter.sendMail({
+      from: `"OraXINNO" <${process.env.SMTP_USER}>`,
+      to: email,
+      subject: `Your Application Has Been Shortlisted – ${jobTitle} at ${companyName}`,
+      html: htmlContent,
+    });
+
+    console.log(`📬 Shortlisted email sent to ${email}`);
+  } catch (error) {
+    console.error('❌ Failed to send shortlisted email:', error);
+  }
+}
 
 
 }

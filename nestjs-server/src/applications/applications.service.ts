@@ -335,28 +335,66 @@ export class ApplicationsService {
   }
 
   async updateStatus(id: string, status: string): Promise<Application> {
-    const application = await this.applicationRepository.findOne({ where: { id } });
-    if (!application) throw new NotFoundException('Application not found');
+  const application = await this.applicationRepository.findOne({ where: { id } });
+  if (!application) throw new NotFoundException('Application not found');
 
-    application.application_status_id = status;
-    return this.applicationRepository.save(application);
-  }
+  application.application_status_id = status;
+  const updatedApp = await this.applicationRepository.save(application);
 
-  async findDetailedByUser(user_id: string): Promise<Application[]> {
-    const candidateProfile = await this.candidateProfilesRepository.findOne({
-      where: { user_id },
-    });
+  // ✅ Send shortlisted email if status is SHORTLISTED
+  const SHORTLISTED_ID = 'e8d0da93-452c-11f0-8520-ac1f6bbcd360'; // replace with your actual UUID
 
-    if (!candidateProfile) {
-      throw new NotFoundException(`No candidate profile found for user_id ${user_id}`);
+  if (status === SHORTLISTED_ID) {
+    try {
+      // Get candidate profile to find user_id
+      const candidate = await this.candidateProfilesRepository.findOne({
+        where: { id: application.candidate_id },
+      });
+
+      if (!candidate) {
+        throw new NotFoundException('Candidate profile not found');
+      }
+
+      const user = await this.usersRepository.findOne({
+        where: { id: candidate.user_id },
+      });
+
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      // Fetch job title & company name
+      const result = await this.applicationRepository
+        .createQueryBuilder('app')
+        .innerJoin('job_posts', 'job', 'job.id = app.job_id')
+        .innerJoin('recruiter_profiles', 'profile', 'profile.user_id = job.recruiter_id')
+        .select([
+          'job.job_title AS job_title',
+          'profile.company_name AS company_name',
+        ])
+        .where('app.id = :id', { id: application.id })
+        .getRawOne();
+
+      const jobTitle = result?.job_title || 'a job';
+      const companyName = result?.company_name || 'the company';
+
+      // 📧 Send email
+      console.log(`📤 Sending shortlisted email to ${user.email}`);
+      await this.mailService.sendShortlistedEmail(
+        `${user.first_name} ${user.last_name}`,
+        user.email,
+        jobTitle,
+        companyName
+      );
+      console.log(`📬 Shortlisted email sent to ${user.email}`);
+    } catch (err) {
+      console.error('❌ Failed to send shortlisted email:', err);
     }
-
-    return this.applicationRepository.find({
-      where: { candidate_id: candidateProfile.id },
-      relations: ['job_post', 'candidate', 'candidate_profile'],
-      order: { applied_on: 'DESC' },
-    });
   }
+
+  return updatedApp;
+}
+
 
   async getWithdrawnReason(id: string): Promise<{ reason: string | null }> {
     const application = await this.applicationRepository.findOne({
