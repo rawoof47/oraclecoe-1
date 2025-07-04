@@ -161,5 +161,86 @@ async sendShortlistedEmail(
   }
 }
 
+async sendCandidateWelcomeEmail(email: string): Promise<void> {
+  const supportEmail = process.env.SUPPORT_EMAIL || 'support@oraxinno.com';
+
+  const htmlContent = `
+    <div style="font-family: Arial, sans-serif; color: #333;">
+      <p>Hi there,</p>
+
+      <p>Welcome to <strong>Oraxinno</strong> – your gateway to exciting job opportunities!</p>
+
+      <p>We’re happy to confirm that your account has been successfully created. To unlock the full potential of Oraxinno, the next step is to complete your employee profile.</p>
+
+      <p><strong>Get started by:</strong></p>
+      <ul>
+        <li>Filling out your profile details</li>
+        <li>Uploading your resume/CV</li>
+        <li>Browsing job listings tailored to your skills</li>
+      </ul>
+
+      <p>If you have any questions or need help, feel free to reach out to us at <a href="mailto:${supportEmail}">${supportEmail}</a>.</p>
+
+      <p>Thanks for joining Oraxinno – where opportunities meet talent.</p>
+
+      <p>Warm regards,<br>The Oraxinno Team</p>
+    </div>
+  `;
+
+  try {
+    const info = await this.transporter.sendMail({
+      from: `"Oraxinno" <${process.env.SMTP_USER}>`,
+      to: email,
+      subject: 'Welcome to Oraxinno – Let’s Get Started!',
+      html: htmlContent,
+    });
+
+    console.log('📬 Welcome email sent to candidate:', info.response);
+  } catch (error) {
+    console.error('❌ Failed to send welcome email:', error);
+  }
+}
+
+async sendRecruiterWelcomeEmail(email: string): Promise<void> {
+  const supportEmail = process.env.SUPPORT_EMAIL || 'support@oraxinno.com';
+
+  const htmlContent = `
+    <div style="font-family: Arial, sans-serif; color: #333;">
+      <p>Hi there,</p>
+
+      <p>Welcome to <strong>Oraxinno</strong> – where top talent meets the right opportunities!</p>
+
+      <p>Your employer account has been successfully created. To unlock the full potential of Oraxinno, the next step is to complete your employer profile.</p>
+
+      <p><strong>Here’s what you can do next:</strong></p>
+      <ul>
+        <li>Complete your company profile to build trust with applicants</li>
+        <li>Post your first job opening</li>
+        <li>Review applications and shortlist top talent</li>
+      </ul>
+
+      <p>If you need any assistance getting started, feel free to reach out to us at <a href="mailto:${supportEmail}">${supportEmail}</a>.</p>
+
+      <p>We’re excited to support you on your hiring journey.</p>
+
+      <p>Best regards,<br>The Oraxinno Team</p>
+    </div>
+  `;
+
+  try {
+    const info = await this.transporter.sendMail({
+      from: `"Oraxinno" <${process.env.SMTP_USER}>`,
+      to: email,
+      subject: 'Welcome to Oraxinno – Let’s Get Started!',
+      html: htmlContent,
+    });
+
+    console.log('📬 Welcome email sent to recruiter:', info.response);
+  } catch (error) {
+    console.error('❌ Failed to send recruiter welcome email:', error);
+  }
+}
+
+
 
 }
