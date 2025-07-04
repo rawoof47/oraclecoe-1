@@ -202,24 +202,25 @@ export class CandidateProfilesService {
 
   // Add this method to the service
   async findByUserId(userId: string): Promise<CandidateProfile> {
-    console.log(`🔍 [FIND BY USER ID] Fetching profile for user: ${userId}`);
-    try {
-      const profile = await this.candidateProfileRepository.findOne({ 
-        where: { user_id: userId },
-      });
+  console.log(`🔍 [FIND BY USER ID] Fetching profile for user: ${userId}`);
+  try {
+    const profile = await this.candidateProfileRepository.findOne({ 
+      where: { user_id: userId },
+    });
 
-      if (!profile) {
-        console.warn(`⚠️ Profile for user ID ${userId} not found.`);
-        throw new NotFoundException('Candidate profile not found for this user.');
-      }
-
-      console.log('✅ Found profile by user ID:', profile);
-      return profile;
-    } catch (error) {
-      console.error(`❌ Error fetching profile for user ${userId}:`, error);
-      throw new InternalServerErrorException('Failed to fetch candidate profile.');
+    if (!profile) {
+      console.warn(`⚠️ Profile for user ID ${userId} not found.`);
+      throw new NotFoundException('Candidate profile not found for this user.');
     }
+
+    console.log('✅ Found profile by user ID:', profile);
+    return profile;
+  } catch (error) {
+    console.error(`❌ Error fetching profile for user ${userId}:`, error);
+    throw new InternalServerErrorException('Failed to fetch candidate profile.');
   }
+}
+
 
   async updateProfilePic(userId: string, url: string): Promise<void> {
   console.log('🖼 Updating profile picture for user:', userId);

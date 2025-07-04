@@ -18,17 +18,20 @@ export class UploadController {
     private readonly candidateProfilesService: CandidateProfilesService,
   ) {}
 
-  @Post('profile-pic')
-  @UseGuards(JwtAuthGuard) // ✅ protects the route
-  @UseInterceptors(FileInterceptor('file'))
-  async uploadProfilePic(@UploadedFile() file: Express.Multer.File, @Req() req: any) {
-    const url = await this.awsService.uploadProfilePic(file);
-    const userId = req.user?.id;
+ @Post('profile-pic')
+@UseGuards(JwtAuthGuard)
+@UseInterceptors(FileInterceptor('file'))
+async uploadProfilePic(
+  @UploadedFile() file: Express.Multer.File,
+  @Req() req: any
+) {
+  const url = await this.awsService.uploadProfilePic(file);
+  const userId = req.user?.sub; // ✅ FIXED: use sub
 
-    if (userId) {
-      await this.candidateProfilesService.updateProfilePic(userId, url);
-    }
-
-    return { url };
+  if (userId) {
+    await this.candidateProfilesService.updateProfilePic(userId, url);
   }
+
+  return { url };
+}
 }

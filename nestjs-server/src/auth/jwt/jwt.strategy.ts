@@ -17,13 +17,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: JwtPayload) {
-  console.log('[JWT PAYLOAD]', payload); // ✅ This will show the decoded token in the console
+  console.log('[JWT PAYLOAD]', payload);
 
   return {
-    id: payload.sub, // ✅ Makes req.user.id available
+    sub: payload.sub, // ✅ Do NOT rename this to id
     email: payload.email,
     role: payload.role,
   };
-}
 
+}
 }
