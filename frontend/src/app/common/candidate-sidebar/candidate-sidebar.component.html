@@ -1,14 +1,17 @@
 <div class="sidebar-container">
   <div class="profile-item text-center">
+
+    <!-- Profile Image -->
     <img
       [src]="profileImage || 'assets/images/default-avatar.png'"
-      alt="Profile"
+      alt="User profile picture"
       width="120"
       height="120"
       style="border-radius: 50%; object-fit: cover;"
     />
 
-    <h2>{{ firstName }}</h2>
+    <!-- User Name -->
+    <h2 class="mt-2">{{ firstName }}</h2>
 
     <!-- Hidden File Input -->
     <input
@@ -19,16 +22,18 @@
       style="display: none;"
     />
 
-    <!-- Visible Button -->
+    <!-- Visible Upload Button -->
     <button
       class="btn btn-sm btn-outline-primary mt-2"
       type="button"
       (click)="fileInput.click()"
+      aria-label="Change Profile Picture"
     >
       Change Photo
     </button>
   </div>
 
+  <!-- Navigation Links -->
   <div class="nav-pills mt-4">
     <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">
       <i class="bx bx-user"></i> My Profile

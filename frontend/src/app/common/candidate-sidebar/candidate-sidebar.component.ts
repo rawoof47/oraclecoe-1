@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { AuthStateService } from '../../services/auth-state.service'; // Adjust path
-import { CandidateProfileService } from '../../services/candidate-profile.service'; // Import ProfileService
-import { MatSnackBar } from '@angular/material/snack-bar'; // Import Snackbar
+import { AuthStateService } from '../../services/auth-state.service';
+import { CandidateProfileService } from '../../services/candidate-profile.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-
 
 @Component({
   selector: 'app-candidate-sidebar',
@@ -16,7 +15,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 })
 export class CandidateSidebarComponent implements OnInit {
   firstName: string = '';
-  profileImage: string = 'img/dashboard3.png'; // Use existing image path
+  profileImage: string = 'assets/images/default-avatar.png'; // fallback image
   selectedFile: File | null = null;
 
   constructor(
@@ -29,6 +28,16 @@ export class CandidateSidebarComponent implements OnInit {
     const user = this.authState.getCurrentUser();
     if (user) {
       this.firstName = user.first_name || 'User';
+
+      // ✅ Load saved profile image from backend
+      this.CandidateProfileService.getMyProfile().subscribe({
+        next: (profile) => {
+          this.profileImage = profile.profile_pic_url || 'assets/images/default-avatar.png';
+        },
+        error: () => {
+          this.profileImage = 'assets/images/default-avatar.png';
+        }
+      });
     }
   }
 
