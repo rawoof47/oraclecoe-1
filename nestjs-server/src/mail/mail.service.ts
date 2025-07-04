@@ -17,43 +17,57 @@ export class MailService {
     });
   }
 
-  async sendResetPasswordEmail(email: string, resetLink: string): Promise<void> {
-    const htmlContent = `
-      <p>Hi there,</p>
-      <p>You requested to reset your password. Click the button below:</p>
+  async sendResetPasswordEmail(userName: string, email: string, resetLink: string): Promise<void> {
+  const htmlContent = `
+    <div style="font-family: Arial, sans-serif; color: #333;">
+      <p>Hi ${userName},</p>
+
+      <p>We received a request to reset your password for your account.</p>
+
       <p>
+        Click the button below to set a new password. This link will expire in <strong>15 minutes</strong> for your security.
+      </p>
+
+      <p style="text-align: center; margin: 30px 0;">
         <a 
           href="${resetLink}" 
           style="
             display: inline-block;
-            padding: 10px 20px;
+            padding: 12px 24px;
             background-color: #007bff;
             color: #ffffff;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 6px;
+            font-size: 16px;
             font-weight: bold;
           "
           target="_blank"
         >
-          Reset Your Password
+          Reset Password
         </a>
       </p>
-      <p>This link will expire in 15 minutes.</p>
-    `;
 
-    try {
-      const info = await this.transporter.sendMail({
-        from: `"Oraxinno" <${process.env.SMTP_USER}>`,
-        to: email,
-        subject: 'Reset your password',
-        html: htmlContent,
-      });
+      <p>If you did not request this change, you can safely ignore this email. Your current password will remain unchanged</p>
 
-      console.log('📬 Email successfully sent:', info.response);
-    } catch (error) {
-      console.error('❌ Email sending failed:', error);
-    }
+      <p>Thanks,<br>The Oraxinno Team</p>
+    </div>
+  `;
+
+  try {
+    const info = await this.transporter.sendMail({
+      from: `"Oraxinno" <${process.env.SMTP_USER}>`,
+      to: email,
+      subject: 'Reset Your Password – Link Expires in 15 Minutes',
+      html: htmlContent,
+    });
+
+    console.log('📬 Email successfully sent:', info.response);
+  } catch (error) {
+    console.error('❌ Email sending failed:', error);
   }
+}
+
+
 
   async sendJobApplicationConfirmationEmail(
   applicantName: string,
@@ -68,7 +82,7 @@ export class MailService {
     <p>Please note that OraXINNO is a platform facilitating the application process and does not make hiring decisions. The hiring company will contact you directly if your profile is shortlisted for the next stage.</p>
     <p>We appreciate you using OraXINNO and wish you the best in your job search.</p>
     <br/>
-    <p>Best regards,<br/>The OraXINNO Team</p>
+    <p>Warm regards,<br/>The OraXINNO Team</p>
   `;
 
   try {

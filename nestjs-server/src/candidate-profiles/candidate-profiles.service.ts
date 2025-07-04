@@ -220,4 +220,24 @@ export class CandidateProfilesService {
       throw new InternalServerErrorException('Failed to fetch candidate profile.');
     }
   }
+
+  async updateProfilePic(userId: string, url: string): Promise<void> {
+  console.log('🖼 Updating profile picture for user:', userId);
+  console.log('🌐 New image URL:', url);
+
+  const result = await this.candidateProfileRepository.update(
+    { user_id: userId },
+    { profile_pic_url: url },
+  );
+
+  console.log('📄 Update result:', result);
+
+  if (result.affected === 0) {
+    console.warn(`⚠️ No candidate profile found with user_id: ${userId}`);
+  } else {
+    console.log('✅ profile_pic_url updated successfully!');
+  }
+}
+
+
 }

@@ -65,4 +65,8 @@ export class CreateCandidateProfileDto {
   @IsUUID()
   @IsOptional()
   updated_by?: string;
+
+  @IsOptional()
+  @IsUrl()
+  profile_pic_url?: string;
 }

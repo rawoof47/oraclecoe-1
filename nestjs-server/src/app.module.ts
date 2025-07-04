@@ -1,9 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ScheduleModule } from '@nestjs/schedule';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+
+// AWS Upload Integration
+import { UploadController } from './upload/upload.controller';
+import { AwsService } from './aws/aws.service';
 
 // Modules
 import { UserModule } from './users/users.module';
@@ -36,23 +41,21 @@ import { CandidateCertificationsModule } from './candidate_certifications/candid
 import { RecruiterProfileModule } from './recruiter-profile/recruiter-profile.module';
 import { DegreeModule } from './degree/degree.module';
 import { CandidateDegreesModule } from './candidate_degrees/candidate_degrees.module';
-import { IndustriesModule } from './industries/industries.module'; // Add this
+import { IndustriesModule } from './industries/industries.module';
 import { RecruiterIndustriesModule } from './recruiter-industries/recruiter-industries.module';
 import { RegionsModule } from './regions/regions.module';
 import { CountriesModule } from './countries/countries.module';
 import { RecruiterLocationModule } from './recruiter-location/recruiter-location.module';
 import { CurrencyModule } from './currency/currency.module';
-import { ScheduleModule } from '@nestjs/schedule';
+
 @Module({
   imports: [
-    // ✅ Global .env configuration
     ConfigModule.forRoot({
       isGlobal: true,
     }),
 
     ScheduleModule.forRoot(),
 
-    // ✅ TypeORM configuration with ConfigService
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -64,13 +67,11 @@ import { ScheduleModule } from '@nestjs/schedule';
         password: configService.get<string>('DB_PASSWORD', ''),
         database: configService.get<string>('DB_NAME', 'oracle_job_portal'),
         autoLoadEntities: true,
-        synchronize: false, // NEVER true in production
-
-     
+        synchronize: false,
       }),
     }),
 
-    // ✅ All functional modules
+    // All functional modules
     UserModule,
     ActivityLogsModule,
     AdminUsersModule,
@@ -107,8 +108,15 @@ import { ScheduleModule } from '@nestjs/schedule';
     CountriesModule,
     RecruiterLocationModule,
     CurrencyModule,
+    CandidateProfilesModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [
+    AppController,
+    UploadController, // ✅ Register Upload Controller here
+  ],
+  providers: [
+    AppService,
+    AwsService, // ✅ Register AWS Service for S3 upload
+  ],
 })
 export class AppModule {}

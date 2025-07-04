@@ -1,14 +1,18 @@
-import { Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import { Role } from '../roles/entities/role.entity';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
-import { ConfigService } from '@nestjs/config'; // ✅ Import ConfigService
+import { ConfigService } from '@nestjs/config';
 import { MailService } from '../mail/mail.service';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-import { BadRequestException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -64,12 +68,12 @@ export class AuthService {
     };
 
     const accessToken = this.jwtService.sign(payload, {
-      secret: this.configService.get<string>('JWT_SECRET'), // ✅ Consistent usage
+      secret: this.configService.get<string>('JWT_SECRET'),
       expiresIn: '7d',
     });
 
     const refreshToken = this.jwtService.sign(payload, {
-      secret: this.configService.get<string>('JWT_REFRESH_SECRET'), // ✅ Consistent usage
+      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
       expiresIn: '7d',
     });
 
@@ -89,7 +93,7 @@ export class AuthService {
     };
 
     const accessToken = this.jwtService.sign(payload, {
-      secret: this.configService.get<string>('JWT_SECRET'), // ✅ Consistent usage
+      secret: this.configService.get<string>('JWT_SECRET'),
       expiresIn: '7d',
     });
 
@@ -120,47 +124,53 @@ export class AuthService {
 
     const resetLink = `http://localhost:4200/reset-password/${token}`;
 
+    const userName = [user.first_name, user.middle_name, user.last_name]
+      .filter(Boolean)
+      .join(' ')
+      .trim() || 'there';
+
     console.log('📨 Sending reset link:', resetLink);
 
-    await this.mailService.sendResetPasswordEmail(email, resetLink);
+    await this.mailService.sendResetPasswordEmail(userName, email, resetLink);
 
     console.log('✅ Email sent successfully.');
   } catch (err) {
     console.error('❌ Forgot password error:', err);
-    throw err; // Don't swallow it — let NestJS return the right error code
+    throw err;
   }
 }
 
-async resetPassword(dto: ResetPasswordDto): Promise<{ message: string }> {
-  const { token, newPassword } = dto;
 
-  let payload: any;
+  async resetPassword(dto: ResetPasswordDto): Promise<{ message: string }> {
+    const { token, newPassword } = dto;
 
-  try {
-    payload = this.jwtService.verify(token, {
-      secret: this.configService.get<string>('JWT_SECRET'),
+    let payload: any;
+
+    try {
+      payload = this.jwtService.verify(token, {
+        secret: this.configService.get<string>('JWT_SECRET'),
+      });
+    } catch (err) {
+      throw new BadRequestException('Invalid or expired reset token');
+    }
+
+    if (payload.purpose !== 'password-reset') {
+      throw new BadRequestException('Invalid token purpose');
+    }
+
+    const user = await this.usersRepository.findOne({
+      where: { id: payload.sub },
     });
-  } catch (err) {
-    throw new BadRequestException('Invalid or expired reset token');
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password_hash = hashedPassword;
+
+    await this.usersRepository.save(user);
+
+    return { message: 'Password reset successful' };
   }
-
-  if (payload.purpose !== 'password-reset') {
-    throw new BadRequestException('Invalid token purpose');
-  }
-
-  const user = await this.usersRepository.findOne({ where: { id: payload.sub } });
-
-  if (!user) {
-    throw new BadRequestException('User not found');
-  }
-
-  const hashedPassword = await bcrypt.hash(newPassword, 10);
-  user.password_hash = hashedPassword;
-
-  await this.usersRepository.save(user);
-
-  return { message: 'Password reset successful' };
-}
-
-
 }
