@@ -240,5 +240,20 @@ export class CandidateProfilesService {
   }
 }
 
+// candidate-profiles.service.ts
+
+async updateResumeLink(userId: string, resumeUrl: string): Promise<void> {
+  console.log('📄 Updating resume link for user:', userId);
+  const result = await this.candidateProfileRepository.update(
+    { user_id: userId },
+    { resume_link: resumeUrl },
+  );
+
+  if (result.affected === 0) {
+    throw new NotFoundException('Candidate profile not found to update resume.');
+  }
+
+  console.log('✅ resume_link updated successfully!');
+}
 
 }

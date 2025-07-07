@@ -146,4 +146,9 @@ uploadProfileImage(formData: FormData) {
   return this.http.post<{ url: string }>('http://localhost:3000/upload/profile-pic', formData);
 }
 
+uploadResume(formData: FormData) {
+  return this.http.post<{ url: string }>('http://localhost:3000/upload/resume', formData);
+}
+
+
 }

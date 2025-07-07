@@ -75,14 +75,18 @@ export class CandidateProfileComponent implements OnInit {
   profileCertificationIds: string[] = [];
 
   groupedDegrees: any[] = [];
-  selectedDegree: Degree | null = null; // Changed to single degree
+  selectedDegree: Degree | null = null;
   showDegreesDropdown = false;
   profileDegreeIds: string[] = [];
   years: number[] = [];
 
+  resumeUrl: string | null = null;
+  resumeError: string | null = null;
+
   @ViewChild('skillsDropdown') skillsDropdown!: ElementRef;
   @ViewChild('certsDropdown') certsDropdown!: ElementRef;
   @ViewChild('degreesDropdown') degreesDropdown!: ElementRef;
+  @ViewChild('resumeInput') resumeInput!: ElementRef;
 
   ngOnInit(): void {
     this.userId = this.authState.getCurrentUserId();
@@ -95,27 +99,27 @@ export class CandidateProfileComponent implements OnInit {
   }
 
   initializeForm(): void {
-  this.profileForm = this.fb.group({
-    firstName: ['', [Validators.required, Validators.maxLength(50)]],
-    middleName: ['', [Validators.maxLength(50)]],
-    lastName: ['', [Validators.required, Validators.maxLength(50)]],
-    email: ['', [Validators.required, Validators.email, Validators.maxLength(150)]],
-    mobileNumber: ['', [Validators.required, Validators.maxLength(20)]],
-    gender: ['', Validators.required],
-    about_me: ['', Validators.required],
-    professional_summary: [''],
-    social_links: [''],
-    resume_link: ['', Validators.pattern('https?://.+')],
-    year_of_passing: [null, Validators.required],
-    experience_years: [null, [Validators.min(0), Validators.max(50)]],
-    notice_period: [''],
-    skills: [[], [Validators.required, Validators.minLength(1)]],
-    certifications: [[]],
-    degrees: [[], [Validators.required, Validators.minLength(1)]],
-    university: ['', Validators.required],
-    grade_or_percentage: [''],
-  });
-}
+    this.profileForm = this.fb.group({
+      firstName: ['', [Validators.required, Validators.maxLength(50)]],
+      middleName: ['', [Validators.maxLength(50)]],
+      lastName: ['', [Validators.required, Validators.maxLength(50)]],
+      email: ['', [Validators.required, Validators.email, Validators.maxLength(150)]],
+      mobileNumber: ['', [Validators.required, Validators.maxLength(20)]],
+      gender: ['', Validators.required],
+      about_me: ['', Validators.required],
+      professional_summary: [''],
+      social_links: [''],
+      resume_link: ['', Validators.pattern('https?://.+')],
+      year_of_passing: [null, Validators.required],
+      experience_years: [null, [Validators.min(0), Validators.max(50)]],
+      notice_period: [''],
+      skills: [[], [Validators.required, Validators.minLength(1)]],
+      certifications: [[]],
+      degrees: [[], [Validators.required, Validators.minLength(1)]],
+      university: ['', Validators.required],
+      grade_or_percentage: [''],
+    });
+  }
 
   private loadUserData(): void {
     if (!this.userId) return;
@@ -145,16 +149,15 @@ export class CandidateProfileComponent implements OnInit {
           about_me: profile.about_me || '',
           professional_summary: profile.professional_summary || '',
           university: profile.university || '',
-        grade_or_percentage: profile.grade_or_percentage || '',
-
+          grade_or_percentage: profile.grade_or_percentage || '',
           social_links: profile.social_links || '',
           resume_link: profile.resume_link || '',
-          
           experience_years: profile.experience_years || null,
           notice_period: profile.notice_period || '',
           year_of_passing: profile.year_of_passing || null,
         });
 
+        this.resumeUrl = profile.resume_link || null;
         this.profileSkillIds = profile.skill_ids || [];
         this.profileCertificationIds = profile.certification_ids || [];
         this.profileDegreeIds = profile.degree_ids || [];
@@ -293,9 +296,9 @@ export class CandidateProfileComponent implements OnInit {
     const degreeIds = this.selectedDegree ? [this.selectedDegree.id] : [];
 
     await lastValueFrom(this.profileService.saveCandidateSkills(this.userId!, skillIds));
-if (certIds.length > 0) {
-    await lastValueFrom(this.profileService.saveCandidateCertifications(this.userId!, certIds));
-  }
+    if (certIds.length > 0) {
+      await lastValueFrom(this.profileService.saveCandidateCertifications(this.userId!, certIds));
+    }
     await lastValueFrom(this.profileService.saveCandidateDegrees(this.userId!, degreeIds));
   }
 
@@ -324,7 +327,7 @@ if (certIds.length > 0) {
   onDegreeChange(degree: Degree): void {
     this.selectedDegree = this.selectedDegree?.id === degree.id ? null : degree;
     this.updateFormSelections();
-    this.showDegreesDropdown = false; // Close dropdown after selection
+    this.showDegreesDropdown = false;
   }
 
   updateFormSelections(): void {
@@ -347,6 +350,55 @@ if (certIds.length > 0) {
     return this.selectedDegree 
       ? `${this.selectedDegree.name} (${this.selectedDegree.abbreviation})` 
       : 'Select Degree';
+  }
+
+  onResumeSelected(event: any): void {
+    const file: File = event.target.files[0];
+    this.resumeError = null;
+
+    if (!file) return;
+
+    // Allowed file types: PDF, DOC, DOCX
+    const allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ];
+
+    // Check file type
+    if (!allowedTypes.includes(file.type)) {
+      this.resumeError = 'Only PDF, DOC, and DOCX files are allowed.';
+      return;
+    }
+
+    // Check file size (2MB limit)
+    if (file.size > 2 * 1024 * 1024) {
+      this.resumeError = 'File must be under 2MB.';
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    this.profileService.uploadResume(formData).subscribe({
+      next: (res) => {
+        this.resumeUrl = res.url;
+        this.profileForm.get('resume_link')?.setValue(this.resumeUrl);
+      },
+      error: (err) => {
+        console.error('Resume upload failed:', err);
+        this.resumeError = 'Upload failed. Please try again.';
+      }
+    });
+  }
+
+  removeResume(): void {
+    this.resumeUrl = null;
+    this.resumeError = null;
+    this.profileForm.get('resume_link')?.setValue('');
+    if (this.resumeInput) {
+      this.resumeInput.nativeElement.value = '';
+    }
   }
 
   @HostListener('document:click', ['$event'])

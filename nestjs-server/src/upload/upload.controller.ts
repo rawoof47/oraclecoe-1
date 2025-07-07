@@ -34,4 +34,24 @@ async uploadProfilePic(
 
   return { url };
 }
+
+// upload.controller.ts
+
+@Post('resume')
+@UseGuards(JwtAuthGuard)
+@UseInterceptors(FileInterceptor('file'))
+async uploadResume(
+  @UploadedFile() file: Express.Multer.File,
+  @Req() req: any
+) {
+  const userId = req.user?.sub;
+  const resumeUrl = await this.awsService.uploadResume(file);
+
+  if (userId) {
+    await this.candidateProfilesService.updateResumeLink(userId, resumeUrl);
+  }
+
+  return { url: resumeUrl };
+}
+
 }

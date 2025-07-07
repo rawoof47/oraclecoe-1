@@ -94,4 +94,48 @@ export class AwsService {
   }
 }
 
+// aws.service.ts
+
+async uploadResume(file: Express.Multer.File): Promise<string> {
+  if (!file) {
+    throw new BadRequestException('No file provided');
+  }
+
+  // ✅ Validate file size (max 2MB)
+  if (file.size > 2 * 1024 * 1024) {
+    throw new BadRequestException('File size exceeds 2MB limit');
+  }
+
+  // ✅ Validate file type (PDF, DOC, DOCX)
+  const allowedTypes = [
+    'application/pdf',
+    'application/msword', // .doc
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document' // .docx
+  ];
+
+  if (!allowedTypes.includes(file.mimetype)) {
+    throw new BadRequestException('Only PDF, DOC, and DOCX files are allowed');
+  }
+
+  const fileExt = extname(file.originalname); // .pdf / .doc / .docx
+  const uniqueName = `resumes/${uuidv4()}${fileExt}`;
+
+  try {
+    const command = new PutObjectCommand({
+      Bucket: this.bucketName,
+      Key: uniqueName,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+    });
+
+    await this.s3.send(command);
+
+    return `https://s3.amazonaws.com/${this.bucketName}/${uniqueName}`;
+  } catch (error) {
+    console.error('S3 Upload Error:', error);
+    throw new InternalServerErrorException('Failed to upload resume to S3');
+  }
+}
+
+
 }
