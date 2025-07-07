@@ -39,6 +39,15 @@ export class RecruiterProfileService {
     return this.http.get<Industry[]>(`${this.backendBaseUrl}/industries`);
   }
 
+uploadCompanyLogo(file: File): Observable<{ url: string }> {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  return this.http.post<{ url: string }>(
+    `${this.baseUrl}/upload-logo`,
+    formData
+  );
+}
 
 
 }

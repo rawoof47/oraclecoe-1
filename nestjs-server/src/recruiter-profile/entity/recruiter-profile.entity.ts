@@ -29,6 +29,9 @@ export class RecruiterProfile {
   @Column({ type: 'text', nullable: true })
   company_description: string;
 
+   @Column({ type: 'varchar', length: 255, nullable: true })
+  company_logo_url: string;
+
   @Column({ length: 100, nullable: true })
   recruiter_position: string;
 

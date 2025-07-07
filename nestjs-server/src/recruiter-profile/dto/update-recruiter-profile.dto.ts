@@ -17,4 +17,9 @@ export class UpdateRecruiterProfileDto extends PartialType(CreateRecruiterProfil
   @IsString()
   @MaxLength(255)
   city_state?: string;
+
+    @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  company_logo_url?: string;
 }

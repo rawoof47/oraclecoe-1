@@ -105,4 +105,22 @@ export class RecruiterProfileService {
   return profile;
 }
 
+// ✅ Upload company logo for recruiter
+async updateLogo(userId: string, logoUrl: string): Promise<RecruiterProfile> {
+  const profile = await this.recruiterProfileRepository.findOne({
+    where: { user_id: userId },
+  });
+
+  if (!profile) {
+    throw new Error('Recruiter profile not found');
+  }
+
+  profile.company_logo_url = logoUrl;
+  profile.updated_by = userId;
+  profile.updated_at = new Date();
+
+  return this.recruiterProfileRepository.save(profile);
+}
+
+
 }

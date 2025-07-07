@@ -1,11 +1,30 @@
 <div class="sidebar-container">
   <div class="profile-item">
-    <img
-      src="img/dashboard4.png"
-      alt="Recruiter Headshot"
-    />
-     <h2>{{ firstName }}</h2> <!-- Dynamic first name -->
-    <span>{{ position }}</span> <!-- Updated to use position -->
+    <div class="image-container">
+      <img
+        [src]="profileImage"
+        alt="Company Logo"
+        class="company-logo"
+        #imageElement
+        (error)="handleImageError(imageElement)"
+      />
+
+      <button class="change-image-btn" (click)="fileInput.click()">
+        <i class="bx bx-camera"></i>
+      </button>
+      <input 
+        #fileInput
+        type="file" 
+        hidden 
+        (change)="onFileSelected($event)"
+        accept="image/*"
+      >
+      <div *ngIf="loadingImage" class="image-loading-overlay">
+        <div class="spinner"></div>
+      </div>
+    </div>
+    <h2>{{ firstName }}</h2>
+    <span>{{ position }}</span>
   </div>
   <div class="nav flex-column nav-pills">
     <a
@@ -34,14 +53,13 @@
     >
       <i class="bx bx-file"></i> View All Applications
     </a>
-       <a 
+    <a 
       class="nav-link" 
       routerLink="/employer-details" 
       routerLinkActive="active"
     >
       <i class="bx bx-user-circle"></i> View Profile
     </a>
-    <!--  Edit Profile button  -->
     <a 
       class="nav-link edit-profile-link" 
       routerLink="/recruiter-profile" 

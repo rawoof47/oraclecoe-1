@@ -23,6 +23,11 @@ export class CreateRecruiterProfileDto {
   company_description?: string;
 
   @IsOptional()
+@IsUrl()
+@MaxLength(255)
+company_logo_url?: string;
+
+  @IsOptional()
   @IsString()
   @MaxLength(100)
   recruiter_position?: string;
