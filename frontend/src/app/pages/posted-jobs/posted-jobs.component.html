@@ -38,13 +38,15 @@
                     <!-- Left Content -->
                     <div class="card-content-wrapper flex-grow-1 pe-4 border-end">
                       <div class="job-header d-flex gap-3 align-items-start mb-2">
-                        <div class="status-indicator mt-1" [class.active]="job.status_id === activeStatusId"></div>
+                        <div class="status-indicator mt-1" 
+                             [class.active]="job.status_id === activeStatusId"
+                             [class.expired]="job.status_id === expiredStatusId"></div>
                         <div>
                           <h3 class="job-title mb-1">{{ job.job_title }}</h3>
                           <div class="d-flex flex-wrap gap-3 text-muted small">
                             <span class="d-flex align-items-center gap-1">
                               <mat-icon fontIcon="location_on"></mat-icon>
-                              {{ job.location || 'Not specified' }}
+                              {{ job.location || 'Location not specified' }}
                             </span>
                             <span class="d-flex align-items-center gap-1">
                               <mat-icon fontIcon="business_center"></mat-icon>
@@ -65,7 +67,7 @@
                         </div>
                         <div class="meta-item">
                           <mat-icon>payments</mat-icon>
-                          <span>{{ job.compensation_range | compensationFormat }}</span>
+                          <span>{{ job.compensation_range || 'Salary not specified' }}</span>
                         </div>
                       </div>
                     </div>
@@ -78,11 +80,14 @@
                           <span>{{ job.applicationsCount }} Application(s)</span>
                         </div>
 
-                        <!-- ✅ Updated status badge -->
+                        <!-- Updated status badge -->
                         <div class="status-badge mt-1"
                              [class.active]="job.status_id === activeStatusId"
-                             [class.inactive]="job.status_id === inactiveStatusId">
-                          {{ job.status_id === activeStatusId ? 'Active' : 'Inactive' }}
+                             [class.inactive]="job.status_id === inactiveStatusId"
+                             [class.expired]="job.status_id === expiredStatusId">
+                          {{ job.status_id === activeStatusId ? 'Active' : 
+                             job.status_id === inactiveStatusId ? 'Inactive' : 
+                             'Expired' }}
                         </div>
                       </div>
 
@@ -94,16 +99,17 @@
                           View Applicants
                         </button>
 
-                       <!-- View Job Button (NEW) -->
-  <button mat-stroked-button 
-          [routerLink]="['/job-details', 'JID' + job.job_number]">
-    View Job
-  </button>
+                       <!-- View Job Button -->
+                        <button mat-stroked-button 
+                                [routerLink]="['/job-details', 'JID' + job.job_number]">
+                          View Job
+                        </button>
 
                         <!-- Toggle Status Button -->
                         <button mat-stroked-button 
                                 [color]="job.status_id === activeStatusId ? 'warn' : 'primary'"
-                                (click)="toggleJobStatus(job)">
+                                (click)="toggleJobStatus(job)"
+                                [disabled]="job.status_id === expiredStatusId">
                           {{ job.status_id === activeStatusId ? 'Inactivate' : 'Activate' }}
                         </button>
                       </mat-card-actions>

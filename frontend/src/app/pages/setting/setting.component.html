@@ -1,0 +1,105 @@
+<app-navbar></app-navbar>
+
+<div class="dashboard-area ptb-100">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 col-md-10">
+        <div class="profile-content">
+          <div class="section-title">
+            <h2>Change Password</h2>
+          </div>
+          <form [formGroup]="passwordForm" (ngSubmit)="onSubmit()">
+            <!-- Current Password -->
+            <div class="form-group">
+              <label>Current Password</label>
+              <div class="input-group">
+                <input 
+                  [type]="hideCurrentPassword ? 'password' : 'text'" 
+                  formControlName="currentPassword"
+                  class="form-control"
+                  placeholder="Enter current password"
+                >
+                <button 
+                  class="btn btn-icon" 
+                  type="button"
+                  (click)="hideCurrentPassword = !hideCurrentPassword"
+                >
+                  <mat-icon>{{ hideCurrentPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <!-- New Password -->
+            <div class="form-group">
+              <label>New Password</label>
+              <div class="input-group">
+                <input 
+                  [type]="hideNewPassword ? 'password' : 'text'" 
+                  formControlName="newPassword"
+                  class="form-control"
+                  placeholder="Enter new password"
+                >
+                <span 
+                  class="input-group-addon password-tooltip"
+                  matTooltip="Password must be 8+ chars with A-Z, a-z, 0-9 & symbol."
+                  matTooltipPosition="right"
+                >
+                  ?
+                </span>
+                <button 
+                  class="btn btn-icon" 
+                  type="button"
+                  (click)="hideNewPassword = !hideNewPassword"
+                >
+                  <mat-icon>{{ hideNewPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+              </div>
+              <div *ngIf="getControl('newPassword')?.invalid && (getControl('newPassword')?.dirty || getControl('newPassword')?.touched)" class="text-danger">
+                <small *ngIf="getControl('newPassword')?.errors?.['required']">Password is required</small>
+                <small *ngIf="getControl('newPassword')?.errors?.['minlength']">Must be at least 8 characters</small>
+                <small *ngIf="getControl('newPassword')?.errors?.['pattern']">
+                  Must include uppercase, lowercase, number & symbol
+                </small>
+              </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="form-group">
+              <label>Confirm New Password</label>
+              <div class="input-group">
+                <input 
+                  [type]="hideConfirmPassword ? 'password' : 'text'" 
+                  formControlName="confirmPassword"
+                  class="form-control"
+                  placeholder="Confirm new password"
+                >
+                <button 
+                  class="btn btn-icon" 
+                  type="button"
+                  (click)="hideConfirmPassword = !hideConfirmPassword"
+                >
+                  <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+              </div>
+              <div *ngIf="passwordForm.errors?.['mismatch'] && (getControl('confirmPassword')?.dirty || getControl('confirmPassword')?.touched)" 
+                   class="text-danger">
+                <small>Passwords do not match</small>
+              </div>
+            </div>
+
+            <button 
+              type="submit" 
+              class="btn-submit"
+              [disabled]="passwordForm.invalid || isSubmitting"
+            >
+              <span *ngIf="!isSubmitting">Update Password</span>
+              <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm" role="status"></span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

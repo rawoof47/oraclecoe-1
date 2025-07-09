@@ -140,9 +140,29 @@
                   </div>
 
                   <div class="form-group">
-                    <label for="resume_link" class="form-group__label">Resume Link</label>
-                    <input id="resume_link" type="url" formControlName="resume_link" placeholder="https://example.com/resume.pdf" />
-                  </div>
+  <label class="form-group__label">Resume (PDF only)</label>
+
+  <!-- Upload Button -->
+<input
+  type="file"
+  accept=".pdf,.doc,.docx"
+  (change)="onResumeSelected($event)"
+  hidden
+  #resumeInput
+/>
+<button type="button" (click)="resumeInput.click()">Upload Resume</button>
+
+<!-- Uploaded Preview -->
+<div *ngIf="resumeUrl" class="resume-preview">
+  <p>✅ Resume uploaded:</p>
+  <a [href]="resumeUrl" target="_blank">View Uploaded Resume</a>
+  <button type="button" (click)="removeResume()">Remove</button>
+</div>
+</div>
+
+<!-- Error message -->
+<p *ngIf="resumeError" class="error">{{ resumeError }}</p>
+
 
                   <div class="form-group">
                     <label for="social_links" class="form-group__label">Social Links</label>

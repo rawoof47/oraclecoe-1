@@ -62,4 +62,8 @@ export class CandidateProfile {
 
   @Column({ type: 'char', length: 36, nullable: true })
   updated_by: string;
+
+  @Column({ nullable: true })
+  profile_pic_url: string;
+
 }

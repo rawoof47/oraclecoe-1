@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CandidateProfileService } from '../../../services/candidate-profile.service';
-
+import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { AuthStateService } from '../../../services/auth-state.service';
 
@@ -14,7 +14,7 @@ import { AuthStateService } from '../../../services/auth-state.service';
   standalone: true,
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
-  imports: [CommonModule, ReactiveFormsModule, MatSnackBarModule]
+  imports: [CommonModule, ReactiveFormsModule, MatSnackBarModule, RouterModule]
 })
 export class LoginComponent {
   loginForm: FormGroup;

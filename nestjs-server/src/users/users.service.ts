@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { MailService } from '../mail/mail.service'; // ✅ Import MailService
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -17,36 +18,61 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly mailService: MailService, // ✅ Inject MailService
   ) {}
-
+  
   // ✅ Create a new user with hashed password and check for existing email
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const { password_hash, email, ...rest } = createUserDto;
+  const {
+    password_hash,
+    email,
+    first_name,
+    middle_name,
+    last_name,
+    role_id,
+    ...rest
+  } = createUserDto;
 
-    if (!password_hash) {
-      throw new BadRequestException('Password is required');
-    }
-
-    // ✅ Check for duplicate email
-    const existingUser = await this.userRepository.findOne({ where: { email } });
-    if (existingUser) {
-      throw new ConflictException('Email already exists');
-    }
-
-    try {
-      const hashedPassword = await bcrypt.hash(password_hash, 10); // Salt rounds = 10
-      const user = this.userRepository.create({
-        ...rest,
-        email,
-        password_hash: hashedPassword,
-      });
-
-      return await this.userRepository.save(user);
-    } catch (error) {
-      console.error('Error creating user:', error);
-      throw new InternalServerErrorException('Failed to create user');
-    }
+  if (!password_hash) {
+    throw new BadRequestException('Password is required');
   }
+
+  // Check for duplicate email
+  const existingUser = await this.userRepository.findOne({ where: { email } });
+  if (existingUser) {
+    throw new ConflictException('Email already exists');
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(password_hash, 10);
+    const user = this.userRepository.create({
+      ...rest,
+      email,
+      password_hash: hashedPassword,
+      first_name,
+      middle_name,
+      last_name,
+      role_id,
+    });
+
+    const savedUser = await this.userRepository.save(user);
+
+    // ✅ Role-based welcome emails
+    const CANDIDATE_ROLE_ID = 'c1bb8df5-2c01-11f0-b60f-80ce6232908a';
+    const RECRUITER_ROLE_ID = 'c1bb84ef-2c01-11f0-b60f-80ce6232908a';
+
+    if (savedUser.role_id === CANDIDATE_ROLE_ID) {
+      await this.mailService.sendCandidateWelcomeEmail(email);
+    } else if (savedUser.role_id === RECRUITER_ROLE_ID) {
+      await this.mailService.sendRecruiterWelcomeEmail(email);
+    }
+
+    return savedUser;
+  } catch (error) {
+    console.error('❌ Error creating user:', error);
+    throw new InternalServerErrorException('Failed to create user');
+  }
+}
 
   // Find all users
   async findAll(): Promise<User[]> {
@@ -106,4 +132,36 @@ export class UserService {
 
     return await this.userRepository.save(user);
   }
+
+  async changePassword(
+  userId: string,
+  currentPassword: string,
+  newPassword: string,
+): Promise<void> {
+  const user = await this.userRepository.findOne({ where: { id: userId } });
+  if (!user) {
+    throw new NotFoundException('User not found');
+  }
+
+  // Verify current password
+  const isPasswordValid = await bcrypt.compare(
+    currentPassword,
+    user.password_hash,
+  );
+  if (!isPasswordValid) {
+    throw new BadRequestException('Current password is incorrect');
+  }
+
+  // Hash and save new password
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  user.password_hash = hashedPassword;
+  
+  await this.userRepository.save(user);
+}
+
+// Add this method to UserService
+async isEmailRegistered(email: string): Promise<boolean> {
+  const user = await this.userRepository.findOne({ where: { email } });
+  return !!user;
+}
 }

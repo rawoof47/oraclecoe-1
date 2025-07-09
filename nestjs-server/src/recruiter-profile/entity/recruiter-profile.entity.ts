@@ -4,7 +4,10 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { RecruiterIndustry } from '../../recruiter-industries/entities/recruiter-industry.entity';
+import { RecruiterLocation } from '../../recruiter-location/recruiter-location.entity';
 
 @Entity('recruiter_profiles')
 export class RecruiterProfile {
@@ -17,9 +20,6 @@ export class RecruiterProfile {
   @Column({ length: 255 })
   company_name: string;
 
-  @Column({ length: 100, nullable: true })
-  industry: string;
-
   @Column({ length: 50, nullable: true })
   company_size: string;
 
@@ -28,6 +28,9 @@ export class RecruiterProfile {
 
   @Column({ type: 'text', nullable: true })
   company_description: string;
+
+   @Column({ type: 'varchar', length: 255, nullable: true })
+  company_logo_url: string;
 
   @Column({ length: 100, nullable: true })
   recruiter_position: string;
@@ -46,4 +49,20 @@ export class RecruiterProfile {
 
   @Column({ type: 'char', length: 36, nullable: true })
   updated_by: string;
+
+  // 🆕 One-to-many relation with recruiter_industries table
+  @OneToMany(() => RecruiterIndustry, (ri) => ri.profile)
+  recruiterIndustries: RecruiterIndustry[];
+
+  // 🆕 Transient property for returning just industry IDs
+  industries?: string[];
+
+  // ✅ NEW: Optional city/state field
+  @Column({ name: 'city_state', type: 'varchar', length: 255, nullable: true })
+  city_state?: string;
+
+  // ✅ NEW: One-to-many relation with recruiter_locations
+ @OneToMany(() => RecruiterLocation, (location) => location.recruiterProfile)
+locations: RecruiterLocation[];
+
 }

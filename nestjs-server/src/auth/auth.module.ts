@@ -9,13 +9,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { RolesModule } from '../roles/roles.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MailService } from '../mail/mail.service'; // ✅ Add this line
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
     RolesModule,
     PassportModule,
-    ConfigModule, // ✅ Make sure ConfigModule is available
+    ConfigModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -26,6 +27,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, JwtRefreshStrategy],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    JwtRefreshStrategy,
+    MailService, // ✅ Add this
+  ],
 })
 export class AuthModule {}

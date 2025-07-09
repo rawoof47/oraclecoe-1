@@ -114,3 +114,117 @@
     to { transform: rotate(360deg); }
   }
 }
+
+.industries-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.industry-option {
+  background: #e6f2ff;
+  border-radius: 16px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+
+  &.selected {
+    background: #3399ff;
+    color: white;
+  }
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.required {
+  color: #ff0000; /* Red color */
+  margin-left: 3px;
+}
+
+.required-note {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+
+.button-wrapper {
+  text-align: right;
+  margin-top: 2rem;
+
+  button {
+    background: linear-gradient(to right, #66bfff, #3399ff);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer; /* Normal cursor for enabled state */
+
+    &:hover {
+      background: linear-gradient(to right, #3399ff, #007acc);
+    }
+
+    /* Add disabled state styles */
+    &:disabled {
+      background: #cccccc;
+      cursor: not-allowed; /* Change cursor to not-allowed */
+      opacity: 0.7;
+    }
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+}
+/* Add to existing styles */
+.location-group {
+  background: #f9fcff;
+  border: 1px solid #d4ebff;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  
+  .location-title {
+    position: absolute;
+    top: -12px;
+    left: 16px;
+    background: white;
+    padding: 0 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #007acc;
+    margin: 0;
+  }
+}
+
+/* Add to existing form-row styles */
+.form-row {
+  mat-form-field {
+    flex: 1;
+  }
+}
+
+/* Keep all other existing styles */
+.dashboard-area {
+  background: #f0f8ff;
+  padding: 3rem 0;
+}
+
+/* ... rest of existing SCSS ... */

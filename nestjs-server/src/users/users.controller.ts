@@ -45,4 +45,29 @@ export class UserController {
     const { first_name, last_name, middle_name } = updateNameDto;
     return this.userService.updateName(id, first_name, last_name, middle_name);
   }
+
+  // Add this endpoint to UserController
+@Post('change-password')
+async changePassword(
+  @Body() body: {
+    user_id: string;
+    current_password: string;
+    new_password: string;
+  },
+): Promise<void> {
+  return this.userService.changePassword(
+    body.user_id,
+    body.current_password,
+    body.new_password,
+  );
+}
+
+// Add this endpoint to UserController
+@Get('check-email/:email')
+async checkEmailRegistered(
+  @Param('email') email: string
+): Promise<{ registered: boolean }> {
+  const exists = await this.userService.isEmailRegistered(email);
+  return { registered: exists };
+}
 }

@@ -53,6 +53,7 @@ export class PostedJobsComponent implements OnInit {
   // ✅ Status IDs for toggle
   activeStatusId = '36f3301d-318e-11f0-aa4d-80ce6232908a';
   inactiveStatusId = '7f8a812f-4d10-11f0-8520-ac1f6bbcd360';
+  expiredStatusId = '8ee0cfea-566d-11f0-a900-ac1f6bbcd360'; // Add expired status ID
 
   constructor(
     private jobPostService: JobPostService,

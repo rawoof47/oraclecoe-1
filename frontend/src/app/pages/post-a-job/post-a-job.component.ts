@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, ValidationErrors, AbstractControl } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { Subject, of, forkJoin } from 'rxjs';
+import { Subject, of, forkJoin, Observable } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { JobPostService } from '../../services/job-post.service';
@@ -13,6 +13,13 @@ import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { JobPost } from '../../auth/models/job-post.model';
+import { PostAJobHelper } from './post-a-job-helper';
+import { Region } from '../../auth/models/region.model';
+import { Country } from '../../auth/models/country.model';
+import { Currency } from '../../auth/models/currency.model';
+import { CurrencyService } from '../../services/currency.service';
+import { Degree } from '../../auth/models/degree.model';
+import { DegreeService } from '../../services/degree.service';
 
 interface Skill {
   id: string;
@@ -27,11 +34,6 @@ interface Certification {
 interface JobPostResponse {
   message: string;
   data: JobPost;
-}
-
-interface JobPostListResponse {
-  message: string;
-  data: JobPost[];
 }
 
 @Component({
@@ -54,8 +56,13 @@ interface JobPostListResponse {
 export class PostAJobComponent implements OnInit {
   jobForm: FormGroup;
   loading = false;
-  isEditMode = false;
-  jobId: string | null = null;
+  
+  regions$!: Observable<Region[]>;
+  countries$!: Observable<Country[]>;
+  currencies: Currency[] = [];
+  selectedCurrencySymbol: string = '';
+  selectedCurrencyCode: string = '';
+  degrees: Degree[] = [];
 
   functionalSkills: Skill[] = [];
   technicalSkills: Skill[] = [];
@@ -67,45 +74,59 @@ export class PostAJobComponent implements OnInit {
   hcmCertifications: Certification[] = [];
   cxCertifications: Certification[] = [];
 
-  
-
   workModeOptions = ['Remote', 'On-site', 'Hybrid'];
+  compensationTypes = ['Above', 'Below', 'Range', 'Exact'];
+
+  private defaultHowToApplyText: string = 
+    'How to Apply\n' +
+    'Step 1: Find the Job Posting\n' +
+    'Step 2: Read the Job Description Carefully\n' +
+    'Step 3: Update Your Resume\n' +
+    'Step 4: Click "Apply" and Fill in Details\n' +
+    'Step 5: Submit Your Application';
 
   constructor(
     private fb: FormBuilder,
     private jobPostService: JobPostService,
     private snackBar: MatSnackBar,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private helper: PostAJobHelper,
+    private currencyService: CurrencyService,
+    private degreeService: DegreeService
   ) {
     this.jobForm = this.fb.group({
       jobTitle: ['', Validators.required],
-      location: [''],
       experienceMin: [null, [Validators.required, Validators.min(0)]],
       experienceMax: [null, [Validators.required, Validators.min(0)]],
       employmentType: [[], Validators.required],
-      compensationRange: ['', Validators.required],
+      currency: ['', Validators.required],
+      compensationType: ['', Validators.required],
+      compensationValue: [null, [Validators.min(0)]],
+      compensationMin: [null, [Validators.min(0)]],
+      compensationMax: [null, [Validators.min(0)]],
+      salaryType: ['', Validators.required],
       workMode: ['', Validators.required],
       jobDescription: ['', Validators.required],
       noticePeriod: ['', Validators.required],
       applicationDeadline: [''],
       recruiterId: ['', Validators.required],
-
+      region_id: ['', Validators.required],
+      country_id: ['', Validators.required],
       roleSummary: ['', Validators.required],
-      preferredQualifications: [''],
-      whatWeOffer: [''],
-      howToApply: [''],
-
+      whatWeOffer: [''], // Removed Validators.required since it's optional
+      howToApply: [this.defaultHowToApplyText, Validators.required],
+      useStandardInstructions: [true],
       functionalSkills: [[]],
       technicalSkills: [[]],
       oracleMiddlewareSkills: [[]],
       reportingSkills: [[]],
-
       financialCertifications: [[]],
       scmCertifications: [[]],
       hcmCertifications: [[]],
       cxCertifications: [[]],
-    });
+      location: [''], // Removed Validators.required since it's optional
+    }, { validators: this.compensationValidator });
   }
 
   ngOnInit(): void {
@@ -119,91 +140,111 @@ export class PostAJobComponent implements OnInit {
       console.warn('⚠️ No recruiter ID found. Ensure recruiter is logged in.');
     }
 
-    this.route.queryParams.subscribe(params => {
-      const id = params['id'];
-      if (id) {
-        this.isEditMode = true;
-        this.jobId = id;
-        this.fetchJobDetails(id);
+    // Load degrees
+    this.degreeService.getDegrees().subscribe({
+      next: (res) => {
+        this.degrees = res;
+      },
+      error: (err) => console.error('Failed to load degrees', err),
+    });
+
+    this.regions$ = this.helper.getRegions();
+    this.loadCurrencies();
+    this.setupCurrencyListener();
+
+    this.jobForm.get('region_id')?.valueChanges.subscribe(regionId => {
+      if (regionId) {
+        this.countries$ = this.helper.getCountriesByRegion(regionId);
       } else {
-        this.loadSkillsByCategory();
-        this.loadCertificationsByCategory();
+        this.countries$ = of([]);
+        this.jobForm.get('country_id')?.reset();
       }
+    });
+
+    this.subscribeToUseStandardInstructions();
+    
+    // Always load skills and certifications for new job posting
+    this.loadSkillsByCategory();
+    this.loadCertificationsByCategory();
+
+    // Set validators based on compensation type
+    this.jobForm.get('compensationType')?.valueChanges.subscribe(type => {
+      const valueControl = this.jobForm.get('compensationValue');
+      const minControl = this.jobForm.get('compensationMin');
+      const maxControl = this.jobForm.get('compensationMax');
+
+      // Clear previous validators
+      valueControl?.clearValidators();
+      minControl?.clearValidators();
+      maxControl?.clearValidators();
+
+      // Set validators based on type
+      switch(type) {
+        case 'Above':
+          valueControl?.setValidators([Validators.required, Validators.min(0)]);
+          break;
+        case 'Below':
+          valueControl?.setValidators([Validators.required, Validators.min(0)]);
+          break;
+        case 'Range':
+          minControl?.setValidators([Validators.required, Validators.min(0)]);
+          maxControl?.setValidators([Validators.required, Validators.min(0)]);
+          break;
+        case 'Exact':
+          valueControl?.setValidators([Validators.required, Validators.min(0)]);
+          break;
+      }
+
+      valueControl?.updateValueAndValidity();
+      minControl?.updateValueAndValidity();
+      maxControl?.updateValueAndValidity();
     });
   }
 
-  private fetchJobDetails(jobId: string): void {
-    this.loading = true;
-    forkJoin({
-      job: this.jobPostService.getById(jobId).pipe(map(res => res.data)),
-      functionalSkills: this.jobPostService.getFunctionalSkills('612222a1-791a-4125-be8d-1d86808a37bf'),
-      technicalSkills: this.jobPostService.getFunctionalSkills('b9677d69-356f-11f0-bd34-80ce6232908a'),
-      oracleMiddlewareSkills: this.jobPostService.getFunctionalSkills('0ec31fb0-3591-11f0-ae4b-80ce6232908a'),
-      reportingSkills: this.jobPostService.getFunctionalSkills('843a8e1d-3591-11f0-ae4b-80ce6232908a'),
-      financialCerts: this.jobPostService.getCertificationsByCategory('ed7c50c7-36d3-11f0-bfce-80ce6232908a'),
-      scmCerts: this.jobPostService.getCertificationsByCategory('ed7c5da6-36d3-11f0-bfce-80ce6232908a'),
-      hcmCerts: this.jobPostService.getCertificationsByCategory('ed7c5c88-36d3-11f0-bfce-80ce6232908a'),
-      cxCerts: this.jobPostService.getCertificationsByCategory('ed7c5e82-36d3-11f0-bfce-80ce6232908a'),
-    }).subscribe({
-      next: (responses) => {
-        const job = responses.job;
-        this.functionalSkills = responses.functionalSkills;
-        this.technicalSkills = responses.technicalSkills;
-        this.oracleMiddlewareSkills = responses.oracleMiddlewareSkills;
-        this.reportingSkills = responses.reportingSkills;
-        this.financialCertifications = responses.financialCerts;
-        this.scmCertifications = responses.scmCerts;
-        this.hcmCertifications = responses.hcmCerts;
-        this.cxCertifications = responses.cxCerts;
-        
-        this.populateForm(job, job.skill_ids || [], job.certification_ids || []);
-        this.loading = false;
+  // Custom validator for compensation
+  private compensationValidator(group: AbstractControl): ValidationErrors | null {
+    const compType = group.get('compensationType')?.value;
+    const compValue = group.get('compensationValue')?.value;
+    const compMin = group.get('compensationMin')?.value;
+    const compMax = group.get('compensationMax')?.value;
+
+    if (compType === 'Range' && compMin !== null && compMax !== null && compMin > compMax) {
+      return { minGreaterThanMax: true };
+    }
+    return null;
+  }
+
+  private formatNumberWithCommas(x: number): string {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  private loadCurrencies(): void {
+    this.currencyService.getCurrencies().subscribe({
+      next: (data: Currency[]) => {
+        this.currencies = data.map(currency => ({
+          ...currency,
+          codeNameSymbol: `${currency.code} - ${currency.name} (${currency.symbol})`
+        }));
       },
       error: (err) => {
-        console.error('Failed to fetch job details', err);
-        this.loading = false;
-        this.snackBar.open('Failed to load job details. Please try again.', 'Close', {
-          duration: 4000,
-          panelClass: 'snackbar-error'
-        });
+        console.error('Failed to load currencies', err);
       }
     });
   }
 
-  private populateForm(job: JobPost, skillIds: string[], certificationIds: string[]): void {
-    this.jobForm.patchValue({
-      jobTitle: job.job_title,
-      location: job.location,
-      experienceMin: job.experience_min,
-      experienceMax: job.experience_max,
-      employmentType: job.employment_type ? job.employment_type.split(',') : [],
-      compensationRange: job.compensation_range,
-      workMode: job.work_mode,
-      jobDescription: job.job_description,
-      noticePeriod: job.notice_period,
-      applicationDeadline: job.application_deadline 
-        ? new Date(job.application_deadline).toISOString().split('T')[0] 
-        : null,
-      roleSummary: job.role_summary,
-      preferredQualifications: job.preferred_qualifications,
-      whatWeOffer: job.what_we_offer,
-      howToApply: job.how_to_apply
+  private setupCurrencyListener(): void {
+    this.jobForm.get('currency')?.valueChanges.subscribe(currencyId => {
+      const currency = this.currencies.find(c => c.id === currencyId);
+      this.selectedCurrencySymbol = currency?.symbol || '';
+      this.selectedCurrencyCode = currency?.code || '';
     });
+  }
 
-    // Map skill IDs to skill objects
-    this.jobForm.patchValue({
-      functionalSkills: this.functionalSkills.filter(s => skillIds.includes(s.id)),
-      technicalSkills: this.technicalSkills.filter(s => skillIds.includes(s.id)),
-      oracleMiddlewareSkills: this.oracleMiddlewareSkills.filter(s => skillIds.includes(s.id)),
-      reportingSkills: this.reportingSkills.filter(s => skillIds.includes(s.id)),
-    });
-
-    // Map certification IDs to certification objects
-    this.jobForm.patchValue({
-      financialCertifications: this.financialCertifications.filter(c => certificationIds.includes(c.id)),
-      scmCertifications: this.scmCertifications.filter(c => certificationIds.includes(c.id)),
-      hcmCertifications: this.hcmCertifications.filter(c => certificationIds.includes(c.id)),
-      cxCertifications: this.cxCertifications.filter(c => certificationIds.includes(c.id)),
+  private subscribeToUseStandardInstructions(): void {
+    this.jobForm.get('useStandardInstructions')?.valueChanges.subscribe(checked => {
+      if (checked) {
+        this.jobForm.get('howToApply')?.setValue(this.defaultHowToApplyText, { emitEvent: false });
+      }
     });
   }
 
@@ -260,8 +301,40 @@ export class PostAJobComponent implements OnInit {
       return;
     }
 
+    // Validate compensation range
+    const compType = this.jobForm.get('compensationType')?.value;
+    const compMin = this.jobForm.get('compensationMin')?.value;
+    const compMax = this.jobForm.get('compensationMax')?.value;
+    
+    if (compType === 'Range' && compMin > compMax) {
+      this.snackBar.open('Maximum compensation must be greater than minimum compensation.', 'Close', {
+        duration: 3000,
+        panelClass: 'snackbar-error',
+        horizontalPosition: 'right',
+        verticalPosition: 'top',
+      });
+      return;
+    }
+
     this.loading = true;
     const formValues = this.jobForm.value;
+
+    // Build compensation range string based on type
+    let compensationRange = '';
+    switch(formValues.compensationType) {
+      case 'Above':
+        compensationRange = `${this.selectedCurrencySymbol} ${this.selectedCurrencyCode} ${this.formatNumberWithCommas(formValues.compensationValue)} above`;
+        break;
+      case 'Below':
+        compensationRange = `${this.selectedCurrencySymbol} ${this.selectedCurrencyCode} below ${this.formatNumberWithCommas(formValues.compensationValue)}`;
+        break;
+      case 'Range':
+        compensationRange = `${this.selectedCurrencySymbol} ${this.selectedCurrencyCode} ${this.formatNumberWithCommas(formValues.compensationMin)} - ${this.formatNumberWithCommas(formValues.compensationMax)}`;
+        break;
+      case 'Exact':
+        compensationRange = `${this.selectedCurrencySymbol} ${this.selectedCurrencyCode} ${this.formatNumberWithCommas(formValues.compensationValue)}`;
+        break;
+    }
 
     const jobPostPayload = {
       ...formValues,
@@ -274,6 +347,8 @@ export class PostAJobComponent implements OnInit {
         ? new Date(formValues.applicationDeadline).toISOString()
         : undefined,
       updatedBy: formValues.recruiterId,
+      compensation_range: compensationRange,
+      salaryType: formValues.salaryType
     };
 
     const selectedSkillIds: string[] = [
@@ -290,67 +365,40 @@ export class PostAJobComponent implements OnInit {
       ...formValues.cxCertifications.map((c: Certification) => c?.id).filter(Boolean),
     ];
 
-    if (this.isEditMode && this.jobId) {
-      this.updateJob(this.jobId, jobPostPayload, selectedSkillIds, selectedCertificationIds);
-    } else {
-      this.createJob(jobPostPayload, selectedSkillIds, selectedCertificationIds);
-    }
+    this.createJob(jobPostPayload, selectedSkillIds, selectedCertificationIds);
   }
 
   private createJob(
-  jobPostPayload: any,
-  selectedSkillIds: string[],
-  selectedCertificationIds: string[]
-): void {
-  this.jobPostService.create(jobPostPayload).subscribe({
-    next: (response: JobPostResponse) => {
-      const jobPostId = response.data?.id;
-      if (!jobPostId) {
-        throw new Error('Job post ID is missing in the response');
-      }
-      
-      // Get job number from response
-      const jobNumber = response.data?.job_number;
-      
-      // Navigate to job details page with job number
-      this.saveSkillsAndCerts(jobPostId, selectedSkillIds, selectedCertificationIds);
-      
-      // Add navigation here
-      if (jobNumber) {
-        this.router.navigate(['/job-details', 'JID' + jobNumber]);
-      } else {
-        console.warn('Job number not found in response');
-      }
-    },
-    error: (err) => {
-      this.handleJobError(err);
-    },
-  });
-}
-
-  private updateJob(
-  jobId: string,
-  jobPostPayload: any,
-  selectedSkillIds: string[],
-  selectedCertificationIds: string[]
-): void {
-  // ✅ Include job number in payload
-  const payloadWithJobNumber = {
-    ...jobPostPayload,
-    jobNumber: this.jobForm.getRawValue().jobNumber, // 🆕 Add job number
-  };
-
-  this.jobPostService.update(jobId, payloadWithJobNumber).subscribe({
-    next: (response: JobPostResponse) => {
-      const jobPostId = response.data?.id || jobId;
-      this.saveSkillsAndCerts(jobPostId, selectedSkillIds, selectedCertificationIds);
-    },
-    error: (err) => {
-      this.handleJobError(err);
-    },
-  });
-}
-
+    jobPostPayload: any,
+    selectedSkillIds: string[],
+    selectedCertificationIds: string[]
+  ): void {
+    const payloadWithLocation = {
+      ...jobPostPayload,
+      location: jobPostPayload.location || null
+    };
+    
+    this.jobPostService.create(payloadWithLocation).subscribe({
+      next: (response: JobPostResponse) => {
+        const jobPostId = response.data?.id;
+        if (!jobPostId) {
+          throw new Error('Job post ID is missing in the response');
+        }
+        
+        const jobNumber = response.data?.job_number;
+        this.saveSkillsAndCerts(jobPostId, selectedSkillIds, selectedCertificationIds);
+        
+        if (jobNumber) {
+          this.router.navigate(['/job-details', 'JID' + jobNumber]);
+        } else {
+          console.warn('Job number not found in response');
+        }
+      },
+      error: (err) => {
+        this.handleJobError(err);
+      },
+    });
+  }
 
   private saveSkillsAndCerts(
     jobPostId: string,
@@ -398,22 +446,19 @@ export class PostAJobComponent implements OnInit {
   }
 
   private showSuccessMessage(): void {
-    const message = this.isEditMode 
-      ? '✅ Job updated successfully!' 
-      : '✅ Job created successfully!';
-
-    this.snackBar.open(message, 'Close', {
+    this.snackBar.open('✅ Job created successfully!', 'Close', {
       duration: 3000,
       panelClass: 'snackbar-success',
       horizontalPosition: 'right',
       verticalPosition: 'top',
     });
     
-    if (!this.isEditMode) {
-      this.jobForm.reset();
-      const user = JSON.parse(localStorage.getItem('user') || '{}');
-      this.jobForm.patchValue({ recruiterId: user?.id });
-    }
+    // Reset form after successful creation
+    this.jobForm.reset();
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    this.jobForm.patchValue({ recruiterId: user?.id });
+    this.jobForm.patchValue({ howToApply: this.defaultHowToApplyText });
+    this.jobForm.patchValue({ useStandardInstructions: true });
     
     this.loading = false;
   }

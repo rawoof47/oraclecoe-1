@@ -102,4 +102,9 @@ export class UpdateJobPostDto {
   @IsOptional()
   @IsNumber()
   jobNumber?: number;
+
+  @IsString()
+@IsOptional()
+salaryType?: string;
+
 }

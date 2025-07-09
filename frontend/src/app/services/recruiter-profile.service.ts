@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthStateService } from '../services/auth-state.service';
+import { Industry } from '../auth/models/recruiter-profile.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,16 @@ export class RecruiterProfileService {
     private authState: AuthStateService
   ) {}
 
-  // ✅ Save or update recruiter profile
-  saveRecruiterProfile(data: any): Observable<any> {
+  // ✅ Save or update recruiter profile with industry IDs
+  saveRecruiterProfile(data: {
+    user_id: string;
+    company_name: string;
+    industryIds: string[];
+    company_size: string;
+    website: string;
+    company_description: string;
+    recruiter_position: string;
+  }): Observable<any> {
     return this.http.post(`${this.baseUrl}/upsert`, data);
   }
 
@@ -24,4 +33,21 @@ export class RecruiterProfileService {
   getMyProfile(): Observable<any> {
     return this.http.get(`${this.baseUrl}/by-user/me`);
   }
+
+  // 📦 Fetch available industries
+  getIndustries(): Observable<Industry[]> {
+    return this.http.get<Industry[]>(`${this.backendBaseUrl}/industries`);
+  }
+
+uploadCompanyLogo(file: File): Observable<{ url: string }> {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  return this.http.post<{ url: string }>(
+    `${this.baseUrl}/upload-logo`,
+    formData
+  );
+}
+
+
 }

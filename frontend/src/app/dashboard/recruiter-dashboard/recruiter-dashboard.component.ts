@@ -1,14 +1,16 @@
+// ✅ Existing imports
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router'; // Added Router
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../../common/navbar/navbar.component';
 import { FooterComponent } from '../../common/footer/footer.component';
 import { BackToTopComponent } from '../../common/back-to-top/back-to-top.component';
 import { RecruiterSidebarComponent } from '../../common/recruiter-sidebar/recruiter-sidebar.component';
-
 import { RecruiterProfileService } from '../../services/recruiter-profile.service';
 import { JobPostService } from '../../services/job-post.service';
-import { ApplicationService } from '../../services/application.service'; // ✅ Added import
+import { ApplicationService } from '../../services/application.service';
+import { Industry } from '../../auth/models/recruiter-profile.model';
 
 @Component({
   selector: 'app-recruiter-dashboard',
@@ -28,6 +30,12 @@ export class RecruiterDashboardComponent implements OnInit {
   profileData: any = null;
   isLoading = true;
   error: string | null = null;
+  selectedIndustries: Industry[] = [];
+
+  // ✅ Location display fields
+  regionName: string = 'N/A';
+  countryName: string = 'N/A';
+  cityState: string = 'N/A';
 
   stats = {
     postedJobs: 0,
@@ -39,17 +47,42 @@ export class RecruiterDashboardComponent implements OnInit {
   constructor(
     private profileService: RecruiterProfileService,
     private jobPostService: JobPostService,
-    private applicationService: ApplicationService // ✅ Injected service
+    private applicationService: ApplicationService,
+    private router: Router // Injected Router
   ) {}
 
   ngOnInit(): void {
     this.fetchProfileData();
   }
 
+  // Navigation methods
+  navigateToPostedJobs(): void {
+    this.router.navigate(['/recruiter/posted-jobs']);
+  }
+  
+  navigateToJobApplicants(status: string): void {
+  this.router.navigate(['/job-applicants'], {
+    state: { 
+      statusFilter: status,  // Remove .toLowerCase()
+      filterSource: 'dashboard'
+    }
+  });
+}
+
   fetchProfileData(): void {
     this.profileService.getMyProfile().subscribe({
       next: (profile) => {
         this.profileData = profile;
+
+        // ✅ Extract location details from `locations[0]`
+        const location = profile.locations?.[0];
+        if (location) {
+          this.regionName = location.region?.name || 'N/A';
+          this.countryName = location.country?.name || 'N/A';
+        }
+        this.cityState = profile.city_state || 'N/A';
+
+        this.fetchIndustries();
         this.fetchRecruiterStats(profile.user_id);
         this.isLoading = false;
       },
@@ -57,6 +90,19 @@ export class RecruiterDashboardComponent implements OnInit {
         console.error('Failed to fetch profile data:', err);
         this.error = 'Failed to load profile data. Please try again later.';
         this.isLoading = false;
+      }
+    });
+  }
+
+  fetchIndustries(): void {
+    this.profileService.getIndustries().subscribe({
+      next: (industries) => {
+        this.selectedIndustries = industries.filter(industry =>
+          this.profileData.industryIds?.includes(industry.id)
+        );
+      },
+      error: (err) => {
+        console.error('Failed to fetch industries:', err);
       }
     });
   }
@@ -80,7 +126,6 @@ export class RecruiterDashboardComponent implements OnInit {
           });
         }
 
-        // ✅ Fetch shortlisted and rejected counts
         this.applicationService.getCountsByStatuses(recruiterId).subscribe({
           next: (counts) => {
             this.stats.shortlisted = counts.shortlisted || 0;

@@ -20,8 +20,9 @@ export class JobPost {
   @Column({ type: 'varchar', length: 200 })
   job_title: string;
 
-  @Column({ type: 'varchar', length: 150, nullable: true })
-  location: string | null;
+ @Column({ type: 'varchar', length: 255, nullable: true })
+ location: string | null;
+
 
   @Column({ type: 'longtext', nullable: true })
   certifications_required: string | null;
@@ -92,5 +93,8 @@ export class JobPost {
 
   @Column({ type: 'int', nullable: true, unique: true })
 job_number: number | null;
+
+@Column({ type: 'varchar', length: 50, nullable: true })
+salary_type: string | null;
 
 }

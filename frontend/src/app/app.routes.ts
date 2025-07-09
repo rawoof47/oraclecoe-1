@@ -35,6 +35,10 @@ import { PostedJobsComponent } from './pages/posted-jobs/posted-jobs.component';
 import { RecruiterProfileComponent } from './pages/recruiter-profile/recruiter-profile.component';
 import { RecruiterSidebarComponent } from './common/recruiter-sidebar/recruiter-sidebar.component';
 import { CandidateProfileCompletionGuard } from './guards/candidate-profile-completion.guard';
+import { SettingComponent } from './pages/setting/setting.component';
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
+
 
 // Guards
 import { authGuard } from './guards/auth.guard';
@@ -53,6 +57,8 @@ export const routes: Routes = [
   { path: 'contact', component: ContactUsComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+
 
   { path: 'employers', component: EmployersComponent },
   { path: 'employer-details', component: EmployerDetailsComponent },
@@ -64,6 +70,11 @@ export const routes: Routes = [
   { path: 'coming-soon', component: ComingSoonComponent },
   { path: 'privacy-policy', component: PrivacyPolicyComponent },
   { path: 'terms-conditions', component: TermsConditionsComponent },
+
+  { path: 'reset-password/:token', loadComponent: () => import('./pages/reset-password/reset-password.component').then(m => m.ResetPasswordComponent) },
+
+
+  
 
   // 🔒 Candidate Routes
   {
@@ -143,6 +154,13 @@ export const routes: Routes = [
   component: RecruiterSidebarComponent,
   canActivate: [authGuard, roleGuard('recruiter')]
 },
+
+{
+  path: 'settings',
+  component: SettingComponent,
+  canActivate: [authGuard] // Optional: protect with login if needed
+},
+
 
 
 

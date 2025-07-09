@@ -10,11 +10,6 @@ export class CreateRecruiterProfileDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(100)
-  industry?: string;
-
-  @IsOptional()
-  @IsString()
   @MaxLength(50)
   company_size?: string;
 
@@ -26,6 +21,11 @@ export class CreateRecruiterProfileDto {
   @IsOptional()
   @IsString()
   company_description?: string;
+
+  @IsOptional()
+@IsUrl()
+@MaxLength(255)
+company_logo_url?: string;
 
   @IsOptional()
   @IsString()
@@ -43,4 +43,10 @@ export class CreateRecruiterProfileDto {
   @IsOptional()
   @IsUUID()
   updated_by?: string;
+
+    @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  city_state?: string;
+
 }
